@@ -17,6 +17,8 @@ namespace AdventureKing.Gameplay
             if (nearPlayer && nearPlayer.ConsumeInteract()) onInteracted?.Invoke();
         }
 
+        private void OnDisable() => nearPlayer = null;
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             var input = other.GetComponentInParent<PlayerInput2D>();

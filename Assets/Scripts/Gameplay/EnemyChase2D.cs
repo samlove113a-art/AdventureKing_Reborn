@@ -16,6 +16,10 @@ namespace AdventureKing.Gameplay
         [SerializeField, Min(0.1f)] private float hitCooldown = 1.3f;
         [SerializeField] private SpriteRenderer visual;
         private float readyAt;
+        private Transform cachedPlayer;
+        private Health2D targetHealth;
+
+        public Transform Target { get => player; set => player = value; }
 
         private void Awake()
         {
@@ -28,7 +32,11 @@ namespace AdventureKing.Gameplay
         {
             if (health.IsDead || !player) { Stop(); return; }
             float distance = Vector2.Distance(transform.position, player.position);
-            Health2D targetHealth = player.GetComponentInParent<Health2D>();
+            if (cachedPlayer != player)
+            {
+                cachedPlayer = player;
+                targetHealth = player.GetComponentInParent<Health2D>();
+            }
             if (distance > detection || (targetHealth && targetHealth.IsDead)) { Stop(); return; }
             float direction = Mathf.Sign(player.position.x - transform.position.x);
             if (distance > reach)

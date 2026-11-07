@@ -30,3 +30,8 @@ Owner does not want unfinished demos or placeholder art submitted as the game. K
 
 ## Verified status
 Repository commits only; no Unity compile, Play Mode, build, FPS test or visual QA has been performed in this ChatGPT environment.
+
+2026-11-07 (Claude Code, Windows 10 PC, Unity 6000.6.7f1): clean compile; 4/4 EditMode and 19/19
+project PlayMode tests pass; internal Windows QA probe builds and runs at avg 59.5 FPS (target 60).
+Two defects fixed (stale Interact press, climbing state persisting on the floor). Android/iOS and
+human visual QA NOT yet done. Full details: Docs/QA/QA_REPORT_2026-11-07.md.

@@ -12,6 +12,10 @@ namespace AdventureKing.Gameplay
         private bool left, right, up, down, touchJump;
         private bool jumpQueued, attackQueued, interactQueued;
         private bool keyboardJumpHeld;
+        // QA fix: an Interact press that nobody consumes must expire, otherwise pressing E
+        // far away from an NPC fires the NPC later when the player walks into its trigger.
+        private const int InteractBufferFrames = 2;
+        private int interactQueuedFrame = int.MinValue;
 
         public float Horizontal { get; private set; }
         public float Vertical { get; private set; }
@@ -33,7 +37,7 @@ namespace AdventureKing.Gameplay
                     if (held) attackQueued = true;
                     break;
                 case TouchAction.Interact:
-                    if (held) interactQueued = true;
+                    if (held) QueueInteract();
                     break;
             }
         }
@@ -79,12 +83,25 @@ namespace AdventureKing.Gameplay
             keyboardJumpHeld = holdJump;
             jumpQueued |= pressJump;
             attackQueued |= pressAttack;
-            interactQueued |= pressInteract;
+            if (pressInteract) QueueInteract();
+            if (interactQueued && Time.frameCount - interactQueuedFrame > InteractBufferFrames)
+                interactQueued = false;
+        }
+
+        private void QueueInteract()
+        {
+            interactQueued = true;
+            interactQueuedFrame = Time.frameCount;
         }
 
         public bool ConsumeJump() { bool v = jumpQueued; jumpQueued = false; return v; }
         public bool ConsumeAttack() { bool v = attackQueued; attackQueued = false; return v; }
-        public bool ConsumeInteract() { bool v = interactQueued; interactQueued = false; return v; }
+        public bool ConsumeInteract()
+        {
+            bool v = interactQueued && Time.frameCount - interactQueuedFrame <= InteractBufferFrames;
+            interactQueued = false;
+            return v;
+        }
 
         private void OnDisable()
         {
