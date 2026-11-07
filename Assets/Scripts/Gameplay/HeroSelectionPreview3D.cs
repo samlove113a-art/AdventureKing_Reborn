@@ -104,12 +104,16 @@ namespace AdventureKing.Gameplay
 
         public void PlayAttackPreview()
         {
-            if (activeEntry != null) TryPlay(activeEntry.attackState);
+            if (activeEntry != null && TryPlay(activeEntry.attackState) &&
+                AdventureAudioDirector.Instance)
+                AdventureAudioDirector.Instance.PlayClassAttack(activeEntry.heroClass);
         }
 
         public void PlaySkillPreview()
         {
-            if (activeEntry != null) TryPlay(activeEntry.skillState);
+            if (activeEntry != null && TryPlay(activeEntry.skillState) &&
+                AdventureAudioDirector.Instance)
+                AdventureAudioDirector.Instance.PlayClassSkillCast(activeEntry.heroClass);
         }
 
         public void PlayIdlePreview()
@@ -134,16 +138,17 @@ namespace AdventureKing.Gameplay
             activeModel.transform.Rotate(0f, -delta, 0f, Space.Self);
         }
 
-        private void TryPlay(string state)
+        private bool TryPlay(string state)
         {
-            if (!activeAnimator || string.IsNullOrWhiteSpace(state)) return;
+            if (!activeAnimator || string.IsNullOrWhiteSpace(state)) return false;
             int hash = Animator.StringToHash(state);
             if (!activeAnimator.HasState(0, hash))
             {
                 SetMessage("Animator thiếu hoạt ảnh " + state + ".");
-                return;
+                return false;
             }
             activeAnimator.CrossFadeInFixedTime(hash, 0.14f, 0);
+            return true;
         }
 
         private void ClearModel()
