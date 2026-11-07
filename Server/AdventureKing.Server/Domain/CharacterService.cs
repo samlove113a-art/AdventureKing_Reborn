@@ -1,0 +1,141 @@
+using AdventureKing.Server.Data;
+using AdventureKing.Server.Security;
+using Microsoft.Data.Sqlite;
+
+namespace AdventureKing.Server.Domain;
+
+// Field names match the Unity client's JsonUtility models (AdventurePlayerSaveContracts.cs).
+public sealed class CharacterDto
+{
+    public string characterId { get; set; } = "";
+    public string characterName { get; set; } = "";
+    public int slotIndex { get; set; }
+    public int heroClass { get; set; }
+    public int level { get; set; }
+    public long experience { get; set; }
+    public int unspentSkillPoints { get; set; }
+    public long gold { get; set; }
+    public long diamonds { get; set; }
+    public string lastMapId { get; set; } = "";
+    public string lastSafeCheckpointId { get; set; } = "";
+    public int tutorialStep { get; set; }
+    public bool tutorialCompleted { get; set; }
+    public long serverRevision { get; set; }
+    public long lastSavedUnixMilliseconds { get; set; }
+}
+
+public sealed class ProfileDto
+{
+    public string accountId { get; set; } = "";
+    public CharacterDto[] characters { get; set; } = Array.Empty<CharacterDto>();
+}
+
+/// <summary>Character slots (max 4 per account), creation with server name rules, entry and tutorial progress.</summary>
+public sealed class CharacterService
+{
+    public const int MaxSlots = 4;
+    private readonly Database db;
+    private readonly NameRules names;
+
+    public CharacterService(Database db, NameRules names)
+    {
+        this.db = db;
+        this.names = names;
+    }
+
+    public ProfileDto LoadProfile(string accountId)
+    {
+        using var c = db.Open();
+        return new ProfileDto { accountId = accountId, characters = Query(c, null, "c.account_id=$a ORDER BY c.slot_index", ("$a", accountId)).ToArray() };
+    }
+
+    public CharacterDto Create(string accountId, string? displayName, int heroClass, int slotIndex)
+    {
+        if (heroClass is < 0 or > 3) throw new GameError("class_invalid", "Nghề không hợp lệ.");
+        if (slotIndex is < 0 or >= MaxSlots) throw new GameError("slot_invalid", "Ô nhân vật không hợp lệ.");
+        NameCheck check = names.Check(displayName);
+        if (!check.Ok) throw new GameError("name_" + check.Code, check.Message);
+
+        string id = Crypto.NewId("chr");
+        long now = Database.NowMs();
+        return db.InTransaction((c, tx) =>
+        {
+            if (Database.Scalar<long>(c, tx, "SELECT COUNT(*) FROM characters WHERE account_id=$a AND slot_index=$s",
+                    ("$a", accountId), ("$s", slotIndex)) > 0)
+                throw new GameError("slot_taken", "Ô này đã có nhân vật.", 409);
+            if (Database.Scalar<long>(c, tx, "SELECT COUNT(*) FROM characters WHERE account_id=$a", ("$a", accountId)) >= MaxSlots)
+                throw new GameError("slots_full", "Tài khoản đã đủ 4 nhân vật.", 409);
+            if (Database.Scalar<long>(c, tx, "SELECT COUNT(*) FROM characters WHERE name_key=$k", ("$k", check.UniqueKey)) > 0)
+                throw new GameError("name_taken", "Tên này đã có người sử dụng (hoặc quá giống một tên đã có).", 409);
+            try
+            {
+                Database.Exec(c, tx, """
+                    INSERT INTO characters(id, account_id, slot_index, name, name_key, hero_class, created_ms, saved_ms)
+                    VALUES($id,$a,$s,$n,$k,$h,$t,$t)
+                    """, ("$id", id), ("$a", accountId), ("$s", slotIndex), ("$n", check.Normalized),
+                    ("$k", check.UniqueKey), ("$h", heroClass), ("$t", now));
+            }
+            catch (SqliteException ex) when (ex.SqliteErrorCode == 19) // UNIQUE race
+            {
+                throw new GameError("name_taken", "Tên này đã có người sử dụng.", 409);
+            }
+            AccountService.Audit(c, tx, accountId, "character_create", id + " " + check.Normalized);
+            return Query(c, tx, "c.id=$id", ("$id", id)).Single();
+        });
+    }
+
+    /// <summary>Re-authorises ownership on every entry and returns the authoritative snapshot.</summary>
+    public CharacterDto Enter(string accountId, string? characterId)
+    {
+        using var c = db.Open();
+        return Query(c, null, "c.id=$id AND c.account_id=$a", ("$id", characterId ?? ""), ("$a", accountId)).SingleOrDefault()
+               ?? throw new GameError("character_not_found", "Không tìm thấy nhân vật thuộc tài khoản này.", 404);
+    }
+
+    // ------------------------------------------------------------- tutorial (levels 1–15 chain)
+    public static readonly string[] TutorialSteps =
+    {
+        "move", "jump", "climb", "attack", "skill", "loot", "inventory", "quest", "shop_npc", "explore",
+    };
+
+    /// <summary>
+    /// Advances the tutorial strictly one step at a time; replaying an already completed step is a no-op
+    /// (so a reconnect cannot restart or skip the tutorial). Grants no currency.
+    /// </summary>
+    public CharacterDto CompleteTutorialStep(string accountId, string characterId, int step)
+    {
+        return db.InTransaction((c, tx) =>
+        {
+            CharacterDto ch = Query(c, tx, "c.id=$id AND c.account_id=$a", ("$id", characterId), ("$a", accountId)).SingleOrDefault()
+                              ?? throw new GameError("character_not_found", "Không tìm thấy nhân vật.", 404);
+            if (ch.tutorialCompleted || step < ch.tutorialStep) return ch;
+            if (step != ch.tutorialStep) throw new GameError("tutorial_order", "Bước hướng dẫn chưa được mở.", 409);
+            int next = step + 1;
+            bool done = next >= TutorialSteps.Length;
+            Database.Exec(c, tx, "UPDATE characters SET tutorial_step=$n, tutorial_done=$d, revision=revision+1, saved_ms=$t WHERE id=$id",
+                ("$n", next), ("$d", done ? 1 : 0), ("$t", Database.NowMs()), ("$id", characterId));
+            return Query(c, tx, "c.id=$id", ("$id", characterId)).Single();
+        });
+    }
+
+    internal static IEnumerable<CharacterDto> Query(SqliteConnection c, SqliteTransaction? tx, string where, params (string, object?)[] args)
+    {
+        using var cmd = Database.Command(c, tx, $"""
+            SELECT c.id, c.name, c.slot_index, c.hero_class, c.level, c.experience, c.skill_points, c.gold, a.diamonds,
+                   c.map_id, c.checkpoint_id, c.tutorial_step, c.tutorial_done, c.revision, c.saved_ms
+            FROM characters c JOIN accounts a ON a.id = c.account_id WHERE {where}
+            """, args);
+        using var r = cmd.ExecuteReader();
+        var list = new List<CharacterDto>();
+        while (r.Read())
+            list.Add(new CharacterDto
+            {
+                characterId = r.GetString(0), characterName = r.GetString(1), slotIndex = r.GetInt32(2), heroClass = r.GetInt32(3),
+                level = r.GetInt32(4), experience = r.GetInt64(5), unspentSkillPoints = r.GetInt32(6), gold = r.GetInt64(7),
+                diamonds = r.GetInt64(8), lastMapId = r.GetString(9), lastSafeCheckpointId = r.GetString(10),
+                tutorialStep = r.GetInt32(11), tutorialCompleted = r.GetInt64(12) != 0, serverRevision = r.GetInt64(13),
+                lastSavedUnixMilliseconds = r.GetInt64(14),
+            });
+        return list;
+    }
+}

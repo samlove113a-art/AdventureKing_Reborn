@@ -1,0 +1,122 @@
+using AdventureKing.Server.Data;
+using AdventureKing.Server.Domain;
+using AdventureKing.Server.Security;
+
+namespace AdventureKing.Server.Tests;
+
+public class AccountAndCharacterTests : IDisposable
+{
+    private readonly TestDb t = new();
+    private readonly AccountService accounts;
+    private readonly CharacterService chars;
+
+    public AccountAndCharacterTests()
+    {
+        accounts = new AccountService(t.Db);
+        chars = new CharacterService(t.Db, new NameRules());
+    }
+
+    public void Dispose() => t.Dispose();
+
+    [Fact]
+    public void Register_Login_And_Session_Round_Trip()
+    {
+        SessionInfo reg = accounts.Register("Hero.One", "dragon-sword-77");
+        Assert.Equal(reg.AccountId, accounts.Authenticate(reg.Token));
+        SessionInfo login = accounts.Login("hero.one", "dragon-sword-77");
+        Assert.Equal(reg.AccountId, login.AccountId);
+        Assert.NotEqual(reg.Token, login.Token);
+
+        accounts.Logout(login.Token);
+        Assert.Equal(401, Assert.Throws<GameError>(() => accounts.Authenticate(login.Token)).Status);
+        Assert.Equal(reg.AccountId, accounts.Authenticate(reg.Token)); // other sessions unaffected
+    }
+
+    [Fact]
+    public void Passwords_And_Tokens_Are_Never_Stored_In_Plaintext()
+    {
+        SessionInfo s = accounts.Register("secretkeeper", "very-secret-pass-1");
+        using var c = t.Db.Open();
+        string hash = Database.Scalar<string>(c, null, "SELECT password_hash FROM accounts");
+        Assert.StartsWith("pbkdf2-sha256$", hash);
+        Assert.DoesNotContain("very-secret-pass-1", hash);
+        Assert.Equal(0, Database.Scalar<long>(c, null, "SELECT COUNT(*) FROM sessions WHERE token_hash=$t", ("$t", s.Token)));
+        Assert.Equal(1, Database.Scalar<long>(c, null, "SELECT COUNT(*) FROM sessions WHERE token_hash=$t", ("$t", Crypto.Sha256(s.Token))));
+        foreach (string f in new[] { t.Path_, t.Path_ + "-wal" }.Where(File.Exists))
+        {
+            using var fs = new FileStream(f, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            using var ms = new MemoryStream();
+            fs.CopyTo(ms);
+            string raw = System.Text.Encoding.UTF8.GetString(ms.ToArray());
+            Assert.DoesNotContain("very-secret-pass-1", raw);
+            Assert.DoesNotContain(s.Token, raw);
+        }
+    }
+
+    [Fact]
+    public void Wrong_Password_Unknown_User_And_Duplicates_Fail()
+    {
+        accounts.Register("player01", "correct-horse-9");
+        Assert.Equal("credentials_invalid", Assert.Throws<GameError>(() => accounts.Login("player01", "wrong-horse-9")).Code);
+        Assert.Equal("credentials_invalid", Assert.Throws<GameError>(() => accounts.Login("nobody01", "correct-horse-9")).Code);
+        Assert.Equal("login_taken", Assert.Throws<GameError>(() => accounts.Register("PLAYER01", "another-pass-9")).Code);
+        Assert.Equal("password_weak", Assert.Throws<GameError>(() => accounts.Register("player02", "short")).Code);
+        Assert.Equal("password_weak", Assert.Throws<GameError>(() => accounts.Register("player03", "player03-pass")).Code);
+        Assert.Equal("login_invalid", Assert.Throws<GameError>(() => accounts.Register("người chơi", "correct-horse-9")).Code);
+    }
+
+    [Fact]
+    public void Expired_Session_Is_Rejected()
+    {
+        long now = Database.NowMs();
+        var clocked = new AccountService(t.Db, () => now);
+        SessionInfo s = clocked.Register("timetraveler", "tick-tock-clock-1");
+        now += (long)AccountService.SessionLifetime.TotalMilliseconds + 1;
+        Assert.Equal(401, Assert.Throws<GameError>(() => clocked.Authenticate(s.Token)).Status);
+    }
+
+    [Fact]
+    public void Four_Slots_Unique_Names_And_Ownership()
+    {
+        string a = accounts.Register("owner001", "owner-pass-001").AccountId;
+        string b = accounts.Register("owner002", "owner-pass-002").AccountId;
+
+        CharacterDto c0 = chars.Create(a, "Hùng Dũng", 0, 0);
+        Assert.Equal("Hùng Dũng", c0.characterName);
+        Assert.Equal(1, c0.level);
+        Assert.Equal(0, c0.gold);
+        chars.Create(a, "Mai Linh", 1, 1);
+        chars.Create(a, "Bóng Đêm", 2, 2);
+        chars.Create(a, "Mũi Tên", 3, 3);
+        Assert.Equal(4, chars.LoadProfile(a).characters.Length);
+        Assert.Equal("slot_invalid", Assert.Throws<GameError>(() => chars.Create(a, "Thứ Năm", 0, 4)).Code);
+        Assert.Equal("slot_taken", Assert.Throws<GameError>(() => chars.Create(a, "Thứ Năm", 0, 0)).Code);
+
+        Assert.Equal("name_taken", Assert.Throws<GameError>(() => chars.Create(b, "hùng dũng", 0, 0)).Code);
+        Assert.Equal("name_taken", Assert.Throws<GameError>(() => chars.Create(b, "HùngDũng", 0, 0)).Code);
+        Assert.Equal("name_reserved", Assert.Throws<GameError>(() => chars.Create(b, "GM Tèo", 0, 0)).Code);
+        Assert.Equal("class_invalid", Assert.Throws<GameError>(() => chars.Create(b, "Tèo Em", 7, 0)).Code);
+
+        // B cannot enter or progress A's character.
+        Assert.Equal(404, Assert.Throws<GameError>(() => chars.Enter(b, c0.characterId)).Status);
+        Assert.Equal(404, Assert.Throws<GameError>(() => chars.CompleteTutorialStep(b, c0.characterId, 0)).Status);
+        Assert.Equal(c0.characterId, chars.Enter(a, c0.characterId).characterId);
+    }
+
+    [Fact]
+    public void Tutorial_Progress_Is_Sequential_Persistent_And_Never_Resets()
+    {
+        string a = accounts.Register("learner01", "learner-pass-1").AccountId;
+        string id = chars.Create(a, "Tân Thủ", 0, 0).characterId;
+        Assert.Equal("tutorial_order", Assert.Throws<GameError>(() => chars.CompleteTutorialStep(a, id, 3)).Code);
+        for (int s = 0; s < CharacterService.TutorialSteps.Length; s++)
+            chars.CompleteTutorialStep(a, id, s);
+        CharacterDto done = chars.Enter(a, id);
+        Assert.True(done.tutorialCompleted);
+        // Replaying an old step (e.g. after reconnect) does not restart the tutorial.
+        Assert.True(chars.CompleteTutorialStep(a, id, 0).tutorialCompleted);
+        // A fresh service over the same DB file (server restart) sees the same state.
+        var restarted = new CharacterService(new Database(t.Path_), new NameRules());
+        Assert.True(restarted.Enter(a, id).tutorialCompleted);
+    }
+}
