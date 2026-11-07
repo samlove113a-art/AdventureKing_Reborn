@@ -243,7 +243,7 @@ namespace AdventureKing.Gameplay
                 if (existingCharacterDetails)
                     existingCharacterDetails.text = "Nhân vật: " + existing.characterName +
                         " | Lv." + existing.level + " | Skin: " +
-                        (string.IsNullOrEmpty(existing.appearance.equippedSkinId)
+                        (existing.appearance == null || string.IsNullOrEmpty(existing.appearance.equippedSkinId)
                             ? "Mặc định" : existing.appearance.equippedSkinId);
                 if (characterNameInput) characterNameInput.text = existing.characterName;
             }
@@ -365,6 +365,7 @@ namespace AdventureKing.Gameplay
             foreach (AdventureCharacterSnapshot character in profile.characters)
             {
                 if (character == null || character.slotIndex < 0 || character.slotIndex > 3 ||
+                    character.level < 1 || !Enum.IsDefined(typeof(HeroClass), character.heroClass) ||
                     string.IsNullOrWhiteSpace(character.characterId))
                     return false;
                 int flag = 1 << character.slotIndex;
