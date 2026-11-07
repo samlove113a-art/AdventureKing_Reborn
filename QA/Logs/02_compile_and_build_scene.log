@@ -1,0 +1,459 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 11516)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 15524)
+VBCSCompiler prewarm took 5.98 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-07T14:14:25Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 11572)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
+-batchmode
+-nographics
+-projectPath
+C:\AdventureKing_Reborn
+-executeMethod
+AdventureKing.QA.Editor.QaSceneBuilder.BuildFromCommandLine
+-logFile
+C:\AdventureKing_Reborn\QA\Logs\02_compile_and_build_scene.log
+Successfully changed project path to: C:\AdventureKing_Reborn
+C:/AdventureKing_Reborn
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [17072]  Target information:
+
+Player connection [17072]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 4229658682 [EditorId] 4229658682 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [17072] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [17072] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-07T14:14:25.5706793Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 11572, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              4d97bec32ed1437184b4b9ddbb5e853e
+  Correlation Id:          02a66053cf0719654b0e551ded288f5f
+  External correlation Id: 1764817567332865884
+  Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.13s, handshake: 0.07s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-07T14:14:25.7760134Z"
+[Licensing::Module] Connected to LicensingClient (PId: 11572, launch time: 0.00, total connection time: 0.77s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Package Manager] Connected to IPC stream "Upm-888" after 0.6 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968527504213-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.02
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.84s
+[Licensing::Module] Licensing is initialized (took 0.04s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/AdventureKing_RebornUnity Data Store running and initialised
+[Physics::Module] Selected backend (deferred post-plugins).
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.6.7f1 (b22767f04f04)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=262144, entitiesPerBlock=1024, blocksPerSlotPage=0, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/AdventureKing_Reborn/Assets
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56888
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.004909 seconds.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.397 seconds
+Domain Reload Profiling: 2432ms
+	BeginReloadAssembly (238ms)
+		CreateAndSetChildDomain (10ms)
+	RebuildCommonClasses (10ms)
+	RebuildNativeTypeToScriptingClass (46ms)
+	initialDomainReloadingComplete (135ms)
+	LoadAllAssembliesAndSetupDomain (604ms)
+		LoadAssemblies (225ms)
+		TypeCache.Refresh (416ms)
+			TypeCache.ScanAssembly (392ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (1398ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (4ms)
+			BeforeProcessingInitializeOnLoad (216ms)
+			ProcessInitializeOnLoadAttributes (243ms)
+			ProcessInitializeOnLoadMethodAttributes (562ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 17 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.inputsystem@1.20.1 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.inputsystem@2436e68c60c4)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.sprite@752945c75a6f)
+    com.unity.2d.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.tilemap@f4c7bd71ac8a)
+    com.unity.test-framework@1.8.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework@ee3fe9477490)
+    com.unity.ugui@2.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ugui@eb824e41fbc7)
+    com.unity.modules.animation@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.audio@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.imgui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.physics2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.modules.physics@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.ext.nunit@2.1.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 0s776ms
+[301/361    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[353/361    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll (+2 others)
+[355/361    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll, with 148 defines and 267 references
+
+processors: zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+[356/361    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll, with 146 defines and 304 references
+
+processors: zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+[357/361    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.pdb
+[358/361    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.dll
+*** Tundra build success (0.73 seconds), 6 items updated, 361 evaluated
+AssetDatabase: script compilation time: 1.466420s
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.175 seconds
+Domain Reload Profiling: 2583ms
+	BeginReloadAssembly (700ms)
+		DisableScriptedObjects (50ms)
+		CreateAndSetChildDomain (213ms)
+	RebuildCommonClasses (24ms)
+	RebuildNativeTypeToScriptingClass (43ms)
+	initialDomainReloadingComplete (85ms)
+	LoadAllAssembliesAndSetupDomain (553ms)
+		LoadAssemblies (488ms)
+		TypeCache.Refresh (68ms)
+			TypeCache.ScanAssembly (58ms)
+		AnalyzeDomain (27ms)
+			BuildScriptInfoCaches (21ms)
+			ResolveRequiredComponents (3ms)
+	FinalizeReload (1178ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (5ms)
+			BeforeProcessingInitializeOnLoad (257ms)
+			ProcessInitializeOnLoadAttributes (265ms)
+			ProcessInitializeOnLoadMethodAttributes (98ms)
+			AfterProcessingInitializeOnLoad (23ms)
+		AwakeInstancesAfterBackupRestoration (70ms)
+Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=90e26ae8a8d254d4f8198c8b9a6779c7): Total: 4.776 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=1475 ms
+		Asset DB Callback time: managed=283 ms, native=20 ms
+		Scripting: domain reloads=1, domain reload time=1486 ms, compile time=1475 ms, other=35 ms
+		Project Asset Count: scripts=320, non-scripts=412
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 16.500ms
+	ApplyChangesToAssetFolders: 0.443ms
+	Scan: 47.814ms
+	Collect global state as custom dependencies: 17.727ms
+	OnSourceAssetsModified: 0.965ms
+	CategorizeScriptCompilationAssets: 11.993ms
+	ProcessAssetsWithTransientArtifactChanges: 39.397ms
+	CategorizeAssets: 13.544ms
+	CompileScripts: 1475.168ms
+	ImportOutOfDateAssets: 1191.529ms (1180.428ms without children)
+		UnloadImportedAssets: 2.417ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.337ms
+		ImportSchedulerStart: 8.341ms
+	PostProcessAllAssets: 287.066ms
+		VCAutoAddAssetPostprocess 1.989ms
+		XRBuildSystem.XRAssetImported 0.193ms
+		PostProcessCallbackCreateDeferredMaterials 0.075ms
+		MonoPostProcessAllAssets: 282.934ms
+			AssetPostprocessor.OnPostprocessAllAssets 114.040ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 22.763ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 21.400ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 18.361ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 16.761ms
+			AssetChangedListener.OnPostprocessAllAssets 11.021ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 5.127ms
+			SyncVS.PostprocessSyncProject 4.989ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 4.219ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 2.476ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 1.246ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 1.154ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 1.139ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.870ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.868ms
+			AssetEvents.OnPostprocessAllAssets 0.720ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.645ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.638ms
+			AssetProcessor.OnPostprocessAllAssets 0.631ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.545ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.539ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.523ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.513ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.496ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.477ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.417ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.281ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.218ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.126ms
+	PostAssetChangesProfiler: 2.471ms
+	UnloadStreamsBegin: 3.119ms
+	GenerateScriptTypeHashes: 3.566ms
+	GenerateScriptTypeSerializationHashes: 7.438ms
+	Untracked: 1661.163ms
+
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 3.223ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-AdventureKing_Reborn
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 1421 unused Assets / (1.0 MB). Loaded Objects now: 2152.
+Memory consumption went from 245.2 MB to 244.2 MB.
+Total: 8.685000 ms (FindLiveObjects: 0.361800 ms CreateObjectMapping: 0.090900 ms MarkObjects: 7.404300 ms  DeleteObjects: 0.622600 ms)
+
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 5 unused Assets / (10.2 KB). Loaded Objects now: 2154.
+Memory consumption went from 244.0 MB to 243.9 MB.
+Total: 7.773300 ms (FindLiveObjects: 0.326300 ms CreateObjectMapping: 0.043100 ms MarkObjects: 7.133700 ms  DeleteObjects: 0.044900 ms)
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateGround (string,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Sprite,UnityEngine.Transform,bool) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:96)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:59)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 59]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateGround (string,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Sprite,UnityEngine.Transform,bool) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:96)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:60)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 60]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateGround (string,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Sprite,UnityEngine.Transform,bool) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:96)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:61)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 61]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateGround (string,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Sprite,UnityEngine.Transform,bool) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:96)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:62)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 62]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateWall (string,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Sprite,UnityEngine.Transform) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:106)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:63)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 63]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateWall (string,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Sprite,UnityEngine.Transform) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:106)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:64)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 64]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateLadder (UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Sprite) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:205)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:65)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 65]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreatePlayer (UnityEngine.Vector2,UnityEngine.Sprite,UnityEngine.PhysicsMaterial2D) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:147)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:68)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 68]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateEnemy (UnityEngine.Vector2,UnityEngine.Transform,UnityEngine.Sprite,bool) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:192)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:69)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 69]
+
+Sprite Tiling might not appear correctly because the Sprite used is not generated with Full Rect. To fix this, change the Mesh Type in the Sprite's import setting to Full Rect
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.SpriteRenderer:set_drawMode (UnityEngine.SpriteDrawMode)
+AdventureKing.QA.QaWorldFactory:AddVisual (UnityEngine.GameObject,UnityEngine.Sprite,UnityEngine.Color,UnityEngine.Vector2,int) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:75)
+AdventureKing.QA.QaWorldFactory:CreateNpc (UnityEngine.Vector2,UnityEngine.Sprite) (at Assets/QA_Internal/Scripts/QaWorldFactory.cs:221)
+AdventureKing.QA.Editor.QaSceneBuilder:Build () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:70)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:38)
+
+[Assets/QA_Internal/Editor/QaSceneBuilder.cs line 70]
+
+Curl error 35: Recv failure: Connection was reset
+Importing 'GUID: 0038f553d8b341e4e854152695c90fb3 - Path: Assets/QA_Internal/Scenes' with importer (DefaultImporter)
+Imported 'GUID: 0038f553d8b341e4e854152695c90fb3' -> (Import Result ID: '5a3ab7926ff36454cff5671d8a9204ff') in 0.006 seconds [static dependencies only]. Details - ImportResultOutputID=9d62534ae8db1588848e8a906668849b DependenciesID=e583cf63a37517d730ae8cffa721b480 StaticDependenciesID=0eef6d148e485154dd4c28641e042fd3 
+Importing 'GUID: 25a070aca69780841b8049b1cfeadb51 - Path: Assets/QA_Internal/Scenes/QA_GameplaySandbox.unity' with importer (DefaultImporter)
+Imported 'GUID: 25a070aca69780841b8049b1cfeadb51' -> (Import Result ID: 'eb438f6450fa5ee2ce4a9500e8161167') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=49cf349491fe755a9359c986ac7cb23a DependenciesID=1ee07f194eeccd33faa5a26b07f236b9 StaticDependenciesID=bf3b2b8302e3c1b721a815235dc4dd2f 
+Asset Pipeline Refresh (id=b59a2fa1d49de6643a53bdc30b5360de): Total: 0.046 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[QA] Sandbox scene generated: Assets/QA_Internal/Scenes/QA_GameplaySandbox.unity
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.QA.Editor.QaSceneBuilder:BuildFromCommandLine () (at Assets/QA_Internal/Editor/QaSceneBuilder.cs:39)
+
+(Filename: Assets/QA_Internal/Editor/QaSceneBuilder.cs Line: 39)
+
+MonoPathRemapper: Attempts to remap: 4918; Successful remaps: 0
+Serialized file version minimum: 23, current 23
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-PC-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-PC channel disconnected successfully.
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794060874655,"processId":888,"allocatedMemory":11747742,"memoryLabels":[{"Default":176707},{"Permanent":15516},{"NewDelete":68525},{"Thread":4198024},{"Manager":31197},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":835080},{"Material":132},{"GfxDevice":55968},{"Animation":952},{"Audio":984},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":16768},{"Input":42840},{"JobScheduler":256},{"TextLib":280},{"Mono":48},{"ScriptingNativeRuntime":1210712},{"BaseObject":49072},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":4416},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":454921},{"StaticString":3808},{"Utility":2673718},{"Curl":2696},{"PoolAlloc":2168},{"AI":80},{"TypeTree":17165},{"ScriptManager":12656},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":7296},{"WebRequest":629},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":592},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":103233},{"VersionControl":8},{"Undo":931},{"AssetDatabase":1198415},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":37018},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3614},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

@@ -1,0 +1,10 @@
+﻿{
+ "name": "Mage",
+ "glbs": ["ArtSource/Meshy/raw/mage_anim_a/animation_glb_url.glb", "ArtSource/Meshy/raw/mage_anim_b/animation_glb_url.glb"],
+ "out": "Assets/Art/Characters/Mage/Mage.fbx",
+ "weapons": [
+  {"name": "Staff_Starter", "glb": "ArtSource/Meshy/raw/staff_model/glb.glb", "axis": "x", "tip": "+", "grip": 0.55,
+   "length_m": 0.82, "bone": "RightHand", "socket": "Socket_R", "tip_dir": [0, -0.35, 1], "out": "Assets/Art/Weapons/Staff_Starter.fbx"}
+ ],
+ "qa_actions": ["Idle_02", "mage_soell_cast", "Charged_Spell_Cast", "Run_02"]
+}

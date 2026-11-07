@@ -1,0 +1,11 @@
+﻿{
+ "name": "Archer",
+ "glbs": ["ArtSource/Meshy/raw/archer_anim_a/animation_glb_url.glb", "ArtSource/Meshy/raw/archer_anim_b/animation_glb_url.glb"],
+ "out": "Assets/Art/Characters/Archer/Archer.fbx",
+ "weapons": [
+  {"name": "Bow_Starter", "glb": "ArtSource/Meshy/raw/bow_model/glb.glb", "axis": "z", "tip": "+", "grip": 0.5,
+   "length_m": 0.66, "bone": "LeftHand", "socket": "Socket_L", "tip_dir": [0, -1, 0], "face_dir": "shoulder", "roll": -90,
+   "out": "Assets/Art/Weapons/Bow_Starter.fbx"}
+ ],
+ "qa_actions": ["Idle_02", "Archery_Shot", "Archery_Shot_2", "Run_02"]
+}

@@ -3,7 +3,7 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
-[Ll]ogs/
+/[Ll]ogs/
 [Uu]ser[Ss]ettings/
 [Mm]emoryCaptures/
 .vs/
@@ -23,3 +23,23 @@
 *.p12
 *.pfx
 # Commit Unity .meta files: GUIDs must remain stable.
+
+# Meshy raw downloads (large; backed up outside the repo) and render scratch
+ArtSource/Meshy/raw/
+ArtSource/_render_tmp/
+
+# Python bytecode and Unity Test Runner temp scenes
+__pycache__/
+*.pyc
+Assets/InitTestScene*.unity
+Assets/InitTestScene*.unity.meta
+
+# Local game server: keep project files, never build output or live databases
+!Server/**/*.csproj
+!Server/*.sln
+Server/**/bin/
+Server/**/obj/
+Server/**/data/
+*.db
+*.db-shm
+*.db-wal

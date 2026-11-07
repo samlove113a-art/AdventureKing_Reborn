@@ -16,8 +16,11 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Transform visualRoot;
         [SerializeField] private Animator animator;
         [SerializeField, Min(0f)] private float turnSpeed = 16f;
-        [Tooltip("Yaw of the mesh while the character faces right. Author models consistently.")]
-        [SerializeField] private float rightFacingYaw = 0f;
+        [Tooltip("Yaw of the visual root while facing right. 90 = pure profile; >90 turns the face " +
+                 "slightly toward the camera. Facing left mirrors it (-yaw) so the face stays visible.")]
+        [SerializeField] private float rightFacingYaw = 110f;
+        [Tooltip("Yaw while on a ladder (0 = back to the camera, facing into the scene).")]
+        [SerializeField] private float climbingYaw = 0f;
 
         private static readonly int Speed = Animator.StringToHash("Speed");
         private static readonly int VerticalSpeed = Animator.StringToHash("VerticalSpeed");
@@ -26,6 +29,22 @@ namespace AdventureKing.Gameplay
         private static readonly int Attack = Animator.StringToHash("Attack");
         private static readonly int Hit = Animator.StringToHash("Hit");
         private static readonly int Dead = Animator.StringToHash("Dead");
+        private static readonly int Skill = Animator.StringToHash("Skill");
+
+        public Animator Animator => animator;
+
+        /// <summary>Starts the class skill animation; contact frames raise CharacterAnimationEvents.</summary>
+        public void PlaySkill()
+        {
+            if (animator && !(health && health.IsDead)) animator.SetTrigger(Skill);
+        }
+
+        /// <summary>Wires a visual prefab instantiated at runtime (e.g. from the selected class).</summary>
+        public void Bind(Transform root, Animator anim)
+        {
+            visualRoot = root;
+            animator = anim;
+        }
 
         private void Awake()
         {
@@ -61,7 +80,8 @@ namespace AdventureKing.Gameplay
 
             if (visualRoot)
             {
-                float yaw = rightFacingYaw + (motor.Facing < 0 ? 180f : 0f);
+                float yaw = motor.IsClimbing ? climbingYaw
+                    : motor.Facing < 0 ? -rightFacingYaw : rightFacingYaw;
                 Quaternion target = Quaternion.Euler(0f, yaw, 0f);
                 float factor = 1f - Mathf.Exp(-turnSpeed * Time.deltaTime);
                 visualRoot.localRotation = Quaternion.Slerp(visualRoot.localRotation, target, factor);

@@ -37,11 +37,19 @@ namespace AdventureKing.Gameplay
         [Header("Presentation")]
         [SerializeField, Range(0.1f, 2f)] private float degreesPerDragPixel = 0.55f;
         [SerializeField] private float defaultYaw = 0f;
+        [Tooltip("Projectile range multiplier in the hall so arrows/orbs land on the stage, not in the lens.")]
+        [SerializeField, Range(0.05f, 1f)] private float previewProjectileRange = 0.45f;
+        [Tooltip("Yaw used while previewing attacks/skills; matches CharacterVisual3D.rightFacingYaw in gameplay.")]
+        [SerializeField] private float combatPreviewYaw = 110f;
+        [SerializeField, Min(30f)] private float turnDegreesPerSecond = 540f;
 
         private GameObject activeModel;
         private Animator activeAnimator;
         private HeroPreview3DEntry activeEntry;
         private HeroClass? activeClass;
+
+        public HeroClass? ActiveClass => activeClass;
+        public GameObject ActiveModel => activeModel;
 
         private void Awake()
         {
@@ -91,6 +99,8 @@ namespace AdventureKing.Gameplay
             activeModel.transform.localRotation = Quaternion.Euler(0f, defaultYaw, 0f);
             activeModel.transform.localScale = Vector3.one;
             ApplyPreviewLayer(activeModel.transform);
+            HeroCombatPresentation presentation = activeModel.GetComponent<HeroCombatPresentation>();
+            if (presentation) presentation.ProjectileRangeScale = previewProjectileRange;
 
             activeAnimator = activeModel.GetComponentInChildren<Animator>(true);
             if (activeAnimator)
@@ -104,16 +114,48 @@ namespace AdventureKing.Gameplay
 
         public void PlayAttackPreview()
         {
-            if (activeEntry != null && TryPlay(activeEntry.attackState) &&
-                AdventureAudioDirector.Instance)
+            if (activeEntry == null) return;
+            TurnToCombatProfile(2.2f);
+            if (TryPlay(activeEntry.attackState) && AdventureAudioDirector.Instance)
                 AdventureAudioDirector.Instance.PlayClassAttack(activeEntry.heroClass);
         }
 
         public void PlaySkillPreview()
         {
-            if (activeEntry != null && TryPlay(activeEntry.skillState) &&
-                AdventureAudioDirector.Instance)
+            if (activeEntry == null) return;
+            TurnToCombatProfile(3.6f);
+            if (TryPlay(activeEntry.skillState) && AdventureAudioDirector.Instance)
                 AdventureAudioDirector.Instance.PlayClassSkillCast(activeEntry.heroClass);
+        }
+
+        // Attack/skill clips are authored for the in-game side view, so the hall shows them from that same
+        // profile (projectiles then cross the stage instead of flying into the lens), then turns back.
+        private float? targetYaw;
+        private float restoreYaw, restoreAt = -1f;
+
+        private void TurnToCombatProfile(float holdSeconds)
+        {
+            if (!activeModel) return;
+            if (restoreAt < 0f) restoreYaw = activeModel.transform.localEulerAngles.y;
+            targetYaw = combatPreviewYaw;
+            restoreAt = Time.time + holdSeconds;
+        }
+
+        private void Update()
+        {
+            if (!activeModel) return;
+            if (restoreAt >= 0f && Time.time >= restoreAt)
+            {
+                targetYaw = restoreYaw;
+                restoreAt = -1f;
+            }
+            if (targetYaw is float yaw)
+            {
+                float current = activeModel.transform.localEulerAngles.y;
+                float next = Mathf.MoveTowardsAngle(current, yaw, turnDegreesPerSecond * Time.deltaTime);
+                activeModel.transform.localRotation = Quaternion.Euler(0f, next, 0f);
+                if (Mathf.Abs(Mathf.DeltaAngle(next, yaw)) < 0.1f) targetYaw = null;
+            }
         }
 
         public void PlayIdlePreview()
@@ -123,6 +165,8 @@ namespace AdventureKing.Gameplay
 
         public void ResetRotation()
         {
+            targetYaw = null;
+            restoreAt = -1f;
             if (activeModel)
                 activeModel.transform.localRotation = Quaternion.Euler(0f, defaultYaw, 0f);
         }
@@ -134,6 +178,8 @@ namespace AdventureKing.Gameplay
         public void OnDrag(PointerEventData eventData)
         {
             if (!activeModel || eventData == null) return;
+            targetYaw = null; // the player's own rotation always wins over the automatic turn
+            restoreAt = -1f;
             float delta = eventData.delta.x * degreesPerDragPixel;
             activeModel.transform.Rotate(0f, -delta, 0f, Space.Self);
         }
@@ -155,6 +201,8 @@ namespace AdventureKing.Gameplay
         {
             if (activeModel) Destroy(activeModel);
             activeModel = null;
+            targetYaw = null;
+            restoreAt = -1f;
             activeAnimator = null;
             activeEntry = null;
         }

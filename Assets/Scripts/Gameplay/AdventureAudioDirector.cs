@@ -29,6 +29,8 @@ namespace AdventureKing.Gameplay
         public HeroClass heroClass;
         [Tooltip("Weapon swing sound at start/windup of the animation.")]
         public AudioClip attackWhoosh;
+        [Tooltip("Contact sound of the basic attack (melee connect / projectile arrival).")]
+        public AudioClip attackImpact;
         [Tooltip("Sound at the start of the unique class skill animation.")]
         public AudioClip skillCast;
         [Tooltip("Sound aligned with actual hit frame using animation events.")]
@@ -60,6 +62,10 @@ namespace AdventureKing.Gameplay
         private const string MusicVolumeKey = "AK_Option_MusicVolume";
         private const string AmbienceVolumeKey = "AK_Option_AmbienceVolume";
         private const string EffectsVolumeKey = "AK_Option_EffectsVolume";
+        private const string MutedKey = "AK_Option_Muted";
+        private bool muted;
+
+        public bool Muted => muted;
         private float musicVolume;
         private float ambienceVolume;
         private float effectsVolume;
@@ -95,6 +101,7 @@ namespace AdventureKing.Gameplay
             ambienceVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(AmbienceVolumeKey, 0.65f));
             effectsVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(EffectsVolumeKey, 0.85f));
             ApplyVolumes();
+            SetAllMuted(PlayerPrefs.GetInt(MutedKey, 0) == 1);
         }
 
         public void SetMusicVolume(float value)
@@ -121,11 +128,15 @@ namespace AdventureKing.Gameplay
             effectsSource.volume = effectsVolume;
         }
 
-        public void SetAllMuted(bool muted)
+        /// <summary>Mute is a saved preference (local option only; never part of character saves).</summary>
+        public void SetAllMuted(bool value)
         {
-            musicSource.mute = muted;
-            ambienceSource.mute = muted;
-            effectsSource.mute = muted;
+            muted = value;
+            musicSource.mute = value;
+            ambienceSource.mute = value;
+            effectsSource.mute = value;
+            PlayerPrefs.SetInt(MutedKey, value ? 1 : 0);
+            PlayerPrefs.Save();
         }
 
         private void ApplyVolumes()
@@ -199,6 +210,13 @@ namespace AdventureKing.Gameplay
         {
             HeroSoundSet sounds = FindClassSounds(heroClass);
             if (sounds != null) PlayEffect(sounds.attackWhoosh);
+        }
+
+        /// <summary>Call on actual contact (animation event / projectile arrival).</summary>
+        public void PlayClassAttackImpact(HeroClass heroClass)
+        {
+            HeroSoundSet sounds = FindClassSounds(heroClass);
+            if (sounds != null) PlayEffect(sounds.attackImpact);
         }
 
         public void PlayClassSkillCast(HeroClass heroClass)
