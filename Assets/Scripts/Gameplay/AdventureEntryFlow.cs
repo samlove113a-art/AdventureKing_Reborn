@@ -51,18 +51,25 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Text heroDescription;
         [SerializeField] private Text heroStats;
         [SerializeField] private InputField characterNameInput;
+        [SerializeField] private Text[] slotLabels = new Text[4];
+        [SerializeField] private Text existingCharacterDetails;
         [SerializeField] private HeroSelectionPreview3D heroPreview;
 
         [Header("Gameplay")]
         [SerializeField] private string gameplaySceneName = "MainGameScene";
 
         private IAdventureAccountService accounts;
+        private IAdventureProfileService profiles;
+        private AdventureAccountProfile loadedProfile;
         private bool busy, authenticated;
+        private int selectedSlotIndex;
         private HeroClass selectedClass = HeroClass.Swordsman;
         private EntryScreen screen;
 
         public EntryScreen CurrentScreen => screen;
         public HeroClass SelectedClass => selectedClass;
+        public AdventureAccountProfile LoadedProfile => loadedProfile;
+        public int SelectedSlotIndex => selectedSlotIndex;
 
         private void Awake()
         {
@@ -84,6 +91,13 @@ namespace AdventureKing.Gameplay
         public void SetAccountService(IAdventureAccountService service)
         {
             accounts = service;
+            // Production adapter should implement both authentication and profile APIs.
+            profiles = service as IAdventureProfileService;
+        }
+
+        public void SetProfileService(IAdventureProfileService service)
+        {
+            profiles = service;
         }
 
         public void SkipSplash()
@@ -138,7 +152,7 @@ namespace AdventureKing.Gameplay
                     // Provider adapter must marshal callback to Unity's main thread.
                     busy = false;
                     authenticated = success;
-                    if (success) Show(EntryScreen.CharacterSelection);
+                    if (success) LoadExistingCharacters();
                     else SetStatus(string.IsNullOrEmpty(message) ? "Đăng nhập thất bại." : message);
                 });
             }
@@ -168,11 +182,105 @@ namespace AdventureKing.Gameplay
                     "  |  DPS " + stats.NominalDamagePerSecond.ToString("0.0");
         }
 
+        /// <summary>
+        /// Called after a real account login. Existing characters are loaded from the
+        /// backend before any class/slot UI is shown. Client storage is NOT the save.
+        /// </summary>
+        public void LoadExistingCharacters()
+        {
+            if (!authenticated || busy) return;
+            if (profiles == null)
+            {
+                SetStatus("Máy chủ chưa hỗ trợ lưu nhân vật. Không thể tiếp tục.");
+                return;
+            }
+
+            busy = true;
+            SetStatus("Đang tải nhân vật đã lưu...");
+            try
+            {
+                profiles.LoadProfile((success, result, message) =>
+                {
+                    // Backend adapter must invoke on Unity's main thread.
+                    busy = false;
+                    if (!success || result == null || !IsValidProfile(result))
+                    {
+                        SetStatus(string.IsNullOrEmpty(message)
+                            ? "Không tải được dữ liệu nhân vật từ máy chủ." : message);
+                        return;
+                    }
+
+                    loadedProfile = result;
+                    selectedSlotIndex = FindInitialSlot(result);
+                    Show(EntryScreen.CharacterSelection);
+                    SelectSlot(selectedSlotIndex);
+                    RenderSlots();
+                });
+            }
+            catch (Exception ex)
+            {
+                busy = false;
+                SetStatus("Kết nối dữ liệu nhân vật thất bại.");
+                Debug.LogError("Profile fetch failed: " + ex.Message);
+            }
+        }
+
+        public void SelectSlot0() => SelectSlot(0);
+        public void SelectSlot1() => SelectSlot(1);
+        public void SelectSlot2() => SelectSlot(2);
+        public void SelectSlot3() => SelectSlot(3);
+
+        public void SelectSlot(int slotIndex)
+        {
+            if (!authenticated || loadedProfile == null || slotIndex < 0 || slotIndex > 3)
+                return;
+
+            selectedSlotIndex = slotIndex;
+            AdventureCharacterSnapshot existing = FindSlot(slotIndex);
+            if (existing != null)
+            {
+                SelectClass(existing.heroClass);
+                if (existingCharacterDetails)
+                    existingCharacterDetails.text = "Nhân vật: " + existing.characterName +
+                        " | Lv." + existing.level + " | Skin: " +
+                        (string.IsNullOrEmpty(existing.appearance.equippedSkinId)
+                            ? "Mặc định" : existing.appearance.equippedSkinId);
+                if (characterNameInput) characterNameInput.text = existing.characterName;
+            }
+            else
+            {
+                if (existingCharacterDetails)
+                    existingCharacterDetails.text = "Ô nhân vật trống — chọn nghề và đặt tên.";
+                if (characterNameInput) characterNameInput.text = "";
+            }
+
+            // Art integration: apply saved appearance IDs to the actual 3D preview model.
+            // ID strings alone do not mean skins/equipment are visually implemented.
+            RenderSlots();
+        }
+
+        public void EnterSelectedCharacter()
+        {
+            if (!authenticated || busy || profiles == null) return;
+            AdventureCharacterSnapshot chosen = FindSlot(selectedSlotIndex);
+            if (chosen == null)
+            {
+                SetStatus("Ô nhân vật này còn trống. Hãy tạo nhân vật trước.");
+                return;
+            }
+            EnterServerCharacter(chosen.characterId);
+        }
+
         public void CreateCharacterAndEnter()
         {
-            if (busy || !authenticated || accounts == null)
+            if (!authenticated || busy || profiles == null || loadedProfile == null)
             {
-                SetStatus("Bạn cần đăng nhập trên máy chủ trước khi tạo nhân vật.");
+                SetStatus("Cần kết nối máy chủ để tạo nhân vật.");
+                return;
+            }
+            if (FindSlot(selectedSlotIndex) != null)
+            {
+                SetStatus("Ô này đã có nhân vật. Chọn Vào game hoặc ô trống.");
                 return;
             }
             string name = characterNameInput ? characterNameInput.text.Trim() : "";
@@ -181,39 +289,125 @@ namespace AdventureKing.Gameplay
                 SetStatus("Tên nhân vật phải từ 3 đến 16 ký tự.");
                 return;
             }
+
             busy = true;
-            SetStatus("Đang tạo nhân vật...");
+            SetStatus("Đang tạo nhân vật trên máy chủ...");
             try
             {
-                accounts.CreateCharacter(name, selectedClass, (success, message) =>
+                profiles.CreateCharacter(name, selectedClass, selectedSlotIndex,
+                    (success, created, message) =>
+                    {
+                        busy = false;
+                        if (!success || created == null || string.IsNullOrWhiteSpace(created.characterId))
+                        {
+                            SetStatus(string.IsNullOrEmpty(message)
+                                ? "Không thể tạo nhân vật." : message);
+                            return;
+                        }
+                        // Enter only AFTER a verified server-created character is issued.
+                        EnterServerCharacter(created.characterId);
+                    });
+            }
+            catch (Exception ex)
+            {
+                busy = false;
+                SetStatus("Máy chủ không thể tạo nhân vật.");
+                Debug.LogError("CreateCharacter adapter failed: " + ex.Message);
+            }
+        }
+
+        private void EnterServerCharacter(string characterId)
+        {
+            if (!authenticated || profiles == null || busy || string.IsNullOrEmpty(characterId))
+                return;
+
+            busy = true;
+            SetStatus("Đang vào game với tiến trình đã lưu...");
+            try
+            {
+                profiles.EnterCharacter(characterId, (success, character, message) =>
                 {
                     busy = false;
-                    if (!success)
+                    if (!success || character == null ||
+                        character.characterId != characterId)
                     {
-                        SetStatus(string.IsNullOrEmpty(message) ?
-                            "Không thể tạo nhân vật." : message);
+                        SetStatus(string.IsNullOrEmpty(message)
+                            ? "Máy chủ không xác nhận nhân vật này." : message);
                         return;
                     }
+
                     if (string.IsNullOrWhiteSpace(gameplaySceneName) ||
                         !Application.CanStreamedLevelBeLoaded(gameplaySceneName))
                     {
                         SetStatus("Scene gameplay chưa được cấu hình trong Build Settings.");
                         return;
                     }
+
+                    AdventurePlayerSession.Activate(character);
                     SceneManager.LoadScene(gameplaySceneName);
                 });
             }
             catch (Exception ex)
             {
                 busy = false;
-                SetStatus("Tạo nhân vật thất bại. Kiểm tra kết nối.");
-                Debug.LogError("Adventure King character adapter failure: " + ex.Message);
+                SetStatus("Không thể tải tiến trình nhân vật.");
+                Debug.LogError("EnterCharacter adapter failed: " + ex.Message);
+            }
+        }
+
+        private static bool IsValidProfile(AdventureAccountProfile profile)
+        {
+            if (profile == null || profile.characters == null ||
+                profile.characters.Length > 4 || string.IsNullOrWhiteSpace(profile.accountId))
+                return false;
+
+            int usedSlots = 0;
+            foreach (AdventureCharacterSnapshot character in profile.characters)
+            {
+                if (character == null || character.slotIndex < 0 || character.slotIndex > 3 ||
+                    string.IsNullOrWhiteSpace(character.characterId))
+                    return false;
+                int flag = 1 << character.slotIndex;
+                if ((usedSlots & flag) != 0) return false;
+                usedSlots |= flag;
+            }
+            return true;
+        }
+
+        private static int FindInitialSlot(AdventureAccountProfile profile)
+        {
+            if (profile.characters.Length > 0)
+                return profile.characters[0].slotIndex;
+            return 0;
+        }
+
+        private AdventureCharacterSnapshot FindSlot(int slotIndex)
+        {
+            if (loadedProfile == null || loadedProfile.characters == null) return null;
+            foreach (AdventureCharacterSnapshot character in loadedProfile.characters)
+                if (character.slotIndex == slotIndex) return character;
+            return null;
+        }
+
+        private void RenderSlots()
+        {
+            if (slotLabels == null) return;
+            for (int i = 0; i < slotLabels.Length && i < 4; i++)
+            {
+                if (!slotLabels[i]) continue;
+                AdventureCharacterSnapshot character = FindSlot(i);
+                slotLabels[i].text = character == null ? "Ô " + (i + 1) + ": Trống" :
+                    "Ô " + (i + 1) + ": " + character.characterName +
+                    " • Lv." + character.level + " • " +
+                    HeroClassCatalog.Get(character.heroClass).displayName;
             }
         }
 
         public void BackToAuthentication()
         {
             authenticated = false;
+            loadedProfile = null;
+            AdventurePlayerSession.Clear();
             Show(EntryScreen.Authentication);
         }
 
