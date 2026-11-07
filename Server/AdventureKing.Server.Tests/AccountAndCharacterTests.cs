@@ -63,6 +63,10 @@ public class AccountAndCharacterTests : IDisposable
         Assert.Equal("password_weak", Assert.Throws<GameError>(() => accounts.Register("player02", "short")).Code);
         Assert.Equal("password_weak", Assert.Throws<GameError>(() => accounts.Register("player03", "player03-pass")).Code);
         Assert.Equal("login_invalid", Assert.Throws<GameError>(() => accounts.Register("người chơi", "correct-horse-9")).Code);
+        Assert.Equal("login_invalid", Assert.Throws<GameError>(() => accounts.Register("a@b@c.vn", "correct-horse-9")).Code);
+        Assert.Equal("login_invalid", Assert.Throws<GameError>(() => accounts.Register("player@nodot", "correct-horse-9")).Code);
+        string mail = accounts.Register("Hero.Mail+ak@Example.com", "mail-pass-777").AccountId;
+        Assert.Equal(mail, accounts.Login("hero.mail+ak@example.com", "mail-pass-777").AccountId);
     }
 
     [Fact]

@@ -44,6 +44,8 @@ namespace AdventureKing.Gameplay
         [SerializeField] private InputField passwordInput;
         [SerializeField] private InputField confirmPasswordInput;
         [SerializeField] private Text statusText;
+        [Tooltip("Status line on the hero hall (create/enter/name errors). Falls back to statusText.")]
+        [SerializeField] private Text selectionStatusText;
         [SerializeField] private GameObject registerFields;
 
         [Header("Four hero classes")]
@@ -433,7 +435,16 @@ namespace AdventureKing.Gameplay
 
         private void SetStatus(string message)
         {
-            if (statusText) statusText.text = message;
+            Text target = screen == EntryScreen.CharacterSelection && selectionStatusText ? selectionStatusText : statusText;
+            if (statusText && target != statusText) statusText.text = "";
+            if (target) target.text = message;
         }
+
+        /// <summary>Current status line shown to the player (for UI tests and accessibility readers).</summary>
+        public string StatusMessage =>
+            screen == EntryScreen.CharacterSelection && selectionStatusText ? selectionStatusText.text :
+            statusText ? statusText.text : "";
+
+        public bool Busy => busy;
     }
 }

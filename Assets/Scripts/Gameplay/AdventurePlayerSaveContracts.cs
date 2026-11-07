@@ -46,6 +46,10 @@ namespace AdventureKing.Gameplay
         public string lastSafeCheckpointId;
         public string lastMapId;
 
+        // Server-saved new-player tutorial progress (never restarts once completed).
+        public int tutorialStep;
+        public bool tutorialCompleted;
+
         // Server-issued revision and timestamp for conflict resolution / auditing.
         public long serverRevision;
         public long lastSavedUnixMilliseconds;

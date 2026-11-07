@@ -98,7 +98,7 @@ namespace AdventureKing.ArtPipeline
             R("splashRoot", splash); R("authRoot", auth); R("selectionRoot", selection);
             R("splashLogo", logo);
             R("accountInput", acc); R("passwordInput", pwd); R("confirmPasswordInput", confirm);
-            R("statusText", authStatus); R("registerFields", registerFields);
+            R("statusText", authStatus); R("selectionStatusText", selStatus); R("registerFields", registerFields);
             R("heroName", heroName); R("heroDescription", heroDesc); R("heroStats", heroStats);
             R("characterNameInput", charName); R("existingCharacterDetails", existing); R("heroPreview", preview);
             var sl = so.FindProperty("slotLabels");
@@ -106,6 +106,13 @@ namespace AdventureKing.ArtPipeline
             for (int i = 0; i < 4; i++) sl.GetArrayElementAtIndex(i).objectReferenceValue = slots[i];
             so.FindProperty("splashDurationSeconds").floatValue = 2.5f;
             so.ApplyModifiedPropertiesWithoutUndo();
+
+            // Composition root: the real local server (Server/AdventureKing.Server). If it is not running,
+            // every auth/profile call fails with a clear message — nothing is simulated.
+            var connection = canvasGo.AddComponent<AdventureServerConnection>();
+            var cso = new SerializedObject(connection);
+            cso.FindProperty("entryFlow").objectReferenceValue = flow;
+            cso.ApplyModifiedPropertiesWithoutUndo();
 
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
             EditorSceneManager.SaveScene(scene, ScenePath);

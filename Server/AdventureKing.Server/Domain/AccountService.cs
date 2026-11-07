@@ -32,12 +32,17 @@ public sealed class AccountService
         this.nowMs = nowMs ?? Database.NowMs;
     }
 
-    /// <summary>Login names: 3–24 chars, ASCII letters/digits/._- only (keeps logins unambiguous; display names live on characters).</summary>
+    /// <summary>
+    /// Login names or e-mail addresses: 3–64 chars, ASCII letters/digits and . _ - + @ only (keeps logins
+    /// unambiguous; display names with Vietnamese diacritics live on characters). At most one '@'.
+    /// </summary>
     public static string NormalizeLogin(string? login)
     {
         string l = (login ?? "").Trim().Normalize(NormalizationForm.FormKC).ToLowerInvariant();
-        if (l.Length < 3 || l.Length > 24 || !l.All(ch => (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch is '.' or '_' or '-'))
-            throw new GameError("login_invalid", "Tên đăng nhập 3–24 ký tự, chỉ gồm chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang.");
+        bool charsOk = l.All(ch => (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch is '.' or '_' or '-' or '+' or '@');
+        int at = l.Count(ch => ch == '@');
+        if (l.Length < 3 || l.Length > 64 || !charsOk || at > 1 || (at == 1 && (l.StartsWith('@') || l.EndsWith('@') || !l[(l.IndexOf('@') + 1)..].Contains('.'))))
+            throw new GameError("login_invalid", "Tên đăng nhập 3–64 ký tự (chữ không dấu, số, . _ - +) hoặc một địa chỉ email hợp lệ.");
         return l;
     }
 

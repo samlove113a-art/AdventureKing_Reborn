@@ -48,13 +48,23 @@ namespace AdventureKing.Tests
             if (director) Object.Destroy(director.gameObject); // DontDestroyOnLoad singleton
         }
 
-        private static T Find<T>(string name = null) where T : Component =>
+        internal static IEnumerator WaitIdle(AdventureEntryFlow flow, float seconds = 15f)
+        {
+            yield return null;
+            float end = Time.realtimeSinceStartup + seconds;
+            while (flow.Busy && Time.realtimeSinceStartup < end) yield return null;
+            Assert.IsFalse(flow.Busy, "request did not complete in time");
+        }
+
+        internal static T Find<T>(string name = null) where T : Component =>
             Object.FindObjectsByType<T>(FindObjectsInactive.Include).First(c => name == null || c.name == name);
 
         [UnityTest]
         public IEnumerator Login_Fails_Closed_Without_Backend()
         {
             var flow = Find<AdventureEntryFlow>();
+            // Point the real client at a port where nothing listens: every path must fail closed.
+            Find<AdventureServerConnection>().SetBaseUrl("http://127.0.0.1:9/api/v1");
             Assert.AreEqual(EntryScreen.Splash, flow.CurrentScreen);
             flow.SkipSplash();
             yield return null;
@@ -62,13 +72,16 @@ namespace AdventureKing.Tests
             Find<InputField>("AccountInput").text = "tester01";
             Find<InputField>("PasswordInput").text = "password123";
             flow.LoginPassword();
-            yield return null;
-            StringAssert.Contains("Chưa kết nối máy chủ", Find<Text>("AuthStatus").text);
+            yield return WaitIdle(flow);
+            StringAssert.Contains("Không kết nối được máy chủ", Find<Text>("AuthStatus").text);
             Assert.AreEqual(EntryScreen.Authentication, flow.CurrentScreen, "Must not reach selection without real auth");
             flow.ContinueWithGoogle();
+            yield return WaitIdle(flow);
+            Assert.AreEqual(EntryScreen.Authentication, flow.CurrentScreen, "Google login must not be faked");
             flow.ContinueWithFacebook();
-            yield return null;
-            Assert.AreEqual(EntryScreen.Authentication, flow.CurrentScreen, "Social login must not be faked");
+            yield return WaitIdle(flow);
+            Assert.AreEqual(EntryScreen.Authentication, flow.CurrentScreen, "Facebook login must not be faked");
+            Assert.IsFalse(Find<AdventureServerConnection>().HasSession);
         }
 
         [UnityTest]
