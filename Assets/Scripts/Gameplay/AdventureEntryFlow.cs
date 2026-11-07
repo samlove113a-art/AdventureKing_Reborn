@@ -51,6 +51,7 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Text heroDescription;
         [SerializeField] private Text heroStats;
         [SerializeField] private InputField characterNameInput;
+        [SerializeField] private HeroSelectionPreview3D heroPreview;
 
         [Header("Gameplay")]
         [SerializeField] private string gameplaySceneName = "MainGameScene";
@@ -157,6 +158,7 @@ namespace AdventureKing.Gameplay
         public void SelectClass(HeroClass heroClass)
         {
             selectedClass = heroClass;
+            if (heroPreview) heroPreview.ShowClass(heroClass);
             HeroClassStats stats = HeroClassCatalog.Get(heroClass);
             if (heroName) heroName.text = stats.displayName;
             if (heroDescription) heroDescription.text = stats.description;
