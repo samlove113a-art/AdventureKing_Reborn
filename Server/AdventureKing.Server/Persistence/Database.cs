@@ -69,6 +69,14 @@ public sealed class Database
             Exec(c, tx, Schema.V1);
             Exec(c, tx, "PRAGMA user_version=1;");
             tx.Commit();
+            version = 1;
+        }
+        if (version < 2)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V2);
+            Exec(c, tx, "PRAGMA user_version=2;");
+            tx.Commit();
         }
     }
 
@@ -101,6 +109,15 @@ public sealed class Database
 
 internal static class Schema
 {
+    public const int Current = 2;
+
+    // V2: last saved world position inside the current map (server-validated against map bounds).
+    public const string V2 = """
+    ALTER TABLE characters ADD COLUMN pos_x REAL NOT NULL DEFAULT 0;
+    ALTER TABLE characters ADD COLUMN pos_y REAL NOT NULL DEFAULT 0;
+    ALTER TABLE characters ADD COLUMN has_position INTEGER NOT NULL DEFAULT 0;
+    """;
+
     public const string V1 = """
     CREATE TABLE accounts (
         id              TEXT PRIMARY KEY,

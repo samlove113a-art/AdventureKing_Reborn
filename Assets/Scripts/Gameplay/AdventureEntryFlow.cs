@@ -73,11 +73,20 @@ namespace AdventureKing.Gameplay
         public AdventureAccountProfile LoadedProfile => loadedProfile;
         public int SelectedSlotIndex => selectedSlotIndex;
 
+        /// <summary>Set by the world when the player signs out, so the studio splash is not replayed.</summary>
+        internal static bool ReturningFromWorld;
+
         private void Awake()
         {
             if (splashLogo && officialAdventureKingLogo)
                 splashLogo.sprite = officialAdventureKingLogo;
-            Show(EntryScreen.Splash);
+            if (ReturningFromWorld)
+            {
+                ReturningFromWorld = false;
+                Show(EntryScreen.Authentication);
+                SetStatus("Đã lưu tiến trình và đăng xuất.");
+            }
+            else Show(EntryScreen.Splash);
         }
 
         private IEnumerator Start()

@@ -216,6 +216,9 @@ namespace AdventureKing.ArtPipeline
             ctrl.AddParameter("Skill", AnimatorControllerParameterType.Trigger);
             ctrl.AddParameter("Hit", AnimatorControllerParameterType.Trigger);
             ctrl.AddParameter("Dodge", AnimatorControllerParameterType.Trigger);
+            // Playback multipliers driven by real body speed (CharacterVisual3D + HeroMotionProfile).
+            ctrl.AddParameter(new AnimatorControllerParameter { name = "RunPlayback", type = AnimatorControllerParameterType.Float, defaultFloat = 1f });
+            ctrl.AddParameter(new AnimatorControllerParameter { name = "ClimbPlayback", type = AnimatorControllerParameterType.Float, defaultFloat = 1f });
 
             var clips = AssetDatabase.LoadAllAssetsAtPath(fbx).OfType<AnimationClip>()
                 .Where(c => !c.name.StartsWith("__preview__")).ToDictionary(c => c.name);
@@ -233,6 +236,10 @@ namespace AdventureKing.ArtPipeline
             }
             sm.defaultState = states["Idle"];
             AnimatorState idle = states["Idle"], run = states["Run"], jump = states["Jump"], fall = states["Fall"];
+            run.speedParameterActive = true;
+            run.speedParameter = "RunPlayback";
+            states["Climb"].speedParameterActive = true;
+            states["Climb"].speedParameter = "ClimbPlayback";
 
             Link(idle, run, 0.12f, ("Speed", AnimatorConditionMode.Greater, 0.25f), ("Grounded", AnimatorConditionMode.If, 0));
             Link(run, idle, 0.12f, ("Speed", AnimatorConditionMode.Less, 0.25f));
@@ -291,6 +298,38 @@ namespace AdventureKing.ArtPipeline
         }
 
         // ------------------------------------------------------------------ prefab
+        /// <summary>
+        /// Average backward speed of whichever foot is planted (lowest 20% of its height range) over the
+        /// in-place Run clip, at model scale 1 and 1x playback.
+        /// </summary>
+        internal static float MeasureStrideSpeed(GameObject model, AnimationClip run)
+        {
+            Animator anim = model.GetComponent<Animator>();
+            RuntimeAnimatorController keep = anim ? anim.runtimeAnimatorController : null;
+            if (anim) anim.runtimeAnimatorController = null;
+            Transform[] all = model.GetComponentsInChildren<Transform>();
+            Vector3 fwd = model.transform.forward; fwd.y = 0f; fwd.Normalize();
+            float scale = Mathf.Max(1e-4f, model.transform.lossyScale.y);
+            const int N = 120;
+            var speeds = new List<float>();
+            foreach (string footName in new[] { "RightFoot", "LeftFoot" })
+            {
+                Transform foot = all.FirstOrDefault(t => t.name.EndsWith(footName));
+                if (!foot) continue;
+                var pos = new Vector3[N];
+                for (int i = 0; i < N; i++) { run.SampleAnimation(model, run.length * i / N); pos[i] = foot.position; }
+                float minY = pos.Min(p => p.y), maxY = pos.Max(p => p.y);
+                float dt = run.length / N;
+                for (int i = 0; i < N; i++)
+                {
+                    if (pos[i].y > minY + (maxY - minY) * 0.2f) continue;
+                    speeds.Add(-Vector3.Dot(pos[(i + 1) % N] - pos[i], fwd) / dt / scale);
+                }
+            }
+            if (anim) anim.runtimeAnimatorController = keep;
+            return speeds.Count > 0 ? Mathf.Max(0.2f, speeds.Average()) : 1.4f;
+        }
+
         private static void BuildPrefab(HeroArtDefinitions.Hero h, string fbx, Material body,
             Dictionary<string, Material> weaponMats, AnimatorController controller)
         {
@@ -349,6 +388,18 @@ namespace AdventureKing.ArtPipeline
             so.FindProperty("weaponSocket").objectReferenceValue = mainSocket;
             so.ApplyModifiedPropertiesWithoutUndo();
             HeroVfxFactory.AssignClassEffects(pres, h.Class);
+
+            // Measure locomotion from this hero's own clips so playback can match real movement.
+            var motion = root.AddComponent<HeroMotionProfile>();
+            AnimationClip runClip = controller.animationClips.First(c => c.name == "Run");
+            AnimationClip climbClip = controller.animationClips.First(c => c.name == "Climb");
+            motion.runStrideSpeed = MeasureStrideSpeed(model, runClip);
+            HeroArtDefinitions.Clip climbDef = h.Clips.First(c => c.Name == "Climb");
+            motion.climbCycleSeconds = climbClip.length / Mathf.Max(0.05f, climbDef.Speed);
+            anim.runtimeAnimatorController = null;
+            controller.animationClips.First(c => c.name == "Idle").SampleAnimation(model, 0f);
+            anim.runtimeAnimatorController = controller;
+            Debug.Log($"[ART] {h.Class} run stride {motion.runStrideSpeed:0.00} m/s @1x, climb cycle {motion.climbCycleSeconds:0.00}s");
 
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath(h.Class));
             Object.DestroyImmediate(root);

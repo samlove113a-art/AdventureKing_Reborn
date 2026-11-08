@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using AdventureKing.Gameplay;
 using NUnit.Framework;
 using UnityEngine;
@@ -13,23 +14,23 @@ using Debug = UnityEngine.Debug;
 namespace AdventureKing.Tests
 {
     /// <summary>
-    /// End-to-end: the real AK_Entry UI talks over HTTP to the real local server process
-    /// (Server/AdventureKing.Server, built with `dotnet build`) using a throw-away SQLite database.
-    /// Register -> hero hall -> name validation by the server -> create -> enter -> server restart ->
-    /// login again -> the character is still there. Nothing is mocked.
+    /// End-to-end, nothing mocked: the real AK_Entry UI and AK_Village map talk over HTTP to the real local
+    /// server process (Server/AdventureKing.Server, built with `dotnet build`) using a throw-away SQLite file.
+    ///   open game -> register -> name refused/accepted by server -> enter map -> walk -> "Lưu & Thoát"
+    ///   -> server process restarted -> login -> enter -> same map, same position, same character.
     /// Ignored (not passed) when the server build or dotnet is missing.
     /// </summary>
     public sealed class ServerEndToEndTests
     {
-        private const string ScenePath = "Assets/Scenes/AK_Entry.unity";
+        private const string EntryPath = "Assets/Scenes/AK_Entry.unity";
         private const int Port = 5199;
         private Process server;
         private string dbDir;
-        private Scene scene;
 
         private static string ServerDll => Path.GetFullPath(Path.Combine(Application.dataPath, "..",
             "Server/AdventureKing.Server/bin/Debug/net8.0/AdventureKing.Server.dll"));
 
+        // ------------------------------------------------------------------ server process
         private IEnumerator StartServer()
         {
             if (!File.Exists(ServerDll)) Assert.Ignore("Server not built: run `dotnet build Server/AdventureKing.Server` first.");
@@ -71,33 +72,61 @@ namespace AdventureKing.Tests
             server = null;
         }
 
-        private IEnumerator LoadEntry()
+        // ------------------------------------------------------------------ scenes
+        /// <summary>"Open the game": a fresh entry scene, connection pointed at the test server.</summary>
+        private IEnumerator OpenGame()
         {
 #if UNITY_EDITOR
-            var op = UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(ScenePath,
-                new LoadSceneParameters(LoadSceneMode.Additive));
+            var op = UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(EntryPath,
+                new LoadSceneParameters(LoadSceneMode.Single));
             while (!op.isDone) yield return null;
-            scene = SceneManager.GetSceneByPath(ScenePath);
-            SceneManager.SetActiveScene(scene);
-            EntryLobbyTests.Find<AdventureServerConnection>().SetBaseUrl($"http://127.0.0.1:{Port}/api/v1");
-            EntryLobbyTests.Find<AdventureEntryFlow>().SkipSplash();
             yield return null;
+            AdventureServerConnection.Instance.SetBaseUrl($"http://127.0.0.1:{Port}/api/v1");
 #else
             Assert.Ignore("editor only");
             yield break;
 #endif
         }
 
-        private IEnumerator UnloadEntry()
+        /// <summary>Closes everything the game left behind (persistent singletons included).</summary>
+        internal static IEnumerator CloseGame()
         {
-            if (scene.IsValid() && scene.isLoaded)
+            Scene empty = SceneManager.CreateScene("EmptyAfterTest_" + Time.frameCount);
+            SceneManager.SetActiveScene(empty);
+            for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
             {
-                var op = SceneManager.UnloadSceneAsync(scene);
-                while (op != null && !op.isDone) yield return null;
+                Scene s = SceneManager.GetSceneAt(i);
+                if (s != empty && s.isLoaded) yield return SceneManager.UnloadSceneAsync(s);
             }
+            if (AdventureServerConnection.Instance) Object.Destroy(AdventureServerConnection.Instance.gameObject);
             var director = Object.FindAnyObjectByType<AdventureAudioDirector>();
             if (director) Object.Destroy(director.gameObject);
+            AdventurePlayerSession.Clear();
             yield return null;
+        }
+
+        private static IEnumerator WaitForScene(string name, float seconds = 20f)
+        {
+            float end = Time.realtimeSinceStartup + seconds;
+            while (SceneManager.GetActiveScene().name != name && Time.realtimeSinceStartup < end) yield return null;
+            Assert.AreEqual(name, SceneManager.GetActiveScene().name, "scene did not load");
+            yield return null;
+            yield return null;
+        }
+
+        private static AdventureEntryFlow Flow => Object.FindAnyObjectByType<AdventureEntryFlow>();
+        private static T Ui<T>(string name) where T : Component => EntryLobbyTests.Find<T>(name);
+
+        private static IEnumerator Login(string account, string password)
+        {
+            AdventureEntryFlow flow = Flow;
+            flow.SkipSplash();
+            yield return null;
+            Ui<InputField>("AccountInput").text = account;
+            Ui<InputField>("PasswordInput").text = password;
+            flow.LoginPassword();
+            yield return EntryLobbyTests.WaitIdle(flow);
+            Assert.AreEqual(EntryScreen.CharacterSelection, flow.CurrentScreen, "status: " + flow.StatusMessage);
         }
 
         [UnitySetUp]
@@ -111,70 +140,132 @@ namespace AdventureKing.Tests
         [UnityTearDown]
         public IEnumerator TearDown()
         {
-            yield return UnloadEntry();
+            yield return CloseGame();
             StopServer();
             try { Directory.Delete(dbDir, true); } catch (IOException) { }
         }
 
         [UnityTest]
-        public IEnumerator Register_Create_Enter_Then_Restart_And_Login_Keeps_Character()
+        public IEnumerator Login_Select_Enter_Map_Exit_Relogin_Keeps_Progress()
         {
-            yield return LoadEntry();
-            var flow = EntryLobbyTests.Find<AdventureEntryFlow>();
+            const string account = "e2e.hero@test.vn", password = "e2e-pass-2026";
 
-            // Register through the real auth UI.
+            // ---- 1. Open the game and register through the real auth UI.
+            yield return OpenGame();
+            AdventureEntryFlow flow = Flow;
+            Assert.AreEqual(EntryScreen.Splash, flow.CurrentScreen);
+            Assert.IsTrue(Ui<Image>("OfficialLogo").enabled && Ui<Image>("OfficialLogo").sprite, "owner logo on splash");
+            flow.SkipSplash();
+            yield return null;
             flow.SetRegisterMode(true);
-            EntryLobbyTests.Find<InputField>("AccountInput").text = "e2e.hero@test.vn";
-            EntryLobbyTests.Find<InputField>("PasswordInput").text = "e2e-pass-2026";
-            EntryLobbyTests.Find<InputField>("ConfirmPasswordInput").text = "e2e-pass-2026";
+            Ui<InputField>("AccountInput").text = account;
+            Ui<InputField>("PasswordInput").text = password;
+            Ui<InputField>("ConfirmPasswordInput").text = password;
             flow.RegisterPassword();
             yield return EntryLobbyTests.WaitIdle(flow);
             Assert.AreEqual(EntryScreen.CharacterSelection, flow.CurrentScreen, "status: " + flow.StatusMessage);
             Assert.AreEqual(0, flow.LoadedProfile.characters.Length);
 
-            // The server rejects impersonation names with a readable message on the hall.
+            // ---- 2. Choose class + name; the server refuses impersonation, accepts a Vietnamese name.
             flow.SelectSlot(0);
-            flow.SelectClass(HeroClass.Mage);
-            var nameInput = EntryLobbyTests.Find<InputField>("CharacterNameInput");
-            nameInput.text = "GM Pháp Sư";
+            flow.SelectClass(HeroClass.Archer);
+            var nameInput = Ui<InputField>("CharacterNameInput");
+            nameInput.text = "GM Cung Thủ";
             flow.CreateCharacterAndEnter();
             yield return EntryLobbyTests.WaitIdle(flow);
             StringAssert.Contains("giả mạo", flow.StatusMessage);
             Assert.AreEqual(EntryScreen.CharacterSelection, flow.CurrentScreen);
 
-            // Valid Vietnamese name: created and entered on the server.
-            nameInput.text = "Pháp Sư Mây";
+            nameInput.text = "Cung Thủ Gió";
             flow.CreateCharacterAndEnter();
-            yield return EntryLobbyTests.WaitIdle(flow);
-            // No gameplay scene is in Build Settings yet, so entry stops right after the server confirmed it.
-            StringAssert.Contains("Scene gameplay", flow.StatusMessage, "status: " + flow.StatusMessage);
 
-            // Restart the server process: data must come from the database, not memory.
-            yield return UnloadEntry();
+            // ---- 3. Enter the map with the real 3D hero of the chosen class.
+            yield return WaitForScene("AK_Village");
+            var world = Object.FindAnyObjectByType<AdventureWorldSession>();
+            Assert.IsNotNull(world);
+            Assert.AreEqual("Cung Thủ Gió", world.Character.characterName);
+            Assert.IsTrue(world.HeroModel, "hero model spawned");
+            StringAssert.StartsWith("Archer_Visual", world.HeroModel.name);
+            Assert.GreaterOrEqual(world.HeroModel.GetComponentsInChildren<SkinnedMeshRenderer>().Length, 2, "body + bow");
+            StringAssert.Contains("Cung Thủ Gió", Ui<Text>("CharacterName").text);
+            var input = Object.FindAnyObjectByType<PlayerInput2D>();
+            var motor = input.GetComponent<PlayerMotor2D>();
+            Vector2 spawn = motor.transform.position;
+
+            // ---- 4. Walk right for a while (same input path as the touch buttons).
+            yield return new WaitForSeconds(0.8f); // land on the ground first
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Right, true);
+            yield return new WaitForSeconds(1.4f);
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Right, false);
+            float settle = Time.realtimeSinceStartup + 3f;
+            while ((!motor.IsGrounded || Mathf.Abs(motor.Velocity.x) > 0.05f) && Time.realtimeSinceStartup < settle) yield return null;
+            Vector2 walked = motor.transform.position;
+            Assert.Greater(walked.x - spawn.x, 3f, "player did not move");
+            var animator = world.HeroModel.GetComponentInChildren<Animator>();
+            Assert.IsTrue(animator && animator.runtimeAnimatorController, "hero animator wired");
+
+            // ---- 5. "Lưu & Thoát": saved on the server, signed out, back at login.
+            world.ExitToLogin();
+            yield return WaitForScene("AK_Entry");
+            flow = Flow;
+            Assert.AreEqual(EntryScreen.Authentication, flow.CurrentScreen);
+            StringAssert.Contains("Đã lưu", Ui<Text>("AuthStatus").text);
+            Assert.IsFalse(AdventureServerConnection.Instance.HasSession, "signed out");
+            Assert.IsFalse(AdventurePlayerSession.IsActive);
+
+            // ---- 6. Restart the server process: everything must come back from the database.
+            yield return CloseGame();
             StopServer();
             yield return StartServer();
-            yield return LoadEntry();
-            flow = EntryLobbyTests.Find<AdventureEntryFlow>();
-            EntryLobbyTests.Find<InputField>("AccountInput").text = "e2e.hero@test.vn";
-            EntryLobbyTests.Find<InputField>("PasswordInput").text = "e2e-pass-2026";
-            flow.LoginPassword();
-            yield return EntryLobbyTests.WaitIdle(flow);
-            Assert.AreEqual(EntryScreen.CharacterSelection, flow.CurrentScreen, "status: " + flow.StatusMessage);
+            yield return OpenGame();
+
+            // ---- 7. Log in again and enter: same character, same map, same position.
+            yield return Login(account, password);
+            flow = Flow;
             Assert.AreEqual(1, flow.LoadedProfile.characters.Length);
             AdventureCharacterSnapshot saved = flow.LoadedProfile.characters[0];
-            Assert.AreEqual("Pháp Sư Mây", saved.characterName);
-            Assert.AreEqual(HeroClass.Mage, saved.heroClass);
-            Assert.AreEqual(0, saved.slotIndex);
-            Assert.AreEqual(1, saved.level);
-            StringAssert.Contains("Pháp Sư Mây", EntryLobbyTests.Find<Text>("ExistingDetails").text);
+            Assert.AreEqual("Cung Thủ Gió", saved.characterName);
+            Assert.AreEqual(HeroClass.Archer, saved.heroClass);
+            Assert.IsTrue(saved.hasPosition);
+            Assert.AreEqual("village_wind_bell", saved.lastMapId);
+            flow.EnterSelectedCharacter();
+            yield return WaitForScene("AK_Village");
+            yield return new WaitForSeconds(0.3f);
+            motor = Object.FindAnyObjectByType<PlayerMotor2D>();
+            Vector2 restored = motor.transform.position;
+            Assert.AreEqual(walked.x, restored.x, 0.2f, "x restored from server");
+            Assert.AreEqual(walked.y, restored.y, 0.3f, "y restored from server");
+            Assert.IsTrue(Object.FindAnyObjectByType<AdventureWorldSession>().HeroModel.name.StartsWith("Archer_Visual"));
 
-            // Wrong password after restart is still refused.
-            flow.BackToAuthentication();
-            EntryLobbyTests.Find<InputField>("PasswordInput").text = "not-the-password";
+            // ---- 8. A wrong password is still refused after all of this.
+            Object.FindAnyObjectByType<AdventureWorldSession>().ExitToLogin();
+            yield return WaitForScene("AK_Entry");
+            flow = Flow;
+            Ui<InputField>("AccountInput").text = account;
+            Ui<InputField>("PasswordInput").text = "not-the-password";
             flow.LoginPassword();
             yield return EntryLobbyTests.WaitIdle(flow);
             Assert.AreEqual(EntryScreen.Authentication, flow.CurrentScreen);
-            StringAssert.Contains("Sai tên đăng nhập hoặc mật khẩu", EntryLobbyTests.Find<Text>("AuthStatus").text);
+            StringAssert.Contains("Sai tên đăng nhập hoặc mật khẩu", Ui<Text>("AuthStatus").text);
+        }
+
+        [UnityTest]
+        public IEnumerator Opening_The_Map_Without_Login_Never_Invents_A_Character()
+        {
+#if UNITY_EDITOR
+            var op = UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/AK_Village.unity",
+                new LoadSceneParameters(LoadSceneMode.Single));
+            while (!op.isDone) yield return null;
+            yield return null;
+            var world = Object.FindAnyObjectByType<AdventureWorldSession>();
+            Assert.IsNull(world.Character);
+            Assert.IsFalse(world.HeroModel);
+            StringAssert.Contains("Chưa đăng nhập", world.Status);
+            yield return WaitForScene("AK_Entry", 5f);
+#else
+            Assert.Ignore("editor only");
+            yield break;
+#endif
         }
     }
 }

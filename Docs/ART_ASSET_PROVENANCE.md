@@ -31,7 +31,8 @@ Tự tạo hoàn toàn bằng code trong `Assets/Editor/ArtPipeline/HeroVfxFacto
 `AdventureKing/Toon`, `AdventureKing/VFX`, sprite bo góc và gradient của sảnh: tự viết/tự tạo trong repo.
 
 ## 6. Logo
-**Logo chính thức chưa có trong repo.** Màn Splash có ô `officialAdventureKingLogo` chờ file gốc do chủ dự án cung cấp; không tạo logo thay thế.
+- **Logo studio "SAM"** do chủ dự án cung cấp và phê duyệt (2026-11-08). File gốc: `ArtSource/Branding/SAM_logo_original.webp` (1254×1254, nền trong suốt); bản dùng trong Unity: `Assets/Art/Branding/SAM_Logo.png` (chuyển định dạng bằng `Tools/blender/convert_image.py`, không chỉnh sửa nội dung). Hiển thị ở màn Splash trên nền ngà sáng vì chữ "SAM" màu đen.
+- **Logo tựa game "Adventure King"**: chưa có. Không tự tạo; chờ chủ dự án.
 
 ## 7. Bên thứ ba khác
 Unity packages (URP, Input System, Test Framework, uGUI) theo giấy phép Unity Companion License của editor 6000.6.7f1. Font UI tạm dùng `LegacyRuntime.ttf` có sẵn của Unity — cần chọn font thương mại có giấy phép hỗ trợ tiếng Việt trước khi phát hành.

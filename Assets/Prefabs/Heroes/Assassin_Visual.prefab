@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5585570857095211442}
   - component: {fileID: 8447766990213864308}
+  - component: {fileID: 145211041049350845}
   m_Layer: 0
   m_Name: Assassin_Visual
   m_TagString: Untagged
@@ -58,6 +59,21 @@ MonoBehaviour:
   skillProjectileCount: 1
   skillSpreadDegrees: 0
   skillOffset: {x: 0, y: 0.55, z: 0.7}
+--- !u!114 &145211041049350845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289566011449692354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 324faf1ff990f994885192b9987c79ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.HeroMotionProfile
+  runStrideSpeed: 1.5480776
+  climbCycleSeconds: 1.2666668
+  climbAdvancePerCycle: 0.84
 --- !u!1001 &6415128063687298504
 PrefabInstance:
   m_ObjectHideFlags: 0

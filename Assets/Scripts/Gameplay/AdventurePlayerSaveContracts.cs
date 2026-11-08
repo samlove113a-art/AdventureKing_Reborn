@@ -45,6 +45,10 @@ namespace AdventureKing.Gameplay
         public AdventureQuestProgress[] quests = new AdventureQuestProgress[0];
         public string lastSafeCheckpointId;
         public string lastMapId;
+        // Server-validated last position inside lastMapId (only meaningful when hasPosition).
+        public float posX;
+        public float posY;
+        public bool hasPosition;
 
         // Server-saved new-player tutorial progress (never restarts once completed).
         public int tutorialStep;

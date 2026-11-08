@@ -108,6 +108,28 @@ public class AccountAndCharacterTests : IDisposable
     }
 
     [Fact]
+    public void Location_Is_Validated_Owned_And_Survives_Restart()
+    {
+        string a = accounts.Register("walker01", "walker-pass-1").AccountId;
+        string b = accounts.Register("walker02", "walker-pass-2").AccountId;
+        string id = chars.Create(a, "Lữ Khách", 3, 0).characterId;
+        Assert.False(chars.Enter(a, id).hasPosition);
+
+        CharacterDto saved = chars.SaveLocation(a, id, "village_wind_bell", 12.5f, 4.25f);
+        Assert.True(saved.hasPosition);
+        Assert.Equal("map_unknown", Assert.Throws<GameError>(() => chars.SaveLocation(a, id, "boss_room", 0, 0)).Code);
+        Assert.Equal("position_invalid", Assert.Throws<GameError>(() => chars.SaveLocation(a, id, "village_wind_bell", 9999f, 0)).Code);
+        Assert.Equal("position_invalid", Assert.Throws<GameError>(() => chars.SaveLocation(a, id, "village_wind_bell", float.NaN, 0)).Code);
+        Assert.Equal(404, Assert.Throws<GameError>(() => chars.SaveLocation(b, id, "village_wind_bell", 1, 1)).Status);
+
+        CharacterDto after = new CharacterService(new Database(t.Path_), new NameRules()).Enter(a, id);
+        Assert.Equal("village_wind_bell", after.lastMapId);
+        Assert.Equal(12.5f, after.posX);
+        Assert.Equal(4.25f, after.posY);
+        Assert.Equal(0, after.gold); // a position save never changes economy fields
+    }
+
+    [Fact]
     public void Tutorial_Progress_Is_Sequential_Persistent_And_Never_Resets()
     {
         string a = accounts.Register("learner01", "learner-pass-1").AccountId;

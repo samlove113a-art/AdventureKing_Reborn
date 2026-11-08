@@ -18,6 +18,9 @@ public sealed class CharacterDto
     public long diamonds { get; set; }
     public string lastMapId { get; set; } = "";
     public string lastSafeCheckpointId { get; set; } = "";
+    public float posX { get; set; }
+    public float posY { get; set; }
+    public bool hasPosition { get; set; }
     public int tutorialStep { get; set; }
     public bool tutorialCompleted { get; set; }
     public long serverRevision { get; set; }
@@ -92,6 +95,36 @@ public sealed class CharacterService
                ?? throw new GameError("character_not_found", "Không tìm thấy nhân vật thuộc tài khoản này.", 404);
     }
 
+    // ------------------------------------------------------------- world position
+    public sealed record WorldMap(string Id, string Name, float MinX, float MaxX, float MinY, float MaxY);
+
+    /// <summary>Maps the server knows. A client can only be saved inside one of these, inside its bounds.</summary>
+    public static readonly IReadOnlyDictionary<string, WorldMap> Maps = new Dictionary<string, WorldMap>
+    {
+        ["village_wind_bell"] = new("village_wind_bell", "Làng Chuông Gió", -40f, 80f, -6f, 30f),
+    };
+
+    /// <summary>
+    /// Saves where the character stands (autosave / leaving the map). Position is not an economic value, but it
+    /// is still validated: known map, finite numbers, inside the map bounds. Never touches level, gold or items.
+    /// </summary>
+    public CharacterDto SaveLocation(string accountId, string characterId, string? mapId, float x, float y)
+    {
+        if (mapId == null || !Maps.TryGetValue(mapId, out WorldMap? map))
+            throw new GameError("map_unknown", "Bản đồ không hợp lệ.");
+        if (!float.IsFinite(x) || !float.IsFinite(y) || x < map.MinX || x > map.MaxX || y < map.MinY || y > map.MaxY)
+            throw new GameError("position_invalid", "Vị trí nằm ngoài bản đồ.");
+        return db.InTransaction((c, tx) =>
+        {
+            int n = Database.Exec(c, tx, """
+                UPDATE characters SET map_id=$m, pos_x=$x, pos_y=$y, has_position=1, revision=revision+1, saved_ms=$t
+                WHERE id=$id AND account_id=$a
+                """, ("$m", mapId), ("$x", x), ("$y", y), ("$t", Database.NowMs()), ("$id", characterId), ("$a", accountId));
+            if (n == 0) throw new GameError("character_not_found", "Không tìm thấy nhân vật.", 404);
+            return Query(c, tx, "c.id=$id", ("$id", characterId)).Single();
+        });
+    }
+
     // ------------------------------------------------------------- tutorial (levels 1–15 chain)
     public static readonly string[] TutorialSteps =
     {
@@ -122,7 +155,8 @@ public sealed class CharacterService
     {
         using var cmd = Database.Command(c, tx, $"""
             SELECT c.id, c.name, c.slot_index, c.hero_class, c.level, c.experience, c.skill_points, c.gold, a.diamonds,
-                   c.map_id, c.checkpoint_id, c.tutorial_step, c.tutorial_done, c.revision, c.saved_ms
+                   c.map_id, c.checkpoint_id, c.tutorial_step, c.tutorial_done, c.revision, c.saved_ms,
+                   c.pos_x, c.pos_y, c.has_position
             FROM characters c JOIN accounts a ON a.id = c.account_id WHERE {where}
             """, args);
         using var r = cmd.ExecuteReader();
@@ -135,6 +169,7 @@ public sealed class CharacterService
                 diamonds = r.GetInt64(8), lastMapId = r.GetString(9), lastSafeCheckpointId = r.GetString(10),
                 tutorialStep = r.GetInt32(11), tutorialCompleted = r.GetInt64(12) != 0, serverRevision = r.GetInt64(13),
                 lastSavedUnixMilliseconds = r.GetInt64(14),
+                posX = (float)r.GetDouble(15), posY = (float)r.GetDouble(16), hasPosition = r.GetInt64(17) != 0,
             });
         return list;
     }

@@ -28,12 +28,28 @@ namespace AdventureKing.Gameplay
         private string sessionToken;
         private AdventureAccountProfile lastProfile;
 
+        /// <summary>Survives scene loads so the session follows the player from the hall into the world.</summary>
+        public static AdventureServerConnection Instance { get; private set; }
         public bool HasSession => !string.IsNullOrEmpty(sessionToken);
         public string BaseUrl => baseUrl;
 
         private void Awake()
         {
+            if (Instance && Instance != this)
+            {
+                // Returning to the entry scene: keep the live connection, hand it to the new flow.
+                if (entryFlow) entryFlow.SetAccountService(Instance);
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            if (transform.parent == null) DontDestroyOnLoad(gameObject);
             if (entryFlow) entryFlow.SetAccountService(this);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
         }
 
         /// <summary>For tests / launcher configuration. Only loopback or HTTPS URLs are accepted.</summary>
@@ -121,6 +137,15 @@ namespace AdventureKing.Gameplay
                 completed(ok, ok ? JsonUtility.FromJson<AdventureCharacterSnapshot>(json) : null, err));
         }
 
+        /// <summary>Saves the character's map and position; the server validates map and bounds.</summary>
+        public void SaveLocation(string characterId, string mapId, Vector2 position,
+            Action<bool, AdventureCharacterSnapshot, string> completed)
+        {
+            string body = JsonUtility.ToJson(new LocationBody { mapId = mapId, x = position.x, y = position.y });
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/location", body, true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<AdventureCharacterSnapshot>(json) : null, err));
+        }
+
         public void SignOut()
         {
             if (HasSession) Send("POST", "/auth/logout", "{}", true, (_, __, ___) => { });
@@ -173,6 +198,7 @@ namespace AdventureKing.Gameplay
         [Serializable] private sealed class CredentialsBody { public string account; public string password; }
         [Serializable] private sealed class SessionBody { public string token; public string accountId; public long expiresMs; }
         [Serializable] private sealed class CreateBody { public string characterName; public int heroClass; public int slotIndex; }
+        [Serializable] private sealed class LocationBody { public string mapId; public float x; public float y; }
         [Serializable] private sealed class ErrorBody { public string code; public string message; }
     }
 }

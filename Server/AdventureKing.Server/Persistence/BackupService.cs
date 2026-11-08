@@ -31,7 +31,7 @@ public static class BackupService
         string integrity = Database.Scalar<string>(c, null, "PRAGMA integrity_check;");
         if (integrity != "ok") throw new InvalidDataException("Backup integrity check failed: " + integrity);
         long version = Database.Scalar<long>(c, null, "PRAGMA user_version;");
-        if (version < 1 || version > 1) throw new InvalidDataException("Unsupported schema version " + version);
+        if (version < 1 || version > Schema.Current) throw new InvalidDataException("Unsupported schema version " + version);
         return Database.Scalar<long>(c, null, "SELECT COUNT(*) FROM accounts;");
     }
 

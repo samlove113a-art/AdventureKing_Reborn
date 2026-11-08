@@ -31,6 +31,13 @@ namespace AdventureKing.Gameplay
         private static readonly int Dead = Animator.StringToHash("Dead");
         private static readonly int Skill = Animator.StringToHash("Skill");
 
+        private static readonly int RunPlayback = Animator.StringToHash("RunPlayback");
+        private static readonly int ClimbPlayback = Animator.StringToHash("ClimbPlayback");
+        [Tooltip("Upper limit for Run playback speed (beyond this a little foot slide is preferred to frantic legs).")]
+        [SerializeField, Min(1f)] private float maxRunPlayback = 2.6f;
+        private HeroMotionProfile profile;
+        private bool hasRunPlayback, hasClimbPlayback;
+
         public Animator Animator => animator;
 
         /// <summary>Starts the class skill animation; contact frames raise CharacterAnimationEvents.</summary>
@@ -44,6 +51,40 @@ namespace AdventureKing.Gameplay
         {
             visualRoot = root;
             animator = anim;
+            CacheProfile();
+        }
+
+        private void CacheProfile()
+        {
+            profile = null;
+            if (visualRoot)
+            {
+                profile = visualRoot.GetComponentInParent<HeroMotionProfile>();
+                if (!profile) profile = visualRoot.GetComponentInChildren<HeroMotionProfile>();
+            }
+            hasRunPlayback = hasClimbPlayback = false;
+            if (!animator) return;
+            foreach (AnimatorControllerParameter p in animator.parameters)
+            {
+                if (p.nameHash == RunPlayback) hasRunPlayback = true;
+                if (p.nameHash == ClimbPlayback) hasClimbPlayback = true;
+            }
+        }
+
+        /// <summary>Run playback that makes the planted foot move exactly with the ground at this speed.</summary>
+        public float RunPlaybackFor(float horizontalSpeed)
+        {
+            if (!profile || !visualRoot) return 1f;
+            float stride = profile.runStrideSpeed * Mathf.Abs(visualRoot.lossyScale.y);
+            return stride > 0.01f ? Mathf.Clamp(horizontalSpeed / stride, 0.5f, maxRunPlayback) : 1f;
+        }
+
+        /// <summary>Climb playback that advances two rungs per cycle at this vertical speed (0 = hold still).</summary>
+        public float ClimbPlaybackFor(float verticalSpeed)
+        {
+            if (!profile) return 1f;
+            float perSecond = profile.climbAdvancePerCycle / Mathf.Max(0.05f, profile.climbCycleSeconds);
+            return Mathf.Clamp(Mathf.Abs(verticalSpeed) / perSecond, 0f, 3.5f);
         }
 
         private void Awake()
@@ -52,6 +93,7 @@ namespace AdventureKing.Gameplay
             if (!melee) melee = GetComponent<PlayerMelee2D>();
             if (!health) health = GetComponent<Health2D>();
             if (!animator && visualRoot) animator = visualRoot.GetComponentInChildren<Animator>();
+            CacheProfile();
         }
 
         private void OnEnable()
@@ -93,6 +135,8 @@ namespace AdventureKing.Gameplay
             animator.SetFloat(VerticalSpeed, motion.y);
             animator.SetBool(Grounded, motor.IsGrounded);
             animator.SetBool(Climbing, motor.IsClimbing);
+            if (hasRunPlayback) animator.SetFloat(RunPlayback, RunPlaybackFor(Mathf.Abs(motion.x)));
+            if (hasClimbPlayback) animator.SetFloat(ClimbPlayback, ClimbPlaybackFor(motion.y));
             if (health) animator.SetBool(Dead, health.IsDead);
         }
 

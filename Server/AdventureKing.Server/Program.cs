@@ -113,6 +113,8 @@ api.MapPost("/characters/name-check", (CreateCharacterDto body, NameRules names)
 });
 api.MapPost("/characters/{id}/enter", (string id, HttpContext ctx, AccountService accounts, CharacterService chars) =>
     chars.Enter(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/location", (string id, LocationDto body, HttpContext ctx, AccountService accounts, CharacterService chars) =>
+    chars.SaveLocation(accounts.Authenticate(Bearer(ctx)), id, body.mapId, body.x, body.y));
 api.MapPost("/characters/{id}/tutorial/{step:int}", (string id, int step, HttpContext ctx, AccountService accounts, CharacterService chars) =>
     chars.CompleteTutorialStep(accounts.Authenticate(Bearer(ctx)), id, step));
 
@@ -140,6 +142,7 @@ app.Run();
 public sealed class CredentialsDto { public string? account { get; set; } public string? password { get; set; } }
 public sealed class SessionDto { public string token { get; set; } = ""; public string accountId { get; set; } = ""; public long expiresMs { get; set; } }
 public sealed class CreateCharacterDto { public string? characterName { get; set; } public int heroClass { get; set; } public int slotIndex { get; set; } }
+public sealed class LocationDto { public string? mapId { get; set; } public float x { get; set; } public float y { get; set; } }
 public sealed class ErrorDto { public string code { get; set; } = ""; public string message { get; set; } = ""; }
 public sealed class CatalogDto { public bool paymentsEnabled { get; set; } public StorePackageDto[] packages { get; set; } = Array.Empty<StorePackageDto>(); }
 

@@ -39,13 +39,8 @@ namespace AdventureKing.Tests
         [UnityTearDown]
         public IEnumerator Unload()
         {
-            if (scene.IsValid() && scene.isLoaded)
-            {
-                var op = SceneManager.UnloadSceneAsync(scene);
-                while (op != null && !op.isDone) yield return null;
-            }
-            var director = Object.FindAnyObjectByType<AdventureAudioDirector>();
-            if (director) Object.Destroy(director.gameObject); // DontDestroyOnLoad singleton
+            // Also removes the DontDestroyOnLoad singletons (server connection, audio director).
+            yield return ServerEndToEndTests.CloseGame();
         }
 
         internal static IEnumerator WaitIdle(AdventureEntryFlow flow, float seconds = 15f)

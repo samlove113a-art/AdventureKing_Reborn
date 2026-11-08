@@ -42,12 +42,38 @@ namespace AdventureKing.ArtPipeline
             catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
-        public static void Build()
+        internal static Sprite PanelSprite => panelSprite;
+
+        internal static void InitUi()
         {
-            EnsureLayer();
             font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             panelSprite = RoundedSprite("ui_panel", 64, 18);
             pillSprite = RoundedSprite("ui_pill", 64, 30);
+        }
+
+        public const string LogoPath = "Assets/Art/Branding/SAM_Logo.png";
+
+        /// <summary>The owner-provided studio logo (SAM), imported as a crisp UI sprite.</summary>
+        internal static Sprite OwnerLogo()
+        {
+            if (!File.Exists(LogoPath)) return null;
+            var ti = (TextureImporter)AssetImporter.GetAtPath(LogoPath);
+            if (ti.textureType != TextureImporterType.Sprite || ti.mipmapEnabled || ti.maxTextureSize != 1024)
+            {
+                ti.textureType = TextureImporterType.Sprite;
+                ti.alphaIsTransparency = true;
+                ti.mipmapEnabled = false;
+                ti.maxTextureSize = 1024;
+                ti.textureCompression = TextureImporterCompression.CompressedHQ;
+                ti.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Sprite>(LogoPath);
+        }
+
+        public static void Build()
+        {
+            EnsureLayer();
+            InitUi();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             // ---------------------------------------------------------------- audio + input
@@ -83,10 +109,16 @@ namespace AdventureKing.ArtPipeline
             canvasGo.AddComponent<GraphicRaycaster>();
             var flow = canvasGo.AddComponent<AdventureEntryFlow>();
 
-            GameObject splash = Panel(canvasGo.transform, "SplashRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.04f, 0.05f, 0.08f, 1f), null);
-            var logo = Img(splash.transform, "OfficialLogo", new Vector2(0.5f, 0.5f), new Vector2(900, 420), Color.white, null);
+            // Studio splash: the owner-provided SAM logo (dark metal + black lettering) on a warm ivory field.
+            GameObject splash = Panel(canvasGo.transform, "SplashRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.965f, 0.955f, 0.935f, 1f), null);
+            Sprite ownerLogo = OwnerLogo();
+            var logo = Img(splash.transform, "OfficialLogo", new Vector2(0.5f, 0.52f), new Vector2(640, 640), Color.white, null);
+            logo.sprite = ownerLogo;
+            logo.type = Image.Type.Simple;
             logo.preserveAspect = true;
-            logo.enabled = false; // the owner-approved logo asset must be assigned; nothing is substituted
+            logo.enabled = ownerLogo; // never substituted: without the owner's file the splash stays plain
+            logo.gameObject.AddComponent<CanvasGroup>();
+            logo.gameObject.AddComponent<SplashLogoFade>();
 
             GameObject auth = BuildAuth(canvasGo.transform, out InputField acc, out InputField pwd, out InputField confirm, out Text authStatus, out GameObject registerFields, flow);
             GameObject selection = BuildSelection(canvasGo.transform, rt, previewCam, mount, flow, out HeroSelectionPreview3D preview,
@@ -96,7 +128,8 @@ namespace AdventureKing.ArtPipeline
             var so = new SerializedObject(flow);
             void R(string p, Object o) => so.FindProperty(p).objectReferenceValue = o;
             R("splashRoot", splash); R("authRoot", auth); R("selectionRoot", selection);
-            R("splashLogo", logo);
+            R("splashLogo", logo); R("officialAdventureKingLogo", ownerLogo);
+            so.FindProperty("gameplaySceneName").stringValue = VillageSceneBuilder.SceneName;
             R("accountInput", acc); R("passwordInput", pwd); R("confirmPasswordInput", confirm);
             R("statusText", authStatus); R("selectionStatusText", selStatus); R("registerFields", registerFields);
             R("heroName", heroName); R("heroDescription", heroDesc); R("heroStats", heroStats);
@@ -109,7 +142,8 @@ namespace AdventureKing.ArtPipeline
 
             // Composition root: the real local server (Server/AdventureKing.Server). If it is not running,
             // every auth/profile call fails with a clear message — nothing is simulated.
-            var connection = canvasGo.AddComponent<AdventureServerConnection>();
+            // Own root object: it is DontDestroyOnLoad so the session follows the player into the world.
+            var connection = new GameObject("ServerConnection").AddComponent<AdventureServerConnection>();
             var cso = new SerializedObject(connection);
             cso.FindProperty("entryFlow").objectReferenceValue = flow;
             cso.ApplyModifiedPropertiesWithoutUndo();
@@ -117,6 +151,7 @@ namespace AdventureKing.ArtPipeline
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
+            VillageSceneBuilder.RegisterBuildScenes();
             Debug.Log("[ENTRY] Scene built: " + ScenePath);
         }
 
@@ -464,7 +499,7 @@ namespace AdventureKing.ArtPipeline
             tm.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        private static Sprite RoundedSprite(string name, int size, int radius)
+        internal static Sprite RoundedSprite(string name, int size, int radius)
         {
             Directory.CreateDirectory(UiDir);
             string path = $"{UiDir}/{name}.png";
@@ -497,7 +532,7 @@ namespace AdventureKing.ArtPipeline
             r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one; r.offsetMin = r.offsetMax = Vector2.zero;
         }
 
-        private static GameObject Panel(Transform parent, string name, Vector2 aMin, Vector2 aMax, Vector2 pos, Vector2 size, Color c, Sprite s)
+        internal static GameObject Panel(Transform parent, string name, Vector2 aMin, Vector2 aMax, Vector2 pos, Vector2 size, Color c, Sprite s)
         {
             var go = new GameObject(name, typeof(RectTransform));
             go.layer = 5;
@@ -513,7 +548,7 @@ namespace AdventureKing.ArtPipeline
             return go;
         }
 
-        private static Image Img(Transform parent, string name, Vector2 anchor, Vector2 size, Color c, Sprite s)
+        internal static Image Img(Transform parent, string name, Vector2 anchor, Vector2 size, Color c, Sprite s)
         {
             var go = new GameObject(name, typeof(RectTransform));
             go.layer = 5;
@@ -529,7 +564,7 @@ namespace AdventureKing.ArtPipeline
             return img;
         }
 
-        private static Text Label(Transform parent, string name, string text, int size, Color c, Vector2 anchor, Vector2 pos, Vector2 box, FontStyle style = FontStyle.Normal)
+        internal static Text Label(Transform parent, string name, string text, int size, Color c, Vector2 anchor, Vector2 pos, Vector2 box, FontStyle style = FontStyle.Normal)
         {
             var go = new GameObject(name, typeof(RectTransform));
             go.layer = 5;
@@ -549,7 +584,7 @@ namespace AdventureKing.ArtPipeline
             return t;
         }
 
-        private static Button Btn(Transform parent, string name, string label, Vector2 pos, Vector2 size, Color bg, Color fg, Vector2? anchor = null)
+        internal static Button Btn(Transform parent, string name, string label, Vector2 pos, Vector2 size, Color bg, Color fg, Vector2? anchor = null)
         {
             var go = new GameObject(name, typeof(RectTransform));
             go.layer = 5;
