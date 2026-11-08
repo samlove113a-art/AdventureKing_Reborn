@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Text;
 using UnityEngine;
@@ -183,6 +183,29 @@ namespace AdventureKing.Gameplay
                 body, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<AdventureCharacterSnapshot>(json) : null, err));
         }
 
+        // ------------------------------------------------------------------ wardrobe / fashion shop
+        public void GetWardrobe(string characterId, Action<bool, WardrobeSnapshot, string> completed) =>
+            Send("GET", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/wardrobe", null, true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<WardrobeSnapshot>(json) : null, err));
+
+        /// <summary>
+        /// Buys one catalog item. <paramref name="requestId"/> identifies this purchase intent: reuse it when retrying
+        /// after a lost connection, so the server can answer with the original result instead of charging again.
+        /// The client sends no price and no balance: the server decides both.
+        /// </summary>
+        public void PurchaseCosmetic(string characterId, string itemId, string requestId, bool equip, Action<bool, WardrobeSnapshot, string, bool> completed)
+        {
+            string body = JsonUtility.ToJson(new PurchaseBody { itemId = itemId, requestId = requestId, equip = equip });
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/wardrobe/purchase", body, true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<WardrobeSnapshot>(json) : null, err, !ok && lastWasConnectionError));
+        }
+
+        public void EquipOutfit(string characterId, OutfitLoadout outfit, Action<bool, WardrobeSnapshot, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/wardrobe/equip", JsonUtility.ToJson(outfit ?? new OutfitLoadout()), true,
+                (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<WardrobeSnapshot>(json) : null, err));
+
+        private bool lastWasConnectionError;
+
         public void SignOut()
         {
             if (HasSession) Send("POST", "/auth/logout", "{}", true, (_, __, ___) => { });
@@ -211,6 +234,7 @@ namespace AdventureKing.Gameplay
             yield return req.SendWebRequest();
 
             string text = req.downloadHandler != null ? req.downloadHandler.text : null;
+            lastWasConnectionError = req.result == UnityWebRequest.Result.ConnectionError;
             if (req.result == UnityWebRequest.Result.ConnectionError)
             {
                 done(false, null, "Không kết nối được máy chủ trò chơi. Hãy bật server và thử lại.");
@@ -236,6 +260,7 @@ namespace AdventureKing.Gameplay
         [Serializable] private sealed class SessionBody { public string token; public string accountId; public long expiresMs; }
         [Serializable] private sealed class CreateBody { public string characterName; public int heroClass; public int slotIndex; }
         [Serializable] private sealed class LocationBody { public string mapId; public float x; public float y; }
+        [Serializable] private sealed class PurchaseBody { public string itemId; public string requestId; public bool equip; }
         [Serializable] private sealed class ErrorBody { public string code; public string message; }
     }
 }

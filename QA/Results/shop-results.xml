@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-08 13:35:36Z" end-time="2026-11-08 13:36:56Z" duration="79.5577582">
+  <test-suite type="TestSuite" id="1056" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="37" result="Passed" start-time="2026-11-08 13:35:36Z" end-time="2026-11-08 13:36:56Z" duration="79.557758" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1044" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-08 13:35:36Z" end-time="2026-11-08 13:36:56Z" duration="79.535949" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17776" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1045" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-08 13:35:36Z" end-time="2026-11-08 13:36:56Z" duration="79.534675" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1046" name="Tests" fullname="AdventureKing.Tests" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-08 13:35:36Z" end-time="2026-11-08 13:36:56Z" duration="79.534026" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1012" name="FashionShopTests" fullname="AdventureKing.Tests.FashionShopTests" classname="AdventureKing.Tests.FashionShopTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-08 13:35:36Z" end-time="2026-11-08 13:36:56Z" duration="79.531030" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1013" name="Merchant_TryOn_Buy_Wear_Survive_Relog_And_Restart" fullname="AdventureKing.Tests.FashionShopTests.Merchant_TryOn_Buy_Wear_Survive_Relog_And_Restart" methodname="Merchant_TryOn_Buy_Wear_Survive_Relog_And_Restart" classname="AdventureKing.Tests.FashionShopTests" runstate="Runnable" seed="1594380116" result="Passed" start-time="2026-11-08 13:35:37Z" end-time="2026-11-08 13:36:10Z" duration="33.336889" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[AdventureAudioDirector: missing authored music for Splash
+AdventureAudioDirector: missing authored music for Authentication
+AdventureAudioDirector: missing authored music for CharacterSelection
+[SHOP] merchant start: building UI
+[SHOP] building shop UI
+[SHOP] shop UI built
+[SHOP] merchant UI built
+AdventureAudioDirector: missing authored music for Village
+[SHOP] merchant tick f2760 player (0.00, 0.80, 0.00)
+[SHOP] merchant tick f2880 player (0.00, 0.80, 0.00)
+[SHOP] merchant tick f3000 player (0.00, 0.80, 0.00)
+[SHOP] merchant tick f3120 player (0.00, 0.80, 0.00)
+[SHOP] merchant tick f3240 player (0.00, 0.80, 0.00)
+[SHOP] merchant tick f3360 player (0.00, 0.80, 0.00)
+[SHOP] merchant tick f3480 player (0.00, 0.80, 0.00)
+[SHOP-TEST] step 1
+[SHOP] merchant tick f3600 player (-4.31, 0.80, 0.00)
+[SHOP] merchant tick f3720 player (-13.51, 0.80, 0.00)
+[SHOP] merchant tick f3840 player (-22.71, 0.80, 0.00)
+[SHOP-TEST] step 2
+[SHOP] merchant tick f3960 player (-28.43, 0.80, 0.00)
+[SHOP-TEST] step 3
+[SHOP] merchant tick f4080 player (-28.43, 0.80, 0.00)
+[SHOP-TEST] step 4
+[SHOP-TEST] step 5
+[SHOP-TEST] step 6
+[SHOP-TEST] step 7
+[SHOP-TEST] step 8
+[SHOP] merchant tick f4200 player (-28.43, 0.80, 0.00)
+[SHOP-TEST] step 9
+[SHOP-TEST] step 10
+AdventureAudioDirector: missing authored music for Authentication
+AdventureAudioDirector: missing authored music for Splash
+AdventureAudioDirector: missing authored music for Authentication
+AdventureAudioDirector: missing authored music for CharacterSelection
+[SHOP] merchant start: building UI
+[SHOP] building shop UI
+[SHOP] shop UI built
+[SHOP] merchant UI built
+AdventureAudioDirector: missing authored music for Village
+]]></output>
+            </test-case>
+            <test-case id="1014" name="Outfits_Follow_Every_State_On_All_Classes" fullname="AdventureKing.Tests.FashionShopTests.Outfits_Follow_Every_State_On_All_Classes" methodname="Outfits_Follow_Every_State_On_All_Classes" classname="AdventureKing.Tests.FashionShopTests" runstate="Runnable" seed="466481938" result="Passed" start-time="2026-11-08 13:36:10Z" end-time="2026-11-08 13:36:56Z" duration="46.172502" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

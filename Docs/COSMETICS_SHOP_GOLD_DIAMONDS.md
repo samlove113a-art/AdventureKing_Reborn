@@ -43,5 +43,8 @@ Approved by project owner 2026-11-07. This is a design/integration specification
 6. Bảo đảm license thương mại cho **tất cả** model/texture/SFX; không sao chép thương hiệu game/anime.
 7. Test Unity, backend persistence, cửa hàng, ngoại hình hero đang chuyển động và PC/Android. Chưa qua thử nghiệm thì phải báo là WIP.
 
-## Tình trạng hiện tại
-Đây chỉ là **yêu cầu và hướng tích hợp**. Code nền AdventurePlayerSaveContracts có inventory, ownedSkinIds và equipped appearance, nhưng chưa đầy đủ hệ thống slot mỹ phẩm + transaction server. Không có cam kết rằng vật phẩm/shop/art đã được dựng trong Unity. Cần Claude Code xây, tích hợp, kiểm thử thật và ghi bằng chứng.
+## Tình trạng hiện tại (cập nhật 2026-11-08 tối)
+Đã triển khai và kiểm thử: server tủ đồ/giao dịch (V3), 10 món Gold + 1 skin KC thật trên cả 4 nghề, NPC Chủ Tiệm Lụa, shop + phòng thử đồ 3D, khôi phục sau relog/khởi động lại server. Chi tiết, kết quả test và phần còn thiếu (tóc, vũ khí, giá chờ duyệt): `Docs/SESSION_HANDOFF.md` mục ★★★.
+
+### Ghi chú lịch sử
+Trước đây đây chỉ là **yêu cầu và hướng tích hợp**. Code nền AdventurePlayerSaveContracts có inventory, ownedSkinIds và equipped appearance, nhưng chưa đầy đủ hệ thống slot mỹ phẩm + transaction server. Không có cam kết rằng vật phẩm/shop/art đã được dựng trong Unity. Cần Claude Code xây, tích hợp, kiểm thử thật và ghi bằng chứng.

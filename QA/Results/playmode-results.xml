@@ -1,261 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<test-run id="2" testcasecount="35" result="Skipped:Ignored" total="35" passed="33" failed="0" inconclusive="0" skipped="2" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-08 10:03:37Z" end-time="2026-11-08 10:07:31Z" duration="233.7585712">
-  <test-suite type="TestSuite" id="1053" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="35" result="Skipped" label="Ignored" start-time="2026-11-08 10:03:37Z" end-time="2026-11-08 10:07:31Z" duration="233.758571" total="35" passed="33" failed="0" inconclusive="0" skipped="2" asserts="0">
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-08 14:01:59Z" end-time="2026-11-08 14:03:18Z" duration="79.255793">
+  <test-suite type="TestSuite" id="1056" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="37" result="Passed" start-time="2026-11-08 14:01:59Z" end-time="2026-11-08 14:03:18Z" duration="79.255793" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
     <properties>
       <property name="platform" value="PlayMode" />
     </properties>
-    <reason>
-      <message><![CDATA[One or more child tests were ignored]]></message>
-    </reason>
-    <test-suite type="Assembly" id="1041" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="31" result="Passed" start-time="2026-11-08 10:03:37Z" end-time="2026-11-08 10:07:31Z" duration="233.703256" total="31" passed="31" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <test-suite type="Assembly" id="1044" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-08 14:01:59Z" end-time="2026-11-08 14:03:18Z" duration="79.241363" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
       <properties>
-        <property name="_PID" value="10940" />
+        <property name="_PID" value="1800" />
         <property name="_APPDOMAIN" value="Unity Child Domain" />
         <property name="platform" value="PlayMode" />
         <property name="EditorOnly" value="False" />
       </properties>
-      <test-suite type="TestSuite" id="1042" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="31" result="Passed" start-time="2026-11-08 10:03:37Z" end-time="2026-11-08 10:07:31Z" duration="233.702330" total="31" passed="31" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <test-suite type="TestSuite" id="1045" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-08 14:01:59Z" end-time="2026-11-08 14:03:18Z" duration="79.239605" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
         <properties />
-        <test-suite type="TestSuite" id="1043" name="Tests" fullname="AdventureKing.Tests" runstate="Runnable" testcasecount="31" result="Passed" start-time="2026-11-08 10:03:37Z" end-time="2026-11-08 10:07:31Z" duration="233.701894" total="31" passed="31" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <test-suite type="TestSuite" id="1046" name="Tests" fullname="AdventureKing.Tests" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-08 14:01:59Z" end-time="2026-11-08 14:03:18Z" duration="79.238388" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
           <properties />
-          <test-suite type="TestFixture" id="1001" name="CombatAndInteractionTests" fullname="AdventureKing.Tests.CombatAndInteractionTests" classname="AdventureKing.Tests.CombatAndInteractionTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-08 10:03:37Z" end-time="2026-11-08 10:03:47Z" duration="9.675590" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <test-suite type="TestFixture" id="1038" name="ShopFashionTests" fullname="AdventureKing.Tests.ShopFashionTests" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-08 14:01:59Z" end-time="2026-11-08 14:03:18Z" duration="79.235354" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
             <properties />
-            <test-case id="1008" name="Camera_Follows_Smoothly_And_Converges" fullname="AdventureKing.Tests.CombatAndInteractionTests.Camera_Follows_Smoothly_And_Converges" methodname="Camera_Follows_Smoothly_And_Converges" classname="AdventureKing.Tests.CombatAndInteractionTests" runstate="Runnable" seed="340460579" result="Passed" start-time="2026-11-08 10:03:37Z" end-time="2026-11-08 10:03:40Z" duration="2.653331" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1004" name="Enemy_Ignores_Player_Outside_Detection_Range" fullname="AdventureKing.Tests.CombatAndInteractionTests.Enemy_Ignores_Player_Outside_Detection_Range" methodname="Enemy_Ignores_Player_Outside_Detection_Range" classname="AdventureKing.Tests.CombatAndInteractionTests" runstate="Runnable" seed="1952240" result="Passed" start-time="2026-11-08 10:03:40Z" end-time="2026-11-08 10:03:40Z" duration="0.605300" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1005" name="Enemy_Pursues_Hits_On_Cooldown_And_Stops_On_Death" fullname="AdventureKing.Tests.CombatAndInteractionTests.Enemy_Pursues_Hits_On_Cooldown_And_Stops_On_Death" methodname="Enemy_Pursues_Hits_On_Cooldown_And_Stops_On_Death" classname="AdventureKing.Tests.CombatAndInteractionTests" runstate="Runnable" seed="1464344175" result="Passed" start-time="2026-11-08 10:03:40Z" end-time="2026-11-08 10:03:45Z" duration="4.816129" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1006" name="Health_Faction_And_Self_Damage_Rules" fullname="AdventureKing.Tests.CombatAndInteractionTests.Health_Faction_And_Self_Damage_Rules" methodname="Health_Faction_And_Self_Damage_Rules" classname="AdventureKing.Tests.CombatAndInteractionTests" runstate="Runnable" seed="1220356074" result="Passed" start-time="2026-11-08 10:03:45Z" end-time="2026-11-08 10:03:45Z" duration="0.006389" asserts="0">
-              <properties>
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1002" name="Melee_Damages_Once_Per_Swing_Never_Player_And_Respects_Cooldown" fullname="AdventureKing.Tests.CombatAndInteractionTests.Melee_Damages_Once_Per_Swing_Never_Player_And_Respects_Cooldown" methodname="Melee_Damages_Once_Per_Swing_Never_Player_And_Respects_Cooldown" classname="AdventureKing.Tests.CombatAndInteractionTests" runstate="Runnable" seed="1569239230" result="Passed" start-time="2026-11-08 10:03:45Z" end-time="2026-11-08 10:03:46Z" duration="1.154205" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1007" name="Npc_Interact_Fires_Once_Per_Press_And_Ignores_Stale_Presses" fullname="AdventureKing.Tests.CombatAndInteractionTests.Npc_Interact_Fires_Once_Per_Press_And_Ignores_Stale_Presses" methodname="Npc_Interact_Fires_Once_Per_Press_And_Ignores_Stale_Presses" classname="AdventureKing.Tests.CombatAndInteractionTests" runstate="Runnable" seed="1402977604" result="Passed" start-time="2026-11-08 10:03:46Z" end-time="2026-11-08 10:03:47Z" duration="0.298726" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1003" name="Touch_Attack_Swings" fullname="AdventureKing.Tests.CombatAndInteractionTests.Touch_Attack_Swings" methodname="Touch_Attack_Swings" classname="AdventureKing.Tests.CombatAndInteractionTests" runstate="Runnable" seed="772813974" result="Passed" start-time="2026-11-08 10:03:47Z" end-time="2026-11-08 10:03:47Z" duration="0.119204" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1009" name="EntryLobbyTests" fullname="AdventureKing.Tests.EntryLobbyTests" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-08 10:03:47Z" end-time="2026-11-08 10:04:24Z" duration="37.617016" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1011" name="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" fullname="AdventureKing.Tests.EntryLobbyTests.Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" methodname="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="1674937265" result="Passed" start-time="2026-11-08 10:03:47Z" end-time="2026-11-08 10:04:18Z" duration="31.407431" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[AdventureAudioDirector: missing authored music for Splash
-AdventureAudioDirector: missing authored music for Authentication
-]]></output>
-            </test-case>
-            <test-case id="1010" name="Login_Fails_Closed_Without_Backend" fullname="AdventureKing.Tests.EntryLobbyTests.Login_Fails_Closed_Without_Backend" methodname="Login_Fails_Closed_Without_Backend" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="801868991" result="Passed" start-time="2026-11-08 10:04:18Z" end-time="2026-11-08 10:04:24Z" duration="6.206709" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[AdventureAudioDirector: missing authored music for Splash
-AdventureAudioDirector: missing authored music for Authentication
-]]></output>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1012" name="HeroFaceTests" fullname="AdventureKing.Tests.HeroFaceTests" classname="AdventureKing.Tests.HeroFaceTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-08 10:04:24Z" end-time="2026-11-08 10:04:41Z" duration="16.608974" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1013" name="Four_Heroes_Blink_And_Show_Expressions_Over_Idle" fullname="AdventureKing.Tests.HeroFaceTests.Four_Heroes_Blink_And_Show_Expressions_Over_Idle" methodname="Four_Heroes_Blink_And_Show_Expressions_Over_Idle" classname="AdventureKing.Tests.HeroFaceTests" runstate="Runnable" seed="404669705" result="Passed" start-time="2026-11-08 10:04:24Z" end-time="2026-11-08 10:04:41Z" duration="16.606788" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1014" name="HeroHandsTests" fullname="AdventureKing.Tests.HeroHandsTests" classname="AdventureKing.Tests.HeroHandsTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-08 10:04:41Z" end-time="2026-11-08 10:04:48Z" duration="6.783590" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1015" name="Fingers_Grip_Weapons_Rest_And_Close_On_Rungs" fullname="AdventureKing.Tests.HeroHandsTests.Fingers_Grip_Weapons_Rest_And_Close_On_Rungs" methodname="Fingers_Grip_Weapons_Rest_And_Close_On_Rungs" classname="AdventureKing.Tests.HeroHandsTests" runstate="Runnable" seed="428326910" result="Passed" start-time="2026-11-08 10:04:41Z" end-time="2026-11-08 10:04:48Z" duration="6.782206" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1016" name="HeroMotionTests" fullname="AdventureKing.Tests.HeroMotionTests" classname="AdventureKing.Tests.HeroMotionTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-08 10:04:48Z" end-time="2026-11-08 10:05:00Z" duration="12.188740" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1017" name="All_Gameplay_States_Reached_And_Captured" fullname="AdventureKing.Tests.HeroMotionTests.All_Gameplay_States_Reached_And_Captured" methodname="All_Gameplay_States_Reached_And_Captured" classname="AdventureKing.Tests.HeroMotionTests" runstate="Runnable" seed="983508141" result="Passed" start-time="2026-11-08 10:04:48Z" end-time="2026-11-08 10:04:59Z" duration="11.079379" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1018" name="Climb_Hands_Stay_On_Rungs" fullname="AdventureKing.Tests.HeroMotionTests.Climb_Hands_Stay_On_Rungs" methodname="Climb_Hands_Stay_On_Rungs" classname="AdventureKing.Tests.HeroMotionTests" runstate="Runnable" seed="396789997" result="Passed" start-time="2026-11-08 10:04:59Z" end-time="2026-11-08 10:04:59Z" duration="0.069740" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[Swordsman: grip frames 263, hand slide max 0.0 cm/frame (body rises 1.2), off rung height max 0.0 cm, off ladder plane max 0.0 cm
-Mage: grip frames 263, hand slide max 0.0 cm/frame (body rises 1.2), off rung height max 0.0 cm, off ladder plane max 0.0 cm
-Assassin: grip frames 251, hand slide max 0.0 cm/frame (body rises 1.2), off rung height max 0.0 cm, off ladder plane max 0.0 cm
-Archer: grip frames 251, hand slide max 0.0 cm/frame (body rises 1.2), off rung height max 0.0 cm, off ladder plane max 0.0 cm
-]]></output>
-            </test-case>
-            <test-case id="1019" name="Loops_Play_Without_Pops_Or_Hip_Jumps" fullname="AdventureKing.Tests.HeroMotionTests.Loops_Play_Without_Pops_Or_Hip_Jumps" methodname="Loops_Play_Without_Pops_Or_Hip_Jumps" classname="AdventureKing.Tests.HeroMotionTests" runstate="Runnable" seed="203438744" result="Passed" start-time="2026-11-08 10:04:59Z" end-time="2026-11-08 10:05:00Z" duration="1.037786" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[Swordsman Idle: joint step p90 0.4°, max 0.5°; hips max 0.06 cm/frame
-Swordsman Run: joint step p90 25.9°, max 40.7°; hips max 1.53 cm/frame
-Swordsman Climb: joint step p90 99.1°, max 135.1°; hips max 1.93 cm/frame
-Mage Idle: joint step p90 0.4°, max 0.4°; hips max 0.02 cm/frame
-Mage Run: joint step p90 26.3°, max 40.9°; hips max 1.72 cm/frame
-Mage Climb: joint step p90 79.7°, max 146.3°; hips max 2.18 cm/frame
-Assassin Idle: joint step p90 0.4°, max 0.5°; hips max 0.07 cm/frame
-Assassin Run: joint step p90 25.8°, max 40.8°; hips max 1.72 cm/frame
-Assassin Climb: joint step p90 69.4°, max 110.2°; hips max 2.20 cm/frame
-Archer Idle: joint step p90 0.4°, max 0.4°; hips max 0.01 cm/frame
-Archer Run: joint step p90 25.4°, max 41.0°; hips max 1.50 cm/frame
-Archer Climb: joint step p90 90.9°, max 163.9°; hips max 1.93 cm/frame
-]]></output>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1020" name="MovementTests" fullname="AdventureKing.Tests.MovementTests" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-08 10:05:00Z" end-time="2026-11-08 10:05:16Z" duration="16.426979" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1027" name="Buffered_Jump_Fires_On_Landing_Only_Within_Window" fullname="AdventureKing.Tests.MovementTests.Buffered_Jump_Fires_On_Landing_Only_Within_Window" methodname="Buffered_Jump_Fires_On_Landing_Only_Within_Window" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="1612938018" result="Passed" start-time="2026-11-08 10:05:00Z" end-time="2026-11-08 10:05:02Z" duration="2.462826" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1028" name="Coyote_Jump_Allowed_Briefly_After_Leaving_Ledge" fullname="AdventureKing.Tests.MovementTests.Coyote_Jump_Allowed_Briefly_After_Leaving_Ledge" methodname="Coyote_Jump_Allowed_Briefly_After_Leaving_Ledge" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="2006874522" result="Passed" start-time="2026-11-08 10:05:02Z" end-time="2026-11-08 10:05:03Z" duration="0.619778" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1029" name="Coyote_Jump_Rejected_After_Window" fullname="AdventureKing.Tests.MovementTests.Coyote_Jump_Rejected_After_Window" methodname="Coyote_Jump_Rejected_After_Window" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="119610133" result="Passed" start-time="2026-11-08 10:05:03Z" end-time="2026-11-08 10:05:04Z" duration="0.819816" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1023" name="Joystick_Moves_Ignores_Jitter_Second_Finger_And_Recentres" fullname="AdventureKing.Tests.MovementTests.Joystick_Moves_Ignores_Jitter_Second_Finger_And_Recentres" methodname="Joystick_Moves_Ignores_Jitter_Second_Finger_And_Recentres" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="293574144" result="Passed" start-time="2026-11-08 10:05:04Z" end-time="2026-11-08 10:05:05Z" duration="1.275356" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1024" name="Jump_Held_Is_Full_And_Tap_Is_Cut" fullname="AdventureKing.Tests.MovementTests.Jump_Held_Is_Full_And_Tap_Is_Cut" methodname="Jump_Held_Is_Full_And_Tap_Is_Cut" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="1667627204" result="Passed" start-time="2026-11-08 10:05:05Z" end-time="2026-11-08 10:05:07Z" duration="1.924303" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[fullRise=1.599 tapRise=0.263
-]]></output>
-            </test-case>
-            <test-case id="1025" name="Jump_Lands_On_Elevated_Platform" fullname="AdventureKing.Tests.MovementTests.Jump_Lands_On_Elevated_Platform" methodname="Jump_Lands_On_Elevated_Platform" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="2126904666" result="Passed" start-time="2026-11-08 10:05:07Z" end-time="2026-11-08 10:05:08Z" duration="1.120270" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1021" name="Keyboard_LeftRight_Moves_And_Never_Sticks" fullname="AdventureKing.Tests.MovementTests.Keyboard_LeftRight_Moves_And_Never_Sticks" methodname="Keyboard_LeftRight_Moves_And_Never_Sticks" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="524109746" result="Passed" start-time="2026-11-08 10:05:08Z" end-time="2026-11-08 10:05:10Z" duration="1.820925" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1030" name="Ladder_Climbs_Up_Down_And_Exit_Restores_Gravity" fullname="AdventureKing.Tests.MovementTests.Ladder_Climbs_Up_Down_And_Exit_Restores_Gravity" methodname="Ladder_Climbs_Up_Down_And_Exit_Restores_Gravity" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="681381618" result="Passed" start-time="2026-11-08 10:05:10Z" end-time="2026-11-08 10:05:12Z" duration="1.758408" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1031" name="Ladder_Jump_Off_And_Walk_Off_At_Floor" fullname="AdventureKing.Tests.MovementTests.Ladder_Jump_Off_And_Walk_Off_At_Floor" methodname="Ladder_Jump_Off_And_Walk_Off_At_Floor" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="188671210" result="Passed" start-time="2026-11-08 10:05:12Z" end-time="2026-11-08 10:05:13Z" duration="1.659756" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1026" name="No_Double_Jump_From_Ground_Probe_Overlap" fullname="AdventureKing.Tests.MovementTests.No_Double_Jump_From_Ground_Probe_Overlap" methodname="No_Double_Jump_From_Ground_Probe_Overlap" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="183155350" result="Passed" start-time="2026-11-08 10:05:13Z" end-time="2026-11-08 10:05:15Z" duration="1.139887" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1022" name="Touch_LeftRight_Releases_On_Up_Exit_And_Disable" fullname="AdventureKing.Tests.MovementTests.Touch_LeftRight_Releases_On_Up_Exit_And_Disable" methodname="Touch_LeftRight_Releases_On_Up_Exit_And_Disable" classname="AdventureKing.Tests.MovementTests" runstate="Runnable" seed="1538322299" result="Passed" start-time="2026-11-08 10:05:15Z" end-time="2026-11-08 10:05:16Z" duration="1.821908" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1032" name="QaSceneSmokeTests" fullname="AdventureKing.Tests.QaSceneSmokeTests" classname="AdventureKing.Tests.QaSceneSmokeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-08 10:05:16Z" end-time="2026-11-08 10:05:19Z" duration="2.791692" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1033" name="Sandbox_Runs_And_Is_Wired" fullname="AdventureKing.Tests.QaSceneSmokeTests.Sandbox_Runs_And_Is_Wired" methodname="Sandbox_Runs_And_Is_Wired" classname="AdventureKing.Tests.QaSceneSmokeTests" runstate="Runnable" seed="1612300708" result="Passed" start-time="2026-11-08 10:05:16Z" end-time="2026-11-08 10:05:17Z" duration="1.067380" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-            <test-case id="1034" name="Sandbox_Touch_Move_And_Npc_Dialog_Through_Real_UI_Handler" fullname="AdventureKing.Tests.QaSceneSmokeTests.Sandbox_Touch_Move_And_Npc_Dialog_Through_Real_UI_Handler" methodname="Sandbox_Touch_Move_And_Npc_Dialog_Through_Real_UI_Handler" classname="AdventureKing.Tests.QaSceneSmokeTests" runstate="Runnable" seed="1086832977" result="Passed" start-time="2026-11-08 10:05:17Z" end-time="2026-11-08 10:05:19Z" duration="1.723198" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1035" name="ServerEndToEndTests" fullname="AdventureKing.Tests.ServerEndToEndTests" classname="AdventureKing.Tests.ServerEndToEndTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-08 10:05:19Z" end-time="2026-11-08 10:05:29Z" duration="9.632793" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1036" name="Login_Select_Enter_Map_Exit_Relogin_Keeps_Progress" fullname="AdventureKing.Tests.ServerEndToEndTests.Login_Select_Enter_Map_Exit_Relogin_Keeps_Progress" methodname="Login_Select_Enter_Map_Exit_Relogin_Keeps_Progress" classname="AdventureKing.Tests.ServerEndToEndTests" runstate="Runnable" seed="393808636" result="Passed" start-time="2026-11-08 10:05:19Z" end-time="2026-11-08 10:05:26Z" duration="6.957529" asserts="0">
+            <test-case id="1039" name="Merchant_TryOn_Buy_Wear_Survive_Relog_And_Restart" fullname="AdventureKing.Tests.ShopFashionTests.Merchant_TryOn_Buy_Wear_Survive_Relog_And_Restart" methodname="Merchant_TryOn_Buy_Wear_Survive_Relog_And_Restart" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="1668282613" result="Passed" start-time="2026-11-08 14:01:59Z" end-time="2026-11-08 14:02:32Z" duration="33.032367" asserts="0">
               <properties>
                 <property name="_JOINTYPE" value="UnityCombinatorial" />
                 <property name="retryIteration" value="0" />
@@ -265,113 +27,34 @@ Archer Climb: joint step p90 90.9°, max 163.9°; hips max 1.93 cm/frame
 AdventureAudioDirector: missing authored music for Authentication
 AdventureAudioDirector: missing authored music for CharacterSelection
 AdventureAudioDirector: missing authored music for Village
+[SHOP-TEST] step 1
+[SHOP-TEST] step 2
+[SHOP-TEST] step 3
+[SHOP-TEST] step 4
+[SHOP-TEST] step 5
+[SHOP-TEST] step 6
+[SHOP-TEST] step 7
+[SHOP-TEST] step 8
+[SHOP-TEST] step 9
+[SHOP-TEST] step 10
 AdventureAudioDirector: missing authored music for Authentication
 AdventureAudioDirector: missing authored music for Splash
 AdventureAudioDirector: missing authored music for Authentication
 AdventureAudioDirector: missing authored music for CharacterSelection
 AdventureAudioDirector: missing authored music for Village
-AdventureAudioDirector: missing authored music for Authentication
 ]]></output>
             </test-case>
-            <test-case id="1037" name="Opening_The_Map_Without_Login_Never_Invents_A_Character" fullname="AdventureKing.Tests.ServerEndToEndTests.Opening_The_Map_Without_Login_Never_Invents_A_Character" methodname="Opening_The_Map_Without_Login_Never_Invents_A_Character" classname="AdventureKing.Tests.ServerEndToEndTests" runstate="Runnable" seed="325757372" result="Passed" start-time="2026-11-08 10:05:26Z" end-time="2026-11-08 10:05:29Z" duration="2.673875" asserts="0">
+            <test-case id="1040" name="Outfits_Follow_Every_State_On_All_Classes" fullname="AdventureKing.Tests.ShopFashionTests.Outfits_Follow_Every_State_On_All_Classes" methodname="Outfits_Follow_Every_State_On_All_Classes" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="113880694" result="Passed" start-time="2026-11-08 14:02:32Z" end-time="2026-11-08 14:03:18Z" duration="46.181754" asserts="0">
               <properties>
                 <property name="_JOINTYPE" value="UnityCombinatorial" />
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
               </properties>
-              <output><![CDATA[AdventureAudioDirector: missing authored music for Splash
-]]></output>
-            </test-case>
-          </test-suite>
-          <test-suite type="TestFixture" id="1038" name="TownHubTests" fullname="AdventureKing.Tests.TownHubTests" classname="AdventureKing.Tests.TownHubTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-08 10:05:29Z" end-time="2026-11-08 10:07:31Z" duration="121.973757" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
-            <properties />
-            <test-case id="1039" name="Town_Pc_Frame_Rate" fullname="AdventureKing.Tests.TownHubTests.Town_Pc_Frame_Rate" methodname="Town_Pc_Frame_Rate" classname="AdventureKing.Tests.TownHubTests" runstate="Runnable" seed="758221356" result="Passed" start-time="2026-11-08 10:05:29Z" end-time="2026-11-08 10:05:52Z" duration="22.918354" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[AdventureAudioDirector: missing authored music for Splash
-AdventureAudioDirector: missing authored music for Authentication
-AdventureAudioDirector: missing authored music for CharacterSelection
-AdventureAudioDirector: missing authored music for Village
-PC Editor Play Mode (batch) on this machine: 395 frames, avg 16.7 ms (60 FPS), p95 16.8 ms (60 FPS), worst 18.5 ms. Graphics: NVIDIA GeForce GTX 1050 Ti, CPU: Intel(R) Xeon(R) CPU E3-1230 v3 @ 3.30GHz. Not a player build; phone FPS NOT measured (no device).
-]]></output>
-            </test-case>
-            <test-case id="1040" name="Town_Run_Jump_Climb_Bridge_Portal_RoundTrip" fullname="AdventureKing.Tests.TownHubTests.Town_Run_Jump_Climb_Bridge_Portal_RoundTrip" methodname="Town_Run_Jump_Climb_Bridge_Portal_RoundTrip" classname="AdventureKing.Tests.TownHubTests" runstate="Runnable" seed="1352173587" result="Passed" start-time="2026-11-08 10:05:52Z" end-time="2026-11-08 10:07:31Z" duration="99.051884" asserts="0">
-              <properties>
-                <property name="_JOINTYPE" value="UnityCombinatorial" />
-                <property name="retryIteration" value="0" />
-                <property name="repeatIteration" value="0" />
-              </properties>
-              <output><![CDATA[AdventureAudioDirector: missing authored music for Splash
-AdventureAudioDirector: missing authored music for Authentication
-AdventureAudioDirector: missing authored music for CharacterSelection
-AdventureAudioDirector: missing authored music for Village
-Elder dialog: all 199 characters drawn in 940x160
-Elder dialog (phone): all 199 characters drawn in 940x160
-sign at x=-38: all 23 characters drawn in 161x184
-sign at x=59: all 30 characters drawn in 161x184
-sign at x=34: all 18 characters drawn in 161x184
-AdventureAudioDirector: missing authored music for Exploration
-AdventureAudioDirector: missing authored music for Village
+              <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
 ]]></output>
             </test-case>
           </test-suite>
         </test-suite>
-      </test-suite>
-    </test-suite>
-    <test-suite type="Assembly" id="1049" name="Unity.InputSystem.IntegrationTests.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/Unity.InputSystem.IntegrationTests.dll" runstate="Runnable" testcasecount="4" result="Skipped" label="Ignored" start-time="2026-11-08 10:07:31Z" end-time="2026-11-08 10:07:31Z" duration="0.041864" total="4" passed="2" failed="0" inconclusive="0" skipped="2" asserts="0">
-      <properties>
-        <property name="_PID" value="10940" />
-        <property name="_APPDOMAIN" value="Unity Child Domain" />
-        <property name="platform" value="PlayMode" />
-        <property name="EditorOnly" value="False" />
-      </properties>
-      <reason>
-        <message><![CDATA[One or more child tests were ignored]]></message>
-      </reason>
-      <test-suite type="TestFixture" id="1044" name="IntegrationTests" fullname="IntegrationTests" classname="IntegrationTests" runstate="Runnable" testcasecount="4" result="Skipped" label="Ignored" start-time="2026-11-08 10:07:31Z" end-time="2026-11-08 10:07:31Z" duration="0.040927" total="4" passed="2" failed="0" inconclusive="0" skipped="2" asserts="0">
-        <properties />
-        <reason>
-          <message><![CDATA[One or more child tests were ignored]]></message>
-        </reason>
-        <test-case id="1046" name="Integration_CanChangeInputBackendPlayerSettingInEditor" fullname="IntegrationTests.Integration_CanChangeInputBackendPlayerSettingInEditor" methodname="Integration_CanChangeInputBackendPlayerSettingInEditor" classname="IntegrationTests" runstate="Runnable" seed="1357487274" result="Passed" start-time="2026-11-08 10:07:31Z" end-time="2026-11-08 10:07:31Z" duration="0.004391" asserts="0">
-          <properties>
-            <property name="Category" value="Integration" />
-            <property name="retryIteration" value="0" />
-            <property name="repeatIteration" value="0" />
-          </properties>
-        </test-case>
-        <test-case id="1045" name="Integration_CanSendAndReceiveEvents" fullname="IntegrationTests.Integration_CanSendAndReceiveEvents" methodname="Integration_CanSendAndReceiveEvents" classname="IntegrationTests" runstate="Runnable" seed="874712229" result="Passed" start-time="2026-11-08 10:07:31Z" end-time="2026-11-08 10:07:31Z" duration="0.014011" asserts="0">
-          <properties>
-            <property name="Category" value="Integration" />
-            <property name="retryIteration" value="0" />
-            <property name="repeatIteration" value="0" />
-          </properties>
-        </test-case>
-        <test-case id="1048" name="WindowsInput_MouseMovements_AreDetected" fullname="IntegrationTests.WindowsInput_MouseMovements_AreDetected" methodname="WindowsInput_MouseMovements_AreDetected" classname="IntegrationTests" runstate="Ignored" seed="2143675670" result="Skipped" label="Ignored" start-time="2026-11-08 10:07:31Z" end-time="2026-11-08 10:07:31Z" duration="0.000270" asserts="0">
-          <properties>
-            <property name="_JOINTYPE" value="UnityCombinatorial" />
-            <property name="Category" value="Integration" />
-            <property name="_SKIPREASON" value="Unstable due to 1252825" />
-          </properties>
-          <reason>
-            <message><![CDATA[Unstable due to 1252825]]></message>
-          </reason>
-        </test-case>
-        <test-case id="1047" name="WindowsInput_RemoteDesktopMouseMovements_AreDetected" fullname="IntegrationTests.WindowsInput_RemoteDesktopMouseMovements_AreDetected" methodname="WindowsInput_RemoteDesktopMouseMovements_AreDetected" classname="IntegrationTests" runstate="Ignored" seed="629883991" result="Skipped" label="Ignored" start-time="2026-11-08 10:07:31Z" end-time="2026-11-08 10:07:31Z" duration="0.000002" asserts="0">
-          <properties>
-            <property name="_JOINTYPE" value="UnityCombinatorial" />
-            <property name="Category" value="Integration" />
-            <property name="_SKIPREASON" value="Unstable due to 1252825" />
-          </properties>
-          <reason>
-            <message><![CDATA[Unstable due to 1252825]]></message>
-          </reason>
-          <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
-]]></output>
-        </test-case>
       </test-suite>
     </test-suite>
   </test-suite>

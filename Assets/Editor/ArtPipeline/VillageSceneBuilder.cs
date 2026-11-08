@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AdventureKing.Gameplay;
@@ -115,7 +115,8 @@ namespace AdventureKing.ArtPipeline
             foreach (var p in TownLayout.Hub.Portals) Portal(play, p);
             PlaceNpc(play, "NpcElder", "Trưởng Làng", 7f, 0f);
             PlaceNpc(play, "NpcSmith", "Thợ Rèn", -46f, 0f);
-            PlaceNpc(play, "NpcStorekeeper", "Thủ Kho", -40f, 4.5f);
+            // The storekeeper model now runs the fashion stall at the market (Chợ Phiên), in front of the stall prop.
+            PlaceNpc(play, "NpcStorekeeper", "Chủ Tiệm Lụa", -30f, 0f);
 
             FinishWorld(scene, ScenePath, world, TownLayout.Hub.MapId, TownLayout.Hub.DisplayName, TownLayout.Hub.Spawn,
                 TownLayout.Hub.MinX, TownLayout.Hub.MaxX, 14f, AdventureMusicStage.Village);
@@ -236,6 +237,7 @@ namespace AdventureKing.ArtPipeline
                 gso.FindProperty("continueButton").objectReferenceValue = cont;
                 gso.ApplyModifiedPropertiesWithoutUndo();
             }
+            SetupFashionShop(hud);
             var sfx = hud.AddComponent<AudioSource>();
             sfx.playOnAwake = false;
             sfx.spatialBlend = 0f;
@@ -876,10 +878,10 @@ namespace AdventureKing.ArtPipeline
         }
 
         // ================================================================== NPCs
-        private static void PlaceNpc(Transform play, string prefabName, string displayName, float x, float y)
+        private static GameObject PlaceNpc(Transform play, string prefabName, string displayName, float x, float y)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(NpcArtPipeline.PrefabPath(prefabName));
-            if (!prefab) { Debug.LogWarning("[WORLD] NPC prefab missing: " + prefabName); return; }
+            if (!prefab) { Debug.LogWarning("[WORLD] NPC prefab missing: " + prefabName); return null; }
             var npc = (GameObject)PrefabUtility.InstantiatePrefab(prefab, play);
             npc.name = prefabName;
             npc.transform.position = new Vector3(x, y, 0.7f); // just behind the walking line: the player passes in front
@@ -898,6 +900,54 @@ namespace AdventureKing.ArtPipeline
                 new Color(0.08f, 0.1f, 0.18f, 0.78f), EntrySceneBuilder.PanelSprite);
             EntrySceneBuilder.Label(bg.transform, "Name", displayName, 30, new Color(1f, 0.86f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero,
                 new Vector2(290f, 50f), FontStyle.Bold);
+            return npc;
+        }
+
+        /// <summary>
+        /// Fashion shop: the market-stall merchant (the existing storekeeper NPC model) gets a talk prompt and the
+        /// shop/wardrobe UI. The UI itself is built at runtime from the house UI kit assigned here.
+        /// </summary>
+        private static void SetupFashionShop(GameObject hud)
+        {
+            NpcActor npc = Object.FindObjectsByType<NpcActor>(FindObjectsInactive.Include).FirstOrDefault(a => a.name == "NpcStorekeeper");
+            if (!npc) return;
+            EnsureLayer(30, "Preview3D");
+            var shopGo = new GameObject("FashionShop");
+            var shop = shopGo.AddComponent<FashionShopUI>();
+            var so = new SerializedObject(shop);
+            so.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf");
+            so.FindProperty("boldFont").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            so.FindProperty("panelSprite").objectReferenceValue = EntrySceneBuilder.PanelSprite;
+            so.FindProperty("enamelSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_enamel.png");
+            so.FindProperty("rimSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_gilded_rim.png");
+            so.FindProperty("pillSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_pill.png");
+            so.FindProperty("frameSprite").objectReferenceValue = EntrySceneBuilder.FramePanelSprite;
+            so.FindProperty("previewLayer").intValue = 30;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            // "E · Nói chuyện" bubble above the name plate (world space; shown only while the hero is in range)
+            var promptGo = new GameObject("TalkPrompt", typeof(RectTransform));
+            promptGo.transform.SetParent(npc.transform, false);
+            promptGo.transform.localPosition = new Vector3(0f, 1.55f, -0.3f);
+            var canvas = promptGo.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.sortingOrder = 41;
+            var rt = (RectTransform)promptGo.transform;
+            rt.sizeDelta = new Vector2(300f, 54f);
+            rt.localScale = Vector3.one * (0.0062f / HeroScale);
+            var bg = EntrySceneBuilder.Panel(promptGo.transform, "Bubble", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
+                new Color(0.26f, 0.56f, 0.62f, 0.92f), EntrySceneBuilder.PanelSprite);
+            EntrySceneBuilder.Rim(bg.transform);
+            EntrySceneBuilder.Label(bg.transform, "Text", "E · Nói chuyện", 28, Color.white, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(290f, 50f), FontStyle.Bold);
+            promptGo.SetActive(false);
+
+            var merchant = npc.gameObject.AddComponent<FashionMerchant>();
+            var mso = new SerializedObject(merchant);
+            mso.FindProperty("actor").objectReferenceValue = npc;
+            mso.FindProperty("shop").objectReferenceValue = shop;
+            mso.FindProperty("worldPrompt").objectReferenceValue = promptGo;
+            mso.FindProperty("displayName").stringValue = "Chủ Tiệm Lụa";
+            mso.ApplyModifiedPropertiesWithoutUndo();
         }
 
         public const string PropDir = WorldDir + "/Town/Props";

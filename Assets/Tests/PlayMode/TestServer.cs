@@ -104,6 +104,16 @@ namespace AdventureKing.Tests
             yield return WaitForScene(TownLayout.Hub.Scene);
         }
 
+        /// <summary>Waits for a scene by name only (e.g. back at AK_Entry after "Lưu & Thoát").</summary>
+        public static IEnumerator WaitForSceneName(string name, float seconds = 20f)
+        {
+            float end = Time.realtimeSinceStartup + seconds;
+            while (SceneManager.GetActiveScene().name != name && Time.realtimeSinceStartup < end) yield return null;
+            Assert.AreEqual(name, SceneManager.GetActiveScene().name, "scene did not load");
+            yield return null;
+            yield return null;
+        }
+
         public static IEnumerator WaitForScene(string name, float seconds = 25f)
         {
             float end = Time.realtimeSinceStartup + seconds;

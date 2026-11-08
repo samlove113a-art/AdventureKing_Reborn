@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace AdventureKing.Gameplay
@@ -31,6 +31,8 @@ namespace AdventureKing.Gameplay
 
         // Real equipped cosmetics and ownership are server validated.
         public AdventureCharacterAppearance appearance = new AdventureCharacterAppearance();
+        // Worn outfit as the server validated it (wardrobe slots + optional premium set).
+        public OutfitLoadout outfit = new OutfitLoadout();
         public AdventureItemStack[] inventory = new AdventureItemStack[0];
         public AdventureEquippedItem[] equipment = new AdventureEquippedItem[0];
         public string[] ownedSkinIds = new string[0];
@@ -71,6 +73,36 @@ namespace AdventureKing.Gameplay
         public string weaponVisualId;
         public string wingId;
         public string nameplateId;
+    }
+
+    /// <summary>One catalog row as the server sends it: names, prices and ownership are server data, never client data.</summary>
+    [Serializable]
+    public sealed class WardrobeItem
+    {
+        public string id, name, description, slot, kind, currency;
+        public long price;
+        public int[] classes = new int[0];
+        public bool owned, equipped, usableByCharacter;
+        public bool IsSet => kind == "cosmetic_set";
+        public bool ForDiamonds => currency == "diamonds";
+    }
+
+    /// <summary>Server-confirmed wardrobe state of one character (after load, purchase or equip).</summary>
+    [Serializable]
+    public sealed class WardrobeSnapshot
+    {
+        public int catalogVersion;
+        public string characterId;
+        public int heroClass;
+        public long gold, diamonds, serverRevision;
+        public WardrobeItem[] items = new WardrobeItem[0];
+        public string[] owned = new string[0];
+        public OutfitLoadout outfit = new OutfitLoadout();
+        public string purchaseId;
+        public bool replayed;
+
+        public bool Owns(string id) => Array.IndexOf(owned, id) >= 0;
+        public WardrobeItem Find(string id) => Array.Find(items, i => i.id == id);
     }
 
     [Serializable]

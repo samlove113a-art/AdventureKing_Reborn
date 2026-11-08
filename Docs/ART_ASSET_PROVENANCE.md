@@ -50,6 +50,9 @@ Số dư sau toàn bộ phiên 2026-11-08: **931 credit** (không mua thêm).
 ## Lớp biểu cảm khuôn mặt, ngói, dây, đèn (2026-11-08, đợt A2)
 Tự tạo hoàn toàn trong repo, không tài nguyên bên ngoài, **0 credit Meshy**: lớp mặt shader (`AK_Toon.shader` `_FACE`, `HeroFaceRig.cs`, `HeroFaceImport.cs`, `HeroFace.cs`) đo từ texture gốc của chính 4 nhân vật; ngói âm dương, đầu đao, dây cầu treo, đá bờ suối dựng bằng mã (`WorldKit.cs`); lõi khối đất cắt từ model Meshy đã có; hào quang đèn lồng dùng texture `soft_dot.png` tự tạo; clip leo tại chỗ dẫn xuất từ animation Meshy đã có (`InPlace/ClimbBase.anim`), clip leo bám thanh bake bằng IK (`InPlace/Climb.anim`, `ClimbClipBaker.cs`), xương ngón tay + trọng số thêm lúc import (`HeroHandRig.cs`, `HeroFingers.cs`).
 
+## Trang phục thời trang 3D (2026-11-08 tối)
+Tự tạo hoàn toàn bằng mã trong repo (`OutfitArtPipeline.cs`, `OutfitMesh.cs`, `OutfitIcons.cs`), **0 credit Meshy**, không tài nguyên bên ngoài: lớp áo/găng/giày dẫn xuất từ mesh + trọng số skin của chính 4 nhân vật Meshy đã có; mũ, váy, áo choàng, cánh, chuông, bộ pha lê dựng thủ tục; texture hoa văn (mây cuộn, lụa, da, sao, gân cánh) vẽ thủ tục; icon render từ chính mesh; hạt hào quang dùng material VFX tự tạo sẵn có. Kết quả ở `Assets/Art/Outfits/` và `Assets/Resources/CosmeticLibrary.asset`.
+
 ## Font
 `Be Vietnam Pro` (Regular/SemiBold/Bold/ExtraBold) và `Nunito` — tải từ kho chính thức google/fonts, giấy phép **SIL Open Font License 1.1** (cho phép nhúng vào game thương mại); file `OFL.txt` đặt cạnh font trong `Assets/Art/Fonts/`. Tải theo phê duyệt của chủ dự án ngày 2026-11-08.
 

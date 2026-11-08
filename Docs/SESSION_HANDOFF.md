@@ -6,7 +6,43 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
-## ★★ Cập nhật mới nhất — Giai đoạn A, đợt 2 (nhân vật, animation, sảnh)
+## ★★★ Cập nhật mới nhất — Giai đoạn B/C: Shop thời trang 3D, tủ đồ server, NPC bán hàng (2026-11-08 tối)
+**Commit:** `0b9b539` (server) + commit client/art tiếp theo (xem `git log`), nối tiếp `b073e14`. **Meshy: 0 credit** (số dư vẫn 931). Không mua tài nguyên, không bật thanh toán thật, không đổi giá gói Kim Cương.
+
+### Đã hoàn thành (có kiểm thử thật)
+- **Server (tủ đồ + giao dịch):** schema V3 `owned_items` (kind: cosmetic / cosmetic_set / pet / pet_food, quantity — sẵn cho Pet sau này) + `shop_purchases` (lịch sử, `UNIQUE(account, request_id)`). Danh mục `Server/.../config/cosmetics.json` (data-driven, có version; server từ chối catalog sai: món lẻ bắt buộc Gold, skin nguyên bộ bắt buộc Kim Cương, giá > 0). API: `GET /characters/{id}/wardrobe`, `POST .../wardrobe/purchase` {itemId, requestId, equip}, `POST .../wardrobe/equip` {set, slots[]}. Mua = 1 transaction IMMEDIATE: kiểm tra tài khoản sở hữu nhân vật → món còn bán, đúng nghề, chưa sở hữu → giá server → trừ qua `Wallet` (ledger, idempotency key) → cấp đồ → ghi lịch sử → (mặc). Gửi lại cùng requestId (mất mạng/timeout) trả kết quả cũ, không trừ lần 2. Đồ Gold thuộc nhân vật; skin Kim Cương thuộc tài khoản. Trang phục đang mặc lưu trong `characters.appearance_json`, trả về trong `/enter` và `/profile` (`outfit`).
+- **Vàng khởi đầu 5.000/nhân vật** (cấp 1 lần bằng ledger key `starter_gold:<id>`, cả nhân vật cũ khi vào game) để có thể mua thử — **đề xuất, chờ chủ dự án duyệt** (`AdventureKing:StarterGold`).
+- **11 món thời trang 3D thật, khớp skeleton của cả 4 nghề** (`Assets/Editor/ArtPipeline/OutfitArtPipeline.cs`, chạy lại được: menu *AdventureKing/Art/Rebuild Outfits*): Vòng Hoa Sen, Vòng Đầu Chuông Gió (chuông đung đưa), Áo Gấm Hoa Văn Mây, Váy Gió Xếp Ly, Găng Lụa Ngọc, Giày Mây Trắng, Ủng Than Hồng, Chuông Bạc Đeo Hông, Áo Choàng Gió, Cánh Chuồn Chuồn (Gold) + **skin nguyên bộ "Thiên Phong Pha Lê"** (Kim Cương: cánh pha lê, vương miện pha lê, áo choàng sao, hào quang hạt sáng; chỉ ngoại hình).
+  - Áo/găng/giày: mesh riêng lấy vùng cơ thể đẩy ra theo pháp tuyến, **giữ trọng số skin của chính nhân vật**, UV + texture hoa văn mới, viền cổ/cổ tay/cổ ủng riêng.
+  - Mũ/váy/áo choàng/cánh/chuông: mesh dựng theo số đo từng nhân vật (tiết diện đầu/vành mũ, độ sâu lưng gồm tóc tết và ống tên, vòng eo/đùi). Áo choàng + chuông có khớp phụ, rủ theo trọng lực, bay ra sau khi chạy/rơi; cánh vỗ chậm khi đứng, nhanh khi nhảy (`HeroOutfit.cs`).
+  - Không tạo lại nhân vật: dùng chung rig/animation; mặt (biểu cảm, chớp mắt) và ngón tay giữ nguyên.
+- **NPC "Chủ Tiệm Lụa"** (model Thủ Kho có sẵn, chuyển xuống quầy Chợ Phiên x = −30): đứng Idle, quay về phía người chơi, vẫy tay, nói, cúi chào khi mua xong. Lại gần mới hiện "E · Nói chuyện" (+ nút cảm ứng "Nói chuyện"); chào **đúng tên nhân vật**; menu Mua sắm / Xem tủ đồ / Trò chuyện / Đóng — tất cả nối chức năng thật (`FashionMerchant.cs`).
+- **Shop + Phòng thử đồ 3D** (`FashionShopUI.cs`): 3 tab Thời Trang · Vàng / Skin Đặc Biệt · KC / Tủ Đồ Của Tôi; lọc theo ô (Mũ, Áo, Quần/Váy, Găng, Giày, Phụ kiện, Choàng/Cánh) và theo nghề (của tôi / tất cả); icon render từ chính mesh 3D; giá + số dư từ server; Mặc thử / Bỏ thử / Mua (hộp xác nhận) / Mặc / Tháo / Lưu bộ phối. Phòng thử: đúng model nhân vật đang chơi, kéo chuột/ngón tay để xoay, Idle tự nhiên + chớp mắt, nút Đứng/Chạy/Nhảy/Đánh. Mặc thử không trừ tiền; đóng shop khi chưa mua → nhân vật thật không đổi; mua/mặc xong nhân vật ngoài làng đổi ngay theo kết quả server. Chống double-click (khoá nút + requestId), mất mạng tự gửi lại cùng requestId tối đa 3 lần.
+
+### Kết quả kiểm thử
+- Server: **83/83** (11 test mới: catalog hợp lệ, vàng khởi đầu đúng 1 lần, thử đồ miễn phí + mua đúng giá + mặc, thiếu Gold không trừ/không cấp, gửi lại requestId không trừ 2 lần, 8 luồng mua đồng thời → trừ 1 lần, kiểm tra quyền sở hữu/ô/nghề khi mặc, tài khoản khác không mua/mặc hộ được, skin KC chỉ trừ KC + dùng chung tài khoản + tháo về đồ Gold, khôi phục sau khởi động lại, HTTP end-to-end).
+- PlayMode `FashionShopTests` (server thật): `Merchant_TryOn_Buy_Wear_Survive_Relog_And_Restart` **Passed**: đi tới NPC → prompt → chào đúng tên → shop → thử đồ (Gold không đổi, nhân vật thật không đổi) → mua có xác nhận, double-click chỉ gửi 1 request → mua liên tiếp 3 món → mua lại món đã có bị từ chối → thiếu Vàng (client + server từ chối, không trừ) → tab KC thiếu Kim Cương → tủ đồ tháo/mặc → Lưu & Thoát → **khởi động lại server** → đăng nhập → đúng trang phục, đúng Gold. `Outfits_Follow_Every_State_On_All_Classes` **Passed**: 4 nghề × 3 bộ × Idle/Run/Jump/Climb/Attack/Skill — mọi xương nối đúng, mũ luôn trên đầu, vũ khí luôn trong tay, mặt vẫn hoạt động.
+- **Kết quả toàn bộ (chạy lại hết sau khi xong):** server **83/83**, EditMode **4/4**, PlayMode **35 passed / 0 failed / 2 skipped**, 0 exception, 0 lỗi biên dịch. Baseline đầu phiên: 72/72, 4/4, 33/0/2.
+- Lưu ý kiểm thử: `MovementTests.Coyote_Jump_Allowed_Briefly_After_Leaving_Ledge` nhạy với thời gian khung hình (chờ 0,05 s, cửa sổ 0,1 s): khi chạy ngay sau một test tải cả thị trấn nó trượt; chạy riêng vẫn 11/11. Đã đặt tên lớp test shop là `ShopFashionTests` để chạy sau MovementTests như các test thị trấn khác — nên sửa test coyote dùng thời gian cố định thay vì thời gian thực (việc tiếp theo).
+- Video Play Mode thật: `QA/Video/fashion_shop_playmode_2026-11-08.mp4` (đi tới NPC → chào → shop → thử đồ → mua → tủ đồ → đi ra làng với đồ mới).
+
+### Ảnh kiểm chứng (Play Mode thật)
+`QA/Shop/01_merchant_prompt.png` … `11_after_restart_relog.png` (prompt, chào hỏi, shop Gold, thử đồ khi chạy/nhảy, xác nhận mua, mua xong, thiếu Vàng, thử skin KC, tủ đồ PC + điện thoại 19.5:9, nhân vật mặc đồ ngoài làng, sau khởi động lại server); `QA/Shop/states_gold_A.png`, `states_gold_B.png`, `states_premium.png` (4 nghề × 6 trạng thái); `QA/Outfits/editor_<Nghề>.png` (Idle 4 hướng, Run, Jump, Climb, Attack, Skill).
+
+### Chưa hoàn thành / hạn chế (ghi rõ)
+- **Ô Tóc và Ngoại hình vũ khí:** hệ thống (server + client) hỗ trợ, nhưng **chưa có món nào** — đổi tóc/vũ khí đạt chuẩn cần mesh mới (Meshy hoặc dựng tay trong Blender); không bán món tạm.
+- Áo/găng/giày là lớp áo bám theo hình cơ thể (đổi chất liệu + hoa văn + viền), chưa đổi được kiểu dáng lớn (tay áo dài, giáp vai…). Áo choàng ở góc nghiêng 110° trong làng trông mỏng; nhìn rõ trong phòng thử đồ.
+- Skin "Thiên Phong Pha Lê" là bộ dựng bằng code (không phải model điêu khắc): **giá 300 KC chỉ là đề xuất**; chủ dự án cần xem ảnh `states_premium.png` và quyết định có mở bán không (đổi `listed` trong `cosmetics.json`, không cần sửa code). Hiện mọi người có 0 KC vì thanh toán thật chưa bật.
+- Giá Gold trong `cosmetics.json` là **đề xuất**, chờ duyệt.
+- Chưa kiểm thử trên điện thoại Android thật (chỉ ảnh khung 19.5:9 trong Editor). FPS phòng thử đồ trên điện thoại chưa đo.
+- Pet: chỉ chuẩn bị dữ liệu (kind pet / pet_food + quantity trong `owned_items`); chưa có Pet, đồ ăn, độ no 60 phút, nhặt vàng — không có nút Pet giả.
+- Icon dạng vòng (mũ) hơi mảnh ở cỡ nhỏ.
+
+### Cần chủ dự án quyết định
+1. Giá Gold từng món + số Vàng khởi đầu (đang 5.000). 2. Mở bán hay chưa skin KC "Thiên Phong Pha Lê" và giá. 3. Ngân sách Meshy cho tóc/vũ khí/skin điêu khắc cao cấp. 4. Thiết bị Android để test.
+
+---
+## ★★ Giai đoạn A, đợt 2 (nhân vật, animation, sảnh)
 **Commit:** `ab47513` "Phase A2: hero faces, seamless loops, town polish" + commit tiếp theo "Rung-accurate ladder climb" (clip leo mới) trên `feat/diamond-store-catalog-20261107`, nối tiếp `85c770d`. **Meshy: 0 credit** (chỉ Unity + công cụ tự viết; số dư vẫn 931).
 
 ### Ưu tiên 1 — Biểu cảm khuôn mặt 4 nghề (đã làm, có kiểm chứng Play Mode)

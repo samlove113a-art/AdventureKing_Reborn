@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -144,6 +144,33 @@ namespace AdventureKing.Gameplay
             HeroModel.transform.localScale = Vector3.one * heroScale;
             if (playerVisual)
                 playerVisual.Bind(HeroModel.transform, HeroModel.GetComponentInChildren<Animator>(true));
+            // Wear the outfit the server has on record (restored after relog / scene change / server restart).
+            Outfit = DressHero(HeroModel, character.heroClass);
+            Outfit.Apply(character.outfit);
+        }
+
+        public HeroOutfit Outfit { get; private set; }
+        public GameObject[] HeroPrefabs => heroPrefabs;
+
+        /// <summary>Adds (or finds) the outfit component on a hero visual and binds it to the body mesh.</summary>
+        public static HeroOutfit DressHero(GameObject hero, HeroClass heroClass)
+        {
+            HeroOutfit o = hero.GetComponent<HeroOutfit>();
+            if (!o) o = hero.AddComponent<HeroOutfit>();
+            foreach (SkinnedMeshRenderer s in hero.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                if (!s.name.StartsWith("Weapon_") && !s.name.StartsWith("Outfit_")) { o.Bind(heroClass, s); break; }
+            return o;
+        }
+
+        /// <summary>Called only with a server-confirmed outfit (purchase / equip response).</summary>
+        public void ApplyServerOutfit(OutfitLoadout outfit, long gold, long diamonds, long revision)
+        {
+            if (character == null) return;
+            character.outfit = outfit ?? new OutfitLoadout();
+            character.gold = gold;
+            character.diamonds = diamonds;
+            character.serverRevision = revision;
+            if (Outfit) Outfit.Apply(character.outfit);
         }
 
         private void FixedUpdate()
