@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using AdventureKing.Server.Data;
 using AdventureKing.Server.Domain;
 using AdventureKing.Server.Security;
@@ -41,7 +41,10 @@ long[] vip = cfg.GetSection("VipThresholdsVnd").Get<long[]>() ?? Array.Empty<lon
 builder.Services.AddSingleton(_ => new Database(dbPath));
 builder.Services.AddSingleton(_ => new NameRules(Path.Combine(contentRoot, "config", "name_blocklist.txt")));
 builder.Services.AddSingleton(sp => new AccountService(sp.GetRequiredService<Database>()));
-builder.Services.AddSingleton(sp => new CharacterService(sp.GetRequiredService<Database>(), sp.GetRequiredService<NameRules>()));
+long starterGold = cfg.GetValue<long?>("StarterGold") ?? 5000; // PROPOSAL pending owner approval
+string cosmeticsPath = Path.Combine(contentRoot, cfg["CosmeticCatalogPath"] ?? "config/cosmetics.json");
+builder.Services.AddSingleton(sp => new CharacterService(sp.GetRequiredService<Database>(), sp.GetRequiredService<NameRules>(), starterGold));
+builder.Services.AddSingleton(sp => new CosmeticShop(sp.GetRequiredService<Database>(), CosmeticCatalog.Load(cosmeticsPath)));
 builder.Services.AddSingleton(sp => new DiamondStore(sp.GetRequiredService<Database>(), vip));
 builder.Services.AddKeyedSingleton("login", new AttemptLimiter(10, TimeSpan.FromMinutes(5)));
 builder.Services.AddKeyedSingleton("register", new AttemptLimiter(5, TimeSpan.FromHours(1)));
@@ -119,6 +122,14 @@ api.MapPost("/characters/{id}/travel/{portalId}", (string id, string portalId, L
     chars.Travel(accounts.Authenticate(Bearer(ctx)), id, portalId, body.x, body.y));
 api.MapPost("/characters/{id}/tutorial/{step:int}", (string id, int step, HttpContext ctx, AccountService accounts, CharacterService chars) =>
     chars.CompleteTutorialStep(accounts.Authenticate(Bearer(ctx)), id, step));
+
+// ---------------------------------------------------------------- fashion shop + wardrobe (Gold pieces, Diamond sets)
+api.MapGet("/characters/{id}/wardrobe", (string id, HttpContext ctx, AccountService accounts, CosmeticShop shop) =>
+    shop.Wardrobe(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/wardrobe/purchase", (string id, PurchaseRequestDto body, HttpContext ctx, AccountService accounts, CosmeticShop shop) =>
+    shop.Purchase(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/wardrobe/equip", (string id, OutfitDto body, HttpContext ctx, AccountService accounts, CosmeticShop shop) =>
+    shop.Equip(accounts.Authenticate(Bearer(ctx)), id, body));
 
 // ---------------------------------------------------------------- diamond store (catalog only; payments disabled)
 api.MapGet("/store/catalog", (HttpContext ctx, AccountService accounts, DiamondStore store) =>

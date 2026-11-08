@@ -1,4 +1,4 @@
-using AdventureKing.Server.Data;
+﻿using AdventureKing.Server.Data;
 using AdventureKing.Server.Security;
 using Microsoft.Data.Sqlite;
 
@@ -25,6 +25,8 @@ public sealed class CharacterDto
     public bool tutorialCompleted { get; set; }
     public long serverRevision { get; set; }
     public long lastSavedUnixMilliseconds { get; set; }
+    /// <summary>Worn outfit (server-validated wardrobe loadout).</summary>
+    public OutfitDto outfit { get; set; } = new();
 }
 
 public sealed class ProfileDto
@@ -40,10 +42,22 @@ public sealed class CharacterService
     private readonly Database db;
     private readonly NameRules names;
 
-    public CharacterService(Database db, NameRules names)
+    /// <summary>
+    /// One-time welcome Gold per character (server rule, ledger key starter_gold:&lt;id&gt; so it can never be paid twice).
+    /// Amount is a PROPOSAL pending owner approval; configured by AdventureKing:StarterGold.
+    /// </summary>
+    public long StarterGold { get; }
+
+    public CharacterService(Database db, NameRules names, long starterGold = 0)
     {
         this.db = db;
         this.names = names;
+        StarterGold = Math.Max(0, starterGold);
+    }
+
+    private void GrantStarterGold(SqliteConnection c, SqliteTransaction tx, string accountId, string characterId)
+    {
+        if (StarterGold > 0) Wallet.Gold(c, tx, accountId, characterId, StarterGold, "starter_gold", "starter_gold:" + characterId);
     }
 
     public ProfileDto LoadProfile(string accountId)
@@ -83,6 +97,7 @@ public sealed class CharacterService
                 throw new GameError("name_taken", "Tên này đã có người sử dụng.", 409);
             }
             AccountService.Audit(c, tx, accountId, "character_create", id + " " + check.Normalized);
+            GrantStarterGold(c, tx, accountId, id);
             return Query(c, tx, "c.id=$id", ("$id", id)).Single();
         });
     }
@@ -90,9 +105,14 @@ public sealed class CharacterService
     /// <summary>Re-authorises ownership on every entry and returns the authoritative snapshot.</summary>
     public CharacterDto Enter(string accountId, string? characterId)
     {
-        using var c = db.Open();
-        return Query(c, null, "c.id=$id AND c.account_id=$a", ("$id", characterId ?? ""), ("$a", accountId)).SingleOrDefault()
-               ?? throw new GameError("character_not_found", "Không tìm thấy nhân vật thuộc tài khoản này.", 404);
+        return db.InTransaction((c, tx) =>
+        {
+            CharacterDto ch = Query(c, tx, "c.id=$id AND c.account_id=$a", ("$id", characterId ?? ""), ("$a", accountId)).SingleOrDefault()
+                              ?? throw new GameError("character_not_found", "Không tìm thấy nhân vật thuộc tài khoản này.", 404);
+            // Characters created before the welcome Gold existed receive it once (idempotent ledger key).
+            GrantStarterGold(c, tx, accountId, ch.characterId);
+            return Query(c, tx, "c.id=$id", ("$id", ch.characterId)).Single();
+        });
     }
 
     // ------------------------------------------------------------- world position
@@ -205,7 +225,7 @@ public sealed class CharacterService
         using var cmd = Database.Command(c, tx, $"""
             SELECT c.id, c.name, c.slot_index, c.hero_class, c.level, c.experience, c.skill_points, c.gold, a.diamonds,
                    c.map_id, c.checkpoint_id, c.tutorial_step, c.tutorial_done, c.revision, c.saved_ms,
-                   c.pos_x, c.pos_y, c.has_position
+                   c.pos_x, c.pos_y, c.has_position, c.appearance_json
             FROM characters c JOIN accounts a ON a.id = c.account_id WHERE {where}
             """, args);
         using var r = cmd.ExecuteReader();
@@ -219,6 +239,7 @@ public sealed class CharacterService
                 tutorialStep = r.GetInt32(11), tutorialCompleted = r.GetInt64(12) != 0, serverRevision = r.GetInt64(13),
                 lastSavedUnixMilliseconds = r.GetInt64(14),
                 posX = (float)r.GetDouble(15), posY = (float)r.GetDouble(16), hasPosition = r.GetInt64(17) != 0,
+                outfit = CosmeticShop.ReadOutfit(r.GetString(18)),
             });
         return list;
     }

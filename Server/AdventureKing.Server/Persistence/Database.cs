@@ -77,6 +77,14 @@ public sealed class Database
             Exec(c, tx, Schema.V2);
             Exec(c, tx, "PRAGMA user_version=2;");
             tx.Commit();
+            version = 2;
+        }
+        if (version < 3)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V3);
+            Exec(c, tx, "PRAGMA user_version=3;");
+            tx.Commit();
         }
     }
 
@@ -109,7 +117,39 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 2;
+    public const int Current = 3;
+
+    // V3: wardrobe / inventory ownership (cosmetics now; pets + pet food later: kind + quantity) and shop history.
+    // character_id NULL = owned by the whole account (Diamond sets). The partial unique index makes a second
+    // copy of a once-only item impossible even if application checks were bypassed.
+    public const string V3 = """
+    CREATE TABLE owned_items (
+        id           TEXT PRIMARY KEY,
+        account_id   TEXT NOT NULL REFERENCES accounts(id),
+        character_id TEXT REFERENCES characters(id),
+        item_id      TEXT NOT NULL,
+        kind         TEXT NOT NULL CHECK (kind IN ('cosmetic','cosmetic_set','pet','pet_food')),
+        quantity     INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0),
+        source       TEXT NOT NULL,
+        acquired_ms  INTEGER NOT NULL
+    );
+    CREATE UNIQUE INDEX ux_owned_once ON owned_items(account_id, IFNULL(character_id, ''), item_id)
+        WHERE kind IN ('cosmetic','cosmetic_set');
+    CREATE INDEX ix_owned_character ON owned_items(character_id);
+    CREATE TABLE shop_purchases (
+        id              TEXT PRIMARY KEY,
+        account_id      TEXT NOT NULL REFERENCES accounts(id),
+        character_id    TEXT NOT NULL REFERENCES characters(id),
+        item_id         TEXT NOT NULL,
+        currency        TEXT NOT NULL CHECK (currency IN ('gold','diamonds')),
+        price           INTEGER NOT NULL CHECK (price > 0),
+        request_id      TEXT NOT NULL,
+        catalog_version INTEGER NOT NULL,
+        created_ms      INTEGER NOT NULL,
+        UNIQUE (account_id, request_id)
+    );
+    CREATE INDEX ix_purchases_character ON shop_purchases(character_id, created_ms);
+    """;
 
     // V2: last saved world position inside the current map (server-validated against map bounds).
     public const string V2 = """
