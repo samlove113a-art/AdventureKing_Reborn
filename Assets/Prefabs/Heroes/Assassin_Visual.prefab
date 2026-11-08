@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 479066315191640049}
   - component: {fileID: 8447766990213864308}
   - component: {fileID: 145211041049350845}
+  - component: {fileID: 8601122250605746554}
   m_Layer: 0
   m_Name: Assassin_Visual
   m_TagString: Untagged
@@ -98,6 +99,52 @@ MonoBehaviour:
   climbGripTop: 0.67997456
   rungSpacing: 0.3
   firstRung: 0.3
+--- !u!114 &8601122250605746554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289566011449692354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b125dd67f7faafe42a80cbba1c24d36a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.HeroFingers
+  left:
+    joints:
+    - {fileID: 1090247633319488797}
+    - {fileID: 6262466444193401618}
+    - {fileID: 3725069890028193388}
+    restLocal:
+    - {x: -0.000000051438672, y: 3.6609168e-10, z: 0.000000033114375, w: 1}
+    - {x: 0.000000004118293, y: 0.0000000022263928, z: -0.000000024019695, w: 1}
+    - {x: 0.000000004118293, y: 0.0000000022263928, z: -0.000000024019695, w: 1}
+    curlAxisLocal:
+    - {x: 0.9629431, y: -0.18486471, z: 0.19638187}
+    - {x: 0.9629431, y: -0.18486467, z: 0.19638187}
+    - {x: 0.9629431, y: -0.18486463, z: 0.19638187}
+    weaponGrip: 0.90000015
+    current: 0
+  right:
+    joints:
+    - {fileID: 2673199109576838266}
+    - {fileID: 7986259951890025364}
+    - {fileID: 7551250130869299064}
+    restLocal:
+    - {x: -0.00000010385719, y: 0.000000030025674, z: 0.000000017999911, w: 1}
+    - {x: -0.000000004532062, y: 0.000000004061307, z: -0.000000020880243, w: 1}
+    - {x: -0.000000004532062, y: 0.000000004061307, z: -0.000000020880243, w: 1}
+    curlAxisLocal:
+    - {x: 0.9305339, y: -0.15962179, z: 0.3295871}
+    - {x: 0.9305339, y: -0.15962175, z: 0.3295871}
+    - {x: 0.9305339, y: -0.1596217, z: 0.3295871}
+    weaponGrip: 0.85000014
+    current: 0
+  animator: {fileID: 607292526343762009}
+  relaxed: 0.32
+  climbGrip: 0.7
+  hitOpen: 0.05
 --- !u!1001 &6415128063687298504
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1119,9 +1166,29 @@ SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6604863785109362542, guid: ff08677a60d0be4469163954274859f9, type: 3}
   m_PrefabInstance: {fileID: 6415128063687298504}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &607292526343762009 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: ff08677a60d0be4469163954274859f9, type: 3}
+  m_PrefabInstance: {fileID: 6415128063687298504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1090247633319488797 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -3015640926638874411, guid: ff08677a60d0be4469163954274859f9, type: 3}
+  m_PrefabInstance: {fileID: 6415128063687298504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1307173430838206978 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5414206032639963082, guid: ff08677a60d0be4469163954274859f9, type: 3}
+  m_PrefabInstance: {fileID: 6415128063687298504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2673199109576838266 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8943586534864404914, guid: ff08677a60d0be4469163954274859f9, type: 3}
+  m_PrefabInstance: {fileID: 6415128063687298504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3725069890028193388 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7689060357311744932, guid: ff08677a60d0be4469163954274859f9, type: 3}
   m_PrefabInstance: {fileID: 6415128063687298504}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &6180756378315239577 stripped
@@ -1141,6 +1208,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a2f9bf9a39752a419f4cfc93dd7708f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.CharacterAnimationEvents
+--- !u!4 &6262466444193401618 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1148379358709876442, guid: ff08677a60d0be4469163954274859f9, type: 3}
+  m_PrefabInstance: {fileID: 6415128063687298504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6525433911246444759 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 254984913858155807, guid: ff08677a60d0be4469163954274859f9, type: 3}
@@ -1149,5 +1221,15 @@ Transform:
 --- !u!4 &6813283786059803171 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ff08677a60d0be4469163954274859f9, type: 3}
+  m_PrefabInstance: {fileID: 6415128063687298504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7551250130869299064 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3588367249736379056, guid: ff08677a60d0be4469163954274859f9, type: 3}
+  m_PrefabInstance: {fileID: 6415128063687298504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7986259951890025364 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5200538400776665508, guid: ff08677a60d0be4469163954274859f9, type: 3}
   m_PrefabInstance: {fileID: 6415128063687298504}
   m_PrefabAsset: {fileID: 0}

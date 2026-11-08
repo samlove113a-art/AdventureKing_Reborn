@@ -11,7 +11,7 @@ namespace AdventureKing.ArtPipeline
     /// </summary>
     public sealed class HeroFaceImport : AssetPostprocessor
     {
-        public override uint GetVersion() => 3; // bump to force re-import when the face mapping changes
+        public override uint GetVersion() => 5; // bump to force re-import when the face mapping / finger rig changes
 
         private void OnPostprocessModel(GameObject g)
         {
@@ -29,6 +29,12 @@ namespace AdventureKing.ArtPipeline
             catch (System.Exception e)
             {
                 Debug.LogWarning($"[FACE] {hero.Class}: face coordinates skipped ({e.Message})");
+            }
+            // Finger bones (the Meshy skeleton ends at the wrist): 3 joints per finger, finger vertices re-skinned.
+            foreach (string handName in new[] { "LeftHand", "RightHand" })
+            {
+                try { Debug.Log($"[HAND] {hero.Class} {HeroHandRig.AddFingers(body, handName)}"); }
+                catch (System.Exception e) { Debug.LogWarning($"[HAND] {hero.Class} {handName}: finger rig skipped ({e.Message})"); }
             }
         }
     }

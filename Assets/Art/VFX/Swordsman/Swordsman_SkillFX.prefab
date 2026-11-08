@@ -2668,7 +2668,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   spinDegreesPerSecond: {x: 0, y: 0, z: -320}
   tint: {r: 1.8, g: 0.63, b: 0.45, a: 1.8}
---- !u!1 &7361425132428496448
+--- !u!1 &5980223942187697565
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2676,10 +2676,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1456277805193182718}
-  - component: {fileID: 1629594919916576239}
-  - component: {fileID: 2306793109685437743}
-  - component: {fileID: 8944496398544093595}
+  - component: {fileID: 7140862801431654843}
+  - component: {fileID: 8021267244059900629}
+  - component: {fileID: 8258562689592022851}
+  - component: {fileID: 5294280419574446101}
   m_Layer: 0
   m_Name: Arc
   m_TagString: Untagged
@@ -2687,13 +2687,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1456277805193182718
+--- !u!4 &7140862801431654843
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7361425132428496448}
+  m_GameObject: {fileID: 5980223942187697565}
   serializedVersion: 2
   m_LocalRotation: {x: 0.18301271, y: -0.6830127, z: -0.18301271, w: 0.6830127}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -2702,21 +2702,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 620796873639430931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1629594919916576239
+--- !u!33 &8021267244059900629
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7361425132428496448}
+  m_GameObject: {fileID: 5980223942187697565}
   m_Mesh: {fileID: 4300000, guid: 6198881ab7a284747b1260975d36a38d, type: 2}
---- !u!23 &2306793109685437743
+--- !u!23 &8258562689592022851
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7361425132428496448}
+  m_GameObject: {fileID: 5980223942187697565}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -2759,13 +2759,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8944496398544093595
+--- !u!114 &5294280419574446101
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7361425132428496448}
+  m_GameObject: {fileID: 5980223942187697565}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5de6c8683658ada45adbdc58633672b7, type: 3}
@@ -2773,7 +2773,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.VfxAutoDestroy
   lifetime: 0.24
   fadeRenderers:
-  - {fileID: 2306793109685437743}
+  - {fileID: 8258562689592022851}
   alphaOverLife:
     serializedVersion: 2
     m_Curve:
@@ -2864,7 +2864,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8869557579703955587}
-  - {fileID: 1456277805193182718}
+  - {fileID: 7140862801431654843}
   - {fileID: 6474717271170571824}
   - {fileID: 4793808583626622390}
   m_Father: {fileID: 0}

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6068937351516369930}
   - component: {fileID: 5286140807873555209}
   - component: {fileID: 3657439584927226597}
+  - component: {fileID: 1355095665418739980}
   m_Layer: 0
   m_Name: Swordsman_Visual
   m_TagString: Untagged
@@ -98,6 +99,52 @@ MonoBehaviour:
   climbGripTop: 0.6506649
   rungSpacing: 0.3
   firstRung: 0.3
+--- !u!114 &1355095665418739980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8144308876281798700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b125dd67f7faafe42a80cbba1c24d36a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.HeroFingers
+  left:
+    joints:
+    - {fileID: 5725130644091465149}
+    - {fileID: 8988054696281942266}
+    - {fileID: 2240707128866808631}
+    restLocal:
+    - {x: -0.000000011222773, y: 0.000000045460766, z: 0.0000000822901, w: 1}
+    - {x: 0.000000008661429, y: -0.0000000059412675, z: 0.0000000024092013, w: 1}
+    - {x: 0.000000008661429, y: -0.0000000059412675, z: 0.0000000024092013, w: 1}
+    curlAxisLocal:
+    - {x: -0.41554123, y: -0.116322294, z: 0.9021056}
+    - {x: -0.41554123, y: -0.11632228, z: 0.9021056}
+    - {x: -0.41554123, y: -0.116322264, z: 0.9021056}
+    weaponGrip: -1
+    current: 0
+  right:
+    joints:
+    - {fileID: 5820798490204605725}
+    - {fileID: 6145385126354764148}
+    - {fileID: 2461280652109192010}
+    restLocal:
+    - {x: -0.00000012245877, y: 2.5258018e-10, z: -0.00000001191391, w: 1}
+    - {x: 0.0000000035678336, y: 0.0000000019715598, z: 0.000000021042663, w: 1}
+    - {x: 0.0000000035678336, y: 0.0000000019715598, z: 0.000000021042663, w: 1}
+    curlAxisLocal:
+    - {x: 0.8885542, y: -0.0984744, z: 0.4480785}
+    - {x: 0.8885542, y: -0.098474436, z: 0.4480785}
+    - {x: 0.8885542, y: -0.09847447, z: 0.4480785}
+    weaponGrip: 0.90000015
+    current: 0
+  animator: {fileID: 3873579585252280401}
+  relaxed: 0.32
+  climbGrip: 0.7
+  hitOpen: 0.05
 --- !u!1001 &7253941884247766464
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1119,9 +1166,39 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7639312504678019525, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
   m_PrefabInstance: {fileID: 7253941884247766464}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &2240707128866808631 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -309698379839908105, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
+  m_PrefabInstance: {fileID: 7253941884247766464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2461280652109192010 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4142445226475590006, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
+  m_PrefabInstance: {fileID: 7253941884247766464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &3873579585252280401 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
+  m_PrefabInstance: {fileID: 7253941884247766464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5725130644091465149 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3159435981672421501, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
+  m_PrefabInstance: {fileID: 7253941884247766464}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5794397617081315382 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -5421497930963352074, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
+  m_PrefabInstance: {fileID: 7253941884247766464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5820798490204605725 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5445822994852284195, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
+  m_PrefabInstance: {fileID: 7253941884247766464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6145385126354764148 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3594970380431930548, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
   m_PrefabInstance: {fileID: 7253941884247766464}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &7143154073139089963 stripped
@@ -1149,5 +1226,10 @@ MonoBehaviour:
 --- !u!137 &8908395902314105741 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2237118491059568205, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
+  m_PrefabInstance: {fileID: 7253941884247766464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8988054696281942266 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7489255738976445126, guid: 8f5dd5670e707964eb1b1c5650107542, type: 3}
   m_PrefabInstance: {fileID: 7253941884247766464}
   m_PrefabAsset: {fileID: 0}

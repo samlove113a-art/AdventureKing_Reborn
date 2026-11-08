@@ -338,6 +338,64 @@ namespace AdventureKing.ArtPipeline
         }
 
         /// <summary>
+        /// HeroFingers on the prefab: per hand the 3 finger-block joints (HeroHandRig), the curl axis (towards the
+        /// palm: the weapon grip for weapon hands, the body for empty hands) and, for weapon hands, the curl that
+        /// closes the fingers onto the grip (scanned on the posed model). Measured in the Idle pose.
+        /// </summary>
+        private static void SetupFingers(HeroArtDefinitions.Hero h, GameObject root, GameObject model, Animator anim)
+        {
+            Transform hips = FindDeep(model.transform, "Hips");
+            HeroFingers.Hand Hand(string side)
+            {
+                Transform hand = FindDeep(model.transform, side + "Hand");
+                var joints = new[] { 1, 2, 3 }.Select(j => FindDeep(model.transform, $"{side}Hand_Fingers{j}")).ToArray();
+                if (!hand || joints.Any(j => !j)) { Debug.LogWarning($"[HAND] {h.Class} {side}: no finger joints"); return null; }
+                var data = new HeroFingers.Hand { joints = joints, restLocal = joints.Select(j => j.localRotation).ToArray() };
+                Vector3 fingerDir = (joints[2].position - joints[0].position).normalized;
+                // palm side: towards this hand's weapon grip, else towards the body
+                var weaponName = h.Weapons.FirstOrDefault(w => w.hand == side + "Hand").weapon;
+                SkinnedMeshRenderer weapon = weaponName == null ? null :
+                    model.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(s => s.name == "Weapon_" + weaponName);
+                Vector3[] weaponPts = null;
+                if (weapon)
+                {
+                    var baked = new Mesh();
+                    weapon.BakeMesh(baked, true);
+                    Matrix4x4 m = weapon.transform.localToWorldMatrix;
+                    weaponPts = baked.vertices.Select(p => m.MultiplyPoint3x4(p)).ToArray();
+                    Object.DestroyImmediate(baked);
+                }
+                float handSize = Vector3.Distance(hand.position, joints[2].position) * 1.6f;
+                Vector3 towards = weaponPts != null
+                    ? weaponPts.Where(p => Vector3.Distance(p, hand.position) < handSize).DefaultIfEmpty(hips.position).Aggregate(Vector3.zero, (a, p) => a + p)
+                      / Mathf.Max(1, weaponPts.Count(p => Vector3.Distance(p, hand.position) < handSize))
+                    : hips.position;
+                Vector3 palm = Vector3.ProjectOnPlane(towards - hand.position, fingerDir).normalized;
+                Vector3 axis = Vector3.Cross(fingerDir, palm).normalized;
+                if (Vector3.Dot(Quaternion.AngleAxis(10f, axis) * fingerDir, palm) < Vector3.Dot(fingerDir, palm)) axis = -axis;
+                data.curlAxisLocal = joints.Select(j => j.InverseTransformDirection(axis)).ToArray();
+                if (weaponPts != null)
+                {
+                    // smallest curl that brings the fingertip onto the grip (stop before passing through it)
+                    float bestC = 0.7f, bestD = float.MaxValue;
+                    for (float c = 0.2f; c <= 0.95f; c += 0.05f)
+                    {
+                        HeroFingers.Pose(data, c);
+                        Vector3 tip = joints[2].position + (joints[2].position - joints[1].position);
+                        float d = weaponPts.Min(p => (p - tip).sqrMagnitude);
+                        if (d < bestD - 1e-8f) { bestD = d; bestC = c; }
+                    }
+                    data.weaponGrip = bestC;
+                    HeroFingers.Pose(data, 0f);
+                    Debug.Log($"[HAND] {h.Class} {side}: weapon grip curl {bestC:0.00}, fingertip-to-grip {Mathf.Sqrt(bestD) * 100f:0.0} cm");
+                }
+                return data;
+            }
+            var fingers = root.AddComponent<HeroFingers>();
+            fingers.Configure(anim, Hand("Left"), Hand("Right"));
+        }
+
+        /// <summary>
         /// Copy of the imported Climb clip with the hips' steady vertical drift removed (linear detrend), so the last
         /// frame meets the first. Returns the removed rise per cycle in metres at model scale 1.
         /// </summary>
@@ -498,6 +556,8 @@ namespace AdventureKing.ArtPipeline
             controller.animationClips.First(c => c.name == "Idle").SampleAnimation(model, 0f);
             anim.runtimeAnimatorController = controller;
             Debug.Log($"[ART] {h.Class} run stride {motion.runStrideSpeed:0.00} m/s @1x, climb cycle {motion.climbCycleSeconds:0.00}s");
+
+            SetupFingers(h, root, model, anim);
 
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath(h.Class));
             Object.DestroyImmediate(root);
