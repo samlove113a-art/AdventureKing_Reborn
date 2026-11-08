@@ -51,6 +51,12 @@ namespace AdventureKing.ArtPipeline
             ConfigureModel(fbx, h.Clips);
             Material body = EnsureToonMaterial($"{h.Folder}/{h.Class}_Toon.mat",
                 FindTexture(texDir, $"{h.Class}_Body"), 0.0065f);
+            // Face layer: measured from this hero's own painted face (UV3 is added at import by HeroFaceImport).
+            HeroFaceRig.FaceData face = HeroFaceRig.Analyse(AssetDatabase.LoadAssetAtPath<GameObject>(fbx),
+                $"{texDir}/{h.Class}_Body_baseColor.png", out string faceError);
+            if (face == null) throw new System.InvalidOperationException($"{h.Class} face analysis failed: {faceError}");
+            HeroFaceRig.Apply(body, face);
+            Debug.Log($"[FACE] {h.Class}: eyes {face.EyeA} {face.EyeB}, mouth {face.Mouth}");
 
             // Weapon meshes ship inside the character FBX, skinned to their hand bone
             // (renderer "Weapon_<Name>"); each gets its own toon material.
@@ -149,6 +155,7 @@ namespace AdventureKing.ArtPipeline
             mi.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
             mi.importAnimation = true;
             mi.animationCompression = ModelImporterAnimationCompression.Optimal;
+            mi.generateSecondaryUV = false; // UV channels are ours (UV3 = face layer)
             mi.SaveAndReimport(); // ensure takes are known
 
             var model = AssetDatabase.LoadAssetAtPath<GameObject>(fbx);
@@ -172,7 +179,7 @@ namespace AdventureKing.ArtPipeline
                     firstFrame = c.First,
                     lastFrame = c.Last,
                     loopTime = c.Loop,
-                    loopPose = false,
+                    loopPose = c.Loop, // closes any residual seam smoothly instead of snapping every cycle
                     lockRootRotation = true,
                     keepOriginalOrientation = true,
                     lockRootPositionXZ = true,
@@ -330,6 +337,64 @@ namespace AdventureKing.ArtPipeline
             return speeds.Count > 0 ? Mathf.Max(0.2f, speeds.Average()) : 1.4f;
         }
 
+        /// <summary>
+        /// Copy of the imported Climb clip with the hips' steady vertical drift removed (linear detrend), so the last
+        /// frame meets the first. Returns the removed rise per cycle in metres at model scale 1.
+        /// </summary>
+        private static AnimationClip MakeInPlaceClimb(HeroArtDefinitions.Hero h, GameObject model, AnimationClip src, out float rise)
+        {
+            Transform hips = FindDeep(model.transform, "Hips");
+            string hipsPath = AnimationUtility.CalculateTransformPath(hips, model.transform);
+            Animator anim = model.GetComponent<Animator>();
+            RuntimeAnimatorController keep = anim ? anim.runtimeAnimatorController : null;
+            if (anim) anim.runtimeAnimatorController = null;
+            src.SampleAnimation(model, 0f);
+            float y0 = hips.position.y;
+            src.SampleAnimation(model, src.length);
+            float y1 = hips.position.y;
+            rise = Mathf.Abs(y1 - y0) / Mathf.Max(1e-4f, model.transform.lossyScale.y);
+            if (anim) anim.runtimeAnimatorController = keep;
+
+            var clip = new AnimationClip { name = "Climb", frameRate = src.frameRate };
+            foreach (EditorCurveBinding b in AnimationUtility.GetCurveBindings(src))
+            {
+                AnimationCurve curve = AnimationUtility.GetEditorCurve(src, b);
+                // All position channels of the motion node: with Hips as root-motion node Unity stores its motion as
+                // RootT/MotionT curves on the root; the hips' parent may also be axis-converted ("up" != local y).
+                bool hipsPos = b.path == hipsPath && b.propertyName.StartsWith("m_LocalPosition.");
+                bool rootPos = b.path == "" && (b.propertyName.StartsWith("RootT.") || b.propertyName.StartsWith("MotionT."));
+                if ((hipsPos || rootPos) && curve.length > 1)
+                {
+                    Debug.Log($"[ART] {h.Class} climb detrend '{b.path}' {b.propertyName}: drift {curve.keys[curve.length - 1].value - curve.keys[0].value:0.0000}");
+                    float t0 = curve.keys[0].time, t1 = curve.keys[curve.length - 1].time;
+                    float drift = curve.keys[curve.length - 1].value - curve.keys[0].value;
+                    var keys = curve.keys;
+                    for (int i = 0; i < keys.Length; i++)
+                    {
+                        float k = (keys[i].time - t0) / Mathf.Max(1e-4f, t1 - t0);
+                        keys[i].value -= drift * k;
+                        keys[i].inTangent -= drift / Mathf.Max(1e-4f, t1 - t0);
+                        keys[i].outTangent -= drift / Mathf.Max(1e-4f, t1 - t0);
+                    }
+                    curve.keys = keys;
+                }
+                AnimationUtility.SetEditorCurve(clip, b, curve);
+            }
+            AnimationUtility.SetAnimationEvents(clip, AnimationUtility.GetAnimationEvents(src));
+            var settings = AnimationUtility.GetAnimationClipSettings(src);
+            settings.loopTime = true;
+            settings.loopBlend = true;
+            AnimationUtility.SetAnimationClipSettings(clip, settings);
+            // File name = asset name = "Climb", so lookups by state/clip name keep working.
+            Directory.CreateDirectory($"{h.Folder}/InPlace");
+            AssetDatabase.DeleteAsset($"{h.Folder}/{h.Class}_Climb_InPlace.anim"); // earlier name
+            string path = $"{h.Folder}/InPlace/Climb.anim";
+            AssetDatabase.DeleteAsset(path);
+            AssetDatabase.CreateAsset(clip, path);
+            Debug.Log($"[ART] {h.Class} climb: removed hip rise {rise:0.000} m/cycle (model scale) -> in-place loop {path}");
+            return clip;
+        }
+
         private static void BuildPrefab(HeroArtDefinitions.Hero h, string fbx, Material body,
             Dictionary<string, Material> weaponMats, AnimatorController controller)
         {
@@ -372,6 +437,16 @@ namespace AdventureKing.ArtPipeline
                 smr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
             }
 
+            var face = root.AddComponent<HeroFace>();
+            face.Bind(bodySmr);
+            {
+                // Face axes in the head bone's local space, from the bind pose (mesh space -> bone space).
+                var (_, faceMesh, _, _, faceUp, faceFwd, _) = HeroFaceRig.Frame(model);
+                int headIdx = System.Array.FindIndex(bodySmr.bones, b => b && b.name == "Head");
+                Matrix4x4 meshToHead = faceMesh.bindposes[headIdx];
+                face.BindHead(bodySmr.bones[headIdx], meshToHead.MultiplyVector(faceFwd).normalized, meshToHead.MultiplyVector(faceUp).normalized);
+            }
+
             Animator anim = model.GetComponent<Animator>();
             if (!anim) anim = model.AddComponent<Animator>();
             anim.runtimeAnimatorController = controller;
@@ -396,6 +471,13 @@ namespace AdventureKing.ArtPipeline
             motion.runStrideSpeed = MeasureStrideSpeed(model, runClip);
             HeroArtDefinitions.Clip climbDef = h.Clips.First(c => c.Name == "Climb");
             motion.climbCycleSeconds = climbClip.length / Mathf.Max(0.05f, climbDef.Speed);
+            // In-place climb: remove the take's steady hip rise so the loop closes; that rise is exactly how far one
+            // cycle climbs, so it becomes the playback reference (hands stay on the rungs at any motor speed).
+            AnimationClip inPlace = MakeInPlaceClimb(h, model, climbClip, out float risePerCycle);
+            motion.climbAdvancePerCycle = risePerCycle;
+            foreach (var st in controller.layers[0].stateMachine.states)
+                if (st.state.name == "Climb") st.state.motion = inPlace;
+            EditorUtility.SetDirty(controller);
             anim.runtimeAnimatorController = null;
             controller.animationClips.First(c => c.name == "Idle").SampleAnimation(model, 0f);
             anim.runtimeAnimatorController = controller;

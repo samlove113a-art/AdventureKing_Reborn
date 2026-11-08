@@ -142,14 +142,45 @@ namespace AdventureKing.Tests
         }
 
         /// <summary>Phone-shaped frame (19.5:9) with the touch controls shown, captured from the running game.</summary>
-        private static IEnumerator PhoneShot(string name)
+        private static IEnumerator PhoneShot(string name) => TouchShot(name, 2340, 1080);
+
+        private static IEnumerator TouchShot(string name, int w, int h)
         {
             // Emulate a phone: touch controls on, keyboard-only hints off (as TouchControlsVisibility does on device).
             var all = Object.FindObjectsByType<TouchControlsVisibility>(FindObjectsInactive.Include);
             var saved = all.Select(t => (t.gameObject, t.gameObject.activeSelf)).ToArray();
             foreach (var t in all) t.gameObject.SetActive(!t.hideOnTouch);
-            yield return Shot(name, 2340, 1080);
+            yield return Shot(name, w, h);
             foreach (var (go, active) in saved) go.SetActive(active);
+        }
+
+        /// <summary>
+        /// Night preview: lantern glows driven by LanternGlow at WorldLighting.Night = 1 with the sun and ambient
+        /// dimmed (the real UTC+7 cycle comes in Phase B). Checks the lamps actually brighten, then restores day.
+        /// </summary>
+        private static IEnumerator NightShot(string name)
+        {
+            var glows = Object.FindObjectsByType<LanternGlow>(FindObjectsInactive.Exclude);
+            Assert.GreaterOrEqual(glows.Length, 4, "lanterns with glow in town");
+            float day = glows.Average(g => g.Strength);
+            Light sun = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude).FirstOrDefault(l => l.type == LightType.Directional);
+            float sunI = sun ? sun.intensity : 0f;
+            Color sunC = sun ? sun.color : Color.white, amb = RenderSettings.ambientLight;
+            var ambMode = RenderSettings.ambientMode;
+            WorldLighting.Night = 1f;
+            if (sun) { sun.intensity = sunI * 0.28f; sun.color = new Color(0.55f, 0.62f, 0.95f); }
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.16f, 0.19f, 0.32f);
+            yield return null;
+            yield return null;
+            float night = glows.Average(g => g.Strength);
+            Assert.Greater(night, day * 3f, $"lanterns brighten at night (day {day:0.00}, night {night:0.00})");
+            yield return Shot(name);
+            WorldLighting.Night = 0f;
+            if (sun) { sun.intensity = sunI; sun.color = sunC; }
+            RenderSettings.ambientMode = ambMode;
+            RenderSettings.ambientLight = amb;
+            yield return null;
         }
 
         private static IEnumerator Shot(string name, int w = 1280, int h = 720)
@@ -166,6 +197,44 @@ namespace AdventureKing.Tests
             RenderTexture.active = null;
             Object.Destroy(tex);
             rt.Release();
+        }
+
+        /// <summary>
+        /// PC frame rate in the real town (Editor Play Mode, batch run on this PC - not a player build, not a phone):
+        /// wall-clock frame times while the hero runs across the plaza, stream and bridge area.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator Town_Pc_Frame_Rate()
+        {
+            yield return server.OpenGame();
+            yield return TestServer.RegisterCreateAndEnter("fps.tester@test.vn", "fps-pass-2026", HeroClass.Mage, "Đo Khung Hình");
+            Bind();
+            var greeter = Object.FindAnyObjectByType<ElderGreeter>();
+            float until = Time.time + 20f;
+            while (greeter && !greeter.DialogOpen && Time.time < until) yield return null;
+            if (greeter && greeter.DialogOpen) greeter.Close();
+            until = Time.time + 15f;
+            while (greeter && !greeter.Done && Time.time < until) yield return null;
+            for (int i = 0; i < 60; i++) yield return null; // warm-up
+            var watch = new System.Diagnostics.Stopwatch();
+            var frames = new System.Collections.Generic.List<double>();
+            float target = -30f;
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Left, true);
+            while (frames.Count < 600 && Pos.x > target)
+            {
+                watch.Restart();
+                yield return null;
+                frames.Add(watch.Elapsed.TotalMilliseconds);
+            }
+            ReleaseAll();
+            frames.Sort();
+            double avg = frames.Average(), p95 = frames[(int)(frames.Count * 0.95)], worst = frames.Last();
+            string report = $"PC Editor Play Mode (batch) on this machine: {frames.Count} frames, avg {avg:0.0} ms ({1000 / avg:0} FPS), " +
+                            $"p95 {p95:0.0} ms ({1000 / p95:0} FPS), worst {worst:0.0} ms. Graphics: {SystemInfo.graphicsDeviceName}, " +
+                            $"CPU: {SystemInfo.processorType}. Not a player build; phone FPS NOT measured (no device).";
+            File.WriteAllText("QA/HubTest/fps_pc.txt", report + "\n");
+            TestContext.WriteLine(report);
+            Assert.Less(avg, 33.4, "PC should hold at least 30 FPS on average in the town");
         }
 
         [UnityTest]
@@ -228,6 +297,8 @@ namespace AdventureKing.Tests
             Assert.AreEqual(TownLayout.Hub.Spawn.x, Pos.x, 0.3f);
             yield return Shot("01_spawn");
             yield return PhoneShot("01b_spawn_phone_19.5x9");
+            yield return TouchShot("01d_spawn_tablet_4x3", 2048, 1536);
+            yield return NightShot("01c_spawn_night_lanterns");
             float peak = Pos.y;
             input.SetTouchHeld(PlayerInput2D.TouchAction.Jump, true);
             for (float t = 0; t < 0.5f; t += Time.deltaTime) { peak = Mathf.Max(peak, Pos.y); yield return null; }

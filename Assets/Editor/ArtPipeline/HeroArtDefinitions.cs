@@ -35,10 +35,14 @@ namespace AdventureKing.ArtPipeline
         private static Clip[] Shared(string idleTake, float idleLast) => new[]
         {
             new Clip("Idle", idleTake, 0, idleLast, true),
-            new Clip("Run", "Run_02", 0, 17, true) { Events = new[] { (0.5f, "OnFootstep"), (9f, "OnFootstep") } },
+            // Loop ranges = the full take cycles found by MotionQualityAudit.LoopSearch (QA/AnimAudit/loop_search.md);
+            // the old 0-17 Run / 0-38 Climb cuts popped 47-54° at every loop seam.
+            new Clip("Run", "Run_02", 0, 21, true) { Events = new[] { (0.5f, "OnFootstep"), (11f, "OnFootstep") } },
             new Clip("Jump", "Regular_Jump", 12, 19) { BakeY = true },
             new Clip("Fall", "Regular_Jump", 19, 25) { BakeY = true },
-            new Clip("Climb", "Ladder_Climb_Loop", 0, 38, true) { BakeY = true },
+            // The take lifts the hips ~0.2 m per cycle; HeroArtPipeline derives an in-place copy (drift removed) because
+            // the motor already lifts the hero - otherwise the body sinks ~30 cm at every loop seam.
+            new Clip("Climb", "Ladder_Climb_Loop", 1, 48, true) { BakeY = true },
             new Clip("Hit", "Hit_Reaction", 0, 30) { Speed = 1.5f },
             new Clip("Death", "dying_backwards", 0, 53),
         };
@@ -57,7 +61,7 @@ namespace AdventureKing.ArtPipeline
             {
                 Class = HeroClass.Swordsman, Folder = "Assets/Art/Characters/Swordsman", Fbx = "Swordsman.fbx",
                 Weapons = new[] { ("RightHand", "Sword_Starter") },
-                Clips = With(Shared("Combat_Stance", 40),
+                Clips = With(Shared("Combat_Stance", 50),
                     new Clip("Attack", "Right_Hand_Sword_Slash", 0, 30) { Speed = 1.2f, Events = new[] { (13f, "OnAttackImpact") } },
                     new Clip("Skill", "Triple_Combo_Attack", 0, 70)
                     {
@@ -69,7 +73,7 @@ namespace AdventureKing.ArtPipeline
             {
                 Class = HeroClass.Mage, Folder = "Assets/Art/Characters/Mage", Fbx = "Mage.fbx",
                 Weapons = new[] { ("RightHand", "Staff_Starter") },
-                Clips = With(Shared("Idle_02", 45),
+                Clips = With(Shared("Idle_02", 56),
                     new Clip("Attack", "mage_soell_cast", 0, 40) { Speed = 1.0f, Events = new[] { (14f, "OnAttackImpact") } },
                     new Clip("Skill", "Charged_Spell_Cast", 0, 62)
                     {
@@ -80,7 +84,7 @@ namespace AdventureKing.ArtPipeline
             {
                 Class = HeroClass.Assassin, Folder = "Assets/Art/Characters/Assassin", Fbx = "Assassin.fbx",
                 Weapons = new[] { ("RightHand", "Dagger_Starter"), ("LeftHand", "Dagger_Starter_L") },
-                Clips = With(Shared("Combat_Stance", 40),
+                Clips = With(Shared("Combat_Stance", 50),
                     new Clip("Attack", "Double_Combo_Attack", 4, 36) { Speed = 2.4f, Events = new[] { (15f, "OnAttackImpact"), (29f, "OnAttackImpact") } },
                     new Clip("Skill", "Double_Blade_Spin", 0, 56)
                     {
@@ -93,7 +97,7 @@ namespace AdventureKing.ArtPipeline
             {
                 Class = HeroClass.Archer, Folder = "Assets/Art/Characters/Archer", Fbx = "Archer.fbx",
                 Weapons = new[] { ("LeftHand", "Bow_Starter") },
-                Clips = With(Shared("Idle_02", 45),
+                Clips = With(Shared("Idle_02", 56),
                     new Clip("Attack", "Archery_Shot_3", 0, 16) { Speed = 0.8f, Events = new[] { (10f, "OnAttackImpact") } },
                     new Clip("Skill", "Archery_Shot", 24, 76)
                     {

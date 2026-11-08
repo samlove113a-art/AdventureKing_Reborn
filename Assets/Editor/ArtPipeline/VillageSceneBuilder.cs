@@ -94,11 +94,11 @@ namespace AdventureKing.ArtPipeline
             Prop(art, "market_stall", -30f, 3.2f, 4.6f, false);
             Prop(art, "crates", -25f, 2.6f, 2.1f, true);
             Prop(art, "crates", 52f, 2.6f, 2f, false);
-            Prop(art, "stone_lantern", -8f, 2.4f, 2f, false);
-            Prop(art, "stone_lantern", 17f, 2.4f, 2f, true);
-            Prop(art, "lantern_post", -1.5f, 2f, 3.6f, false);
-            Prop(art, "lantern_post", 29f, 2f, 3.6f, true);
-            Prop(art, "lantern_post", 63f, 2.2f, 3.6f, false);
+            Lantern(art, "stone_lantern", -8f, 2.4f, 2f, false);
+            Lantern(art, "stone_lantern", 17f, 2.4f, 2f, true);
+            Lantern(art, "lantern_post", -1.5f, 2f, 3.6f, false);
+            Lantern(art, "lantern_post", 29f, 2f, 3.6f, true);
+            Lantern(art, "lantern_post", 63f, 2.2f, 3.6f, false);
             Prop(art, "planter", 9f, 2.2f, 1.3f, false);
             Prop(art, "planter", -35f, 2.2f, 1.3f, true);
             // The parchment panel is portrait (≈0.76 × 0.92 m): short lines, broken by meaning, never by the wrapper.
@@ -138,11 +138,11 @@ namespace AdventureKing.ArtPipeline
             Prop(art, "bamboo", 34f, 8f, 7f, true);
             Prop(art, "bamboo", 70f, 7f, 6.5f, false);
             Prop(art, "stone_bridge", 62f, 9f, 4f, false);
-            Prop(art, "stone_lantern", -30f, 2.4f, 2f, false);
-            Prop(art, "stone_lantern", 10f, 2.4f, 2f, true);
+            Lantern(art, "stone_lantern", -30f, 2.4f, 2f, false);
+            Lantern(art, "stone_lantern", 10f, 2.4f, 2f, true);
             Prop(art, "planter", 24f, 2.4f, 1.3f, false);
             Prop(art, "crates", 44f, 2.6f, 2f, true);
-            Prop(art, "lantern_post", -42.5f, 2f, 3.6f, false);
+            Lantern(art, "lantern_post", -42.5f, 2f, 3.6f, false);
             Signboard(art, -33f, 2.6f, "Đồng Cỏ Gió\n←\nVề\nThị Trấn");
             foreach (var p in TownLayout.Meadow.Portals) Portal(play, p);
 
@@ -486,7 +486,33 @@ namespace AdventureKing.ArtPipeline
                 float sx = TownLayout.Hub.StreamX, hw = TownLayout.Hub.StreamHalfWidth;
                 Bank("west", minX - 14f, sx - hw, 5);
                 Bank("east", sx + hw, maxX + 14f, 9);
-                Prim(PrimitiveType.Cube, art, "StreamBed", new Vector3(sx, -2.9f, 7f), new Vector3(hw * 2f, 4f, 17f), Mat("stream_bed", new Color(0.4f, 0.32f, 0.27f)));
+                // Bed sits behind the cascade (its front face used to cover the falling water with a flat brown box).
+                Prim(PrimitiveType.Cube, art, "StreamBed", new Vector3(sx, -2.9f, 7.25f), new Vector3(hw * 2f, 4f, 17f), Mat("stream_bed", new Color(0.4f, 0.32f, 0.27f)));
+                // Mossy stones cap the two cut banks (the ground core's cross-section) where the stream breaks the strip.
+                var srng = new System.Random(612);
+                Color stoneA = new Color(0.54f, 0.52f, 0.48f), stoneB = new Color(0.4f, 0.41f, 0.43f), mossy = new Color(0.42f, 0.5f, 0.34f);
+                foreach (float side in new[] { -1f, 1f })
+                {
+                    float bx = sx + side * hw;
+                    Mesh stones = WorldKit.Build($"bank_stones_{SceneTag}_{(side < 0 ? "w" : "e")}", (v, c, t) =>
+                    {
+                        // Rounded river stones set half into the bank, under the grass lip (never over the boardwalk).
+                        float y = -2.55f;
+                        for (int i = 0; i < 4; i++)
+                        {
+                            float h = 0.5f + (float)srng.NextDouble() * 0.2f, w = 0.6f + (float)srng.NextDouble() * 0.25f;
+                            for (float z = -1.5f; z < 1.6f; z += 0.95f)
+                            {
+                                Color col = Color.Lerp(stoneA, stoneB, (float)srng.NextDouble());
+                                if (i == 3) col = Color.Lerp(col, mossy, 0.55f); // top course is mossy
+                                WorldKit.AppendRoundedBox(v, c, t, new Vector3(side * (0.18f + (float)srng.NextDouble() * 0.1f), y + h * 0.5f, z),
+                                    new Vector3(w, h, 0.95f), 0.24f, col, Quaternion.Euler((float)srng.NextDouble() * 10f, (float)srng.NextDouble() * 24f - 12f, (float)srng.NextDouble() * 12f - 6f), 3);
+                            }
+                            y += h * 0.9f;
+                        }
+                    });
+                    MeshObject(art, "BankStones", stones, Structures, new Vector3(bx, 0f, 0f));
+                }
             }
             // Grass tufts and flowers on the lip and the meadow behind (3D, vertex-coloured).
             Material vc = WorldKit.VertexColorMaterial("world_props_vc", 0f);
@@ -585,7 +611,10 @@ namespace AdventureKing.ArtPipeline
                 mi.SaveAndReimport();
             }
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(fbx);
-            Mesh mesh = prefab.GetComponentInChildren<MeshFilter>().sharedMesh;
+            // The Meshy block has rounded end caps, so blocks can never abut cleanly. Use its core instead: both ends
+            // clipped off exactly (triangles split on the cut planes) and alternate tiles mirrored, so every joint
+            // joins two identical cross-sections (same silhouette, texture and normals).
+            Mesh mesh = GroundCore(prefab.GetComponentInChildren<MeshFilter>().sharedMesh);
             Vector3[] vs = mesh.vertices;
             Bounds b = mesh.bounds;
             // Grass surface = 80th percentile of vertex heights (ignores tufts/flowers sticking up).
@@ -595,14 +624,23 @@ namespace AdventureKing.ArtPipeline
             m.SetFloat("_OutlineWidth", 0.012f);
             var rng = new System.Random(seed);
             const float tileLen = 7.5f, faceHeight = 2.6f, depthFront = 6.5f;
+            // Seamless strip: cores abut exactly (a 0.2% overlap only guards against float cracks) and every other one
+            // is mirrored, so each joint meets a mirror copy of the same cross-section.
+            // Fit a whole number of cores exactly between x0 and x1 (banks end precisely at the stream edges).
+            int count = Mathf.Max(1, Mathf.RoundToInt((x1 - x0) / tileLen));
+            float fit = (x1 - x0) / count;
+            float step = fit * 0.998f;
             void Row(float zFront, float depth, string tag)
             {
-                for (float x = x0; x < x1; x += tileLen * 0.9f)
+                int index = 0;
+                for (float x = x0; index < count; x += fit, index++)
                 {
                     var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, art);
+                    PrefabUtility.UnpackPrefabInstance(go, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+                    go.GetComponentInChildren<MeshFilter>().sharedMesh = mesh;
                     go.name = "GroundBlock_" + tag;
-                    bool flip = rng.NextDouble() < 0.5;
-                    float sx = tileLen / b.size.x, sy = faceHeight / (surface - b.min.y), sz = depth / b.size.z;
+                    bool flip = (index & 1) == 1;
+                    float sx = fit / b.size.x, sy = faceHeight / (surface - b.min.y), sz = depth / b.size.z;
                     go.transform.localScale = new Vector3(flip ? -sx : sx, sy, sz);
                     // Props face +Z in model space (like the heroes): turn 180° so the earth face looks at the camera.
                     go.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * prefab.transform.localRotation;
@@ -614,11 +652,67 @@ namespace AdventureKing.ArtPipeline
                     }
                     // Align with the instance's real world bounds (independent of mirroring/rotation conventions).
                     Bounds wb = go.GetComponentInChildren<Renderer>().bounds;
-                    go.transform.position += new Vector3(x + tileLen * 0.5f - wb.center.x, 0f, zFront - wb.min.z);
+                    go.transform.position += new Vector3(x + fit * 0.5f - wb.center.x, 0f, zFront - wb.min.z);
                 }
             }
             Row(-1.65f, depthFront, "front");
             Row(-1.65f + depthFront - 0.6f, 12f, "back");
+        }
+
+        /// <summary>
+        /// Middle 76% of the ground block along its length: triangles are clipped exactly on the two cut planes
+        /// (new vertices interpolated) and normals on the cuts lose their x part, so mirrored neighbours share the
+        /// same cross-section and shading. Saved next to the FBX (regenerated on every build).
+        /// </summary>
+        private static Mesh GroundCore(Mesh src)
+        {
+            const string path = PropDir + "/ground_block/ground_block_core.asset";
+            Bounds b = src.bounds;
+            float half = b.size.x * 0.38f, cx = b.center.x;
+            Vector3[] sv = src.vertices; Vector3[] sn = src.normals; Vector2[] su = src.uv;
+            int[] st = src.triangles;
+            var v = new List<Vector3>(); var n = new List<Vector3>(); var u = new List<Vector2>(); var t = new List<int>();
+            (Vector3 p, Vector3 n, Vector2 u) V(int i) => (sv[i], sn[i], su[i]);
+            (Vector3, Vector3, Vector2) Lerp((Vector3 p, Vector3 n, Vector2 u) a, (Vector3 p, Vector3 n, Vector2 u) c, float k) =>
+                (Vector3.Lerp(a.p, c.p, k), Vector3.Lerp(a.n, c.n, k).normalized, Vector2.Lerp(a.u, c.u, k));
+            // Clip a polygon against x <= limit (sign=+1) or x >= limit (sign=-1).
+            List<(Vector3 p, Vector3 n, Vector2 u)> Clip(List<(Vector3 p, Vector3 n, Vector2 u)> poly, float limit, float sign)
+            {
+                var o = new List<(Vector3, Vector3, Vector2)>();
+                for (int i = 0; i < poly.Count; i++)
+                {
+                    var a = poly[i]; var c = poly[(i + 1) % poly.Count];
+                    float da = (a.p.x - limit) * sign, dc = (c.p.x - limit) * sign; // <= 0 inside
+                    if (da <= 0f) o.Add(a);
+                    if ((da < 0f && dc > 0f) || (da > 0f && dc < 0f)) o.Add(Lerp(a, c, da / (da - dc)));
+                }
+                return o;
+            }
+            for (int i = 0; i < st.Length; i += 3)
+            {
+                var poly = new List<(Vector3 p, Vector3 n, Vector2 u)> { V(st[i]), V(st[i + 1]), V(st[i + 2]) };
+                poly = Clip(poly, cx + half, 1f);
+                if (poly.Count >= 3) poly = Clip(poly, cx - half, -1f);
+                if (poly.Count < 3) continue;
+                int start = v.Count;
+                foreach (var p in poly)
+                {
+                    Vector3 nn = p.n;
+                    if (Mathf.Abs(Mathf.Abs(p.p.x - cx) - half) < 1e-4f) { nn.x = 0f; nn = nn.sqrMagnitude > 1e-8f ? nn.normalized : Vector3.up; }
+                    v.Add(new Vector3(p.p.x - cx, p.p.y, p.p.z)); n.Add(nn); u.Add(p.u);
+                }
+                for (int k = 1; k + 1 < poly.Count; k++) { t.Add(start); t.Add(start + k); t.Add(start + k + 1); }
+            }
+            var core = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            if (!core) { core = new Mesh(); AssetDatabase.CreateAsset(core, path); }
+            core.Clear();
+            core.name = "ground_block_core";
+            core.indexFormat = v.Count > 65000 ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;
+            core.SetVertices(v); core.SetNormals(n); core.SetUVs(0, u); core.SetTriangles(t, 0);
+            core.RecalculateBounds();
+            EditorUtility.SetDirty(core);
+            Debug.Log($"[WORLD] ground core: {src.vertexCount} -> {core.vertexCount} vertices, length {b.size.x:0.00} -> {core.bounds.size.x:0.00}");
+            return core;
         }
 
         private static Material Structures => WorldKit.VertexColorMaterial("world_structures", 0.01f);
@@ -669,23 +763,39 @@ namespace AdventureKing.ArtPipeline
             {
                 for (float x = d.XMin + 0.3f; x < d.XMax; x += 0.6f)
                 {
-                    float k = (x - d.XMin) / len, sag = Mathf.Sin(k * Mathf.PI) * 0.12f, j = (float)rng.NextDouble();
+                    // gentle 6 cm sag only: the walkway collider is flat, feet must stay on the boards
+                    float k = (x - d.XMin) / len, sag = Mathf.Sin(k * Mathf.PI) * 0.06f, j = (float)rng.NextDouble();
                     WorldKit.AppendRoundedBox(v, c, t, new Vector3(x, -0.1f - sag, 1f), new Vector3(0.5f, 0.14f, 2.4f), 0.05f,
                         Color.Lerp(new Color(0.74f, 0.54f, 0.35f), new Color(0.6f, 0.42f, 0.28f), j), Quaternion.Euler(0f, (j - 0.5f) * 4f, (j - 0.5f) * 2f), 1);
                 }
             });
             MeshObject(root, "Planks", planks, Structures, new Vector3(0f, d.Top, 0f));
-            foreach (float z in new[] { -0.2f, 2.2f })
-                for (float x = d.XMin; x < d.XMax; x += 1f)
+            // Continuous sagging hand ropes, a guide rope along the boards, hangers tying them together and stout end
+            // posts - one smooth mesh (the old 1 m cylinder pieces were visibly broken at every joint).
+            Color ropeA = new Color(0.8f, 0.66f, 0.44f), ropeB = new Color(0.62f, 0.49f, 0.32f), postCol = new Color(0.42f, 0.29f, 0.2f);
+            Mesh ropes = WorldKit.Build($"bridge_ropes_{SceneTag}_{d.Name}", (v, c, t) =>
+            {
+                float Hand(float x) => 1.02f - Mathf.Sin((x - d.XMin) / len * Mathf.PI) * 0.34f;
+                foreach (float z in new[] { -0.2f, 2.2f })
                 {
-                    float t0 = (x - d.XMin) / len, t1 = Mathf.Min(1f, (x + 1f - d.XMin) / len);
-                    float y0 = d.Top + 0.9f - Mathf.Sin(t0 * Mathf.PI) * 0.35f, y1 = d.Top + 0.9f - Mathf.Sin(t1 * Mathf.PI) * 0.35f;
-                    float ang = Mathf.Atan2(y1 - y0, 1f) * Mathf.Rad2Deg;
-                    Prim(PrimitiveType.Cylinder, root, "HandRope", new Vector3(x + 0.5f, (y0 + y1) * 0.5f, z), new Vector3(0.05f, 0.5f, 0.05f), rope,
-                        new Vector3(0f, 0f, 90f - ang), shadows: false);
-                    if (((int)x) % 2 == 0)
-                        Prim(PrimitiveType.Cylinder, root, "Hanger", new Vector3(x, (y0 + d.Top) * 0.5f, z), new Vector3(0.03f, (y0 - d.Top) * 0.5f, 0.03f), rope, shadows: false);
+                    var hand = new List<Vector3>(); var guide = new List<Vector3>();
+                    for (float x = d.XMin; x <= d.XMax + 0.001f; x += 0.4f)
+                    {
+                        hand.Add(new Vector3(x, Hand(x), z));
+                        guide.Add(new Vector3(x, 0.04f - Mathf.Sin((x - d.XMin) / len * Mathf.PI) * 0.06f, z));
+                    }
+                    WorldKit.AppendTube(v, c, t, hand, 0.045f, ropeA, 8);
+                    WorldKit.AppendTube(v, c, t, guide, 0.035f, ropeB, 7);
+                    for (float x = d.XMin + 1f; x < d.XMax - 0.5f; x += 1f)
+                        WorldKit.AppendTube(v, c, t, new[] { new Vector3(x, Hand(x), z), new Vector3(x, 0.04f, z) }, 0.022f, ropeB, 6);
+                    foreach (float x in new[] { d.XMin, d.XMax })
+                    {
+                        WorldKit.AppendRoundedBox(v, c, t, new Vector3(x, 0.45f, z), new Vector3(0.22f, 1.3f, 0.22f), 0.07f, postCol, Quaternion.identity, 2);
+                        WorldKit.AppendRoundedBox(v, c, t, new Vector3(x, 1.12f, z), new Vector3(0.3f, 0.1f, 0.3f), 0.04f, postCol * 0.8f, Quaternion.identity, 1);
+                    }
                 }
+            });
+            MeshObject(root, "Ropes", ropes, Structures, new Vector3(0f, d.Top, 0f));
         }
 
         private static void ClimbZone(Transform art, Transform play, TownLayout.Climb c)
@@ -905,6 +1015,53 @@ namespace AdventureKing.ArtPipeline
             m.SetFloat("_Strength", 0.5f);
             EditorUtility.SetDirty(m);
             mats["blob_shadow"] = m;
+            return m;
+        }
+
+        /// <summary>
+        /// Lantern prop + mobile-friendly light (no real-time light): an additive glow placed on the part that is
+        /// painted as the light (red paper / warm window, found on the model's own texture) and a warm pool on the
+        /// ground. LanternGlow fades them with WorldLighting.Night.
+        /// </summary>
+        private static void Lantern(Transform parent, string name, float x, float z, float height, bool flip)
+        {
+            GameObject prop = Prop(parent, name, x, z, height, flip);
+            if (!prop) return;
+            System.Func<Color, bool> lit = name == "lantern_post"
+                ? (c => { Color.RGBToHSV(c, out float h, out float s, out float v); return (h < 0.035f || h > 0.96f) && s > 0.55f && v > 0.45f; })
+                : (c => { Color.RGBToHSV(c, out float h, out float s, out float v); return h > 0.07f && h < 0.17f && s > 0.35f && v > 0.72f; });
+            if (!SignPanelMeasure.TryFindRegion(prop, $"{PropDir}/{name}/{name}_baseColor.png", lit, out Vector3 centre, out Vector2 size))
+            {
+                Debug.LogWarning($"[WORLD] {name} at x={x}: no light region found on the texture, no glow");
+                return;
+            }
+            Material glow = GlowMat();
+            float r = Mathf.Max(size.x, size.y);
+            var halo = Prim(PrimitiveType.Quad, prop.transform.parent, "LanternHalo", centre + new Vector3(0f, 0f, -0.25f),
+                new Vector3(r * 2.6f, r * 2.6f, 1f), glow, shadows: false);
+            float groundY = 0.035f;
+            var pool = Prim(PrimitiveType.Quad, prop.transform.parent, "LanternPool", new Vector3(centre.x, groundY, centre.z - 0.6f),
+                new Vector3(3.4f, 2.2f, 1f), glow, new Vector3(90f, 0f, 0f), shadows: false);
+            var lg = halo.AddComponent<LanternGlow>();
+            lg.Bind(halo.GetComponent<Renderer>(), pool.GetComponent<Renderer>());
+            Debug.Log($"[WORLD] {name} at x={x}: light region {size.x:0.00}x{size.y:0.00} m at {centre}");
+        }
+
+        private static Material GlowMat()
+        {
+            if (mats.TryGetValue("lantern_glow", out Material cached)) return cached;
+            string path = $"{MatDir}/lantern_glow_add.mat";
+            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (!m) { m = new Material(Shader.Find("AdventureKing/VFX")); AssetDatabase.CreateAsset(m, path); }
+            m.shader = Shader.Find("AdventureKing/VFX");
+            m.SetTexture("_MainTex", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/VFX/Textures/soft_dot.png"));
+            m.SetColor("_TintColor", new Color(1f, 0.62f, 0.3f, 1f) * 0.18f); // edit-time default = the faint day glow
+            m.SetFloat("_Intensity", 1.6f);
+            m.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            m.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.One);
+            m.enableInstancing = true;
+            EditorUtility.SetDirty(m);
+            mats["lantern_glow"] = m;
             return m;
         }
 

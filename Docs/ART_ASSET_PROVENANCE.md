@@ -47,6 +47,9 @@ Số dư sau toàn bộ phiên 2026-11-08: **931 credit** (không mua thêm).
   - Chữ nhãn ("VIP 1", "BOSS HUNTER 3"…) là chữ AI vẽ sẵn trong ảnh, độ nét không đều.
 - Việc cần làm trước khi dùng: vẽ lại/upscale từng khung ở ≥ 512 px chiều ngang, sửa mép, tách nhãn cấp thành chữ động hoặc kiểm tra từng nhãn; giữ tên nhân vật là chữ động.
 
+## Lớp biểu cảm khuôn mặt, ngói, dây, đèn (2026-11-08, đợt A2)
+Tự tạo hoàn toàn trong repo, không tài nguyên bên ngoài, **0 credit Meshy**: lớp mặt shader (`AK_Toon.shader` `_FACE`, `HeroFaceRig.cs`, `HeroFaceImport.cs`, `HeroFace.cs`) đo từ texture gốc của chính 4 nhân vật; ngói âm dương, đầu đao, dây cầu treo, đá bờ suối dựng bằng mã (`WorldKit.cs`); lõi khối đất cắt từ model Meshy đã có; hào quang đèn lồng dùng texture `soft_dot.png` tự tạo; clip leo tại chỗ dẫn xuất từ animation Meshy đã có (`InPlace/Climb.anim`).
+
 ## Font
 `Be Vietnam Pro` (Regular/SemiBold/Bold/ExtraBold) và `Nunito` — tải từ kho chính thức google/fonts, giấy phép **SIL Open Font License 1.1** (cho phép nhúng vào game thương mại); file `OFL.txt` đặt cạnh font trong `Assets/Art/Fonts/`. Tải theo phê duyệt của chủ dự án ngày 2026-11-08.
 

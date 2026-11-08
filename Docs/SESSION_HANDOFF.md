@@ -6,7 +6,53 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
-## ★ Cập nhật mới nhất — 2026-11-08 chiều: Giai đoạn A, đợt 1 (theo "Yêu cầu tổng hợp phát triển")
+## ★★ Cập nhật mới nhất — Giai đoạn A, đợt 2 (nhân vật, animation, sảnh)
+**Commit:** "Phase A2: hero faces, seamless loops, town polish" trên `feat/diamond-store-catalog-20261107`, nối tiếp `85c770d` (SHA: `git log -1`). **Meshy: 0 credit** (chỉ Unity + công cụ tự viết; số dư vẫn 931).
+
+### Ưu tiên 1 — Biểu cảm khuôn mặt 4 nghề (đã làm, có kiểm chứng Play Mode)
+- **Kiểm tra thực tế:** FBX Meshy **không có** xương mặt, xương ngón, blendshape; mắt/miệng chỉ là hình vẽ trên atlas texture bị chia mảnh ⇒ shape key hình học sẽ làm méo hình vẽ. **Không giả vờ có blendshape.**
+- **Giải pháp (lớp mặt có kiểm soát, không dán ảnh):** `HeroFaceRig` dựng ảnh chính diện từ mesh bind-pose + texture của từng nhân vật, tự **đo** vị trí 2 mắt, miệng, màu da, màu mí, màu mi, màu môi (`QA/Faces/diag_all.png`). `HeroFaceImport` ghi toạ độ mặt vào kênh UV3 lúc import (FBX/rig/clip gốc không đổi). Shader `AdventureKing/Toon` (`_FACE`) **giữ nguyên mắt vẽ gốc** (nhận diện), vẽ **mí mắt thật** (trên + dưới, viền mi chạy theo mép mí), vẽ lại miệng (cười, mếu, há, run), má hồng, nước mắt. `HeroFace` (runtime) trộn biểu cảm + chớp mắt ngẫu nhiên 2.2–5.8 s, 14% chớp đôi, ~0.23 s/lần.
+- Biểu cảm: Bình thường, Vui (mắt ^^, cười há, má hồng), Buồn (mí xệ đuôi, mếu, nước mắt), Ngạc nhiên (miệng O), Tức giận (mí xiên vào trong), Đau (mắt >< + miệng run) — tự bật khi trúng đòn (Health2D), giận khi đánh/skill. Chạy chồng lên Idle/Run/Jump/Attack/Skill (chỉ đổi 3 vector shader, không đụng Animator).
+- **Bằng chứng:** `HeroFaceTests` (Play Mode, prefab thật, Idle chạy nền): `QA/Faces/play_sheet_full.png` (4 nghề × Idle/Blink/Happy/Sad/Surprised/Angry/Hit), ảnh lẻ `QA/Faces/play_<Nghề>_<Biểu cảm>.png`; kiểm tra số: chớp mắt đóng ≥97%, Vui mắt đóng thành vòng cung, Buồn miệng mếu, Idle vẫn chạy.
+- **Hạn chế còn lại:** "Ngạc nhiên" chỉ đổi miệng (mắt vẽ không thể mở to hơn); lông mày không đổi (vẽ trên texture, có tóc che); ngón tay vẫn không có xương (cần rig lại ngón trong Blender — chưa làm).
+
+### Ưu tiên 2 — Animation (đã đo, đã sửa nguyên nhân rung/giật)
+- Công cụ mới: `MotionQualityAudit` (seam vòng lặp + rung tần số cao đầu/tay/vũ khí), `LoopSearch` (dò dải frame lặp thật trong take Meshy), test Play Mode `HeroMotionTests` đo trên Animator thật.
+- **Nguyên nhân "rung lắc/giật về vị trí đầu" tìm được (trước sửa):** Run bị cắt 0–17 trong chu kỳ 21 frame ⇒ khớp chân nhảy **53.6°** mỗi vòng (≈3 lần/giây); Climb cắt 0–38/48 ⇒ **47°** + hông rơi **18–31 cm** mỗi vòng; Idle cắt ngắn ⇒ giật 3–5° mỗi 1.3 s. Rung trong clip rất nhỏ (đầu/tay ≤ 0.1 cm) ⇒ không phải camera.
+- **Sửa:** Idle dùng trọn take (lặp 0.0°), Run 0–21, Climb 1–48, bật Loop Pose; Climb tạo bản **tại chỗ** (`InPlace/Climb.anim`, bỏ trôi hông theo chu kỳ — FBX không đổi); tốc độ phát Climb theo độ cao leo thật của clip × tỉ lệ nhân vật.
+- **Sau sửa (Play Mode, Animator thật, 4 s × 4 nghề):** Idle hông ≤ 0.07 cm/frame (thở nhẹ, không lắc), Run không có frame nhảy (max ≤ 2.2× p90), Climb hông ≤ 0.65 cm/frame (hết giật 30 cm). File: `QA/AnimAudit/playmode_motion.txt`, `motion_quality.md`, `loop_search.md`.
+- Trạng thái: test `All_Gameplay_States_Reached_And_Captured` — 4 nghề × Idle/Run/Jump/Fall/Climb/Attack/Skill/Hit đều vào đúng state, ảnh `QA/AnimAudit/play_states_all.png`. Vũ khí bám tay ≤ 5.2 cm, trượt chân khi chạy 0%.
+- Camera: đã kiểm (Rigidbody2D Interpolate + SmoothDamp trong LateUpdate) — không phải nguồn rung.
+- **Hạn chế còn lại:** tay khi leo thang chỉ đi 10–13% tốc độ leo ở 1× (take Meshy với tầm với ~0.18 m/chu kỳ); dù phát nhanh 3.5× vẫn trượt trên thanh thang ~3×. Cần clip leo mới (keyframe Blender) hoặc giảm tốc độ leo — **cần chủ dự án chọn**. Không có xương ngón tay ⇒ bàn tay nắm cố định.
+
+### Ưu tiên 3 — Sảnh 3D (đã sửa, ảnh trước/sau)
+Ảnh trước: `QA/Before_PhaseA2/`; ảnh sau: `QA/WorldCaptures/`, `QA/HubTest/`.
+| Hạng mục | Sửa |
+|---|---|
+| Mối nối khối đất | Lõi khối đất (`ground_block_core.asset`): cắt bỏ 2 đầu bo tròn bằng clip tam giác chính xác, normal mặt cắt vuông góc, lát xen kẽ soi gương ⇒ mỗi mối nối là 2 mặt cắt giống hệt; bờ suối khớp chính xác |
+| Mái ngói mép sàn | Ngói âm dương cong thật 2 hàng so le, nắp tròn đầu ngói, xà nóc, **đầu đao cong vút** 2 góc (thay hộp phẳng nghiêng) |
+| Cầu treo, dây | Dây tay vịn liền mạch võng tự nhiên, dây dẫn dọc ván, dây treo, cột đầu cầu (thay ống trụ rời rạc lệch nhau) |
+| Đèn lồng ban đêm | `LanternGlow`: hào quang cộng sáng đặt đúng phần giấy đỏ/ô cửa (tìm trên texture), vũng sáng dưới đất; không dùng đèn realtime (mobile). Ban ngày mờ, ban đêm sáng; test kiểm sáng ×3 khi đêm, ảnh `QA/HubTest/01c_spawn_night_lanterns.png` |
+| Suối | Hộp nền nâu che thác đã bỏ, thác tràn mép đất hiện rõ, đá cuội bo tròn bọc mép cắt |
+| Bảng hiệu/hộp thoại | Giữ từ đợt 1 (kiểm tra tự động vẫn đạt) |
+- **Còn lại:** nền vẽ xa chưa tối theo đêm (thuộc hệ ngày/đêm Giai đoạn B); một vạch mảnh giữa hàng đất trước/sau; khu trống chưa thêm chi tiết mới; ván cầu gỗ suối vẫn là khối đơn giản.
+
+### Ưu tiên 4 — Giao diện
+Ảnh Play Mode 3 tỉ lệ: PC 16:9 (`01_spawn`), điện thoại 19.5:9 (`01b`, `00b` hộp thoại), máy tính bảng 4:3 (`01d`): joystick tròn không méo, nút không đè nhân vật/viền, hướng dẫn phím ẩn trên cảm ứng, chữ trong khung. Joystick đa chạm có test riêng. Bàn phím PC vẫn qua toàn bộ test di chuyển. **Thanh HP/MP chưa có trong HUD thị trấn** (chỉ có ở sảnh chọn nhân vật) — thuộc hệ chiến đấu.
+
+### Ưu tiên 5 — Kiểm thử
+- Server **72/72**, EditMode **4/4**, PlayMode **31 đạt / 0 lỗi / 2 bỏ qua** (gói Input System), log không có Exception/lỗi shader — bao gồm test mới: HeroFaceTests, HeroMotionTests ×2, Town_Pc_Frame_Rate, kiểm tra đèn đêm và ảnh 4:3.
+- Cổng Làng ↔ Đồng Cỏ Gió, đăng nhập lại giữ vị trí/dữ liệu: `TownHubTests`, `ServerEndToEndTests` (chạy lại).
+- **FPS PC:** 60 FPS ổn định (trung bình 16.7 ms, p95 16.8 ms, tệ nhất 18 ms — chạm giới hạn vsync) trên GTX 1050 Ti + Xeon E3-1230 v3, Editor Play Mode. `QA/HubTest/fps_pc.txt`. **FPS điện thoại: CHƯA đo — không có thiết bị.**
+- Video Play Mode: `QA/Video/town_playmode_2026-11-08_phaseA2.mp4`.
+
+### Cần chủ dự án quyết định (đợt 2)
+1. Leo thang: làm clip leo mới bằng Blender (tay bám đúng thanh) hay giảm tốc độ leo trong game?
+2. Xương ngón tay: cho phép rig lại bàn tay 4 nhân vật trong Blender (mất 1–2 phiên, không tốn credit)?
+3. Các mục cũ vẫn chờ: ngân sách Meshy, ngưỡng VIP 1–14, khung tên bản sạch, nguồn nhạc, điện thoại Android để thử APK.
+
+---
+## ★ Giai đoạn A, đợt 1 (2026-11-08 chiều) (theo "Yêu cầu tổng hợp phát triển")
 **Commit:** "Phase A: sign/dialog text fit, round joystick, phone HUD, Meshy audit" trên `feat/diamond-store-catalog-20261107`, nối tiếp `8ff5bbb` (SHA: xem `git log -1`).
 
 ### A0. Kiểm tra đầu phiên

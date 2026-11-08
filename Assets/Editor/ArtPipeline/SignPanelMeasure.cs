@@ -129,6 +129,72 @@ namespace AdventureKing.ArtPipeline
             return panel.Size.x > 0.15f && panel.Size.y > 0.1f;
         }
 
+        /// <summary>
+        /// Same camera-side ray grid, for any painted feature (e.g. the red paper of a lantern): returns the centre
+        /// (on the visible surface) and size of the largest connected region whose texels match <paramref name="match"/>.
+        /// </summary>
+        internal static bool TryFindRegion(GameObject prop, string texturePath, System.Func<Color, bool> match, out Vector3 centre, out Vector2 size)
+        {
+            centre = default; size = default;
+            if (!prop || !File.Exists(texturePath)) return false;
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            if (!tex.LoadImage(File.ReadAllBytes(texturePath))) return false;
+            var colliders = new List<MeshCollider>();
+            var bounds = new Bounds(prop.transform.position, Vector3.zero);
+            foreach (var mf in prop.GetComponentsInChildren<MeshFilter>())
+            {
+                if (!mf.sharedMesh) continue;
+                var mc = mf.gameObject.AddComponent<MeshCollider>();
+                mc.sharedMesh = mf.sharedMesh;
+                colliders.Add(mc);
+                bounds.Encapsulate(mf.GetComponent<Renderer>().bounds);
+            }
+            Physics.SyncTransforms();
+            const float step = 0.025f;
+            int nx = Mathf.CeilToInt(bounds.size.x / step), ny = Mathf.CeilToInt(bounds.size.y / step);
+            var on = new bool[nx, ny];
+            var point = new Vector3[nx, ny];
+            for (int i = 0; i < nx; i++)
+                for (int j = 0; j < ny; j++)
+                {
+                    var origin = new Vector3(bounds.min.x + (i + 0.5f) * step, bounds.min.y + (j + 0.5f) * step, bounds.min.z - 1f);
+                    if (!RaycastBoard(origin, colliders, out RaycastHit hit)) continue;
+                    on[i, j] = match(tex.GetPixelBilinear(hit.textureCoord.x, hit.textureCoord.y));
+                    point[i, j] = hit.point;
+                }
+            foreach (var mc in colliders) Object.DestroyImmediate(mc);
+            Object.DestroyImmediate(tex);
+            var label = new int[nx, ny];
+            var stack = new Stack<Vector2Int>();
+            List<Vector2Int> best = null;
+            for (int i = 0; i < nx; i++)
+                for (int j = 0; j < ny; j++)
+                {
+                    if (!on[i, j] || label[i, j] != 0) continue;
+                    var comp = new List<Vector2Int>();
+                    label[i, j] = 1;
+                    stack.Push(new Vector2Int(i, j));
+                    while (stack.Count > 0)
+                    {
+                        var p = stack.Pop(); comp.Add(p);
+                        foreach (var d in new[] { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down })
+                        {
+                            var q = p + d;
+                            if (q.x < 0 || q.y < 0 || q.x >= nx || q.y >= ny || !on[q.x, q.y] || label[q.x, q.y] != 0) continue;
+                            label[q.x, q.y] = 1; stack.Push(q);
+                        }
+                    }
+                    if (best == null || comp.Count > best.Count) best = comp;
+                }
+            if (best == null || best.Count < 12) return false;
+            Vector3 sum = Vector3.zero;
+            int x0 = nx, x1 = 0, y0 = ny, y1 = 0;
+            foreach (var p in best) { sum += point[p.x, p.y]; x0 = Mathf.Min(x0, p.x); x1 = Mathf.Max(x1, p.x); y0 = Mathf.Min(y0, p.y); y1 = Mathf.Max(y1, p.y); }
+            centre = sum / best.Count;
+            size = new Vector2((x1 - x0 + 1) * step, (y1 - y0 + 1) * step);
+            return true;
+        }
+
         private static bool RaycastBoard(Vector3 origin, List<MeshCollider> colliders, out RaycastHit best)
         {
             best = default;

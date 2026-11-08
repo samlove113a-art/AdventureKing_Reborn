@@ -19,6 +19,19 @@ Shader "AdventureKing/Toon"
         _OutlineWidth ("Outline Width (world)", Range(0,0.05)) = 0.006
         _FlashColor ("Hit Flash Color", Color) = (1,1,1,0)
         [Toggle(_VERTEX_COLOR)] _UseVertexColor ("Multiply Vertex Color", Float) = 0
+        // ---- hero face layer (HeroFaceRig measures, HeroFace animates). Face units = face plane / hips-to-head.
+        [Toggle(_FACE)] _FaceLayer ("Face Layer", Float) = 0
+        _EyeA ("Eye A (cx cy rx ry)", Vector) = (0,0,0.1,0.1)
+        _EyeB ("Eye B (cx cy rx ry)", Vector) = (0,0,0.1,0.1)
+        _MouthRect ("Mouth (cx cy hw hh)", Vector) = (0,0,0.1,0.02)
+        _FaceSkin ("Face Skin", Color) = (1,0.82,0.72,1)
+        _LidColorA ("Lid A", Color) = (1,0.82,0.72,1)
+        _LidColorB ("Lid B", Color) = (1,0.82,0.72,1)
+        _LashColor ("Lash", Color) = (0.12,0.06,0.06,1)
+        _MouthColor ("Mouth Line", Color) = (0.6,0.3,0.3,1)
+        _FaceEyes ("Eyes (open bend tilt squint)", Vector) = (1,0,0,0)
+        _FaceMouth ("Mouth (curve open wide blush)", Vector) = (0.35,0,0.5,0)
+        _FaceFx ("Fx (hurt tear - -)", Vector) = (0,0,0,0)
     }
 
     SubShader
@@ -41,6 +54,9 @@ Shader "AdventureKing/Toon"
             half4 _OutlineColor;
             float _OutlineWidth;
             half4 _FlashColor;
+            float4 _EyeA, _EyeB, _MouthRect;
+            half4 _FaceSkin, _LidColorA, _LidColorB, _LashColor, _MouthColor;
+            float4 _FaceEyes, _FaceMouth, _FaceFx;
         CBUFFER_END
         TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
         ENDHLSL
@@ -60,9 +76,10 @@ Shader "AdventureKing/Toon"
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
             #pragma shader_feature_local _VERTEX_COLOR
+            #pragma shader_feature_local _FACE
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-            struct Attributes { float4 positionOS : POSITION; float3 normalOS : NORMAL; float2 uv : TEXCOORD0; half4 color : COLOR; UNITY_VERTEX_INPUT_INSTANCE_ID };
+            struct Attributes { float4 positionOS : POSITION; float3 normalOS : NORMAL; float2 uv : TEXCOORD0; float4 face : TEXCOORD3; half4 color : COLOR; UNITY_VERTEX_INPUT_INSTANCE_ID };
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
@@ -70,9 +87,96 @@ Shader "AdventureKing/Toon"
                 float3 positionWS : TEXCOORD1;
                 half3 normalWS : TEXCOORD2;
                 half fog : TEXCOORD3;
+                float4 face : TEXCOORD4;
                 half4 color : COLOR;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
+
+        #if _FACE
+            // Rounded-rectangle "superellipse" distance (1 = edge) - covers painted lash flicks in the corners.
+            float SuperEllipse(float2 d) { float2 a = abs(d); a *= a; a *= a; return sqrt(sqrt(a.x + a.y)); }
+
+            float SegmentDist(float2 p, float2 a, float2 b)
+            {
+                float2 pa = p - a, ba = b - a;
+                float h = saturate(dot(pa, ba) / dot(ba, ba));
+                return length(pa - ba * h);
+            }
+
+            // One eye: lids close over the painted eye (identity kept), lash line rides the upper lid edge.
+            void EyeLayer(float2 p, float4 E, half3 lid, float faceCx, inout half3 col)
+            {
+                float open = _FaceEyes.x, bend = _FaceEyes.y, tilt = _FaceEyes.z, squint = _FaceEyes.w, hurt = _FaceFx.x;
+                float2 d = (p - E.xy) / E.zw;
+                float innerSign = faceCx > E.x ? 1.0 : -1.0;
+                float xi = d.x * innerSign;                  // +1 = inner corner (towards the nose)
+                float aa = max(fwidth(d.y), 1e-4) * 1.25;
+                float reg = SuperEllipse(float2(d.x / 1.14, d.y / 1.22));
+                float inReg = 1.0 - smoothstep(1.0 - aa * 2.0, 1.0, reg);
+                float c = 1.0 - open;
+                float x2 = saturate(d.x * d.x);
+                float closedY = -0.12 + bend * 0.55 * (1.0 - x2);
+                // Upper lid edge: parked above the eye when open, sweeps down as an arc, tilts for anger/sadness.
+                float L = lerp(1.4, closedY, c) - c * (1.0 - c) * 0.7 * x2 - tilt * 0.55 * (xi + 0.25);
+                float meet = max(squint, smoothstep(0.55, 1.0, c));
+                float Lb = lerp(-1.4, closedY - 0.04, meet) + meet * (1.0 - meet) * 0.5 * x2;
+                float cover = saturate(smoothstep(-aa, aa, d.y - L) + smoothstep(-aa, aa, Lb - d.y)) * inReg;
+                float th = 0.085 + 0.055 * c;
+                float ends = saturate((1.12 - abs(d.x)) * 7.0);
+                float lash = (1.0 - smoothstep(th - aa, th + aa, abs(d.y - L))) * saturate((1.05 - L) * 4.0) * ends;
+                // Pain: eye squeezed shut into a chevron pointing at the nose.
+                float2 q = float2(xi, d.y);
+                float chev = min(SegmentDist(q, float2(0.5, 0.0), float2(-0.75, 0.55)), SegmentDist(q, float2(0.5, 0.0), float2(-0.75, -0.55)));
+                float chevMask = 1.0 - smoothstep(0.11 - aa, 0.11 + aa, chev);
+                cover = lerp(cover, inReg, hurt);
+                lash = lerp(lash, chevMask, hurt);
+                col = lerp(col, lid, cover);
+                col = lerp(col, _LashColor.rgb, saturate(lash));
+                // Tear (sadness) under the outer corner.
+                float2 t = (p - (E.xy + float2(-innerSign * E.z * 0.7, -E.w * 1.25))) / E.z;
+                float drop = length(float2(t.x * 1.6, max(t.y, 0.0) * 0.8 + min(t.y, 0.0) * 1.6));
+                col = lerp(col, half3(0.62, 0.86, 1.0), _FaceFx.y * (1.0 - smoothstep(0.16, 0.2, drop)));
+                // Extra blush on the cheek.
+                float2 bc = (p - (E.xy + float2(-innerSign * E.z * 0.15, -E.w * 1.55))) / (E.z * 0.95);
+                col = lerp(col, half3(1.0, 0.56, 0.56), _FaceMouth.w * 0.4 * saturate(1.0 - dot(bc, bc)));
+            }
+
+            // Mouth: the painted one is covered with skin and redrawn so it can smile, frown, open and tremble.
+            void MouthLayer(float2 p, inout half3 col)
+            {
+                float curve = _FaceMouth.x, open = _FaceMouth.y, wide = _FaceMouth.z, hurt = _FaceFx.x;
+                float hw = _MouthRect.z;
+                float2 m = (p - _MouthRect.xy) / hw;
+                float aa = max(fwidth(m.y), 1e-4) * 1.25;
+                float ry = max(_MouthRect.w / hw * 1.7, 0.42);
+                float coverReg = SuperEllipse(float2(m.x / 1.22, m.y / ry));
+                col = lerp(col, _FaceSkin.rgb, 1.0 - smoothstep(0.9, 1.0, coverReg));
+                float W = lerp(0.55, 1.0, wide);
+                float xn = m.x / W;
+                float inX = saturate((1.0 - abs(xn)) * 9.0);
+                float yc = curve * 0.32 * (xn * xn) - curve * 0.12 + hurt * 0.06 * sin(m.x * 16.0);
+                float yl = yc - open * 0.6 * sqrt(saturate(1.0 - xn * xn));
+                float inside = step(abs(xn), 1.0) * smoothstep(-aa, aa, yc - m.y) * smoothstep(-aa, aa, m.y - yl) * step(0.02, open);
+                half3 mouthIn = lerp(half3(0.42, 0.1, 0.12), half3(0.95, 0.45, 0.48), smoothstep(yl + open * 0.25, yl, m.y));
+                col = lerp(col, mouthIn, inside);
+                float th = 0.06 + 0.02 * open;
+                float upperLip = (1.0 - smoothstep(th - aa, th + aa, abs(m.y - yc))) * inX;
+                float lowerLip = (1.0 - smoothstep(th - aa, th + aa, abs(m.y - yl))) * inX * step(0.02, open);
+                col = lerp(col, _MouthColor.rgb, saturate(max(upperLip, lowerLip)));
+            }
+
+            half3 ApplyFace(float4 face, half3 albedo)
+            {
+                float mask = saturate((face.z - 0.5) * 4.0);
+                if (mask <= 0.0) return albedo;
+                half3 col = albedo;
+                float faceCx = (_EyeA.x + _EyeB.x) * 0.5;
+                EyeLayer(face.xy, _EyeA, _LidColorA.rgb, faceCx, col);
+                EyeLayer(face.xy, _EyeB, _LidColorB.rgb, faceCx, col);
+                MouthLayer(face.xy, col);
+                return lerp(albedo, col, mask);
+            }
+        #endif
 
             Varyings vert(Attributes v)
             {
@@ -85,6 +189,7 @@ Shader "AdventureKing/Toon"
                 o.normalWS = TransformObjectToWorldNormal(v.normalOS);
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.fog = ComputeFogFactor(p.positionCS.z);
+                o.face = v.face;
                 o.color = v.color;
                 return o;
             }
@@ -95,6 +200,9 @@ Shader "AdventureKing/Toon"
                 half4 albedo = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv) * _BaseColor;
             #if _VERTEX_COLOR
                 albedo *= i.color;
+            #endif
+            #if _FACE
+                albedo.rgb = ApplyFace(i.face, albedo.rgb);
             #endif
                 half3 n = normalize(i.normalWS);
                 float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS);

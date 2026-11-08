@@ -43,8 +43,14 @@ namespace AdventureKing.Gameplay
         /// <summary>Starts the class skill animation; contact frames raise CharacterAnimationEvents.</summary>
         public void PlaySkill()
         {
-            if (animator && !(health && health.IsDead)) animator.SetTrigger(Skill);
+            if (animator && !(health && health.IsDead))
+            {
+                animator.SetTrigger(Skill);
+                if (face) face.Pulse(HeroFace.Expression.Angry, 0.7f); // determined battle cry
+            }
         }
+
+        private HeroFace face;
 
         /// <summary>Wires a visual prefab instantiated at runtime (e.g. from the selected class).</summary>
         public void Bind(Transform root, Animator anim)
@@ -57,6 +63,7 @@ namespace AdventureKing.Gameplay
         private void CacheProfile()
         {
             profile = null;
+            face = visualRoot ? visualRoot.GetComponentInChildren<HeroFace>() : null;
             if (visualRoot)
             {
                 profile = visualRoot.GetComponentInParent<HeroMotionProfile>();
@@ -83,7 +90,8 @@ namespace AdventureKing.Gameplay
         public float ClimbPlaybackFor(float verticalSpeed)
         {
             if (!profile) return 1f;
-            float perSecond = profile.climbAdvancePerCycle / Mathf.Max(0.05f, profile.climbCycleSeconds);
+            float scale = visualRoot ? Mathf.Abs(visualRoot.lossyScale.y) : 1f; // advance is measured at model scale 1
+            float perSecond = profile.climbAdvancePerCycle * scale / Mathf.Max(0.05f, profile.climbCycleSeconds);
             return Mathf.Clamp(Mathf.Abs(verticalSpeed) / perSecond, 0f, 3.5f);
         }
 
@@ -143,6 +151,7 @@ namespace AdventureKing.Gameplay
         private void HandleAttack()
         {
             if (animator) animator.SetTrigger(Attack);
+            if (face && face.Current != HeroFace.Expression.Hurt) face.Pulse(HeroFace.Expression.Angry, 0.4f);
         }
 
         private void HandleDamaged(Health2D victim, int amount)

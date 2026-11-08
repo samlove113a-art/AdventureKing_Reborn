@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: c35503e274ca92c4cb587593442ed569, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _FACE
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -30,6 +31,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AmbientStrength: 0.35
+    - _FaceLayer: 1
     - _OutlineWidth: 0.0065
     - _RimPower: 3.5
     - _RimStrength: 0.28
@@ -39,7 +41,18 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _EyeA: {r: -0.26640627, g: 0.37877604, b: 0.14895834, a: 0.10169272}
+    - _EyeB: {r: 0.27070314, g: 0.37734377, b: 0.15039062, a: 0.10026042}
+    - _FaceEyes: {r: 1, g: 0, b: 0, a: 0}
+    - _FaceFx: {r: 0, g: 0, b: 0, a: 0}
+    - _FaceMouth: {r: 0.35, g: 0, b: 0.5, a: 0}
+    - _FaceSkin: {r: 0.98332715, g: 0.7872887, b: 0.72057164, a: 1}
     - _FlashColor: {r: 1, g: 1, b: 1, a: 0}
+    - _LashColor: {r: 0.07608791, g: 0.014066005, b: 0.08106967, a: 1}
+    - _LidColorA: {r: 0.97916245, g: 0.77894163, b: 0.72108525, a: 1}
+    - _LidColorB: {r: 0.98181033, g: 0.7740882, b: 0.7123743, a: 1}
+    - _MouthColor: {r: 0.5966752, g: 0.28386015, b: 0.22552998, a: 1}
+    - _MouthRect: {r: -0.0014322917, g: 0.08945313, b: 0.12747395, a: 0.021484375}
     - _OutlineColor: {r: 0.13, g: 0.09, b: 0.12, a: 1}
     - _RimColor: {r: 1, g: 0.94, b: 0.82, a: 1}
     - _ShadeColor: {r: 0.62, g: 0.58, b: 0.72, a: 1}

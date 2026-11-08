@@ -185,6 +185,92 @@ namespace AdventureKing.ArtPipeline
             }
         }
 
+        // ------------------------------------------------------------------ tubes and curved tiles
+        /// <summary>Smooth tube through a polyline (ropes, vines, eave horns). Parallel-transported rings, capped ends.</summary>
+        public static void AppendTube(List<Vector3> v, List<Color> c, List<int> t, IList<Vector3> pts, float radius, Color col, int sides = 7,
+            IList<float> radii = null)
+        {
+            if (pts.Count < 2) return;
+            Vector3 prevNormal = Vector3.zero;
+            int start = v.Count;
+            for (int i = 0; i < pts.Count; i++)
+            {
+                Vector3 tan = (pts[Mathf.Min(i + 1, pts.Count - 1)] - pts[Mathf.Max(i - 1, 0)]).normalized;
+                Vector3 n = i == 0 ? Vector3.Cross(tan, Mathf.Abs(tan.y) < 0.9f ? Vector3.up : Vector3.right).normalized
+                                   : Vector3.ProjectOnPlane(prevNormal, tan).normalized;
+                prevNormal = n;
+                Vector3 b = Vector3.Cross(tan, n);
+                float r = radii != null ? radii[i] : radius;
+                for (int s = 0; s < sides; s++)
+                {
+                    float a = s / (float)sides * Mathf.PI * 2f;
+                    v.Add(pts[i] + (n * Mathf.Cos(a) + b * Mathf.Sin(a)) * r);
+                    c.Add(col);
+                }
+            }
+            for (int i = 0; i < pts.Count - 1; i++)
+                for (int s = 0; s < sides; s++)
+                {
+                    int a0 = start + i * sides + s, a1 = start + i * sides + (s + 1) % sides;
+                    int b0 = a0 + sides, b1 = a1 + sides;
+                    // outward-facing (verified in QA/WorldCaptures/hub_06: the reverse showed only the dark outline hull)
+                    t.Add(a0); t.Add(a1); t.Add(b0); t.Add(a1); t.Add(b1); t.Add(b0);
+                }
+            // caps
+            foreach (int ring in new[] { 0, pts.Count - 1 })
+            {
+                int centre = v.Count;
+                v.Add(pts[ring]); c.Add(col);
+                for (int s = 0; s < sides; s++)
+                {
+                    int a0 = start + ring * sides + s, a1 = start + ring * sides + (s + 1) % sides;
+                    if (ring == 0) { t.Add(centre); t.Add(a1); t.Add(a0); } else { t.Add(centre); t.Add(a0); t.Add(a1); }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Curved roof tile: a half-pipe shell with thickness. <paramref name="cover"/> = convex (arc up, sits over
+        /// the gap between pans); otherwise a concave pan (arc down). Runs from <paramref name="top"/> to
+        /// <paramref name="bottom"/> (down the slope), across = world X.
+        /// </summary>
+        public static void AppendTile(List<Vector3> v, List<Color> c, List<int> t, Vector3 top, Vector3 bottom, float radius, bool cover,
+            Color col, float thickness = 0.025f, int seg = 6)
+        {
+            Vector3 along = (bottom - top).normalized;
+            Vector3 across = Vector3.right;
+            Vector3 up = Vector3.Cross(across, along).normalized; // surface normal side of the slope
+            if (Vector3.Dot(up, Vector3.up) < 0f) up = -up;
+            int rows = 2;
+            foreach (float layer in new[] { 0f, -thickness })
+            {
+                int start = v.Count;
+                for (int j = 0; j <= rows; j++)
+                {
+                    Vector3 p0 = Vector3.Lerp(top, bottom, j / (float)rows);
+                    for (int s = 0; s <= seg; s++)
+                    {
+                        float a = Mathf.PI * s / seg;                 // 0..pi across the tile
+                        float x = -Mathf.Cos(a) * radius;
+                        float y = Mathf.Sin(a) * radius * (cover ? 1f : -1f);
+                        float r = radius + layer;
+                        float ry = y / radius * r;
+                        v.Add(p0 + across * (x / radius * r) + up * ry);
+                        c.Add(layer == 0f ? col : col * 0.8f);
+                    }
+                }
+                bool outer = layer == 0f;
+                for (int j = 0; j < rows; j++)
+                    for (int s = 0; s < seg; s++)
+                    {
+                        int a0 = start + j * (seg + 1) + s, a1 = a0 + 1, b0 = a0 + seg + 1, b1 = b0 + 1;
+                        bool flip = outer ^ !cover; // keep the visible side facing out on both shells
+                        if (flip) { t.Add(a0); t.Add(a1); t.Add(b0); t.Add(a1); t.Add(b1); t.Add(b0); }
+                        else { t.Add(a0); t.Add(b0); t.Add(a1); t.Add(a1); t.Add(b0); t.Add(b1); }
+                    }
+            }
+        }
+
         public static Mesh Build(string name, System.Action<List<Vector3>, List<Color>, List<int>> fill)
         {
             var v = new List<Vector3>(); var c = new List<Color>(); var t = new List<int>();
@@ -215,13 +301,51 @@ namespace AdventureKing.ArtPipeline
                 // front and back beams
                 AppendRoundedBox(v, c, t, new Vector3(0f, -0.3f, -0.62f), new Vector3(width + 0.2f, 0.26f, 0.22f), 0.06f, dark, Quaternion.identity, 1);
                 AppendRoundedBox(v, c, t, new Vector3(0f, -0.3f, depth - 0.7f), new Vector3(width + 0.2f, 0.26f, 0.22f), 0.06f, dark, Quaternion.identity, 1);
-                // curved-tile eave along the front: overlapping half-round tiles
-                for (float x = -width * 0.5f - 0.2f; x < width * 0.5f + 0.2f; x += 0.42f)
+                // Curved-tile eave (pan + cover tiles, two staggered rows), round end caps on the front lip and
+                // upturned corner horns - replaces the old flat tilted boxes.
+                float half = width * 0.5f + 0.25f;
+                const float pan = 0.135f, coverR = 0.078f, pitch = 0.3f;
+                (Vector3 top, Vector3 bottom)[] rows =
                 {
-                    Color col = Color.Lerp(tileA, tileB, (float)rng.NextDouble() * 0.6f);
-                    AppendRoundedBox(v, c, t, new Vector3(x, -0.5f, -0.86f), new Vector3(0.4f, 0.14f, 0.5f), 0.07f, col, Quaternion.Euler(-24f, 0f, 0f), 2);
+                    (new Vector3(0f, -0.33f, -0.62f), new Vector3(0f, -0.52f, -0.98f)),
+                    (new Vector3(0f, -0.47f, -0.9f), new Vector3(0f, -0.66f, -1.24f)),
+                };
+                Color ridge = tileB * 0.72f; ridge.a = 1f;
+                for (int r = 0; r < rows.Length; r++)
+                {
+                    var (top, bottom) = rows[r];
+                    float lift = 0.018f * r;
+                    for (float x = -half; x <= half + 0.001f; x += pitch)
+                    {
+                        Color col = Color.Lerp(tileA, tileB, (float)rng.NextDouble() * 0.55f);
+                        Vector3 dx = new Vector3(x, lift, 0f);
+                        AppendTile(v, c, t, top + dx, bottom + dx, pan, false, col);
+                        if (x + pitch * 0.5f <= half)
+                        {
+                            Vector3 cx = new Vector3(x + pitch * 0.5f, lift + 0.035f, 0f);
+                            Color cc = Color.Lerp(tileA, tileB, 0.25f + (float)rng.NextDouble() * 0.5f);
+                            AppendTile(v, c, t, top + cx, bottom + cx, coverR, true, cc);
+                            if (r == rows.Length - 1)
+                            {
+                                // round end cap closing the cover tile on the lip
+                                Vector3 lip = bottom + cx + (bottom - top).normalized * 0.01f;
+                                AppendTube(v, c, t, new[] { lip - (bottom - top).normalized * 0.02f, lip + (bottom - top).normalized * 0.02f },
+                                    coverR * 1.05f, ridge, 10);
+                            }
+                        }
+                    }
                 }
-                AppendRoundedBox(v, c, t, new Vector3(0f, -0.4f, -0.68f), new Vector3(width + 0.5f, 0.08f, 0.1f), 0.03f, tileB * 0.8f, Quaternion.identity, 1);
+                // ridge beam the tiles hang from, and the fascia under the lip
+                AppendRoundedBox(v, c, t, new Vector3(0f, -0.3f, -0.6f), new Vector3(width + 0.55f, 0.1f, 0.12f), 0.04f, ridge, Quaternion.identity, 1);
+                AppendRoundedBox(v, c, t, new Vector3(0f, -0.66f, -1.08f), new Vector3(width + 0.5f, 0.07f, 0.06f), 0.025f, dark, Quaternion.identity, 1);
+                // upturned corner horns (đầu đao), tapering
+                foreach (float s in new[] { -1f, 1f })
+                {
+                    float x = s * (half + 0.05f);
+                    var horn = new[] { new Vector3(x - s * 0.12f, -0.62f, -1.12f), new Vector3(x + s * 0.12f, -0.6f, -1.24f),
+                                       new Vector3(x + s * 0.3f, -0.5f, -1.3f), new Vector3(x + s * 0.42f, -0.32f, -1.3f), new Vector3(x + s * 0.46f, -0.16f, -1.26f) };
+                    AppendTube(v, c, t, horn, 0.05f, ridge, 7, new[] { 0.075f, 0.07f, 0.06f, 0.045f, 0.028f });
+                }
             });
         }
 
