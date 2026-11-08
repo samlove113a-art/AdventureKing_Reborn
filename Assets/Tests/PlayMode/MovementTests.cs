@@ -80,6 +80,71 @@ namespace AdventureKing.Tests
             Assert.Less(Mathf.Abs(p.Body.linearVelocity.x), 0.05f);
         }
 
+        [UnityTest]
+        public IEnumerator Joystick_Moves_Ignores_Jitter_Second_Finger_And_Recentres()
+        {
+            var p = SpawnPlayer(new Vector2(0f, 0.85f));
+            yield return WaitGrounded(p.Motor);
+
+            var es = Track(new GameObject("Test_EventSystem", typeof(UnityEngine.EventSystems.EventSystem)));
+            var canvasGo = Track(new GameObject("Test_Canvas", typeof(RectTransform), typeof(Canvas)));
+            canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            var padGo = new GameObject("Test_Joystick", typeof(RectTransform));
+            padGo.transform.SetParent(canvasGo.transform, false);
+            var padRt = (RectTransform)padGo.transform;
+            padRt.anchorMin = padRt.anchorMax = padRt.pivot = new Vector2(0.5f, 0.5f);
+            padRt.anchoredPosition = Vector2.zero;
+            padRt.sizeDelta = new Vector2(300f, 300f);
+            var knob = new GameObject("Knob", typeof(RectTransform));
+            knob.transform.SetParent(padGo.transform, false);
+            var stick = padGo.AddComponent<UnityEngine.UI.Image>().gameObject.AddComponent<VirtualJoystick2D>();
+            QaWorldFactory.SetField(stick, "target", p.Input);
+            QaWorldFactory.SetField(stick, "knob", (RectTransform)knob.transform);
+            QaWorldFactory.SetField(stick, "radius", 100f);
+            yield return null;
+
+            Vector2 centre = RectTransformUtility.WorldToScreenPoint(null, padRt.position);
+            UnityEngine.EventSystems.PointerEventData Finger(int id, Vector2 offset) =>
+                new UnityEngine.EventSystems.PointerEventData(es.GetComponent<UnityEngine.EventSystems.EventSystem>())
+                { pointerId = id, position = centre + offset };
+
+            // Small thumb jitter inside the dead zone: hero stays still.
+            stick.OnPointerDown(Finger(1, new Vector2(12f, 8f)));
+            yield return new WaitForSeconds(0.25f);
+            Assert.AreEqual(0f, p.Input.Horizontal, 1e-4f, "dead zone");
+
+            // Push right: full run to the right; a mostly-sideways push must not grab ladders (vertical stays 0).
+            stick.OnDrag(Finger(1, new Vector2(95f, 30f)));
+            yield return new WaitForSeconds(0.4f);
+            Assert.AreEqual(1f, p.Input.Horizontal, 1e-4f);
+            Assert.AreEqual(0f, p.Input.Vertical, 1e-4f, "diagonal-ish push must not climb");
+            Assert.Greater(p.Body.linearVelocity.x, 5.5f, "joystick reaches run speed");
+
+            // A second finger landing on the pad (e.g. the other thumb) is ignored.
+            stick.OnPointerDown(Finger(2, new Vector2(-95f, 0f)));
+            stick.OnDrag(Finger(2, new Vector2(-95f, 0f)));
+            yield return null;
+            Assert.AreEqual(1f, p.Input.Horizontal, 1e-4f, "second finger hijacked the joystick");
+            stick.OnPointerUp(Finger(2, Vector2.zero));
+            yield return null;
+            Assert.AreEqual(1f, p.Input.Horizontal, 1e-4f, "lifting the other finger released the joystick");
+
+            // Release: knob recentres and the hero stops.
+            stick.OnPointerUp(Finger(1, Vector2.zero));
+            yield return new WaitForSeconds(0.3f);
+            Assert.AreEqual(0f, p.Input.Horizontal, 1e-4f, "joystick stuck after release");
+            Assert.AreEqual(Vector2.zero, ((RectTransform)knob.transform).anchoredPosition);
+            Assert.Less(Mathf.Abs(p.Body.linearVelocity.x), 0.05f);
+
+            // Disabled mid-press (UI hidden): never left pushing.
+            stick.OnPointerDown(Finger(3, new Vector2(-100f, 0f)));
+            yield return null;
+            Assert.AreEqual(-1f, p.Input.Horizontal, 1e-4f);
+            padGo.SetActive(false);
+            yield return new WaitForSeconds(0.2f);
+            Assert.AreEqual(0f, p.Input.Horizontal, 1e-4f, "joystick stuck after disable");
+        }
+
         private IEnumerator MeasureRise(QaWorldFactory.PlayerRig p, float seconds, System.Action<float> result)
         {
             float startY = p.Body.position.y, maxY = startY, end = Time.time + seconds;

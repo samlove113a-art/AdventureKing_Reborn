@@ -21,6 +21,17 @@ namespace AdventureKing.Gameplay
         public float Vertical { get; private set; }
         public bool JumpHeld => keyboardJumpHeld || touchJump;
 
+        private float stickX, stickY;
+
+        /// <summary>On-screen joystick. Horizontal snaps to full run past a small tilt (run playback is tuned to
+        /// full speed, so a half-tilt would slide the feet); vertical needs a clear push so running diagonally
+        /// never grabs a ladder by accident.</summary>
+        public void SetStick(Vector2 v)
+        {
+            stickX = Mathf.Abs(v.x) > 0.3f ? Mathf.Sign(v.x) : 0f;
+            stickY = Mathf.Abs(v.y) > 0.6f ? Mathf.Sign(v.y) : 0f;
+        }
+
         public void SetTouchHeld(TouchAction action, bool held)
         {
             switch (action)
@@ -78,8 +89,8 @@ namespace AdventureKing.Gameplay
             pressAttack = Input.GetKeyDown(KeyCode.J);
             pressInteract = Input.GetKeyDown(KeyCode.E);
 #endif
-            Horizontal = Mathf.Clamp(x + (right ? 1 : 0) - (left ? 1 : 0), -1f, 1f);
-            Vertical = Mathf.Clamp(y + (up ? 1 : 0) - (down ? 1 : 0), -1f, 1f);
+            Horizontal = Mathf.Clamp(x + stickX + (right ? 1 : 0) - (left ? 1 : 0), -1f, 1f);
+            Vertical = Mathf.Clamp(y + stickY + (up ? 1 : 0) - (down ? 1 : 0), -1f, 1f);
             keyboardJumpHeld = holdJump;
             jumpQueued |= pressJump;
             attackQueued |= pressAttack;
@@ -106,6 +117,7 @@ namespace AdventureKing.Gameplay
         private void OnDisable()
         {
             left = right = up = down = touchJump = keyboardJumpHeld = false;
+            stickX = stickY = 0f;
             jumpQueued = attackQueued = interactQueued = false;
             Horizontal = Vertical = 0f;
         }

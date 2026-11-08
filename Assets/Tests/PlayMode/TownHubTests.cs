@@ -101,6 +101,39 @@ namespace AdventureKing.Tests
             yield return Settle();
         }
 
+        /// <summary>All characters rendered (nothing truncated) and the label box stays inside its parent rect.</summary>
+        private static void AssertTextFits(UnityEngine.UI.Text t, string what)
+        {
+            Assert.IsNotNull(t, what);
+            Canvas.ForceUpdateCanvases();
+            // Lay the text out exactly as the label does (best fit + truncate) and again with overflow allowed.
+            // If the box were too small, truncation would drop characters, so both counts must match.
+            // Words wider than the box wrap per character in uGUI, so horizontal spill cannot happen with Wrap.
+            Vector2 box = t.rectTransform.rect.size;
+            Assert.AreEqual(HorizontalWrapMode.Wrap, t.horizontalOverflow, what + " must wrap");
+            int Visible(string s, VerticalWrapMode v)
+            {
+                var st = t.GetGenerationSettings(box);
+                st.verticalOverflow = v;
+                var g = new TextGenerator();
+                g.PopulateWithErrors(s, st, t.gameObject);
+                return g.characterCountVisible;
+            }
+            int fitted = Visible(t.text, VerticalWrapMode.Truncate), full = Visible(t.text, VerticalWrapMode.Overflow);
+            Assert.AreEqual(full, fitted, $"{what}: text truncated in its {box.x:0}x{box.y:0} box ('{t.text}')");
+            // Negative control: the same check does catch text that cannot fit.
+            string tooLong = string.Concat(Enumerable.Repeat(t.text + "\n", 12));
+            if (t.resizeTextForBestFit) Assert.Less(Visible(tooLong, VerticalWrapMode.Truncate), Visible(tooLong, VerticalWrapMode.Overflow), what + ": check is blind");
+            TestContext.WriteLine($"{what}: all {full} characters drawn in {box.x:0}x{box.y:0}");
+            var parent = t.rectTransform.parent as RectTransform;
+            Rect r = t.rectTransform.rect, pr = parent.rect;
+            Vector2 lp = t.rectTransform.localPosition;
+            Assert.LessOrEqual(lp.x + r.xMax, pr.xMax + 0.5f, what + " right edge");
+            Assert.GreaterOrEqual(lp.x + r.xMin, pr.xMin - 0.5f, what + " left edge");
+            Assert.LessOrEqual(lp.y + r.yMax, pr.yMax + 0.5f, what + " top edge");
+            Assert.GreaterOrEqual(lp.y + r.yMin, pr.yMin - 0.5f, what + " bottom edge");
+        }
+
         private void AssertStanding(float floorTop, string where)
         {
             Assert.IsTrue(motor.IsGrounded, $"not grounded at {where} ({Pos})");
@@ -111,12 +144,12 @@ namespace AdventureKing.Tests
         /// <summary>Phone-shaped frame (19.5:9) with the touch controls shown, captured from the running game.</summary>
         private static IEnumerator PhoneShot(string name)
         {
-            GameObject touch = Object.FindObjectsByType<TouchControlsVisibility>(FindObjectsInactive.Include)
-                .Select(t => t.gameObject).FirstOrDefault();
-            bool was = touch && touch.activeSelf;
-            if (touch) touch.SetActive(true);
+            // Emulate a phone: touch controls on, keyboard-only hints off (as TouchControlsVisibility does on device).
+            var all = Object.FindObjectsByType<TouchControlsVisibility>(FindObjectsInactive.Include);
+            var saved = all.Select(t => (t.gameObject, t.gameObject.activeSelf)).ToArray();
+            foreach (var t in all) t.gameObject.SetActive(!t.hideOnTouch);
             yield return Shot(name, 2340, 1080);
-            if (touch) touch.SetActive(was);
+            foreach (var (go, active) in saved) go.SetActive(active);
         }
 
         private static IEnumerator Shot(string name, int w = 1280, int h = 720)
@@ -156,8 +189,16 @@ namespace AdventureKing.Tests
             Assert.IsTrue(greeter.DialogOpen, "Elder greeting dialog");
             Assert.Less(Mathf.Abs(elderActor.transform.position.x - Pos.x), 2.2f, "Elder walked up to the hero");
             Assert.Greater(Mathf.Abs(elderActor.transform.position.x - elderStart), 1f, "Elder actually moved");
-            StringAssert.Contains("Lữ Khách Gió", EntryLobbyTests.Find<UnityEngine.UI.Text>("Line").text);
+            var dialogLine = EntryLobbyTests.Find<UnityEngine.UI.Text>("Line");
+            StringAssert.Contains("Lữ Khách Gió", dialogLine.text);
             yield return Shot("00_elder_greeting");
+            AssertTextFits(dialogLine, "Elder dialog");
+            yield return PhoneShot("00b_elder_greeting_phone");
+            AssertTextFits(dialogLine, "Elder dialog (phone)");
+            // Every sign label is fully drawn inside its measured parchment panel (no clipped / spilled words).
+            var signs = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Exclude).Where(c => c.name == "SignText").ToArray();
+            Assert.GreaterOrEqual(signs.Length, 3, "town signs");
+            foreach (Canvas sign in signs) AssertTextFits(sign.GetComponentInChildren<UnityEngine.UI.Text>(), "sign at x=" + sign.transform.position.x.ToString("0"));
             greeter.Close();
             until0 = Time.time + 15f;
             while (!greeter.Done && Time.time < until0) yield return null;

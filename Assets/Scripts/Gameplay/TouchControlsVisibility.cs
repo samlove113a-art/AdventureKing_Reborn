@@ -7,6 +7,8 @@ namespace AdventureKing.Gameplay
     {
         [Tooltip("Force the touch controls on (e.g. to test them with a mouse in the editor).")]
         public bool forceVisible;
+        [Tooltip("Inverse: keyboard/mouse hints that must disappear on touch devices.")]
+        public bool hideOnTouch;
 
         public static bool TouchPreferred
         {
@@ -21,6 +23,10 @@ namespace AdventureKing.Gameplay
             }
         }
 
-        private void Awake() => gameObject.SetActive(forceVisible || TouchPreferred);
+        private void Awake()
+        {
+            bool touch = forceVisible || TouchPreferred;
+            gameObject.SetActive(hideOnTouch ? !touch : touch);
+        }
     }
 }

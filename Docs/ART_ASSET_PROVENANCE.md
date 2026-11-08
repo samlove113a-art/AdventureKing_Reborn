@@ -38,6 +38,15 @@ Credit phiên này: 17 ảnh + 1 model ≈ 132 credit. Số dư tài khoản sau
 
 Số dư sau toàn bộ phiên 2026-11-08: **931 credit** (không mua thêm).
 
+## Khung tên trên đầu nhân vật (chủ dự án cung cấp, 2026-11-08)
+- Nguồn: gói `AdventureKing_KhungTen_VIP1-15_Boss1-10.zip` do chủ dự án gửi; theo README trong gói là ảnh **AI-generated (ChatGPT) theo yêu cầu của chủ dự án**, không lấy từ game khác. Lưu nguyên vẹn tại `ArtSource/OwnerProvided/Nameplates_2026-11-08/` (+ bản zip ở `C:\AdventureKing_ArtBackup\`).
+- 34 khung: 1 cơ bản, VIP 1–15, Boss Hunter 1–10, 8 khung đặc biệt.
+- **Chưa đưa vào game.** Kiểm tra kỹ thuật (2026-11-08) cho thấy đây là bộ khởi tạo, chưa đạt chuẩn thương mại — đúng như README của gói ghi:
+  - Độ phân giải thấp: VIP/Boss/Special chỉ 181–399 px chiều ngang (VIP_01 182×85) → mờ trên màn hình 1440p và điện thoại mật độ cao.
+  - Lỗi cắt viền: `Basic_Nameplate` còn ký tự thừa ".t" trong ô tên; `VIP_13` và `BossHunter_10` có vệt màu ở mép trái; `BossHunter_03` có vạch sáng ở mép trên; `BossHunter_05` bị cắt cánh bên phải.
+  - Chữ nhãn ("VIP 1", "BOSS HUNTER 3"…) là chữ AI vẽ sẵn trong ảnh, độ nét không đều.
+- Việc cần làm trước khi dùng: vẽ lại/upscale từng khung ở ≥ 512 px chiều ngang, sửa mép, tách nhãn cấp thành chữ động hoặc kiểm tra từng nhãn; giữ tên nhân vật là chữ động.
+
 ## Font
 `Be Vietnam Pro` (Regular/SemiBold/Bold/ExtraBold) và `Nunito` — tải từ kho chính thức google/fonts, giấy phép **SIL Open Font License 1.1** (cho phép nhúng vào game thương mại); file `OFL.txt` đặt cạnh font trong `Assets/Art/Fonts/`. Tải theo phê duyệt của chủ dự án ngày 2026-11-08.
 

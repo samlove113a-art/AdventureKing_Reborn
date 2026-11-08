@@ -101,9 +101,10 @@ namespace AdventureKing.ArtPipeline
             Prop(art, "lantern_post", 63f, 2.2f, 3.6f, false);
             Prop(art, "planter", 9f, 2.2f, 1.3f, false);
             Prop(art, "planter", -35f, 2.2f, 1.3f, true);
-            Signboard(art, -38f, 2.6f, "Phố Thợ Rèn\n& Chợ Phiên");
-            Signboard(art, 34f, 2.6f, "Quán Trà\nGió Chiều");
-            Signboard(art, 59f, 2.6f, "Cổng Dịch Chuyển\n→ Đồng Cỏ Gió");
+            // The parchment panel is portrait (≈0.76 × 0.92 m): short lines, broken by meaning, never by the wrapper.
+            Signboard(art, -38f, 2.6f, "Phố\nThợ Rèn\n&\nChợ Phiên");
+            Signboard(art, 34f, 2.6f, "Quán Trà\nGió\nChiều");
+            Signboard(art, 59f, 2.6f, "Cổng\nDịch Chuyển\n→\nĐồng Cỏ Gió");
 
             foreach (var spot in TownLayout.Hub.NpcSpots)
             {
@@ -142,7 +143,7 @@ namespace AdventureKing.ArtPipeline
             Prop(art, "planter", 24f, 2.4f, 1.3f, false);
             Prop(art, "crates", 44f, 2.6f, 2f, true);
             Prop(art, "lantern_post", -42.5f, 2f, 3.6f, false);
-            Signboard(art, -33f, 2.6f, "Đồng Cỏ Gió\n← Thị trấn");
+            Signboard(art, -33f, 2.6f, "Đồng Cỏ Gió\n←\nVề\nThị Trấn");
             foreach (var p in TownLayout.Meadow.Portals) Portal(play, p);
 
             FinishWorld(scene, MeadowScenePath, world, TownLayout.Meadow.MapId, TownLayout.Meadow.DisplayName, TownLayout.Meadow.Spawn,
@@ -911,20 +912,33 @@ namespace AdventureKing.ArtPipeline
         {
             var board = Prop(parent, "signboard", x, z, 2.6f, false);
             if (!board) return;
-            // World-space label on the blank panel of the 3D board, turned with the prop's three-quarter angle.
+            // World-space label laid out inside the board's blank parchment panel, measured from the model
+            // itself (SignPanelMeasure) so the text can never spill past the panel edges.
+            const float unitsPerMetre = 1f / 0.0036f;
+            Vector3 pos = new Vector3(x + 0.05f, 1.38f, z - 0.5f);
+            Quaternion rot = Quaternion.Euler(0f, -14f, 0f);
+            Vector2 panelM = new Vector2(0.72f, 0.28f);
+            if (SignPanelMeasure.TryMeasure(board, $"{PropDir}/signboard/signboard_baseColor.png", out var panel))
+            {
+                pos = panel.Center; rot = panel.Rotation; panelM = panel.Size;
+                Debug.Log($"[WORLD] sign panel '{text.Replace('\n', ' ')}' measured {panel.Size.x:0.00} x {panel.Size.y:0.00} m at {panel.Center}");
+            }
+            else Debug.LogWarning("[WORLD] sign panel not found on model, using the conservative default box");
             var canvasGo = new GameObject("SignText", typeof(RectTransform));
             canvasGo.transform.SetParent(parent, false);
-            canvasGo.transform.position = new Vector3(x + 0.05f, 1.38f, z - 0.5f);
-            canvasGo.transform.rotation = Quaternion.Euler(0f, -14f, 0f);
+            canvasGo.transform.position = pos;
+            canvasGo.transform.rotation = rot;
             var canvas = canvasGo.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             var rt = (RectTransform)canvasGo.transform;
-            rt.sizeDelta = new Vector2(260f, 100f);
+            rt.sizeDelta = panelM * unitsPerMetre;
             rt.localScale = Vector3.one * 0.0036f;
+            // Safe margin inside the panel: 12% left/right, 14% top/bottom.
+            Vector2 box = new Vector2(rt.sizeDelta.x * 0.76f, rt.sizeDelta.y * 0.72f);
             Text t = EntrySceneBuilder.Label(canvasGo.transform, "Text", text, 30, new Color(0.36f, 0.2f, 0.1f),
-                new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(250f, 96f), FontStyle.Bold);
+                new Vector2(0.5f, 0.5f), Vector2.zero, box, FontStyle.Bold);
             t.resizeTextForBestFit = true;
-            t.resizeTextMinSize = 18;
+            t.resizeTextMinSize = 8;
             t.resizeTextMaxSize = 32;
             t.horizontalOverflow = HorizontalWrapMode.Wrap;
             t.verticalOverflow = VerticalWrapMode.Truncate;
@@ -1242,6 +1256,7 @@ namespace AdventureKing.ArtPipeline
                 new Vector2(0f, 44f), new Vector2(1180f, 48f), new Color(0.08f, 0.1f, 0.16f, 0.55f), EntrySceneBuilder.PanelSprite);
             EntrySceneBuilder.Label(hint.transform, "Hint", "A / D di chuyển   ·   Space nhảy   ·   W / S leo thang, dây   ·   W tại cổng: dịch chuyển   ·   J tấn công",
                 22, cream, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1160f, 44f));
+            hint.AddComponent<TouchControlsVisibility>().hideOnTouch = true; // keyboard hints are meaningless on a phone
             status = EntrySceneBuilder.Label(root, "WorldStatus", "", 24, new Color(1f, 0.7f, 0.6f), new Vector2(0.5f, 0f), new Vector2(0f, 110f), new Vector2(1200f, 40f));
 
             // ---- touch controls (phones / tablets): D-pad left, jump + attack right
@@ -1256,19 +1271,25 @@ namespace AdventureKing.ArtPipeline
                 Button b = EntrySceneBuilder.Btn(touch.transform, name, label, pos, new Vector2(size, size), pad, padText, anchor);
                 GameObject go = b.gameObject;
                 Object.DestroyImmediate(b); // press/release handled by TouchButton2D (hold semantics)
+                Text lbl = go.GetComponentInChildren<Text>();
+                if (lbl)
+                {
+                    lbl.resizeTextForBestFit = true; // labels shrink to fit round buttons, never overflow
+                    lbl.resizeTextMinSize = 16;
+                    lbl.resizeTextMaxSize = Mathf.RoundToInt(size * 0.2f);
+                    ((RectTransform)lbl.transform).sizeDelta = new Vector2(size * 0.78f, size * 0.5f);
+                }
                 var tb = go.AddComponent<TouchButton2D>();
                 var tso = new SerializedObject(tb);
                 tso.FindProperty("target").objectReferenceValue = playerInput;
                 tso.FindProperty("action").enumValueIndex = (int)action;
                 tso.ApplyModifiedPropertiesWithoutUndo();
             }
-            TouchBtn("TouchLeft", "◀", Vector2.zero, new Vector2(130f, 190f), 150f, PlayerInput2D.TouchAction.Left);
-            TouchBtn("TouchRight", "▶", Vector2.zero, new Vector2(320f, 190f), 150f, PlayerInput2D.TouchAction.Right);
-            TouchBtn("TouchUp", "▲", Vector2.zero, new Vector2(225f, 330f), 130f, PlayerInput2D.TouchAction.Up);
-            TouchBtn("TouchDown", "▼", Vector2.zero, new Vector2(225f, 60f), 110f, PlayerInput2D.TouchAction.Down);
-            TouchBtn("TouchJump", "Nhảy", new Vector2(1f, 0f), new Vector2(-150f, 180f), 190f, PlayerInput2D.TouchAction.Jump);
-            TouchBtn("TouchAttack", "Đánh", new Vector2(1f, 0f), new Vector2(-370f, 150f), 160f, PlayerInput2D.TouchAction.Attack);
-            TouchBtn("TouchInteract", "E", new Vector2(1f, 0f), new Vector2(-170f, 380f), 110f, PlayerInput2D.TouchAction.Interact);
+            BuildJoystick(touch.transform, playerInput);
+            // Right thumb: big attack, jump just inside it, interact above. All ≥ 60 units clear of the screen edge.
+            TouchBtn("TouchAttack", "Đánh", new Vector2(1f, 0f), new Vector2(-180f, 180f), 200f, PlayerInput2D.TouchAction.Attack);
+            TouchBtn("TouchJump", "Nhảy", new Vector2(1f, 0f), new Vector2(-400f, 130f), 160f, PlayerInput2D.TouchAction.Jump);
+            TouchBtn("TouchInteract", "Tương tác", new Vector2(1f, 0f), new Vector2(-180f, 400f), 130f, PlayerInput2D.TouchAction.Interact);
 
             var fadeGo = EntrySceneBuilder.Panel(canvasGo.transform, "ScreenFade", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
                 new Color(0.03f, 0.04f, 0.08f, 1f), null);
@@ -1279,22 +1300,70 @@ namespace AdventureKing.ArtPipeline
             return canvasGo;
         }
 
+        /// <summary>Round joystick, bottom-left: gilded ring, dark glass base, bright knob (one finger, multi-touch safe).</summary>
+        private static void BuildJoystick(Transform parent, PlayerInput2D playerInput)
+        {
+            Sprite circle = EntrySceneBuilder.RoundedSprite("ui_circle", 128, 64);
+            Image Disc(Transform p, string name, float size, Color c)
+            {
+                var go = new GameObject(name, typeof(RectTransform)) { layer = 5 };
+                go.transform.SetParent(p, false);
+                var r = (RectTransform)go.transform;
+                r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
+                r.sizeDelta = new Vector2(size, size);
+                var img = go.AddComponent<Image>();
+                img.sprite = circle;
+                img.color = c;
+                return img;
+            }
+            var root = new GameObject("TouchJoystick", typeof(RectTransform)) { layer = 5 };
+            root.transform.SetParent(parent, false);
+            var rt = (RectTransform)root.transform;
+            rt.anchorMin = rt.anchorMax = Vector2.zero;
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = new Vector2(250f, 250f); // 100+ units clear of the safe-area corner
+            rt.sizeDelta = new Vector2(340f, 340f);         // generous touch target around the visible ring
+            var hit = root.AddComponent<Image>();
+            hit.color = new Color(1f, 1f, 1f, 0f);          // invisible, but catches the thumb
+            Disc(root.transform, "Ring", 290f, new Color(1f, 0.84f, 0.5f, 0.85f)).raycastTarget = false;
+            Disc(root.transform, "Base", 274f, new Color(0.08f, 0.1f, 0.18f, 0.62f)).raycastTarget = false;
+            Disc(root.transform, "InnerGuide", 120f, new Color(1f, 1f, 1f, 0.08f)).raycastTarget = false;
+            Image knobRing = Disc(root.transform, "Knob", 132f, new Color(1f, 0.84f, 0.5f, 0.95f));
+            knobRing.raycastTarget = false;
+            Disc(knobRing.transform, "KnobFace", 116f, new Color(0.93f, 0.95f, 1f, 0.95f)).raycastTarget = false;
+            var stick = root.AddComponent<VirtualJoystick2D>();
+            var so = new SerializedObject(stick);
+            so.FindProperty("target").objectReferenceValue = playerInput;
+            so.FindProperty("knob").objectReferenceValue = knobRing.rectTransform;
+            so.FindProperty("radius").floatValue = 100f;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         /// <summary>NPC dialog: framed panel along the bottom (never over the hero), speaker banner, message, continue.</summary>
         private static void BuildNpcDialog(Transform hud, out GameObject dialog, out Text speaker, out Text line, out Button cont)
         {
             Color cream = new Color(1f, 0.97f, 0.9f), gold = new Color(1f, 0.84f, 0.5f);
-            dialog = EntrySceneBuilder.Panel(hud, "NpcDialog", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 150f),
-                new Vector2(1240f, 250f), new Color(0.08f, 0.1f, 0.18f, 0.95f), EntrySceneBuilder.PanelSprite);
+            // 1240 x 290: the gilded frame band is ~97 units wide on screen, so text lives in the inner
+            // 990 x 140 box (≥ 28 units clear of the band) and the button row sits below it, never under the text.
+            dialog = EntrySceneBuilder.Panel(hud, "NpcDialog", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 180f),
+                new Vector2(1240f, 320f), new Color(0.08f, 0.1f, 0.18f, 0.95f), EntrySceneBuilder.PanelSprite);
             EntrySceneBuilder.Frame(dialog, 3.2f);
             var banner = EntrySceneBuilder.Panel(dialog.transform, "SpeakerBanner", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(190f, 6f),
                 new Vector2(280f, 56f), new Color(0.22f, 0.36f, 0.42f, 1f), EntrySceneBuilder.PanelSprite);
             EntrySceneBuilder.Rim(banner.transform);
             speaker = EntrySceneBuilder.Label(banner.transform, "Speaker", "", 28, gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(260f, 50f), FontStyle.Bold);
-            line = EntrySceneBuilder.Label(dialog.transform, "Line", "", 27, cream, new Vector2(0.5f, 0.5f), new Vector2(-40f, 0f), new Vector2(1000f, 160f));
-            line.alignment = TextAnchor.MiddleLeft;
+            // Measured on the 1280x720 capture: the frame's inner dark area starts ~100 units in from the left/right
+            // edges and ~40 from the top/bottom. Text box keeps ≥ 40 more inside that, above the button row.
+            line = EntrySceneBuilder.Label(dialog.transform, "Line", "", 26, cream, new Vector2(0.5f, 0.5f), new Vector2(-10f, 30f), new Vector2(940f, 160f));
+            line.alignment = TextAnchor.UpperLeft;
             line.supportRichText = true;
             line.lineSpacing = 1.1f;
-            cont = EntrySceneBuilder.Btn(dialog.transform, "Continue", "Cảm ơn ông!", new Vector2(-150f, 52f), new Vector2(230f, 62f),
+            line.horizontalOverflow = HorizontalWrapMode.Wrap;
+            line.verticalOverflow = VerticalWrapMode.Truncate;
+            line.resizeTextForBestFit = true; // long lines shrink inside the box instead of spilling over the frame
+            line.resizeTextMinSize = 20;
+            line.resizeTextMaxSize = 26;
+            cont = EntrySceneBuilder.Btn(dialog.transform, "Continue", "Cảm ơn ông!", new Vector2(-220f, 86f), new Vector2(230f, 62f),
                 new Color(0.26f, 0.56f, 0.62f), Color.white, new Vector2(1f, 0f));
             dialog.SetActive(false);
         }
