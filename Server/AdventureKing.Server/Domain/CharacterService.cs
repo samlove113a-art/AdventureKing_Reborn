@@ -101,8 +101,54 @@ public sealed class CharacterService
     /// <summary>Maps the server knows. A client can only be saved inside one of these, inside its bounds.</summary>
     public static readonly IReadOnlyDictionary<string, WorldMap> Maps = new Dictionary<string, WorldMap>
     {
-        ["village_wind_bell"] = new("village_wind_bell", "Làng Chuông Gió", -40f, 80f, -6f, 30f),
+        ["village_wind_bell"] = new("village_wind_bell", "Thị trấn Chuông Gió", -70f, 100f, -8f, 40f),
+        ["meadow_breeze"] = new("meadow_breeze", "Đồng Cỏ Gió", -50f, 90f, -8f, 30f),
     };
+
+    public const string StartMap = "village_wind_bell";
+
+    public sealed record Portal(string Id, string FromMap, float X, float Y, string ToMap, float ArrivalX, float ArrivalY);
+
+    /// <summary>
+    /// The portal graph is server data: a client can only change map by using a portal that exists on its
+    /// current map and that it stands next to. Coordinates must match the scenes (Unity builders use the same values).
+    /// </summary>
+    public static readonly IReadOnlyDictionary<string, Portal> Portals = new Dictionary<string, Portal>
+    {
+        ["hub_east_meadow"] = new("hub_east_meadow", "village_wind_bell", 66f, 0f, "meadow_breeze", -36f, 0.9f),
+        ["meadow_west_hub"] = new("meadow_west_hub", "meadow_breeze", -40f, 0f, "village_wind_bell", 62f, 0.9f),
+    };
+
+    public const float PortalReach = 3.5f;
+    /// <summary>Minimum time between two portal uses by one character (blocks double-submits and portal spam).</summary>
+    public static readonly TimeSpan TravelCooldown = TimeSpan.FromSeconds(1.5);
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, long> lastTravelMs = new();
+    public Func<long> Clock { get; set; } = Database.NowMs;
+
+    /// <summary>Uses a portal: validated against the character's saved map and its current position.</summary>
+    public CharacterDto Travel(string accountId, string characterId, string? portalId, float x, float y)
+    {
+        if (portalId == null || !Portals.TryGetValue(portalId, out Portal? p))
+            throw new GameError("portal_unknown", "Cổng dịch chuyển không tồn tại.", 404);
+        if (!float.IsFinite(x) || !float.IsFinite(y) || MathF.Abs(x - p.X) > PortalReach || MathF.Abs(y - p.Y) > PortalReach)
+            throw new GameError("portal_too_far", "Bạn đứng quá xa cổng dịch chuyển.", 409);
+        return db.InTransaction((c, tx) =>
+        {
+            CharacterDto ch = Query(c, tx, "c.id=$id AND c.account_id=$a", ("$id", characterId), ("$a", accountId)).SingleOrDefault()
+                              ?? throw new GameError("character_not_found", "Không tìm thấy nhân vật.", 404);
+            if (ch.lastMapId != p.FromMap)
+                throw new GameError("portal_wrong_map", "Cổng này không ở bản đồ hiện tại của bạn.", 409);
+            long now = Clock();
+            if (lastTravelMs.TryGetValue(characterId, out long last) && now - last < (long)TravelCooldown.TotalMilliseconds)
+                throw new GameError("portal_cooldown", "Cổng đang hồi năng lượng, hãy thử lại sau giây lát.", 429);
+            lastTravelMs[characterId] = now;
+            Database.Exec(c, tx, """
+                UPDATE characters SET map_id=$m, pos_x=$x, pos_y=$y, has_position=1, revision=revision+1, saved_ms=$t WHERE id=$id
+                """, ("$m", p.ToMap), ("$x", p.ArrivalX), ("$y", p.ArrivalY), ("$t", Database.NowMs()), ("$id", characterId));
+            AccountService.Audit(c, tx, accountId, "travel", $"{characterId} {p.Id}");
+            return Query(c, tx, "c.id=$id", ("$id", characterId)).Single();
+        });
+    }
 
     /// <summary>
     /// Saves where the character stands (autosave / leaving the map). Position is not an economic value, but it
@@ -116,11 +162,14 @@ public sealed class CharacterService
             throw new GameError("position_invalid", "Vị trí nằm ngoài bản đồ.");
         return db.InTransaction((c, tx) =>
         {
-            int n = Database.Exec(c, tx, """
-                UPDATE characters SET map_id=$m, pos_x=$x, pos_y=$y, has_position=1, revision=revision+1, saved_ms=$t
-                WHERE id=$id AND account_id=$a
-                """, ("$m", mapId), ("$x", x), ("$y", y), ("$t", Database.NowMs()), ("$id", characterId), ("$a", accountId));
-            if (n == 0) throw new GameError("character_not_found", "Không tìm thấy nhân vật.", 404);
+            CharacterDto ch = Query(c, tx, "c.id=$id AND c.account_id=$a", ("$id", characterId), ("$a", accountId)).SingleOrDefault()
+                              ?? throw new GameError("character_not_found", "Không tìm thấy nhân vật.", 404);
+            // Saving a position never changes map: only a validated portal (Travel) can do that.
+            if (ch.lastMapId != mapId)
+                throw new GameError("map_mismatch", "Vị trí không thuộc bản đồ hiện tại của nhân vật.", 409);
+            Database.Exec(c, tx, """
+                UPDATE characters SET pos_x=$x, pos_y=$y, has_position=1, revision=revision+1, saved_ms=$t WHERE id=$id
+                """, ("$x", x), ("$y", y), ("$t", Database.NowMs()), ("$id", characterId));
             return Query(c, tx, "c.id=$id", ("$id", characterId)).Single();
         });
     }

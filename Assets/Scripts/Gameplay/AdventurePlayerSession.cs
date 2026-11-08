@@ -9,6 +9,8 @@ namespace AdventureKing.Gameplay
     {
         public static AdventureCharacterSnapshot Character { get; private set; }
         public static bool IsActive => Character != null;
+        /// <summary>Set for one scene load after a server-approved portal jump (arrival effects).</summary>
+        public static bool ArrivedByPortal { get; set; }
 
         internal static void Activate(AdventureCharacterSnapshot serverCharacter)
         {

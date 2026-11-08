@@ -130,6 +130,46 @@ public class AccountAndCharacterTests : IDisposable
     }
 
     [Fact]
+    public void Maps_Change_Only_Through_A_Nearby_Portal_On_The_Current_Map()
+    {
+        string a = accounts.Register("traveler1", "travel-pass-1").AccountId;
+        string id = chars.Create(a, "Phượt Thủ", 0, 0).characterId;
+        Assert.Equal(CharacterService.StartMap, chars.Enter(a, id).lastMapId);
+
+        // Saving a position on another map is not a way to teleport.
+        Assert.Equal("map_mismatch", Assert.Throws<GameError>(() => chars.SaveLocation(a, id, "meadow_breeze", 0, 1)).Code);
+        // Portal must exist, be on the current map and be within reach.
+        Assert.Equal(404, Assert.Throws<GameError>(() => chars.Travel(a, id, "nowhere", 66, 0)).Status);
+        Assert.Equal("portal_too_far", Assert.Throws<GameError>(() => chars.Travel(a, id, "hub_east_meadow", 20, 0)).Code);
+        Assert.Equal("portal_wrong_map", Assert.Throws<GameError>(() => chars.Travel(a, id, "meadow_west_hub", -40, 0)).Code);
+
+        long clock = 1_000_000;
+        chars.Clock = () => clock;
+        CharacterDto there = chars.Travel(a, id, "hub_east_meadow", 65.2f, 0.9f);
+        // An immediate second jump (double-click, lag retry, spam) is refused even from a valid spot.
+        clock += 300;
+        Assert.Equal("portal_cooldown", Assert.Throws<GameError>(() => chars.Travel(a, id, "meadow_west_hub", -39f, 0.9f)).Code);
+        Assert.Equal("meadow_breeze", chars.Enter(a, id).lastMapId);
+        clock += 2000;
+        CharacterService.Portal p = CharacterService.Portals["hub_east_meadow"];
+        Assert.Equal("meadow_breeze", there.lastMapId);
+        Assert.Equal(p.ArrivalX, there.posX);
+        Assert.True(there.hasPosition);
+        chars.SaveLocation(a, id, "meadow_breeze", -10f, 0.9f);
+
+        CharacterDto back = chars.Travel(a, id, "meadow_west_hub", -39f, 0.9f);
+        Assert.Equal("village_wind_bell", back.lastMapId);
+        Assert.Equal(CharacterService.Portals["meadow_west_hub"].ArrivalX, back.posX);
+        // Every portal lands inside its destination map.
+        foreach (CharacterService.Portal portal in CharacterService.Portals.Values)
+        {
+            CharacterService.WorldMap to = CharacterService.Maps[portal.ToMap], from = CharacterService.Maps[portal.FromMap];
+            Assert.InRange(portal.ArrivalX, to.MinX, to.MaxX);
+            Assert.InRange(portal.X, from.MinX, from.MaxX);
+        }
+    }
+
+    [Fact]
     public void Tutorial_Progress_Is_Sequential_Persistent_And_Never_Resets()
     {
         string a = accounts.Register("learner01", "learner-pass-1").AccountId;

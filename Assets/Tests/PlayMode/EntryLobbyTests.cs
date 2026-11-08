@@ -23,6 +23,7 @@ namespace AdventureKing.Tests
         [UnitySetUp]
         public IEnumerator Load()
         {
+            TestRunnerGuard.Protect();
 #if UNITY_EDITOR
             var op = UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(ScenePath,
                 new LoadSceneParameters(LoadSceneMode.Additive));
@@ -40,7 +41,7 @@ namespace AdventureKing.Tests
         public IEnumerator Unload()
         {
             // Also removes the DontDestroyOnLoad singletons (server connection, audio director).
-            yield return ServerEndToEndTests.CloseGame();
+            yield return TestRunnerGuard.CloseGame();
         }
 
         internal static IEnumerator WaitIdle(AdventureEntryFlow flow, float seconds = 15f)

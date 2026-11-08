@@ -1,0 +1,1357 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 5684)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 11600)
+VBCSCompiler prewarm took 7.20 ms
+Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::Module] Trying to connect to existing licensing client channel...
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-08T03:15:32Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 8288)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
+-batchmode
+-quit
+-projectPath
+C:\AdventureKing_Reborn
+-buildTarget
+Win64
+-executeMethod
+AdventureKing.ArtPipeline.NpcArtPipeline.RebuildFromCommandLine
+-logFile
+QA\Logs\35_NpcArtPipeline.log
+Successfully changed project path to: C:\AdventureKing_Reborn
+C:/AdventureKing_Reborn
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [10812]  Target information:
+
+Player connection [10812]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 690155658 [EditorId] 690155658 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [10812] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [10812] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-08T03:15:32.6564217Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 8288, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-11484" after 0.5 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              4a8975e26836430891e31071cb1a2e5b
+  Correlation Id:          70e8ed8cd83e9e289aad2198879f6c01
+  External correlation Id: 6323341457010956615
+  Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.22s, handshake: 0.08s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-08T03:15:32.9502412Z"
+[Licensing::Module] Connected to LicensingClient (PId: 8288, launch time: 0.00, total connection time: 0.86s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968527504213-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.02
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.93s
+[Licensing::Module] Licensing is initialized (took 0.19s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/AdventureKing_RebornUnity Data Store running and initialised
+Targeting platform: Win64
+[Physics::Module] Selected backend (deferred post-plugins).
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.6.7f1 (b22767f04f04)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=262144, entitiesPerBlock=1024, blocksPerSlotPage=0, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/AdventureKing_Reborn/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+d3d12: failed to query info queue interface (0x80004002).
+Direct3D:
+    Version:         Direct3D 12 [level 12.1]
+    Renderer:        NVIDIA GeForce GTX 1050 Ti (ID=0x1c82)
+    Vendor:          NVIDIA
+    VRAM:            4004 MB
+    App VRAM Budget: 3403 MB
+    Driver:          32.0.15.7680
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56484
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.010585 seconds.
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.060 seconds
+Domain Reload Profiling: 2998ms
+	BeginReloadAssembly (200ms)
+		CreateAndSetChildDomain (12ms)
+	RebuildCommonClasses (9ms)
+	RebuildNativeTypeToScriptingClass (29ms)
+	initialDomainReloadingComplete (113ms)
+	LoadAllAssembliesAndSetupDomain (585ms)
+		LoadAssemblies (189ms)
+		TypeCache.Refresh (397ms)
+			TypeCache.ScanAssembly (373ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (2062ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (19ms)
+			BeforeProcessingInitializeOnLoad (182ms)
+			ProcessInitializeOnLoadAttributes (233ms)
+			ProcessInitializeOnLoadMethodAttributes (1259ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 31 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.inputsystem@1.20.1 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.inputsystem@2436e68c60c4)
+    com.unity.searcher@4.9.5 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.profiling.core@1.0.3 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.sprite@752945c75a6f)
+    com.unity.2d.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.tilemap@f4c7bd71ac8a)
+    com.unity.render-pipelines.universal@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal@ffe395a3a1d1)
+    com.unity.test-framework@1.8.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework@ee3fe9477490)
+    com.unity.ugui@2.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ugui@eb824e41fbc7)
+    com.unity.modules.animation@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.audio@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.modules.physics@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.ext.nunit@2.1.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.render-pipelines.core@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.core@13460d8ea9e5)
+    com.unity.shadergraph@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.shadergraph@8b7e693cdbfe)
+    com.unity.render-pipelines.universal-config@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal-config@561422b74439)
+    com.unity.graph-authoring@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.graph-authoring@cfd2588851ee)
+    com.unity.burst@2.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.collections@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.collections@4920e8897b5a)
+    com.unity.test-framework.performance@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework.performance@e8b39e3ef3d9)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+[ScriptCompilation] Requested script compilation because: InitialRefresh: Force Refresh Recompile flag enabled
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+DisplayProgressbar: Compiling Scripts
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\DotNetSdk\dotnet.exe "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 4 Duration: 1s108ms
+[304/804    0s] WriteResponseFile Library/Bee/artifacts/rsp/4747638433968585886.rsp
+[585/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.CodeGen.dll
+[591/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.CodeGen.pdb
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+[620/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[621/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll (+2 others)
+*** Tundra requires additional run (1.06 seconds), 5 items updated, 619 evaluated
+ExitCode: 0 Duration: 1s755ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 0 Duration: 2s329ms
+Finished compiling graph: 807 nodes, 14176 flattened edges (12130 ToBuild, 120 ToUse), maximum node priority 901
+[357/804    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.rsp
+[458/804    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.rsp
+[620/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[674/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.RenderPipelines.Core.Runtime.Shared.dll
+[675/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Shared.dll
+[676/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Tests.CoreCLR.PublicJobPrivateGeneric.dll
+[677/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.TestFramework.dll
+[678/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll
+[679/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.dll
+[680/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll
+[681/804    0s] CopyFiles Library/ScriptAssemblies/Unity.PerformanceTesting.dll
+[682/804    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.TestRunner.dll
+[683/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Tests.CoreCLR.InternalJobNestedPrivate.dll
+[684/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.dll
+[685/804    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.UI.dll
+[686/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll
+[687/804    0s] CopyFiles Library/ScriptAssemblies/Unity.PathTracing.Runtime.dll
+[688/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll
+[689/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.2D.Runtime.dll
+[690/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Tests.CoreCLR.ProtectedJobNested.dll
+[691/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Burst.dll
+[692/804    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.dll
+[693/804    0s] CopyFiles Library/ScriptAssemblies/Unity.UnifiedRayTracing.Runtime.dll
+[694/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Profiling.Core.dll
+[695/804    0s] CopyFiles Library/ScriptAssemblies/Unity.SurfaceCache.Runtime.dll
+[696/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.dll
+[697/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll
+[698/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Tests.CoreCLR.PrivateJobNested.dll
+[699/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.ObjectDispatcher.Runtime.dll
+[700/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.004.dll
+[701/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.IntegrationTests.dll
+[702/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.ForUI.dll
+[703/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.Shared.dll
+[704/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.Shared.pdb
+[705/804    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.TestRunner.dll
+[706/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll
+[707/804    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.TestRunner.pdb
+[708/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Searcher.Editor.pdb
+[709/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.dll
+[710/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Searcher.Editor.dll
+[711/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.DocCodeSamples.dll
+[712/804    0s] CopyFiles Library/ScriptAssemblies/Unity.GraphAuthoring.Editor.dll
+[713/804    0s] CopyFiles Library/ScriptAssemblies/Unity.GraphAuthoring.Editor.pdb
+[714/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.DocCodeSamples.pdb
+[715/804    0s] CopyFiles Library/ScriptAssemblies/Unity.PerformanceTesting.Editor.dll
+[716/804    0s] CopyFiles Library/ScriptAssemblies/Unity.PathTracing.Editor.pdb
+[717/804    0s] CopyFiles Library/ScriptAssemblies/Unity.PerformanceTesting.Editor.pdb
+[718/804    0s] CopyFiles Library/ScriptAssemblies/Unity.PathTracing.Editor.dll
+[719/804    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.dll
+[720/804    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.pdb
+[721/804    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.Editor.pdb
+[722/804    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
+[723/804    0s] CopyFiles Library/ScriptAssemblies/Unity.ShaderGraph.Utilities.pdb
+[724/804    0s] CopyFiles Library/ScriptAssemblies/Unity.ShaderGraph.Utilities.dll
+[725/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Editor.pdb
+[726/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Editor.dll
+[727/804    0s] CopyFiles Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll
+[728/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.2D.Editor.Overrides.pdb
+[729/804    0s] CopyFiles Library/ScriptAssemblies/Unity.2D.Sprite.Editor.pdb
+[730/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Rendering.LightTransport.Editor.dll
+[731/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.2D.Editor.Overrides.dll
+[732/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Rendering.LightTransport.Editor.pdb
+[733/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.pdb
+[734/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll
+[735/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.ForUI.Editor.dll
+[736/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.RenderPipelines.Core.Editor.dll
+[737/804    0s] CopyFiles Library/ScriptAssemblies/Unity.ShaderGraph.Editor.pdb
+[738/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.ForUI.Editor.pdb
+[739/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.RenderPipelines.Core.Editor.pdb
+[740/804    0s] CopyFiles Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll
+[741/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.ShaderGraph.Editor.dll
+[742/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.ShaderGraph.Editor.pdb
+[743/804    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.Analytics.dll
+[744/804    0s] CopyFiles Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll
+[745/804    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.Analytics.pdb
+[746/804    0s] CopyFiles Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.pdb
+[747/804    0s] CopyFiles Library/ScriptAssemblies/Unity.SurfaceCache.Runtime.pdb
+[748/804    0s] CopyFiles Library/ScriptAssemblies/Unity.UnifiedRayTracing.Runtime.pdb
+[749/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.pdb
+[750/804    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.TestRunner.pdb
+[751/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.RenderPipelines.Core.Runtime.Shared.pdb
+[752/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll
+[753/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.pdb
+[754/804    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.UI.pdb
+[755/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.pdb
+[756/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.ForUI.pdb
+[757/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Shared.pdb
+[758/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.pdb
+[759/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Tests.CoreCLR.PrivateJobNested.pdb
+[760/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.004.pdb
+[761/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Tests.CoreCLR.ProtectedJobNested.pdb
+[762/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.pdb
+[763/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Tests.CoreCLR.PublicJobPrivateGeneric.pdb
+[764/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.pdb
+[765/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Burst.pdb
+[766/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.IntegrationTests.pdb
+[767/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Tests.CoreCLR.InternalJobNestedPrivate.pdb
+[768/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.TestFramework.pdb
+[769/804    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.pdb
+[770/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.pdb
+[771/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.pdb
+[772/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.pdb
+[773/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Profiling.Core.pdb
+[774/804    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.pdb
+[775/804    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.ObjectDispatcher.Runtime.pdb
+[776/804    0s] CopyFiles Library/ScriptAssemblies/Unity.PathTracing.Runtime.pdb
+[777/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.pdb
+[778/804    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.2D.Runtime.pdb
+[779/804    0s] CopyFiles Library/ScriptAssemblies/Unity.PerformanceTesting.pdb
+[780/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll (+2 others)
+[781/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Gameplay.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll, with 148 defines and 280 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[782/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.dll
+[783/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.pdb
+[784/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll (+2 others)
+[785/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll, with 148 defines and 279 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[786/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.dll
+[787/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.pdb
+[788/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll (+2 others)
+[789/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll, with 146 defines and 313 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[790/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.Editor.dll
+[791/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.Editor.pdb
+[792/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll (+2 others)
+[793/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.EditMode.dll (+2 others)
+[794/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.PlayMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll, with 148 defines and 276 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[795/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.EditMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.EditMode.dll, with 146 defines and 310 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[796/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.EditMode.dll
+[797/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.EditMode.pdb
+[798/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.pdb
+[799/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll
+[800/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll (+2 others)
+Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
+[801/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.ArtPipeline.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll, with 146 defines and 314 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[802/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.pdb
+[803/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.dll
+*** Tundra build success (2.30 seconds), 133 items updated, 804 evaluated
+Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
+AssetDatabase: script compilation time: 5.949886s
+Begin MonoManager ReloadAssembly
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Importing 'GUID: f238d27bb65b96145b3afeac7d5e2cda - Path: Assets/Art/Fonts' with importer (DefaultImporter)
+Imported 'GUID: f238d27bb65b96145b3afeac7d5e2cda' -> (Import Result ID: 'accdeaac7b707c020e7ec5be613d2f92') in 0.037 seconds [static dependencies only]. Details - ImportResultOutputID=a09c8bac08c660fcd9d84e844503dd41 DependenciesID=24aa3c57bd817e2bd900448de9e98963 StaticDependenciesID=d693d15845e032330319fcea98ec6709 
+Importing 'GUID: a201a68b41d14fe4a82212997fe55432 - Path: Assets/Art/Fonts/Nunito' with importer (DefaultImporter)
+Imported 'GUID: a201a68b41d14fe4a82212997fe55432' -> (Import Result ID: '258963a45d3315810af76a32665ba009') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=93f31b44a9459bbcf3a4a2ca7c183a4a DependenciesID=b4e6d30e2d2e0f72f4428d0241a0b559 StaticDependenciesID=ab4742420f598d29e5ff6a831da58a0f 
+Importing 'GUID: 33236785f731cf043af5c509e264697c - Path: Assets/Art/Characters/NpcElder' with importer (DefaultImporter)
+Imported 'GUID: 33236785f731cf043af5c509e264697c' -> (Import Result ID: '1a60e3460208b4b0a290156f2d7add84') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=253cfd934a97c3649da8df64c8ce0db2 DependenciesID=02f142979998b80fbc444f491ac4ca5e StaticDependenciesID=b5a6c555fe046e12371e242dc9eaf0a8 
+Importing 'GUID: d3f65fffab5c0c94e8e645c8a52c0c0b - Path: Assets/Art/Fonts/BeVietnamPro' with importer (DefaultImporter)
+Imported 'GUID: d3f65fffab5c0c94e8e645c8a52c0c0b' -> (Import Result ID: '4a50f52e717eb7bc7b0cb90cac2d0a75') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=fbb9c0ebb18f7b5bfff127187d43eae6 DependenciesID=7161aaddf2782271474bfa7343ad2f2a StaticDependenciesID=80ad8d8c4c487dfd965b51e2c6611b30 
+Importing 'GUID: f7618f845cafad0449fbd24cfce9c12a - Path: Assets/Art/Characters/NpcStorekeeper' with importer (DefaultImporter)
+Imported 'GUID: f7618f845cafad0449fbd24cfce9c12a' -> (Import Result ID: '71fe379ac2c658aedb4a792896166440') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=de319efdd2545a6ce085b40401a5ea6a DependenciesID=7390776c3701fc4c7c21bea41db39421 StaticDependenciesID=6bf4e6ad917a168f0c335fd287ca14f3 
+Importing 'GUID: 8a1ca9094490dc547a7fed3165717819 - Path: Assets/Art/Characters/NpcSmith' with importer (DefaultImporter)
+Imported 'GUID: 8a1ca9094490dc547a7fed3165717819' -> (Import Result ID: '9e4abc40ba6b50f9da9cf3e8fbb9048f') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=7df692653adc64cfee688065b15ba1d4 DependenciesID=a409995e04f8aaa6d64e824ee4506ce6 StaticDependenciesID=8f6ec4cccf07f48eda64c06307e1fd53 
+Importing 'GUID: 727a0968a75a41748a599019dcd40f04 - Path: Assets/Art/World/Town/Props/portal_gate' with importer (DefaultImporter)
+Imported 'GUID: 727a0968a75a41748a599019dcd40f04' -> (Import Result ID: '3d92eb37b8f4022797821efca43c9c1e') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=fc2714552195feda33a01deb44ff85c6 DependenciesID=1ab15b169534e4152ce0334820f4a649 StaticDependenciesID=7011114b4838ab47a8594ecc1ede6db0 
+Importing 'GUID: 728fe5a108a079e469c11b6cce8f9ee0 - Path: Assets/Art/World/Town/Props/bamboo' with importer (DefaultImporter)
+Imported 'GUID: 728fe5a108a079e469c11b6cce8f9ee0' -> (Import Result ID: '5fc12d0dd22fe2b9f83b97c1b430cf92') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=2ef87009ccaeb093e6b75df6fd8b94e4 DependenciesID=65a6647fa44c58ebc4b7d2e4b35a325d StaticDependenciesID=d36a34cd6e5f4d15a4d656dd1244016c 
+Importing 'GUID: e38a93c4875d24546b98b43966aef7ce - Path: Assets/Art/World/Town/Props/crates' with importer (DefaultImporter)
+Imported 'GUID: e38a93c4875d24546b98b43966aef7ce' -> (Import Result ID: 'beac0ea335c99e4e39a882b1090aa17d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=10f476570d416c6a823f2416c69bee38 DependenciesID=a3cd0fa904fb227afcf0ff159168e419 StaticDependenciesID=6fac23bd2414dffacad432e71f1fd345 
+Importing 'GUID: c4c0ddff15a2ecd459ea95f46921a8f4 - Path: Assets/Art/World/Town/Props/windmill' with importer (DefaultImporter)
+Imported 'GUID: c4c0ddff15a2ecd459ea95f46921a8f4' -> (Import Result ID: 'b7f63b636a89a64b7507bd4f37eb37a7') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=abfd58c2f6b0dc9ef354fcf0445b7288 DependenciesID=30395fccabc54092346468beb36f5e0e StaticDependenciesID=9aafa27b34f9cd84e28caf08c0da0186 
+Importing 'GUID: f52d5357b7a225a4580ee9ad46b89684 - Path: Assets/Art/World/Town/Props/teahouse' with importer (DefaultImporter)
+Imported 'GUID: f52d5357b7a225a4580ee9ad46b89684' -> (Import Result ID: '95dcee2014b71f15bf32511bdf671027') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=6039ecdcfa8b06d3e4ca6713546fe128 DependenciesID=2bd989ac80570713ee817af186e558c0 StaticDependenciesID=306861296e4b8d97cf183a862a4b6b3b 
+Importing 'GUID: 3657bf0c1737ddc42bc6b1cef4bf254f - Path: Assets/Art/World/Town/Props/lantern_post' with importer (DefaultImporter)
+Imported 'GUID: 3657bf0c1737ddc42bc6b1cef4bf254f' -> (Import Result ID: 'ae52abfa80d364b04c08cc2dbd699055') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=0bd3ef5d6a2a3a4ef7be3fd31918ffae DependenciesID=a0cd11a3a4e79b46f3bf7c9c24c1374b StaticDependenciesID=85edbda97d9b7ccf5620f2926c9b8146 
+Importing 'GUID: 563edfbc359d9554d9ff26ab5575d82b - Path: Assets/Art/World/Town/Props/stone_lantern' with importer (DefaultImporter)
+Imported 'GUID: 563edfbc359d9554d9ff26ab5575d82b' -> (Import Result ID: '5c8ffb41eb5f0144c5937bf63bba86ba') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=5d5905a80657ccd6afa915403eb6a000 DependenciesID=4ce706889ca10f442bd02fce61dd5e09 StaticDependenciesID=ac64a6e7602f490af362a6b81e3f743f 
+Importing 'GUID: 762078cbef5c8aa4c9733c0f00641c23 - Path: Assets/Art/World/Town/Props/hero_statue' with importer (DefaultImporter)
+Imported 'GUID: 762078cbef5c8aa4c9733c0f00641c23' -> (Import Result ID: '668df3d7f65bddcb8ebe32b8ec667d61') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=b2e3f43744174c799b12834abcf84912 DependenciesID=92b0ca7a4d79289fa509cc56b59895c5 StaticDependenciesID=4a3f57bc2ac02f17bf9e46569a91bfef 
+Importing 'GUID: f94c9d9abec114e4690fd8ab4697bd92 - Path: Assets/Art/World/Town/Props/banyan_tree' with importer (DefaultImporter)
+Imported 'GUID: f94c9d9abec114e4690fd8ab4697bd92' -> (Import Result ID: '0d5e01d28e8da29d41267a626cd0617e') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=e2982531f3501289e1b70180b29da699 DependenciesID=058dcbd5278b8bbdd625c416f8e307e4 StaticDependenciesID=c8db060c972bf087790290a8c063ec85 
+Importing 'GUID: 0a0b4443af4f19c41a190bc6c8278eb3 - Path: Assets/Art/World/Town/Props/signboard' with importer (DefaultImporter)
+Imported 'GUID: 0a0b4443af4f19c41a190bc6c8278eb3' -> (Import Result ID: 'd892c54b6bcd6f6f88adede06831537a') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=237b694d4a4b34848bdb2567f777d771 DependenciesID=51911bba2ade5d52662e808284c20416 StaticDependenciesID=34211a0c6e782341782fc0f79d6f17a3 
+Importing 'GUID: 2a5730947f7ff9e42ad28c13710f058e - Path: Assets/Art/World/Town/Props/forge' with importer (DefaultImporter)
+Imported 'GUID: 2a5730947f7ff9e42ad28c13710f058e' -> (Import Result ID: '0b5a0876a6775af6a30d3fc7ffe96aab') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=3a41e6f1acb958fab8bb5fc42c0233a4 DependenciesID=91a441d41bfddb84b4aeab4743b6c42d StaticDependenciesID=255e2e05514d4eb553c9078289f9ba25 
+Importing 'GUID: ec2f78eebd22f6746bc633bea4c67193 - Path: Assets/Art/World/Town/Props/planter' with importer (DefaultImporter)
+Imported 'GUID: ec2f78eebd22f6746bc633bea4c67193' -> (Import Result ID: '21fad5e24193d67b598e354f8656b788') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=ccc79a32b8444e0cd4d225851b8039c1 DependenciesID=3bdbf20f3fc72d7fe6a1256a04cbdd8d StaticDependenciesID=b1746d17d04fc37377b400bcf5044a86 
+Importing 'GUID: fc0a6b15e32dc5e4cafade7aa0e4b64f - Path: Assets/Art/World/Town/Props/bell_tower' with importer (DefaultImporter)
+Imported 'GUID: fc0a6b15e32dc5e4cafade7aa0e4b64f' -> (Import Result ID: 'ada7be03a32e86ae24ae44a9b7c57e92') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=249eefc374ec034f539c74d2b4080db1 DependenciesID=185a40ae976c81332e6a406623bd07f8 StaticDependenciesID=0261421a1c0415c761953c65f889c0ec 
+Importing 'GUID: 2d814eee882ed3840a557fa5f8df30f2 - Path: Assets/Art/World/Town/Props/market_stall' with importer (DefaultImporter)
+Imported 'GUID: 2d814eee882ed3840a557fa5f8df30f2' -> (Import Result ID: '022ebe6e3a0f9665057a4bd4c6c50fe7') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=ada2c7818568fd076c7ecff854c73ac8 DependenciesID=323bb5774f4a6ab24a858f1038b926b1 StaticDependenciesID=6df77c826109054109d4e09d3de0bdf5 
+Importing 'GUID: adb577a14da1b1249aee4145d300f499 - Path: Assets/Art/World/Town/Props/cottage' with importer (DefaultImporter)
+Imported 'GUID: adb577a14da1b1249aee4145d300f499' -> (Import Result ID: '8bfb35623b3f755b6fb37e639b1269ce') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=7abcf0bd6f18858145dc907442ab1ab4 DependenciesID=5ddbaae1b4868c56f5f70ca2314d8ee4 StaticDependenciesID=d1f33442fcb2b373b18f33386d76ef86 
+Importing 'GUID: 9e1db72ffb120a945a2c757833f6a084 - Path: Assets/Art/World/Town/Props/stone_bridge' with importer (DefaultImporter)
+Imported 'GUID: 9e1db72ffb120a945a2c757833f6a084' -> (Import Result ID: '8dee2014d403f62d5898c4b15442cefc') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=06b90d21a24171da3f7a59e8e181d1f2 DependenciesID=8f1323cf48e887d8a5a8b3f7a3020700 StaticDependenciesID=baca7894e1252ba4df47d599e19438f7 
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.705 seconds
+Domain Reload Profiling: 3664ms
+	BeginReloadAssembly (639ms)
+		DisableScriptedObjects (50ms)
+		CreateAndSetChildDomain (205ms)
+	RebuildCommonClasses (22ms)
+	RebuildNativeTypeToScriptingClass (41ms)
+	initialDomainReloadingComplete (105ms)
+	LoadAllAssembliesAndSetupDomain (1147ms)
+		LoadAssemblies (622ms)
+		TypeCache.Refresh (275ms)
+			TypeCache.ScanAssembly (253ms)
+		AnalyzeDomain (133ms)
+			BuildScriptInfoCaches (116ms)
+			ResolveRequiredComponents (14ms)
+	FinalizeReload (1711ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (6ms)
+			InitializePlatformSupportModulesInManaged (20ms)
+			BeforeProcessingInitializeOnLoad (237ms)
+			ProcessInitializeOnLoadAttributes (307ms)
+			ProcessInitializeOnLoadMethodAttributes (540ms)
+			AfterProcessingInitializeOnLoad (12ms)
+		AwakeInstancesAfterBackupRestoration (54ms)
+Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
+WARNING: Shader Unsupported: 'Hidden/Universal Render Pipeline/Terrain/Lit (Base Pass)' - All subshaders removed
+WARNING: Shader Did you use #pragma only_renderers and omit this platform?
+WARNING: Shader If subshaders removal was intentional, you may have forgotten turning Fallback off?
+WARNING: Shader Unsupported: 'Universal Render Pipeline/Terrain/Lit' - All subshaders removed
+WARNING: Shader Did you use #pragma only_renderers and omit this platform?
+WARNING: Shader If subshaders removal was intentional, you may have forgotten turning Fallback off?
+Importing 'GUID: e059d7940f6110d498e466a6f4929446 - Path: Assets/Art/World/Town/Props/cottage/cottage_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: e059d7940f6110d498e466a6f4929446' -> (Import Result ID: '5c63e93c0a2cdf79b2475ac76aaaa104') in 0.301 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cf20cdd6077d76cb507f4d6751f43bb4 DependenciesID=8e6d1c4fa442c0ac267ad6306ecac28a StaticDependenciesID=6bf392f0de4b081b78283ee119498284 
+Importing 'GUID: e2043780e860a3641b8c2f58433ee41b - Path: Assets/Art/World/Town/Props/stone_lantern/stone_lantern_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: e2043780e860a3641b8c2f58433ee41b' -> (Import Result ID: '50afa92474c9305984843ee66dfa2b2d') in 0.264 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=deef0a9f2ca4f71b33f746972f34a970 DependenciesID=856839c8f34f0f4a91ef18e5cdbe012f StaticDependenciesID=2e33ac7bc82d8eb5309525ba1593e751 
+Importing 'GUID: f27bea9c45b0e874ba98e00c4979c68f - Path: Assets/Art/World/Town/Props/signboard/signboard_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: f27bea9c45b0e874ba98e00c4979c68f' -> (Import Result ID: '373e79b4c2124355f48ca918bd8a4fdb') in 0.258 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bd287a68db219978fca0a34b5fa29bc8 DependenciesID=b82dcdc4c1b2ec582592fb645632181e StaticDependenciesID=79e8004af3e0db48129f09549b552907 
+Importing 'GUID: b4bcb2694ae0f1944b27ff24c8faff92 - Path: Assets/Art/World/Town/Props/bell_tower/bell_tower_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: b4bcb2694ae0f1944b27ff24c8faff92' -> (Import Result ID: '859aa5fbab30509536e1cb06a406473d') in 0.287 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c957ab3b56605e6ac7edff2f86272307 DependenciesID=1cbf71fbb6ef43f7411626c248a2978b StaticDependenciesID=a5dadb2d320a8c55ed7894120692fe89 
+Importing 'GUID: 459049e9230c5dd4c8dc637f53b42efe - Path: Assets/Art/World/Town/Props/banyan_tree/banyan_tree_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 459049e9230c5dd4c8dc637f53b42efe' -> (Import Result ID: 'a6827f3882b99a3db56e5f08c47c9202') in 0.236 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fed06dd28c6d44643aadf47a8bebc576 DependenciesID=b25a956c9bca292fff55c8117641bc69 StaticDependenciesID=d6f2d18f6dc05c72331e48eb07c7faec 
+Importing 'GUID: 85bdfebc132058842a56eff8ac13ce25 - Path: Assets/Art/World/Town/Props/stone_bridge/stone_bridge_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 85bdfebc132058842a56eff8ac13ce25' -> (Import Result ID: '5a93163f997d32521120a11782e1ee71') in 0.266 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9837a179fb71e921aa602ac0616a21fe DependenciesID=113c2ceec1f93aa3ffbad14fdd7e8b3b StaticDependenciesID=f4e1340ec18762e156d19cbd0d1e8abe 
+Importing 'GUID: 1602d567e4619de44b676b1b64b56746 - Path: Assets/Art/World/Town/Props/teahouse/teahouse_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 1602d567e4619de44b676b1b64b56746' -> (Import Result ID: '74faac4cb8637aef11cde50f81d329fd') in 0.259 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=361b73e8cb9550148838c4c58f1d50eb DependenciesID=7eb57bba0c2c4491cf271e990020c921 StaticDependenciesID=07dcb4bf592b4c178a11ce610a5367fb 
+Importing 'GUID: 572cba8c0ddce1f4e99e5f5d8dc05bbc - Path: Assets/Art/World/Town/Props/portal_gate/portal_gate_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 572cba8c0ddce1f4e99e5f5d8dc05bbc' -> (Import Result ID: 'df86621bef23a0fb9b26c5f1785d7a48') in 0.273 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=854ebeb8ef9ed109f939e3439e7966e8 DependenciesID=f3c20b8a92afdc8643a2154093707bf4 StaticDependenciesID=7f5b57f23a3bcc95096d268972d8c20f 
+Importing 'GUID: 87380de5f094e754688a01ab13d63e15 - Path: Assets/Art/World/Town/Props/planter/planter_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 87380de5f094e754688a01ab13d63e15' -> (Import Result ID: 'e04fbc28f46ec07c018f2ddc46a73a21') in 0.246 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6b63bee7accce9cd3ac58e41891a1979 DependenciesID=a0b57cd91992ffe5ce28d4b884cd6f8b StaticDependenciesID=fd69e9f087a5e34dfbd2be3aa6924e66 
+Importing 'GUID: a766f328171e3cb4da358f134bd1b41a - Path: Assets/Art/World/Town/Props/hero_statue/hero_statue_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: a766f328171e3cb4da358f134bd1b41a' -> (Import Result ID: '3a31deef734ba939d9394e56d6474a4e') in 0.241 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f82e26d4b7ded7551493cef5d6b23273 DependenciesID=5ce7b19ba9f7815265fb818b6602e00a StaticDependenciesID=ed749e0832f41906f7a7293cabbcef46 
+Importing 'GUID: e9f6e98c5525f5648b1f003ea88b35e4 - Path: Assets/Art/World/Town/Props/lantern_post/lantern_post_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: e9f6e98c5525f5648b1f003ea88b35e4' -> (Import Result ID: 'caeaea064327c02ccdf10e070727f02d') in 0.225 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d3cace292bde0a6d5636390649823c12 DependenciesID=dd9413a7d7ee4e2089649498c90b883b StaticDependenciesID=10765485b0f2ca012a815fca527613f1 
+Importing 'GUID: 2a41cffa4b4d0a349bd1ee673c9255a2 - Path: Assets/Art/World/Town/Props/bamboo/bamboo_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 2a41cffa4b4d0a349bd1ee673c9255a2' -> (Import Result ID: '5f3962c26183f777874b86f28c202c03') in 0.282 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0a7a890323a8fd9a902b8b11501b14f7 DependenciesID=c15a6287211f656fa2a9f8799c09cc1a StaticDependenciesID=b979085886c60890e6b7d4af488ec3ec 
+Importing 'GUID: 5cb17310203d2c9448deaab7455995a2 - Path: Assets/Art/World/Town/Props/forge/forge_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 5cb17310203d2c9448deaab7455995a2' -> (Import Result ID: '42f7fbb1d936a8190d7aed31e5f71211') in 0.252 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8f1674bad50414e97286b2191a36e1fa DependenciesID=1cfee8fc53c147eff1861fe939f39822 StaticDependenciesID=294e4e55ff3c04bc4937a272c70bc12c 
+Importing 'GUID: 0d66adf43f1d84f43b494d9780123a7c - Path: Assets/Art/World/Town/Props/windmill/windmill_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 0d66adf43f1d84f43b494d9780123a7c' -> (Import Result ID: '6db17a87ef707610005497973a9aedf4') in 0.222 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=773276ddd7df29066401ec4ff7cde9ff DependenciesID=44330b093ab4cead95589071ce81a3a8 StaticDependenciesID=eacb0f30ca85edd6c7d35071c4066043 
+Importing 'GUID: ae3f12ba2d35f2c4c94d5c0315e924ee - Path: Assets/Art/World/Town/Props/market_stall/market_stall_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: ae3f12ba2d35f2c4c94d5c0315e924ee' -> (Import Result ID: 'e1759dcbb4252a053384570b6c6b85e7') in 0.249 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0a9ef8fd7af0911064919e7b6b9ee4ef DependenciesID=0400a2b8f02469ea2fba39406621f4aa StaticDependenciesID=835c2b1ad780c360e67a1a5d89e1fcac 
+Importing 'GUID: de508de6aa2519846bd7b8f06c866164 - Path: Assets/Art/World/Town/Props/crates/crates_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: de508de6aa2519846bd7b8f06c866164' -> (Import Result ID: '1ca9a018e74eb891724173c2a8287fa4') in 0.263 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=33c9a730e77ef59daed7bb0addde9be9 DependenciesID=3fce186a28596be870fedeec5485c149 StaticDependenciesID=c3841cb2d9fa97428aff7e7e81055812 
+Importing 'GUID: 1062c701058745940ae5dca6219c64c8 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-Black.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 1062c701058745940ae5dca6219c64c8' -> (Import Result ID: 'b78ed3a1beb2a261a8b5cf3c9a9d0236') in 0.022 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e30303389e25c719bef386a07278fa0b DependenciesID=d07b59934fc53a56e1c9d8bb2feb2651 StaticDependenciesID=e2ee45bc9bda40848d894b5d925d8fb9 
+Importing 'GUID: 30dc370b164eefc43b95744fc796dad0 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-Regular.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 30dc370b164eefc43b95744fc796dad0' -> (Import Result ID: 'a4d1765c6c0ff287cdf7d3d7d8e14929') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3aa95c1d19a03c3517f4e3d7c3be9fc5 DependenciesID=53674867c28070d8dc1ac163e84b4e60 StaticDependenciesID=0fd19dd781a863feb1d43c38a03c03b7 
+Importing 'GUID: 0248f6dd3c010704eb9d56fd9dde7290 - Path: Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-ExtraBold.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 0248f6dd3c010704eb9d56fd9dde7290' -> (Import Result ID: '8283901a329e8e523345e3a46f1d5620') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1972b0d3eece2d05349b1b9d27d350b4 DependenciesID=3e52f873e2a5da402cce4fd8a4700085 StaticDependenciesID=5ab4e866d7f9cfbd57ac0f4c45e3e7c8 
+Importing 'GUID: b2ea3b3f1765e544b9eb5bd1a93a91ce - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-ThinItalic.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: b2ea3b3f1765e544b9eb5bd1a93a91ce' -> (Import Result ID: 'e646a606bf105a25066a024b019d0ef8') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ae406f7c5175f3f538a8fc31f869ffbc DependenciesID=3233a759993f6235fe3fc672c0291b21 StaticDependenciesID=6ac72b2ae289ee9d0cc264d84a9b476e 
+Importing 'GUID: a51a3aebb43ac044989270407476b208 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-Medium.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: a51a3aebb43ac044989270407476b208' -> (Import Result ID: 'f0c814b23c15c92f145bf70a0ddb6a59') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f2572a08ce5730d51eb132ee34da70a9 DependenciesID=e1ad44ed32848ea98a7c58a813d21c9f StaticDependenciesID=6957315c8c97bb873c907db8e06905d2 
+Importing 'GUID: 3750c318f40cab44a97d3a81beaefeb3 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-Bold.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 3750c318f40cab44a97d3a81beaefeb3' -> (Import Result ID: '78471cfb23d4c6a903edf7f7c60cde60') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1a104907eb4998228d8dd947763a0273 DependenciesID=50194de3bbc4fe4a3f5462e552176b5c StaticDependenciesID=9bb3d539eef24e8b0dd3cbf283efc462 
+Importing 'GUID: 2857077b165abcc42b106a9bdb495b1c - Path: Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Regular.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 2857077b165abcc42b106a9bdb495b1c' -> (Import Result ID: '472d88c7609f026c1d98fc5c42ccd980') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=187428ff05b48842f513e77dba63d6e0 DependenciesID=2fc4f7811f567f8a65f083601f39f8f7 StaticDependenciesID=47fe283967b2533fddcfe255fe54deab 
+Importing 'GUID: c839255fc8f6b4b4d90bf8c1af9f9bd1 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-Italic.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: c839255fc8f6b4b4d90bf8c1af9f9bd1' -> (Import Result ID: 'b040da6fce2b803d26d13003df9ee73a') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cfaba81e8a8660a0b0f63349e130cece DependenciesID=6d9919c4d0811cd08a64dfe97f8a7a76 StaticDependenciesID=7d0701264bdfa847d1c516a465d5e94b 
+Importing 'GUID: 19a9abb883540be48b75b951a927ae03 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-Thin.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 19a9abb883540be48b75b951a927ae03' -> (Import Result ID: '5f09d4433b484178f1b95512ff210b89') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=21fda2836c64c8f851d39d9acea80bd4 DependenciesID=51d0a2e55b5d81785750bb10af8704f0 StaticDependenciesID=120c69c735606fd062d8aabd1d87c7b1 
+Importing 'GUID: d93c1bc57fdf1ac4dad1bf04fac05464 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-MediumItalic.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: d93c1bc57fdf1ac4dad1bf04fac05464' -> (Import Result ID: '63a97f048a5ff9c0f34324a04a5a3dee') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=88a1115d5784b377afba34e34fed4755 DependenciesID=e5b271618042a6ab06877945e44165f7 StaticDependenciesID=420044756eb173f6c2b4c23a6fefdeb5 
+Importing 'GUID: f95147a9bab9fe649b8070170fa7ebd2 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-BlackItalic.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: f95147a9bab9fe649b8070170fa7ebd2' -> (Import Result ID: '43d869c73d8d5039306fa188f10e1e80') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d29bdbc2aa297e1efaed29fdfa535c04 DependenciesID=19e88c80f8721e9604fd247ee813b79f StaticDependenciesID=ee088453025ff54ae6b73b4b49c3df68 
+Importing 'GUID: 2a29e27936eb547458f646f71125b264 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-Light.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 2a29e27936eb547458f646f71125b264' -> (Import Result ID: '6381f20f392bc45fab4aa221ddc67ddf') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=93f089457806e43fcc53353fd81957d9 DependenciesID=5af2509fa44595be61f2d2a46cc91567 StaticDependenciesID=8161905d774a5baf9244ac79bcd2f861 
+Importing 'GUID: abdb5da9118ac57478c86e2042969f1e - Path: Assets/Art/Fonts/Nunito/Nunito-Variable.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: abdb5da9118ac57478c86e2042969f1e' -> (Import Result ID: 'ed2c815250d8483179de4f70d1abce6f') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=15a52fd8fd852839a97a4b11a7a82221 DependenciesID=679a03df343e266f8a2d6d73cdd22238 StaticDependenciesID=f8b7ed314f1e31f6247a70b40eec92f2 
+Importing 'GUID: 2d85af94b490e6a45b0d8cbe51c2ab6d - Path: Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 2d85af94b490e6a45b0d8cbe51c2ab6d' -> (Import Result ID: '5a1d4ab8b8e830ca4503771899cbdc2d') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=53dc6b52076a57549770a25dfb39576e DependenciesID=b58dcc9773d20847bcb24cae2d420abb StaticDependenciesID=be150c7897df9f147081c2f1928ef79f 
+Importing 'GUID: fd8febfcb93b5274e9f30041c3263469 - Path: Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: fd8febfcb93b5274e9f30041c3263469' -> (Import Result ID: '9194754763ee4e0308e5636fa74e7ccc') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c4a0f057c1a5f7a86211702b38493c8f DependenciesID=eb243df6de57944dd17feaaa71a6faae StaticDependenciesID=f05f0b550e563eb712a3545e4f05cb0c 
+Importing 'GUID: 5e63515167650a541b309ba3bfd4db3d - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-LightItalic.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 5e63515167650a541b309ba3bfd4db3d' -> (Import Result ID: 'db42a2be9cdb2dea06e79786a3070298') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1496d61411de28ef418bca194b93cdbb DependenciesID=4574abac27ea13303bd424888a35b51c StaticDependenciesID=0be1cea8d712457d76d80cde6276d8f1 
+Importing 'GUID: dfb97a9307a577a41bcacba34b9a7e32 - Path: Packages/com.unity.searcher/Editor/Resources/FlatSkin/Font/Roboto-BoldItalic.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: dfb97a9307a577a41bcacba34b9a7e32' -> (Import Result ID: 'b39982e24aa5bf2955f89c8baf66fbd3') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=44e19d8180b6d2e61073a04044abc6e9 DependenciesID=bd9e94171b626fec517039d7151c3821 StaticDependenciesID=d222af8e5c5ca40e47a66fd9819b7ba0 
+Importing 'GUID: 3039d6867ed141b44b3463a76cabd45c - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Terrain/Pack Material.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 3039d6867ed141b44b3463a76cabd45c' -> (Import Result ID: '9cab210b015de49c8dd12785d687f2f2') in 0.361 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=457840a87ff094599e6e6bc36729338b DependenciesID=605eb4901632890288925f1bb7c3bc45 StaticDependenciesID=6090c16c2e6f698a82887a8ca2ddb7a5 
+Importing 'GUID: 60f6b7b276d03134e9b565b19546e94c - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/UV Scale.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 60f6b7b276d03134e9b565b19546e94c' -> (Import Result ID: 'cb37ef48484336b3934c95d5be689dc5') in 0.074 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5128ffc7192ce5023d752521e5c5892f DependenciesID=220992d8323196d4af8004a33289e329 StaticDependenciesID=26ce370795755be516af8f83dc453c72 
+Importing 'GUID: b04441f4a83ad224d92d547d170c366b - Path: Packages/com.unity.shadergraph/ShaderGraphLibrary/Nature/SpeedTree8InterpolatedNormals.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: b04441f4a83ad224d92d547d170c366b' -> (Import Result ID: 'ce53e6e529260651d2b68f5ec53718d9') in 0.081 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1a7f17df9aa8f00ff04a59e4822c3e3e DependenciesID=74fcfce30dff25c570b10eb7b54e16ab StaticDependenciesID=8e1b2b9e04fae84585a3b6c59375ee9b 
+Importing 'GUID: d0f40856fc355224fab6453746e0507a - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/SoftParticles.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: d0f40856fc355224fab6453746e0507a' -> (Import Result ID: 'c03ac01ba3c402b0ffbe4d3617ac15b0') in 0.040 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bee98dd486548b3b375eb9c60f70d54d DependenciesID=93938df1a416bb7e48652f27cf14342d StaticDependenciesID=3735d07129e8300564c8ce839178ef22 
+Importing 'GUID: b19f392a4817e1340bbaf1045b6e5051 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Switch6.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: b19f392a4817e1340bbaf1045b6e5051' -> (Import Result ID: '668136d6a1150225331285a0d683a8d3') in 0.025 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b59fef4dc9e7e636ec576314a6a23609 DependenciesID=b4f24e06f0099d18be49e2a373439738 StaticDependenciesID=0ea6086a7303bba97cb8f39d94212197 
+Importing 'GUID: e1024532a1a801f41a6f45f93c8da7a8 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Face Normal.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: e1024532a1a801f41a6f45f93c8da7a8' -> (Import Result ID: '41e0e28dd16d1f9e4f738a3765a15dad') in 0.063 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1cdc471083e36935c19edff140f3e551 DependenciesID=5fa0ab33136f781d54c8dcca82590b4e StaticDependenciesID=b87103316f7c82bbc8f476842a3f6bf2 
+Importing 'GUID: e1ea40df0c5f7d14a96e0bac1ae79489 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Particle Distortion.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: e1ea40df0c5f7d14a96e0bac1ae79489' -> (Import Result ID: 'ed4bd741978f87ac987000f1c7e96395') in 0.051 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e90aea803c02cd97d63cd840741829d5 DependenciesID=26317c9a505ff3b286c13fa1fea9b3b9 StaticDependenciesID=32e01f0f216411b52dab336a0694a38a 
+Importing 'GUID: 62a4ab9c203a85c43a5d0847b25fd2a8 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Normal Bending.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 62a4ab9c203a85c43a5d0847b25fd2a8' -> (Import Result ID: '9d2338270a744f67dec0a48281cb3694') in 0.032 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=07a97951c97fa432057c571005aae4e8 DependenciesID=328c1deec591aa0fd1df1a79ae79b240 StaticDependenciesID=490bdf77a934ded4c3cda6beb5b5eea3 
+Importing 'GUID: 62cd44aa2d94fa442942547943d2b24a - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Terrain/Unpack Material.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 62cd44aa2d94fa442942547943d2b24a' -> (Import Result ID: '56ab0de481cf975e771dd6e336fd42c7') in 0.033 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c33dbe7428ac7c61c2efdc290f28bed9 DependenciesID=952b97c148d9a0b2719b6955ea6acc3c StaticDependenciesID=4420fc17b5fe542b0b84c60b7de19c98 
+Importing 'GUID: 8258ab4a37f447c48ac3c26cbdb4c032 - Path: Packages/com.unity.shadergraph/ShaderGraphLibrary/Nature/SpeedTree8CameraFacingLeafEffect.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 8258ab4a37f447c48ac3c26cbdb4c032' -> (Import Result ID: 'dd6f6fde0fcc5cf8ff15c2b61748d387') in 0.019 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=be5a387f19386f74caa7483ea54b6fdd DependenciesID=02e1fd83f15d05cada2f3843e7fae14c StaticDependenciesID=eebd25f141e8577d68aa31d3e8ff67da 
+Importing 'GUID: f20330646a5d9ab4ba73ed235396a7a6 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Circle.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: f20330646a5d9ab4ba73ed235396a7a6' -> (Import Result ID: '2a7284d2ce0749271569df41919ccbf7') in 0.045 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e24d654dd682a2a6398f7b24c41e65b9 DependenciesID=c7e2f3cc006a8d1bf15edb6a4fb7cf37 StaticDependenciesID=acfb66732b56825991a8160dbf9376ce 
+Importing 'GUID: 73f7a6a1a6335484ba02a0b8f80fe10c - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Particle Vertex Color.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 73f7a6a1a6335484ba02a0b8f80fe10c' -> (Import Result ID: 'dba8b5a2ceaaa1ea90b2635d0fc61e1b') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7fdf8b0f3271b475b615e16e25ed248f DependenciesID=30408cd379c2776fcb359f967cc63f96 StaticDependenciesID=95d976a77f14ef013d37a104a2940576 
+Importing 'GUID: 556dff229d0982b43b52bc3ce1019148 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/CameraDistanceMask.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 556dff229d0982b43b52bc3ce1019148' -> (Import Result ID: 'f2eb9ac52379ff7a855fa237aedf7f3b') in 0.027 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1aeddfa5a97dd0c99d8082f51c9bebe9 DependenciesID=fb27bc1525e30752dc82b23930204ebb StaticDependenciesID=0b159f1c609125e083cf254efecb2622 
+Importing 'GUID: b374ab41cedfcce4d85380817ce9de7d - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Terrain/Distance Fade.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: b374ab41cedfcce4d85380817ce9de7d' -> (Import Result ID: 'd53d525e254c38f402cb811e48696ed7') in 0.074 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5552e2dcaf568fd79a69d294136731d3 DependenciesID=487f252af196dfff531c6eaa22250612 StaticDependenciesID=3a6b7c854063c0f5edae4c43d49ac938 
+Importing 'GUID: d3a5ed15ae8578b448a8756ea0b97162 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/FlowMap Time.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: d3a5ed15ae8578b448a8756ea0b97162' -> (Import Result ID: '64005e33de997c0ca4734a35374aeb76') in 0.037 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bb16561d614f6f283bd27f5210d5a1fa DependenciesID=47e550664b0869968edad8a78215a3c0 StaticDependenciesID=4f84826358bc9ba8ef17d5a497e37224 
+Importing 'GUID: 14f7847555748494e8b3e5cbc8afd15e - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Terrain/Layer Standard.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 14f7847555748494e8b3e5cbc8afd15e' -> (Import Result ID: '84a71438238c5d3c01a7c9e517e30de3') in 0.071 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1da7d1026f44d2ea5eb842c0aafed1dd DependenciesID=d7e62090f5a74bdc06af517428acc62b StaticDependenciesID=f9c51ed5db6f898a9a909f0af6f0877b 
+Importing 'GUID: 648107f3fecbb0f4bb5b8f8476fbb48a - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Particle Camera Fade.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 648107f3fecbb0f4bb5b8f8476fbb48a' -> (Import Result ID: 'cb649d6ed0f258ac6eed0180fb990f01') in 0.018 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b0d2ceb0bd059386f1761db85e5f0381 DependenciesID=b8e072394fee5ba198e02fa8bb9e4f0a StaticDependenciesID=ede430f3ce31615fb2092494ee262b2c 
+Importing 'GUID: 74f647076bca3d442bc4a6ace5daf59f - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Canvas Color.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 74f647076bca3d442bc4a6ace5daf59f' -> (Import Result ID: '87f828cf4a319af0f062c13d50e3ce7a') in 0.025 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=de1d97ebb2485399d584c2be36d4f931 DependenciesID=80542b62b02a92a1ad5f739623662d3d StaticDependenciesID=2a3a7e0b482fda3d119012037e9dd987 
+Importing 'GUID: 74ce720b09dcad14690aca1cb7b6f2dc - Path: Packages/com.unity.shadergraph/ShaderGraphLibrary/Nature/SpeedTree8LODTransition.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 74ce720b09dcad14690aca1cb7b6f2dc' -> (Import Result ID: '299c78cc1f82e97fadf6b91f766dae08') in 0.018 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=661fdb0aeb75e6d8cc4f405324148ba3 DependenciesID=195d4533c2c4ba6df2c0e2895bab9235 StaticDependenciesID=4ced0a0bad91c3823859a986a40057f4 
+Importing 'GUID: 153b138ddd88e7b42a0c29bde1e7142c - Path: Packages/com.unity.shadergraph/ShaderGraphLibrary/Nature/SpeedTree9CameraFacingLeafEffect.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 153b138ddd88e7b42a0c29bde1e7142c' -> (Import Result ID: '6391a4e273db43fdf6bab353135f574d') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=64b13e02a02c6ed6f037945e8e108a56 DependenciesID=86806bcf1e7351c949ec63c68094d8fa StaticDependenciesID=2ffea1d4a296af13f56cbb539b3c6b15 
+Importing 'GUID: 658423db13944174c95e6a25bde1eb66 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Sample Flipbook.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 658423db13944174c95e6a25bde1eb66' -> (Import Result ID: 'd73c56581b7e7e4681d9cd345f49162f') in 0.021 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f41e4bd08ffa7ce333103aa8848f2b75 DependenciesID=0eb3e080bd8025199286a210a99420ee StaticDependenciesID=6cfe14cfe2145d51a2d74b64b1fe76f7 
+Importing 'GUID: 7794dc8c6277cb649804d7253e567322 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/FlowMap Sample Normal.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 7794dc8c6277cb649804d7253e567322' -> (Import Result ID: '5e3fa923bf2cc6a18b3c7e35550cd048') in 0.039 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=79527ca5acd3193d8c86eaa8247cbafa DependenciesID=ddb42cc7d99ff5ab7bad31b5c568ee50 StaticDependenciesID=d17c59f48e937c927a10fc06be2e9fef 
+Importing 'GUID: c76da6dceef150547b7030daa98eeda6 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/UV FlowMap.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: c76da6dceef150547b7030daa98eeda6' -> (Import Result ID: 'e54a7cd81222b3d1311c06e7a820635e') in 0.046 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=97f234cf8bfe18d9edb6161014d91cc7 DependenciesID=6c4a4536696156ae40b51bc530310884 StaticDependenciesID=872041f081d7b1f069b2d1ed35e07985 
+Importing 'GUID: 38026d07e949e0043a9daa90b1917d90 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Switch4.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 38026d07e949e0043a9daa90b1917d90' -> (Import Result ID: '02d5c1317a635c9f5f2e57cfa6f4f04e') in 0.018 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=21db5da6326a831036693db5c46e36a6 DependenciesID=c22fda7221d556b2f902a8ad91e73121 StaticDependenciesID=8f21212ef3e102d01c6bd8862c68b120 
+Importing 'GUID: b893f303ffd21324988969130704e4bc - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Terrain/Blend Layers Add.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: b893f303ffd21324988969130704e4bc' -> (Import Result ID: '36f726af52fcb81e6c275a09311258ca') in 0.031 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cc8d795a44f9871c74768b7616ecd641 DependenciesID=4490e1de70ee365517d1b2a53c831f3f StaticDependenciesID=f1111acdac39faf958988c2b36882e59 
+Importing 'GUID: d8d596b309d3eaa48bd57234e7567aee - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Terrain/Premultiply Layer.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: d8d596b309d3eaa48bd57234e7567aee' -> (Import Result ID: '1aca00466c41549ae6171b7fd7a31a99') in 0.027 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d68398bf10664f303e961d5f4937c4c0 DependenciesID=a61e5ee3bcdafb65db6d371cd35ae5b8 StaticDependenciesID=ec472f05e967213aa55c53125414b4ef 
+Importing 'GUID: e8af7a3452f45f542a042fef4a52065a - Path: Packages/com.unity.shadergraph/ShaderGraphLibrary/Nature/SpeedTree9Wind.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: e8af7a3452f45f542a042fef4a52065a' -> (Import Result ID: '83d0201ade88f8ffa229b815926113a7') in 0.020 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dd4f5e1add147ffdcc5364974f00c4b4 DependenciesID=4490a02b70546de0e1401a6375e090d6 StaticDependenciesID=e455bb7a82deef74cd2f6c3c6ac176be 
+Importing 'GUID: 89c32740b629abb41bf9b65e3a64c373 - Path: Packages/com.unity.shadergraph/ShaderGraphLibrary/Nature/SpeedTree8Billboard.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 89c32740b629abb41bf9b65e3a64c373' -> (Import Result ID: '92b34fa51b5a849a6d2c7b9f87f6db43') in 0.058 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=028aeabcde8adf9c6f6ee2fac38637d3 DependenciesID=e3a76a584abd5a83c1ceafe1c58e2e9b StaticDependenciesID=535432fc9fe2e30443fce025efdd909e 
+Importing 'GUID: 990a2f951c73f0449a8596028e51c11e - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Terrain/Blend Layers Alpha.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 990a2f951c73f0449a8596028e51c11e' -> (Import Result ID: '043088a42e955c1ee9748795ac8497fa') in 0.046 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=008445db6246c937133cf2aba75d1834 DependenciesID=40e34131800dba92450cd17b8b857b59 StaticDependenciesID=d7786e1b1d5b4d44fc928c922e618b04 
+Importing 'GUID: a925de7ea1f0ed04a8b35c2c10fcc1c1 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/UV Halftone.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: a925de7ea1f0ed04a8b35c2c10fcc1c1' -> (Import Result ID: 'f03a07ca3dde2e5e92113130b37dff0e') in 0.046 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3eb637133569bd1e2f56b17afc1555d1 DependenciesID=97c5236186bf5b28dad62943b6751575 StaticDependenciesID=2c79139743df31b78e1ac98f5a50f167 
+Importing 'GUID: d9fc86ddc060cc44988e8835a3192cb0 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/UV Distortion.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: d9fc86ddc060cc44988e8835a3192cb0' -> (Import Result ID: '4a973043d478ae5dc7fa5c44ee2e5f17') in 0.031 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dee3159a107598bfce4be06241d8bb64 DependenciesID=8d2cd3bb739ddd332e65d634f53315df StaticDependenciesID=0c01a55dba703ede674b2ca498718c29 
+Importing 'GUID: e9398b7940890a74eafc240b5a593541 - Path: Packages/com.unity.shadergraph/ShaderGraphLibrary/Nature/SpeedTree8Wind.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: e9398b7940890a74eafc240b5a593541' -> (Import Result ID: '844217877a71c2f71346afff5e56ecde') in 0.023 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=612db1386aa26b5d420100616046834b DependenciesID=fb71b083a374cb26c411db33672fa94d StaticDependenciesID=fb741f4c2e7e7966eea8d856a1015452 
+Importing 'GUID: e98ef91f2346c4c57a3cfbb4347ff978 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Sample Flipbook Motion Vector.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: e98ef91f2346c4c57a3cfbb4347ff978' -> (Import Result ID: 'd05c6acdd5dccfe4378a961edc31859d') in 0.049 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=97a77022b7bc7e23fa4423a69aa689f5 DependenciesID=d24a69c12a2f16bcf089a56e35409f6e StaticDependenciesID=fa8bad7ebb45ac271171f2725705705c 
+Importing 'GUID: 3a82744b38735a84fb29cc43c4b41c7d - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Value Range Remap.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 3a82744b38735a84fb29cc43c4b41c7d' -> (Import Result ID: 'e6187491c41a6faf9b211b9a6dcda81e') in 0.041 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c8ca700092ae0995ecd5b9fb10d70b50 DependenciesID=f27245672f2ab7f7a7e3aaff556ef1f6 StaticDependenciesID=316aee8a562eb2c8ebc25a0a395f051c 
+Importing 'GUID: ea046900739fbcc4498f7b47f45545c9 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Decal Edge Mask.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: ea046900739fbcc4498f7b47f45545c9' -> (Import Result ID: 'd325e88f41662a55b60d82b1db54480f') in 0.017 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8a64e73dd499c108be55af0c38473d40 DependenciesID=3a5a1c571c72307702f0880e4592163b StaticDependenciesID=2491152d03423545bf4ec0a1afbc1be8 
+Importing 'GUID: ea87914f38f4183408f6ec6cb547ed94 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/ParticleFlipbookBlending_legacy.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: ea87914f38f4183408f6ec6cb547ed94' -> (Import Result ID: '7f7a4b77b899a82c985e494a1ad42bff') in 0.021 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5896b6ff2e80c92cdebc5c0072b182c8 DependenciesID=164c9b926191e7978594df0f0680e465 StaticDependenciesID=0f01d40a134d88560d367167e4c0e0aa 
+Importing 'GUID: 1b4ecad27a9bc714e8d3af3ffb8a368c - Path: Packages/com.unity.shadergraph/ShaderGraphLibrary/Nature/SpeedTree8ColorAlpha.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 1b4ecad27a9bc714e8d3af3ffb8a368c' -> (Import Result ID: '9232991aeb6f40ad412c8eca032eecfa') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f15b3900b66a72e62de68b4cff904097 DependenciesID=3e6632bb2d9c720fa7c7abaf4b99ce5b StaticDependenciesID=fb8180c409eba3627278cca628690f33 
+Importing 'GUID: 3ba4047e0734f2944a3d9b7b015af0ca - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Sample Flipbook Blending.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 3ba4047e0734f2944a3d9b7b015af0ca' -> (Import Result ID: '8616647ad4e6a47a584620ad8c4620e1') in 0.027 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d451493c1d28877d7bf8476e70614c4e DependenciesID=25d14506b457578aafa82c88dc19179c StaticDependenciesID=3612161bc2a29d506855e0b9681466c0 
+Importing 'GUID: 3b5d8d8dca1de7240983df8e315a8a01 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Terrain/Height Based Splat Modify.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 3b5d8d8dca1de7240983df8e315a8a01' -> (Import Result ID: '8e4eb332a50f021c51c669dfeec46637') in 0.059 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1f68447fc79af28263c21b8b8516fa6e DependenciesID=071d36ade38cbaac5c2f972fe9c439d0 StaticDependenciesID=e5d263018f4ba843423ee67b7002158a 
+Importing 'GUID: 8bbfe621c0368244b80a10cdd14cd70e - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/Depth Fade.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 8bbfe621c0368244b80a10cdd14cd70e' -> (Import Result ID: '32f6e011dd3906e5f62bee68910f1497') in 0.021 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a4f77e11f23debb607fb066171c8a15a DependenciesID=7616a701bcf01f0ba72bfbe1d1da0fb0 StaticDependenciesID=bf043c797ed5636de38f33b34e1ef764 
+Importing 'GUID: bb515ce764324b444b925949646460fe - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/HeightMask.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: bb515ce764324b444b925949646460fe' -> (Import Result ID: '2116f0e3109b5a07f8d45a3dc815b012') in 0.022 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fcd255e1ce4a9b4a8fb80759f8d27a64 DependenciesID=87cfd0562f33a913da81dcada616e513 StaticDependenciesID=144773ec5b999db9d69dbc9ab59313f1 
+Importing 'GUID: dd4e180f1d31c4c4e9d4909d27e6761c - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/FlowMap Sample Texture.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: dd4e180f1d31c4c4e9d4909d27e6761c' -> (Import Result ID: '8955ac03375d1bcb0d9d79aeb2a125cb') in 0.025 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f5f8240c447b2bb1996574cc5d75e8f7 DependenciesID=0edeb7b068236efb9398fd63f678c11d StaticDependenciesID=dd0fc949763c84c3008dc0c4cef0aeaa 
+Importing 'GUID: 6e5f9c53c3be7aa4c9119a496d540913 - Path: Packages/com.unity.shadergraph/GraphTemplates/Subgraphs/ParticleFlipbookBlending.shadersubgraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderSubGraphImporter)
+Imported 'GUID: 6e5f9c53c3be7aa4c9119a496d540913' -> (Import Result ID: 'f07e4f2c24faa6eba58b8eaf0fc3168a') in 0.475 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=72b78e500a7cc7b27777cbceff182dd1 DependenciesID=6f4d23eed3a6d82941a92176b27cc2cb StaticDependenciesID=87518873b403667a602fe6402f1057c7 
+Importing 'GUID: 2019d78ad3d1c5c4a8d309a857ca449f - Path: Packages/com.unity.shadergraph/GraphTemplates/BuiltIn/BuiltIn Lit Basic.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Imported 'GUID: 2019d78ad3d1c5c4a8d309a857ca449f' -> (Import Result ID: 'f1ed0a58160ee03e971636043b4fae8f') in 0.507 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=80f3c8bede76fb7376062f2654987987 DependenciesID=4d7fb633d7e6b342e76a85b3290f7524 StaticDependenciesID=76fdc3816458813a52530f0382844c3d 
+Importing 'GUID: 30fa68ce467463643a86b839ca0eb195 - Path: Packages/com.unity.render-pipelines.universal/Runtime/Materials/ArnoldStandardSurface/ArnoldStandardSurfaceTransparent.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Worker ready: AssetImportWorkerHW0 0
+Imported 'GUID: 30fa68ce467463643a86b839ca0eb195' -> (Import Result ID: '38e5fee79aa35dbaac3c4420611e74e7') in 0.336 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ec4e8f535170dfc9a90fe30a3bfdc2fd DependenciesID=85d08113658cbeb5a8c559d333fb9b58 StaticDependenciesID=af5b80e704ac285fea28663e21888f22 
+Importing 'GUID: 80aa867ac363ac043847b06ad71604cd - Path: Packages/com.unity.render-pipelines.universal/Shaders/AutodeskInteractive/AutodeskInteractiveMasked.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 80aa867ac363ac043847b06ad71604cd' -> (Import Result ID: 'bb754f7dd0eae009232c4f6a74793816') in 0.239 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9688515942a9160aebc7a5501410dd83 DependenciesID=0fcbece03bd0b467e0223e8797262860 StaticDependenciesID=bac745bd408480f362ca81641423b31e 
+Importing 'GUID: a2407126e3372f64cacb75ed466a5621 - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/0_Lit Basic.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: a2407126e3372f64cacb75ed466a5621' -> (Import Result ID: 'a2da1174acf0669f9b89227d3b9bbdff') in 0.205 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=829ee48fd2722ebe7e5cee9a046ecfa7 DependenciesID=2e5d7c40d3950979f5520bee227ba6a0 StaticDependenciesID=536cfd781cd991dd821a78729f222cd9 
+Importing 'GUID: 2476a2d151e824143af40dce1fc93a12 - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/Unlit Simple.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 2476a2d151e824143af40dce1fc93a12' -> (Import Result ID: '589b9a26400a9e4b35ed7038fef5974f') in 0.162 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0a992c6361e45a2f5fecc58387e47990 DependenciesID=d7f259d2525ac7276783219205aa9f73 StaticDependenciesID=3fbb087469239fda3cec204b31ed2f51 
+Importing 'GUID: 24a73dccd7b6fad4798be282f96a21f4 - Path: Packages/com.unity.render-pipelines.universal/Shaders/2D/VFXSpriteLit.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 24a73dccd7b6fad4798be282f96a21f4' -> (Import Result ID: 'f9b3e4f4621cc2a28b756834f95baf70') in 0.147 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bc9f0f0cc13f872528ba863cbb2b5d1b DependenciesID=b7c9708b3fa3d9826dcd5f4b8cad9a46 StaticDependenciesID=48601dd25c295c599b16c215f2ecbe86 
+Importing 'GUID: 44245ab89240f51459a5077d7145c452 - Path: Packages/com.unity.render-pipelines.universal/Runtime/Materials/PhysicalMaterial3DsMax/PhysicalMaterial3DsMax.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 44245ab89240f51459a5077d7145c452' -> (Import Result ID: '8ba61291a16c1ee7d5a4708bc47c6b1b') in 0.215 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b31226d4fdaf4c901e7396d4a4bbceba DependenciesID=c421b03bc5245a01d83fe48cade143eb StaticDependenciesID=42a796c37d22efb8ea0fced7f1244364 
+Importing 'GUID: 25a0ebb4827f3cc47a1af2c79005f65b - Path: Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/GraphTemplates/2D/1_2D Sprite Unlit.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 25a0ebb4827f3cc47a1af2c79005f65b' -> (Import Result ID: '40088d69142b22a768d7362a8f47047c') in 0.094 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ae4d329f2b208f834b372801c861d88c DependenciesID=b5af9d5d0ad8251877298b3b59a753fa StaticDependenciesID=c889c3ad91e733374ee6e5c29c47d518 
+Importing 'GUID: 9618d41bb71f74048bb6cace8785b93d - Path: Packages/com.unity.shadergraph/GraphTemplates/BuiltIn/BuiltIn Unlit Basic.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 9618d41bb71f74048bb6cace8785b93d' -> (Import Result ID: 'abc71d4364b11d2134e70cd5a6ebbd3f') in 0.078 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6ceed4f0fe36c0ade63075ea9539e811 DependenciesID=bf03f14d129856700e8cbb258b1d8fba StaticDependenciesID=f197a877168823dabcbbc06588733feb 
+Importing 'GUID: a680d9a9f8b66514abbfd3ae1c8f77f7 - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/2_Particle Lit.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: a680d9a9f8b66514abbfd3ae1c8f77f7' -> (Import Result ID: 'ca33f8c2b8ada4faf9474ac3cdb8b77b') in 0.201 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=006a07ff239262ad0ac8befebe340a29 DependenciesID=77bb0ccaf318c0c3dd6ac06117156a55 StaticDependenciesID=797229ab3c79c3bd21487d5e550156ed 
+Importing 'GUID: 0738648e2f2f84b489a2f0076b69e30a - Path: Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/GraphTemplates/UITKBasicTemplate.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 0738648e2f2f84b489a2f0076b69e30a' -> (Import Result ID: '006fa5df6c82993795e82e4ea420f00d') in 0.113 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b586b80611f0f6782c3423dada400a94 DependenciesID=ae4e04dcdb5b34f2c952a2f07ecbab2f StaticDependenciesID=f57391f59252c3c660874c1a2e92767a 
+Importing 'GUID: 1716ff8c1e51af14280cc97fbcba3b11 - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/1_Decal Material Volume.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 1716ff8c1e51af14280cc97fbcba3b11' -> (Import Result ID: 'ae9a9840af330396041155c0438f63fe') in 0.177 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=035308045af2beec82219e5b929cea98 DependenciesID=07561828f08578e89074c22b8eae3f48 StaticDependenciesID=e8d641af8b6dcad8fa8e3485043e713b 
+Importing 'GUID: 3739e562a03fc0b4982d8aa66cc50865 - Path: Packages/com.unity.render-pipelines.universal/Runtime/Materials/ArnoldStandardSurface/ArnoldStandardSurface.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 3739e562a03fc0b4982d8aa66cc50865' -> (Import Result ID: 'd3376236f42e1d8570e885c9da5a8a86') in 0.201 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3c0f5c66be347095f25b1ab38ab8a033 DependenciesID=1242b95f3ff2fcc649ef3aa592d78927 StaticDependenciesID=0b3166c9b45f71c11d8691c47bb12cca 
+Importing 'GUID: d7288f66e4fb0634c9afef98c31b722a - Path: Packages/com.unity.render-pipelines.universal/Shaders/2D/VFXSpriteUnlit.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: d7288f66e4fb0634c9afef98c31b722a' -> (Import Result ID: '5cc7f14703f2954c0a9669dd2f777376') in 0.079 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=72df280b1b7c9d6e70b4aac411b2245f DependenciesID=6e066aef5d2484545d400aa286b38039 StaticDependenciesID=7c146aad0b6fcb508fd6e490f8328949 
+Importing 'GUID: 39144937a5efe954dac51acbbe54157e - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/0_Decal Simple.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 39144937a5efe954dac51acbbe54157e' -> (Import Result ID: '08a458477dd0b23d61dcb5d4b79b48c9') in 0.122 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=14ece990b2bda2b61571233b4e4d03de DependenciesID=bca0109dd988f19ac12604c9a24d88cf StaticDependenciesID=44b17c0263b17b5a1f1d64bdcd72ffc8 
+Importing 'GUID: 9920c1f1781549a46ba081a2a15a16ec - Path: Packages/com.unity.render-pipelines.universal/Shaders/Nature/SpeedTree8_PBRLit.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 9920c1f1781549a46ba081a2a15a16ec' -> (Import Result ID: '205f05725cab385fe6aea2e26b9af3ff') in 0.458 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=07b1652b698dc0c959e118a7059867da DependenciesID=2fa3aefb50b4c62bc280b7b3f16d8485 StaticDependenciesID=62e4b8a3eb28c8d12b68e84ed50b4114 
+Importing 'GUID: 1a207e3bee00db44b940e6f362a8e148 - Path: Packages/com.unity.render-pipelines.universal/Runtime/Materials/PhysicalMaterial3DsMax/PhysicalMaterial3DsMaxTransparent.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 1a207e3bee00db44b940e6f362a8e148' -> (Import Result ID: '816ca9e5a18848349d35d267bfa521ff') in 0.182 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f5073c0c46241e8bb5f65ed60535b725 DependenciesID=4e1912fe90b7cc5610dd54db7b4b8bd3 StaticDependenciesID=898d0961f4df79f17f0042f5a23d7d4d 
+Importing 'GUID: 5a4a765e921b8554eb959f7cf697b3be - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/UGUI Canvas Basic.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 5a4a765e921b8554eb959f7cf697b3be' -> (Import Result ID: '2ae662b37b872339d90dad58223b8d55') in 0.096 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6aeace2ad05e7c2207cddaddacb874f5 DependenciesID=42796c2ffc5b0c472609fc4f4122276b StaticDependenciesID=773ed9598de245e2a072eb6b8eba5921 
+Importing 'GUID: 9b4e681081e2b4c469111bb649e2f7ee - Path: Packages/com.unity.render-pipelines.universal/Shaders/Decal.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 9b4e681081e2b4c469111bb649e2f7ee' -> (Import Result ID: 'b7d8e759d02ede9eee36c3c5f2c7a091') in 0.124 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9cdec989ce36c1b445e5d19a498d887a DependenciesID=d69028fcae39ae9b4cbae659e307d4e0 StaticDependenciesID=aa93bc01171bb25c12a3bd2c6f6c8ee0 
+Importing 'GUID: cbd3e1cc4ae141c42a30e33b4d666a61 - Path: Packages/com.unity.render-pipelines.universal/Shaders/Nature/SpeedTree9_URP.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: cbd3e1cc4ae141c42a30e33b4d666a61' -> (Import Result ID: '05a7fd9032908dff11664458f98fadad') in 0.293 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e8d1d486a3edfa0e3878ec942931ddf3 DependenciesID=39546e509373a39d4bdcc365899f4a61 StaticDependenciesID=48f70a8ef6aa5af10441ea78677fe262 
+Importing 'GUID: fb6390f650ca44a5ba3246d8dda47927 - Path: Packages/com.unity.render-pipelines.universal/Shaders/FullscreenInvertColors.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: fb6390f650ca44a5ba3246d8dda47927' -> (Import Result ID: '1627bee85d3e617b0e74b576fb846e32') in 0.064 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bccbeb53d09cdca5dc4a59a7b8845cc5 DependenciesID=2a9dad8a0d26ab927a8b31d507d940aa StaticDependenciesID=e2ee9604c8c1d6e1a3f463a3843c51ff 
+Importing 'GUID: 5c81372d981403744adbdda4433c9c11 - Path: Packages/com.unity.render-pipelines.universal/Shaders/AutodeskInteractive/AutodeskInteractiveTransparent.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 5c81372d981403744adbdda4433c9c11' -> (Import Result ID: 'f09ef37ead5b88a9de862510883d6243') in 0.172 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6156e6eb5ab92f5a4554f8dd64d89ad7 DependenciesID=57651b0fd1bcb190e5eeff910529bbcd StaticDependenciesID=819bb43a9ae682ab724748d19820eb40 
+Importing 'GUID: bc3def193b270c649b041063a70a1a1f - Path: Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/GraphTemplates/Terrain Standard 4 Layers URP.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Shader 'Hidden/Terrain/Terrain Standard 4 Layers URP': dependency 'AddPassShader' shader 'Hidden/Hidden/Terrain/Terrain Standard 4 Layers URP_AddPass' not found
+Shader 'Hidden/Terrain/Terrain Standard 4 Layers URP': dependency 'BaseMapGenShader' shader 'Hidden/Hidden/Terrain/Terrain Standard 4 Layers URP_BaseMapGen' not found
+Shader 'Hidden/Terrain/Terrain Standard 4 Layers URP': dependency 'AddPassShader' shader 'Hidden/Hidden/Terrain/Terrain Standard 4 Layers URP_AddPass' not found
+Shader 'Hidden/Terrain/Terrain Standard 4 Layers URP': dependency 'BaseMapGenShader' shader 'Hidden/Hidden/Terrain/Terrain Standard 4 Layers URP_BaseMapGen' not found
+Imported 'GUID: bc3def193b270c649b041063a70a1a1f' -> (Import Result ID: '4e1afc037bc218e75a2720a386a68dfc') in 0.485 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ce726273cf54c2b132f4e9ced7eed57b DependenciesID=9f049a0359b74767e6fe599fe92dc230 StaticDependenciesID=fc6a2a58743d287baca2266d12b8d913 
+Importing 'GUID: 9d4e8ca8c5046914c87ca6ccef140dac - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/UGUI Canvas Meter.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 9d4e8ca8c5046914c87ca6ccef140dac' -> (Import Result ID: 'f89d5b945a610b23f50083536721e517') in 0.060 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0689b39c1b48b7b75ca77abc7a62133e DependenciesID=47dcff000702a12d9618ed4bab1e4ed0 StaticDependenciesID=1cdc862f899e9b1eb857a7901f03c56a 
+Importing 'GUID: bde135b320597544b9ac325092409f8b - Path: Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/GraphTemplates/2D/0_2D Sprite Lit.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: bde135b320597544b9ac325092409f8b' -> (Import Result ID: 'aeb8d8e9bbbc28aa4598a5f0eac3a1b5') in 0.101 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bf30923597573a926521b08d2fbaa066 DependenciesID=cf49622987e7809745c1620fca1a5682 StaticDependenciesID=223bd376eb018f92eaf3144128395375 
+Importing 'GUID: 0e9d5a909a1f7e84882a534d0d11e49f - Path: Packages/com.unity.render-pipelines.universal/Shaders/AutodeskInteractive/AutodeskInteractive.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 0e9d5a909a1f7e84882a534d0d11e49f' -> (Import Result ID: 'e39954da49eaa1efee2bbcc23b37e25f') in 0.166 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=baeccc05936e8af35c0d459bb43d8b2c DependenciesID=3df9182af5851ba1ddff39b7a57770a9 StaticDependenciesID=a2f1398662494d2afe2b1104bb7297fc 
+Importing 'GUID: 3e01bbae25716b24ea9da11102b44902 - Path: Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/GraphTemplates/UITKFullTemplate.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 3e01bbae25716b24ea9da11102b44902' -> (Import Result ID: '396942302a458ed084130a84a6f6c5ae') in 0.088 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f31cddcf406f0b5817ce9a6972112073 DependenciesID=17e2b0e59c9acd56ce249459aae67e94 StaticDependenciesID=787562bcd1feec6d227a8a658ecf76b0 
+Importing 'GUID: 7ef2cf71ad164fe479662ae612dff99e - Path: Packages/com.unity.shadergraph/GraphTemplates/Custom Render Texture.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: 7ef2cf71ad164fe479662ae612dff99e' -> (Import Result ID: 'e94e4150679f640047bf53413c2202e5') in 0.024 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c2e7875e66cbf74cdb408eb675b78a59 DependenciesID=e2f48939ad51b126d1e15889fc004fec StaticDependenciesID=de3398d04c349b2d55ab40895207d9f4 
+Importing 'GUID: aee84ce0dab81b049bb88017d78a63cd - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/1_Lit Full.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: aee84ce0dab81b049bb88017d78a63cd' -> (Import Result ID: '1d7c1e41e84d03fda89e0874dc01acaf') in 0.298 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8d530ba6a50275e38f281ada3af0367b DependenciesID=cff2178fcf1ad09c00f74e61e9c8ab20 StaticDependenciesID=c4a5bbbfe2b62d60f9f3ca43100ca59c 
+Importing 'GUID: def488a52add6574d9f295a507032cb8 - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/Terrain Simple.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Shader 'Hidden/Terrain/Terrain Simple': dependency 'AddPassShader' shader 'Hidden/Hidden/Terrain/Terrain Simple_AddPass' not found
+Shader 'Hidden/Terrain/Terrain Simple': dependency 'BaseMapGenShader' shader 'Hidden/Hidden/Terrain/Terrain Simple_BaseMapGen' not found
+Shader 'Hidden/Terrain/Terrain Simple': dependency 'AddPassShader' shader 'Hidden/Hidden/Terrain/Terrain Simple_AddPass' not found
+Shader 'Hidden/Terrain/Terrain Simple': dependency 'BaseMapGenShader' shader 'Hidden/Hidden/Terrain/Terrain Simple_BaseMapGen' not found
+Imported 'GUID: def488a52add6574d9f295a507032cb8' -> (Import Result ID: 'e37353c2c77652d376f92ff8bbf9866c') in 0.322 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cf7de48f03f2f61d8086c16e8cb782f3 DependenciesID=8e5cb55db04e970ada88ca3b070f1496 StaticDependenciesID=ad647defe5b24f8479de74338a12b798 
+Importing 'GUID: af66091e0eca0c04a9c3584ae867418a - Path: Packages/com.unity.shadergraph/GraphTemplates/Cross Pipeline/0_Particle Unlit.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: af66091e0eca0c04a9c3584ae867418a' -> (Import Result ID: 'ccf67b46157131560a6408aa300be69e') in 0.152 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0b028ac7967bbf775b31c37ed802fee5 DependenciesID=437280bd7ad3cc0b8d58b6b07ad5dd29 StaticDependenciesID=71bf97413bc97cb3f7c1638b3bc8ddda 
+Importing 'GUID: bfad0aba0faa90547b68abd10bb6be86 - Path: Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/GraphTemplates/2D/2_2D Sprite Custom Lit.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: bfad0aba0faa90547b68abd10bb6be86' -> (Import Result ID: '9d1ceb6010bc6b1498df5b0186ebfaa5') in 0.120 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b0d164486eb2be08aca59f1faa971441 DependenciesID=1d2dab8fbdc07ee0c779c846630a9c49 StaticDependenciesID=61f6944c46c44ead2ebfc4906ed197fd 
+Importing 'GUID: df41eefe8c13d444ca890dddbbc61f8d - Path: Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/GraphTemplates/Fullscreen Basic URP.shadergraph' with importer (ScriptedImporter : Unity.ShaderGraph.Editor:UnityEditor.ShaderGraph:ShaderGraphImporter)
+Imported 'GUID: df41eefe8c13d444ca890dddbbc61f8d' -> (Import Result ID: '8fd10b2cafbfc37f5837cf2196c07caa') in 0.060 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=04f56c03cfcb9afcf9bb1075b31c492e DependenciesID=9a300ef68a48c9204df8f609b17bad7b StaticDependenciesID=4ebf6b92dab8c9c0b807af3b1cddbae8 
+Importing 'GUID: d110ad9f0451f194c8f8426478528c8e - Path: Assets/Art/World/Town/Props/windmill/windmill.fbx' with importer (FBXImporter)
+Imported 'GUID: d110ad9f0451f194c8f8426478528c8e' -> (Import Result ID: 'afaf0289754dc71a7a18db4cdd650da6') in 0.113 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=179593f8eaef0e0e5a03ce3637718746 DependenciesID=946fcd805e934cb3010a0931025e1fd6 StaticDependenciesID=d8e1b0d320929a4c5f7c2b9be9f65e2c 
+Importing 'GUID: e130f7b0231fcc844b58452b5317b03b - Path: Assets/Art/World/Town/Props/banyan_tree/banyan_tree.fbx' with importer (FBXImporter)
+Imported 'GUID: e130f7b0231fcc844b58452b5317b03b' -> (Import Result ID: '8acee08013af514bce1422d86b3896bc') in 0.073 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a505e2cf75ce77d4a7238113b75c4569 DependenciesID=de532aa96523946e0749cde9991bfc1e StaticDependenciesID=bd8a1f996dd26f0f5a47bfecd2ac5e2e 
+Importing 'GUID: 42d27a27923d1ea41a4e6d56e9537a9a - Path: Assets/Art/World/Town/Props/bell_tower/bell_tower.fbx' with importer (FBXImporter)
+Imported 'GUID: 42d27a27923d1ea41a4e6d56e9537a9a' -> (Import Result ID: '45822229a0045d0133dfa4cee202c19a') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6b0ab77682e7cf62000566bdbdc53268 DependenciesID=a8f9e49e56362964946b84cfbb43a965 StaticDependenciesID=7df140f31e765eb362b8f757007bac87 
+Importing 'GUID: 82d6fe9fc4d80e441a5da5204c788cf9 - Path: Assets/Art/World/Town/Props/bamboo/bamboo.fbx' with importer (FBXImporter)
+Imported 'GUID: 82d6fe9fc4d80e441a5da5204c788cf9' -> (Import Result ID: '4a4ffe827a3697edd4e6871903136f0a') in 0.045 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=afab748fac4134e6c79a050097984b0f DependenciesID=d34762e741d4ddbe87b86e73dcfd43a0 StaticDependenciesID=0f606cb5222b89468d24b74498c053e2 
+Importing 'GUID: 92b30bf24fe2ad847909452caf6297eb - Path: Assets/Art/World/Town/Props/stone_lantern/stone_lantern.fbx' with importer (FBXImporter)
+Imported 'GUID: 92b30bf24fe2ad847909452caf6297eb' -> (Import Result ID: '84f94b62acbce9887649c161b031288e') in 0.039 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c32548ebc9743725f71210ce05760d09 DependenciesID=a7f53c2b9dfcec24d362e20389be5234 StaticDependenciesID=3d0ac594a02cd5bc2ef69adf59766578 
+Importing 'GUID: b2c143f189475a24db621776d571fec4 - Path: Assets/Art/World/Town/Props/forge/forge.fbx' with importer (FBXImporter)
+Imported 'GUID: b2c143f189475a24db621776d571fec4' -> (Import Result ID: '2ee2cd994f23a9c5d058d8eb39ec5e4d') in 0.065 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7bbae37ef60616d1e49e701ae0134b06 DependenciesID=709402fe446df20d68a6205173af2b70 StaticDependenciesID=b12eff14badd887ca523c630e3d6503a 
+Importing 'GUID: d25452836cba09f4f81fd595bb10dd4a - Path: Assets/Art/Characters/NpcStorekeeper/NpcStorekeeper.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 33.141335%;
+Keyframe reduction: Ratio: 26.215055%;
+Keyframe reduction: Ratio: 28.187328%;
+Keyframe reduction: Ratio: 27.024530%;
+Keyframe reduction: Ratio: 28.088886%;
+Imported 'GUID: d25452836cba09f4f81fd595bb10dd4a' -> (Import Result ID: '2a2c66e8742f9558507f3adbcd67c138') in 0.345 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5d330e49187ba50dd2415a1a54fa7736 DependenciesID=997edf0f087f9ddfcc1e76eb5213e35b StaticDependenciesID=6fed114f9b51b12aa2a7f05ca513b1e6 
+Importing 'GUID: 232c6e2a6d051d145aaa7018a745eaa6 - Path: Assets/Art/World/Town/Props/lantern_post/lantern_post.fbx' with importer (FBXImporter)
+Imported 'GUID: 232c6e2a6d051d145aaa7018a745eaa6' -> (Import Result ID: 'abb0f44b34fb31b551d2a786c54611f7') in 0.040 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=64c42c4f6997d3cba67f1befa2377bbf DependenciesID=e18e63a99b69769583421dddccb208db StaticDependenciesID=7c5f5ca7d6f69c7f6810bf40adb474ef 
+Importing 'GUID: 632306949d587a1418a00799d177c390 - Path: Assets/Art/World/Town/Props/hero_statue/hero_statue.fbx' with importer (FBXImporter)
+Imported 'GUID: 632306949d587a1418a00799d177c390' -> (Import Result ID: '484f188faf5ff16b632a23a9c4f99168') in 0.067 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1768c413b8e36afe66caa971bc95aa5f DependenciesID=7ccf25fe0d56ce45c133973d80cce981 StaticDependenciesID=c21fa135d0534a9726388ce90485f375 
+Importing 'GUID: b313f97472b47bd4490d1f63db722095 - Path: Assets/Art/World/Town/Props/crates/crates.fbx' with importer (FBXImporter)
+Imported 'GUID: b313f97472b47bd4490d1f63db722095' -> (Import Result ID: '680ca7593c9aa73e897b7b1a25e0b851') in 0.042 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=113954b1c1a040c53b293358a0033ab0 DependenciesID=221a0d2a2269cdb3f7e8eb935d74008e StaticDependenciesID=d622b4179d12dff160f2b8439803a2a0 
+Importing 'GUID: e340f2f8acf98754983157ff55efb85d - Path: Assets/Art/World/Town/Props/portal_gate/portal_gate.fbx' with importer (FBXImporter)
+Imported 'GUID: e340f2f8acf98754983157ff55efb85d' -> (Import Result ID: '9a62e5f58eff83945d446f6568b5fca0') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2dc676c2a5b38a8bd856093c5aa888d7 DependenciesID=bb465e16403cb675c1a57cb918cd9d22 StaticDependenciesID=545e3048c76ac541cbd2cf6c8698653d 
+Importing 'GUID: 44ee4db4dbe0da1488e8624a9a1c1c43 - Path: Assets/Art/World/Town/Props/signboard/signboard.fbx' with importer (FBXImporter)
+Imported 'GUID: 44ee4db4dbe0da1488e8624a9a1c1c43' -> (Import Result ID: '835706ba6344843bc8746fadb72a78a6') in 0.042 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=522a71cb708697b77ea0df47d6a9bbb4 DependenciesID=fb0923d5980a5c483848f3f2f8d9ed20 StaticDependenciesID=b3cc842eceb32a8443fbd9d7617ba979 
+Importing 'GUID: b4b480d044c086247be806413b80e56f - Path: Assets/Art/Characters/NpcElder/NpcElder.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 32.240173%;
+Keyframe reduction: Ratio: 33.098667%;
+Keyframe reduction: Ratio: 27.324678%;
+Keyframe reduction: Ratio: 28.121210%;
+Keyframe reduction: Ratio: 28.177776%;
+Imported 'GUID: b4b480d044c086247be806413b80e56f' -> (Import Result ID: 'c0aeb73b0d84e003f037ab7676e372cc') in 0.340 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f1e5b36b3b319691e7b2db5c9cf14b04 DependenciesID=d90ebf4fb3e8c2352f3295ce82ae5ded StaticDependenciesID=e9467cb6df444d91807a0b58f21d35f1 
+Importing 'GUID: 25f1e401360f40b48bb1cbbfb4de9c47 - Path: Assets/Art/World/Town/Props/planter/planter.fbx' with importer (FBXImporter)
+Imported 'GUID: 25f1e401360f40b48bb1cbbfb4de9c47' -> (Import Result ID: '5b4ed516b321432f29740291bf49a908') in 0.048 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=756c8882a8f42ef81b848c46bfdd5d3a DependenciesID=5c9e45cd29a937fc49198954a210b5a3 StaticDependenciesID=04e44ba9ce47eedcc95e922eb0241987 
+Importing 'GUID: d58af4fb7704a214a879f52e656f1a01 - Path: Assets/Art/Characters/NpcSmith/NpcSmith.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 33.333328%;
+Keyframe reduction: Ratio: 26.010754%;
+Keyframe reduction: Ratio: 28.077135%;
+Keyframe reduction: Ratio: 26.597404%;
+Keyframe reduction: Ratio: 27.777773%;
+Imported 'GUID: d58af4fb7704a214a879f52e656f1a01' -> (Import Result ID: '3537b9711497a76217c9cfaf581f4f4d') in 0.355 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6f7cf1a24dd47eb5dc97ced32318e6b4 DependenciesID=e8f1c6ab6888d46f04f30b8f2ffd856e StaticDependenciesID=4da50a43f9c821693c1c2b65ebb87c96 
+Importing 'GUID: 964e52954e508684baf6bdd706561cd6 - Path: Assets/Art/World/Town/Props/teahouse/teahouse.fbx' with importer (FBXImporter)
+Imported 'GUID: 964e52954e508684baf6bdd706561cd6' -> (Import Result ID: 'a68441ebb1508fcfd088bda9d3cef5ef') in 0.128 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1ad6638d57074655ba42f7f7ea7df3d4 DependenciesID=06b4b54816dda37b37bc215218050f40 StaticDependenciesID=ef98e81332de1d005b4b703061ee3710 
+Importing 'GUID: ad98497355fe5f1479252dbc6cec6a06 - Path: Assets/Art/World/Town/Props/market_stall/market_stall.fbx' with importer (FBXImporter)
+Imported 'GUID: ad98497355fe5f1479252dbc6cec6a06' -> (Import Result ID: '49f501282ce48b33c7a4517d107e1753') in 0.079 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=15caedd1d16b0ec339e7fe59547537a7 DependenciesID=6ff477e17f4396accf1286402515d677 StaticDependenciesID=fb6029e4967dec2a5baea35e924892f0 
+Importing 'GUID: fd9bac236a64a2e418156328867d6a97 - Path: Assets/Art/World/Town/Props/cottage/cottage.fbx' with importer (FBXImporter)
+Imported 'GUID: fd9bac236a64a2e418156328867d6a97' -> (Import Result ID: '73ab99866842200ade2194f303112e80') in 0.066 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a75e625000841bc21fe367c1c5eaf736 DependenciesID=839c289bbf28ed2e3a0b449ef52a5f50 StaticDependenciesID=0e8e3f27cfb2844b86b0d7f184048473 
+Importing 'GUID: 6e47a2cdf80326b4d837d07ab9a2f383 - Path: Assets/Art/World/Town/Props/stone_bridge/stone_bridge.fbx' with importer (FBXImporter)
+Imported 'GUID: 6e47a2cdf80326b4d837d07ab9a2f383' -> (Import Result ID: '056b10072a9b170bec76f5d6f6aee789') in 0.052 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8750183cfd178e54bdc7b16e5508de70 DependenciesID=7099766dac83bb4b5628a6925c162938 StaticDependenciesID=8b35d3f543eba6680861859f27348dbd 
+Importing 'GUID: d19f4f8a13b6edb48b986a47ec96402e - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapShadowMaskIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapShadowMaskIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: d19f4f8a13b6edb48b986a47ec96402e' -> (Import Result ID: '58d73e6302e85980d1e2b3fc7b0bc7d9') in 0.061 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=955ebb722dadb06eaf6792bcd9b6de38 DependenciesID=9ebb01e723c1e324ef973a8dc34373da StaticDependenciesID=9fd4e9b2e1ad89e7cbffc601eff4d03f 
+Importing 'GUID: 737a1597422c12547a8714d76a9406ec - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapGBufferDebug.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapGBufferDebug.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 737a1597422c12547a8714d76a9406ec' -> (Import Result ID: '95b2a2656f5a43527444ccbea84338a3') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d0c51feb305c9791332be159ed33a508 DependenciesID=448fd64ca704a45e4a8f0081fb67faf1 StaticDependenciesID=b513b01e29d0aa4d28825e4d4fb57fb4 
+Importing 'GUID: f32463968f29423cad25aee15a14b9f1 - Path: Packages/com.unity.render-pipelines.core/Runtime/Lighting/SurfaceCache/PunctualLightSampling.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "PunctualLightSampling.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: f32463968f29423cad25aee15a14b9f1' -> (Import Result ID: '2e44020172e0d88717e9e05ec3bbfb2e') in 0.020 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5b74dbdc3cda1a9e7247de717fb66efb DependenciesID=1b84cc75de30185d72350287590ad06a StaticDependenciesID=b63d74c4e924df89cb98a36e44fc1845 
+Importing 'GUID: 1451d029813b192429211be28181beab - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapNormalIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapNormalIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 1451d029813b192429211be28181beab' -> (Import Result ID: 'caa89cd44263d4a5b5328b8d0930a627') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=83bf4579d2d8c3adf3c3275d42f9afe9 DependenciesID=b06306ec39ebb1d8ed40673e33339f0c StaticDependenciesID=5afd8eadeec03e368f74c3a5603c453d 
+Importing 'GUID: 94a070d33e408384bafc1dea4a565df9 - Path: Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/RenderingLayerMask/TraceRenderingLayerMask.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "TraceRenderingLayerMask.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 94a070d33e408384bafc1dea4a565df9' -> (Import Result ID: '4d3447a5f528de5f80f61806576fb5b1') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1932993e6f6b764fad9a234b8562f337 DependenciesID=60305bdc3ac3829a94edcbcc523a336b StaticDependenciesID=25a592d065c9c4788553066128367c57 
+Importing 'GUID: 94a39d12848d8d64ca962a72b74e7c50 - Path: Packages/com.unity.render-pipelines.core/Runtime/Lighting/SurfaceCache/Estimation.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "Estimation.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 94a39d12848d8d64ca962a72b74e7c50' -> (Import Result ID: 'f4aa491f9562b859221ba626d80c4b0a') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=741477bbda30f1f699ecae921312bd84 DependenciesID=483843bf079c2f54afd39881da75d270 StaticDependenciesID=ffb0a11028fb7b99287455d15347e1d8 
+Importing 'GUID: f5ba4d424d4566249b3d94cf81a3e916 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapDirectDirectionalAndEnvironmentIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapDirectDirectionalAndEnvironmentIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: f5ba4d424d4566249b3d94cf81a3e916' -> (Import Result ID: 'd90289ade5c0144ca82bcb7faafd140d') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0f58207ad5a80b48bc9972718dd3d2a3 DependenciesID=773dd810c02f0b40fbfd4360303f589d StaticDependenciesID=d4bdfd2147f181839dcd88d16b4cc45b 
+Importing 'GUID: 7624adbeb148b5c48ab5ab660cc2602a - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapIndirectIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapIndirectIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 7624adbeb148b5c48ab5ab660cc2602a' -> (Import Result ID: 'fa335594ab6f7e41536c195d9b1c15bf') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fe1da2f9bab2d60f79e02a20260dc39c DependenciesID=b061edcb528e120dec62d90bb84d477e StaticDependenciesID=637eaa30376abb268136eb146f59c034 
+Importing 'GUID: 7732da65b7846e14ca4b80350b45b699 - Path: Assets/Art/Fonts/Nunito/OFL.txt' with importer (TextScriptImporter)
+Imported 'GUID: 7732da65b7846e14ca4b80350b45b699' -> (Import Result ID: '7c094a7e6897addffedacadbaea4028f') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=a61edbae014e9a94072eb69742280ec4 DependenciesID=559099c66cf4581162d0385952b6ea5a StaticDependenciesID=cd9b124a581076201d2b2e706a625cff 
+Importing 'GUID: 5951703b3d165764c95c653e98350884 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapDirectBRDFIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapDirectBRDFIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 5951703b3d165764c95c653e98350884' -> (Import Result ID: '09ec7a037e6517e0ea37bde23b2e250f') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a46475a9108db97225f5dc434d52b344 DependenciesID=c6f87775d83d87654d2cb5c8c300a8fd StaticDependenciesID=059ad849da4bff5dcc29e3cff7813344 
+Importing 'GUID: 99ac6221b6ecd7b479be13e8b9866300 - Path: Packages/com.unity.render-pipelines.core/Tests/Editor/PathTracing/Shaders/TerrainRayMarchingTest.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "TerrainRayMarchingTest.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 99ac6221b6ecd7b479be13e8b9866300' -> (Import Result ID: '5ac86b16dfd6c0681962afc7cf4345c2') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=759d1d33d4651c649c0cc2757fddb4e6 DependenciesID=dd4ad7434d837cec38bbdef274770515 StaticDependenciesID=dc53200b7c0c8c0e6f9de4f99348b559 
+Importing 'GUID: e9f4de6d1e07fb94f9a60d35b618f724 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapGBufferIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapGBufferIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: e9f4de6d1e07fb94f9a60d35b618f724' -> (Import Result ID: '816ac97f3b3caf9307ded9db5ff945aa') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0deb36c6fab18f678bb693ba995829c3 DependenciesID=9a6ccdfbe61ebba5850c719837e674df StaticDependenciesID=3c625e26646b7228663e0de2b2c1d69b 
+Importing 'GUID: 5a2a534753fbdb44e96c3c78b5a6999d - Path: Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/DynamicGI/DynamicGISkyOcclusion.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "DynamicGISkyOcclusion.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 5a2a534753fbdb44e96c3c78b5a6999d' -> (Import Result ID: '2aea50e8871750c0ba27f59445ee2883') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=669d021833fde45754fc2ce72ab3deea DependenciesID=358338e7c4c7bae44a15cb9933782743 StaticDependenciesID=72ee5fda06862b709c15f6cbb7db6f05 
+Importing 'GUID: 5bbebdef5916845478fcef13fa10d89f - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapDirectStochasticLightIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapDirectStochasticLightIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 5bbebdef5916845478fcef13fa10d89f' -> (Import Result ID: '60115de32af1a9e5fa7ebb99c24a038a') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a9615344f97eb4caf1a60f4215fe7b29 DependenciesID=bc855dbce8c18854016a14f32aee1986 StaticDependenciesID=471ca71b6b19c4611a46691a7356c8a6 
+Importing 'GUID: 1c410815c01ce1d4d82c645c0cd45747 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapAOIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapAOIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 1c410815c01ce1d4d82c645c0cd45747' -> (Import Result ID: 'aa8174c378c4ba92403ae90400e85255') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1553a1f9eedb89af8845dabb58044ce2 DependenciesID=934062f1404502bac96c92158d4e2e9f StaticDependenciesID=219d1b7269d01f2442d424f53e04d073 
+Importing 'GUID: 2c32233d92a2d0745930664c087c5c9a - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationValidity.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationValidity.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 2c32233d92a2d0745930664c087c5c9a' -> (Import Result ID: 'c5b87a6b0e3c5cf36c6dc871ea3f4af1') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f50b2352b33f23fef5dbefc3c9ef269a DependenciesID=d8b1fe711208be5281de983d4314c421 StaticDependenciesID=89ce6b5e76d568c473e42bb2e82d857d 
+Importing 'GUID: ace95ac84e213794891b4bd7c9b3c158 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapValidityIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapValidityIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: ace95ac84e213794891b4bd7c9b3c158' -> (Import Result ID: 'cb3f61e5a52cf40271f4f83270052ae8') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b51f89b0928e549af3fb67129d458e26 DependenciesID=c1644924a14ce1e8e875aa841772a15b StaticDependenciesID=af3a8789fbe725883be9c99ebb7cf5e2 
+Importing 'GUID: dce66e48270771b4d95cc687e3b72499 - Path: Assets/Art/Fonts/BeVietnamPro/OFL.txt' with importer (TextScriptImporter)
+Imported 'GUID: dce66e48270771b4d95cc687e3b72499' -> (Import Result ID: 'b04783785b70e3ff779ea5ff3d47c07d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=2dcdaf64dcd88567c66783ac898322bc DependenciesID=da0e784fe8a2d33399c9e778edd9d502 StaticDependenciesID=7004a16af246ac793386e760511522c1 
+Importing 'GUID: 5ecdabd800f05984696f22ba95284516 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationIndirect.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationIndirect.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 5ecdabd800f05984696f22ba95284516' -> (Import Result ID: '7978e35891c22c40957b6ea56b2b70a5') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=10e62f2989aec4f6878cccb7ac9faf80 DependenciesID=2da272dbf442c13fa28986a8b05c7096 StaticDependenciesID=1ad901001e2e557153e1de5753d25220 
+Importing 'GUID: 6e0b547bab30a804c8123974120d583f - Path: Packages/com.unity.render-pipelines.core/Tests/Runtime/PathTracing/PathIteratorTest.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "PathIteratorTest.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 6e0b547bab30a804c8123974120d583f' -> (Import Result ID: '36f143bdfe41f128fdfd3da22b4b3715') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4b0605a010840273139c2374d0f809d8 DependenciesID=c49385984daebddac1e0e61453f460c2 StaticDependenciesID=e24ea404bb4dabe55ffbcaa7b840b299 
+Importing 'GUID: de3013e16d99f2746ab1735ec06a660b - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationOcclusion.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationOcclusion.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: de3013e16d99f2746ab1735ec06a660b' -> (Import Result ID: '24b1c7c205e546dbfa4fc82aafe62760') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=43e4685bc410b98168fac38a0b9ef396 DependenciesID=cd01b51e485543552f34633552e8cd7d StaticDependenciesID=d23a0c4a2896e547ad436f2fd232bb27 
+Importing 'GUID: fe7f1a959d1d3f544a208b7e8805e6cd - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationDirectDirectionalAndEnvironment.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationDirectDirectionalAndEnvironment.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: fe7f1a959d1d3f544a208b7e8805e6cd' -> (Import Result ID: 'baae7fbe991f29cb9dad4f27c9916525') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=da9f4ce79ba9a6cc1b400636a8955183 DependenciesID=373073db1a8a07cdb058819f07952473 StaticDependenciesID=b8525778ccd6bf87644fae631483c773 
+Importing 'GUID: 1f9bfe60b4ad75943a5281839c1a4e5c - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationDirectStochasticLight.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationDirectStochasticLight.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 1f9bfe60b4ad75943a5281839c1a4e5c' -> (Import Result ID: 'ee0276c47926876e356653f1906bb644') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=63d0969d5ee8ddd467fe4db5ce94044e DependenciesID=15fda3f0e39f186ae208c3dccfbab152 StaticDependenciesID=bb23e9aed0fe8778db1283cad6c57003 
+Importing 'GUID: ff2cbab5da58bf04d82c5f34037ed123 - Path: Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/VirtualOffset/TraceVirtualOffset.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "TraceVirtualOffset.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: ff2cbab5da58bf04d82c5f34037ed123' -> (Import Result ID: 'e774b4d3c5f27516ced0c9a364c810e4') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f52d3afc511a9522a0dcb4dfcfd1e8ba DependenciesID=d1e0d73fbcc5ff62cd5a41ebc2799c2a StaticDependenciesID=577fb2ca56f9c9cef1dba593cc7f61b6 
+Importing 'GUID: 449c8e5ca27af8e4a9db710c8be5e4df - Path: Packages/com.unity.inputsystem/InputSystem/Editor/UITKAssetEditor/PackageResources/BindingPanelRowTemplate.uxml' with importer (ScriptedImporter : UnityEditor.UIElementsModule:UnityEditor.UIElements:UIElementsViewImporter)
+Imported 'GUID: 449c8e5ca27af8e4a9db710c8be5e4df' -> (Import Result ID: '09044715a208ccc296ab0a985a353d32') in 0.252 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c71ee71309e6cdb2ae5eaa592db9903e DependenciesID=d19713472dfc854e86f2b2503af7a574 StaticDependenciesID=40f241c1a1219cfe62177ba9f0eba5f1 
+
+Asset Pipeline Refresh (id=242bb6ef3e563e44ca12ec35c58f3df8): Total: 27.323 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=2015 (actual=175, local cache=1840, cache server=0)
+		Asset DB Process Time: managed=76 ms, native=18546 ms
+		Asset DB Callback time: managed=237 ms, native=390 ms
+		Scripting: domain reloads=1, domain reload time=2038 ms, compile time=5953 ms, other=80 ms
+		Project Asset Count: scripts=952, non-scripts=2040
+		Asset File Changes: new=64, changed=71, moved=3, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 23.378ms
+	ApplyChangesToAssetFolders: 0.768ms
+	Scan: 211.036ms
+	Collect global state as custom dependencies: 34.295ms
+	OnSourceAssetsModified: 1.210ms
+	CategorizeScriptCompilationAssets: 32.846ms
+	ProcessAssetsWithTransientArtifactChanges: 85.355ms
+	CategorizeAssets: 68.980ms
+	CompileScripts: 5952.779ms
+	ImportOutOfDateAssets: 17923.926ms (1719.662ms without children)
+		ImportManagerImport: 16015.214ms (450.079ms without children)
+			UpdateCategorizedAssets: 13.195ms
+		ReloadNativeAssets: 0.055ms
+		UnloadImportedAssets: 15.083ms
+		ReloadImportedAssets: 174.487ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 2.309ms
+		ImportSchedulerStart: 6.707ms
+	PostProcessAllAssets: 604.368ms
+		ShaderAssetModifiedCallback 224.459ms
+		ComputeShaderImportPostprocess 67.094ms
+		RaytracingShaderImportPostprocess 58.501ms
+		VersionControlSettings.HiddenFilePostprocess 2.439ms
+		PostProcessCallbackCreateDeferredMaterials 0.789ms
+		SpeedTreeImporter.PostprocessAllAssets 0.577ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 0.215ms
+		BlockShaderImporter.PostprocessAllAssets 0.190ms
+		XRBuildSystem.XRAssetImported 0.149ms
+		AssemblyValidation.PostprocessAllAssets 0.143ms
+		MonoPostProcessAllAssets: 236.363ms
+			SyncVS.PostprocessSyncProject 42.849ms
+			AssetPostprocessor.OnPostprocessAllAssets 28.972ms
+			PostProcessor.OnPostprocessAllAssets 25.040ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 24.563ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 19.015ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 15.867ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 15.136ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 9.757ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 5.637ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 4.047ms
+			AssetChangedListener.OnPostprocessAllAssets 3.219ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 3.176ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 3.035ms
+			MaterialPostprocessor.OnPostprocessAllAssets 2.416ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 2.018ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.833ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 1.829ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 1.528ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.292ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.794ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.682ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.495ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.452ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.422ms
+			AssetProcessor.OnPostprocessAllAssets 0.395ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.376ms
+			AssetEvents.OnPostprocessAllAssets 0.369ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.291ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.258ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.254ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.249ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.242ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.201ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.109ms
+	PostAssetChangesProfiler: 2.124ms
+	UnloadStreamsBegin: 3.663ms
+	PersistCurrentRevisions: 2.260ms
+	GenerateScriptTypeHashes: 2.483ms
+	GenerateScriptTypeSerializationHashes: 4.609ms
+	Untracked: 2368.700ms
+
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 2.973ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Adventure King Reborn
+Unloading 199 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4032 unused Assets / (22.1 MB). Loaded Objects now: 4895.
+Memory consumption went from 435.9 MB to 413.8 MB.
+Total: 31.999000 ms (FindLiveObjects: 0.734300 ms CreateObjectMapping: 0.247500 ms MarkObjects: 21.482100 ms  DeleteObjects: 9.209200 ms)
+
+Curl error 35: Recv failure: Connection was reset
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Importing 'GUID: 98298f1b08bfbc7498fac2f442c68ba3 - Path: Assets/Art/Characters/NpcElder/Textures' with importer (DefaultImporter)
+Imported 'GUID: 98298f1b08bfbc7498fac2f442c68ba3' -> (Import Result ID: '86b2b7d1341c2f7e1786c4ed23b42946') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=24a7a03774c4969ed9ef46b3b61d9b54 DependenciesID=2c6178b903fc71e5f7dd391c71cf9f47 StaticDependenciesID=2eee2d0c991af329cc352b9d8f0f42f0 
+Importing 'GUID: d634de9e65f802a4e929b86db0bb04a0 - Path: Assets/Art/Characters/NpcElder/Textures/NpcElder_Body_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: d634de9e65f802a4e929b86db0bb04a0' -> (Import Result ID: '41906e103bf353dec1fed8ab3c0f9ef8') in 0.194 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=430f2f9e3ae2e7ebd725b4624f44f89a DependenciesID=58b5861542bf1ccd4eb73a931a7dfa57 StaticDependenciesID=39743556ade34ea857b57db68013bebe 
+Importing 'GUID: b4b480d044c086247be806413b80e56f - Path: Assets/Art/Characters/NpcElder/NpcElder.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 32.240162%;
+Keyframe reduction: Ratio: 33.098667%;
+Keyframe reduction: Ratio: 27.324675%;
+Keyframe reduction: Ratio: 28.177776%;
+Keyframe reduction: Ratio: 28.121210%;
+Imported 'GUID: b4b480d044c086247be806413b80e56f' -> (Import Result ID: 'd9d27d3a977b024a6a9a4b3328940b4d') in 0.346 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=370197a1e00eaaed03f8689818ace090 DependenciesID=222c7dead33a6f58ce26ea31b601c06e StaticDependenciesID=e9467cb6df444d91807a0b58f21d35f1 
+
+Asset Pipeline Refresh (id=f95b4fbd5ae6ebf42a233a4b1381acfc): Total: 0.717 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=3 (actual=3, local cache=0, cache server=0)
+		Asset DB Process Time: managed=1 ms, native=703 ms
+		Asset DB Callback time: managed=9 ms, native=1 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=1 ms, other=0 ms
+		Project Asset Count: scripts=953, non-scripts=2041
+		Asset File Changes: new=3, changed=3, moved=0, deleted=0
+		Scan Filter Count: 0
+	ApplyChangesToAssetFolders: 0.104ms
+	Scan: 25.034ms
+	Collect global state as custom dependencies: 0.650ms
+	OnSourceAssetsModified: 0.844ms
+	ProcessAssetsWithTransientArtifactChanges: 0.187ms
+	CategorizeAssets: 46.849ms
+	CompileScripts: 0.730ms
+	ImportOutOfDateAssets: 546.734ms (0.205ms without children)
+		ImportManagerImport: 545.354ms (0.680ms without children)
+			UpdateCategorizedAssets: 0.063ms
+		UnloadImportedAssets: 0.205ms
+		ReloadImportedAssets: 0.263ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.582ms
+		ImportSchedulerStart: 0.337ms
+	PostProcessAllAssets: 9.104ms
+		XRBuildSystem.XRAssetImported 0.419ms
+		VersionControlSettings.HiddenFilePostprocess 0.120ms
+		MonoPostProcessAllAssets: 8.193ms
+			AssetPostprocessor.OnPostprocessAllAssets 5.013ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 1.706ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 0.372ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 0.321ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.154ms
+			PostProcessor.OnPostprocessAllAssets 0.050ms
+	PostAssetChangesProfiler: 0.834ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.256ms
+	PersistCurrentRevisions: 0.161ms
+	Untracked: 80.774ms
+
+Asset Pipeline Refresh (id=cd2b9d0ab64dde64da9f3f31cac9ea09): Total: 0.012 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Importing 'GUID: b4b480d044c086247be806413b80e56f - Path: Assets/Art/Characters/NpcElder/NpcElder.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 32.154224%;
+Keyframe reduction: Ratio: 34.076885%;
+Keyframe reduction: Ratio: 27.272726%;
+Keyframe reduction: Ratio: 27.081240%;
+Keyframe reduction: Ratio: 26.991873%;
+Imported 'GUID: b4b480d044c086247be806413b80e56f' -> (Import Result ID: '5d98d1dde9ed450c05dd86da1e6e8025') in 0.365 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d7a655bf83a853d2aa840d679a4f8b30 DependenciesID=fb853b4aeff6a319217c88163a907776 StaticDependenciesID=9d050023eb84ae74807438d1f6f983ba 
+
+Asset Pipeline Refresh (id=d898f8c3489b4554e97430b94c625520): Total: 0.426 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=1 (actual=1, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=423 ms
+		Asset DB Callback time: managed=1 ms, native=1 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=953, non-scripts=2041
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 5
+	ApplyChangesToAssetFolders: 0.099ms
+	Scan: 15.175ms
+	Collect global state as custom dependencies: 0.815ms
+	OnSourceAssetsModified: 0.065ms
+	ProcessAssetsWithTransientArtifactChanges: 0.105ms
+	CategorizeAssets: 32.831ms
+	ImportOutOfDateAssets: 369.315ms (0.164ms without children)
+		ImportManagerImport: 367.955ms (0.339ms without children)
+		UnloadImportedAssets: 0.369ms
+		ReloadImportedAssets: 2.458ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.489ms
+		ImportSchedulerStart: 0.300ms
+	PostProcessAllAssets: 1.076ms
+		XRBuildSystem.XRAssetImported 0.138ms
+		MonoPostProcessAllAssets: 0.745ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 0.096ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.077ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.071ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.063ms
+	PostAssetChangesProfiler: 1.262ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.166ms
+	PersistCurrentRevisions: 0.171ms
+	Untracked: 5.264ms
+
+Importing 'GUID: 69c944f024498744994f19d688de2aca - Path: Assets/Art/Characters/NpcElder/NpcElder.controller' with importer (NativeFormatImporter)
+Imported 'GUID: 69c944f024498744994f19d688de2aca' -> (Import Result ID: '1b64ebb1a64809ec5a549e539cd68390') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3b1075c15dcedaf208969b8b2398c57e DependenciesID=05be84138f3d27cf9c5ac48242263554 StaticDependenciesID=85158a8311f22d2074c5789ae3df6a3f 
+Asset Pipeline Refresh (id=519fe535a82f7df418b427bb72e114ef): Total: 0.048 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: d905c8e7ba0e63e448a90d764d40220d - Path: Assets/Art/Characters/NpcElder/NpcElder_Toon.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d905c8e7ba0e63e448a90d764d40220d' -> (Import Result ID: 'ae4420e54051275ef04dd9f15edeb780') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=acd52d0e2bfa158de65d2b001912cb68 DependenciesID=a823d2352d0d0719217f26284f0023c3 StaticDependenciesID=81d32d8d666f849e7f3428941a0616f2 
+Asset Pipeline Refresh (id=6d4c03805de744e44aad56f67bb821b7): Total: 0.048 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 3a7f40aececa36e48b5dee5ba06daa12 - Path: Assets/Prefabs/Npcs' with importer (DefaultImporter)
+Imported 'GUID: 3a7f40aececa36e48b5dee5ba06daa12' -> (Import Result ID: '4a9bcaf2f97890aeb43bec000e5fb7d9') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=61ab8eb6e83300c4eb5620e1358eba87 DependenciesID=d8f4a15e4ca0bec60e2c58e69798a6ad StaticDependenciesID=f038b57a6e7c3ba97122a3f7aa774411 
+Importing 'GUID: 85563644e5308b94ba778a0d9d6aa0bf - Path: Assets/Prefabs/Npcs/NpcElder_Visual.prefab' with importer (PrefabImporter)
+Imported 'GUID: 85563644e5308b94ba778a0d9d6aa0bf' -> (Import Result ID: '322a62dc532e21a3744a82e978cd6451') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8a99a921dd4a376a3029d796b3a0ec5d DependenciesID=565aea706a1ee9406a39956f78e07ab3 StaticDependenciesID=09a2461b27922dbed5d10762da748d0e 
+Asset Pipeline Refresh (id=44fe19c42c2645b4a9b7c7ddce7ce759): Total: 0.063 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[NPC] NpcElder: 5 clips, prefab Assets/Prefabs/Npcs/NpcElder_Visual.prefab
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.NpcArtPipeline:Build (AdventureKing.ArtPipeline.NpcArtPipeline/Npc,string) (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:152)
+AdventureKing.ArtPipeline.NpcArtPipeline:RebuildAll () (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:58)
+AdventureKing.ArtPipeline.NpcArtPipeline:RebuildFromCommandLine () (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:47)
+
+(Filename: Assets/Editor/ArtPipeline/NpcArtPipeline.cs Line: 152)
+
+Importing 'GUID: 26216265126d2ca4b9ad70c1c104dfaa - Path: Assets/Art/Characters/NpcSmith/Textures' with importer (DefaultImporter)
+Imported 'GUID: 26216265126d2ca4b9ad70c1c104dfaa' -> (Import Result ID: '1f4de8cb038fef916e87d6ca45718942') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=41fb40ebac693be25f08bf9805552bf1 DependenciesID=99b4bf50266904ce2bfdac987b9de193 StaticDependenciesID=0f86a861499de63be99fa984966fb603 
+Importing 'GUID: 0dcc7dfba13e7ac4d8937c47bdfebde1 - Path: Assets/Art/Characters/NpcSmith/Textures/NpcSmith_Body_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: 0dcc7dfba13e7ac4d8937c47bdfebde1' -> (Import Result ID: '627280adf0fc8b50c9f65e73b17a6245') in 0.176 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=73dd67b21a78f94c845d9d42f8c4fa15 DependenciesID=bbd160ac6591a3e5a78754bccddcb7c3 StaticDependenciesID=88a637c5622e61452ab1d0631e951ef7 
+Importing 'GUID: d58af4fb7704a214a879f52e656f1a01 - Path: Assets/Art/Characters/NpcSmith/NpcSmith.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 33.333328%;
+Keyframe reduction: Ratio: 26.010754%;
+Keyframe reduction: Ratio: 28.077135%;
+Keyframe reduction: Ratio: 27.777773%;
+Keyframe reduction: Ratio: 26.597404%;
+Imported 'GUID: d58af4fb7704a214a879f52e656f1a01' -> (Import Result ID: '642659f1958f9631984d635a72548f3a') in 0.344 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=505bef2103f79b9cc5157400860b2329 DependenciesID=ddb8635ab4b71dc655b592724f6e11c5 StaticDependenciesID=4da50a43f9c821693c1c2b65ebb87c96 
+
+Asset Pipeline Refresh (id=aec7a6ce6c2ba9c439c9bd254092d40c): Total: 0.575 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=3 (actual=3, local cache=0, cache server=0)
+		Asset DB Process Time: managed=1 ms, native=569 ms
+		Asset DB Callback time: managed=1 ms, native=1 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=955, non-scripts=2045
+		Asset File Changes: new=2, changed=2, moved=0, deleted=0
+		Scan Filter Count: 0
+	ApplyChangesToAssetFolders: 0.057ms
+	Scan: 11.646ms
+	Collect global state as custom dependencies: 0.397ms
+	OnSourceAssetsModified: 0.057ms
+	CategorizeAssets: 28.220ms
+	ImportOutOfDateAssets: 525.248ms (0.206ms without children)
+		ImportManagerImport: 523.988ms (0.579ms without children)
+			UpdateCategorizedAssets: 0.059ms
+		UnloadImportedAssets: 0.272ms
+		ReloadImportedAssets: 0.251ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.490ms
+		ImportSchedulerStart: 0.250ms
+	PostProcessAllAssets: 1.854ms
+		XRBuildSystem.XRAssetImported 0.132ms
+		VersionControlSettings.HiddenFilePostprocess 0.085ms
+		MonoPostProcessAllAssets: 1.337ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 0.343ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 0.274ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.078ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.073ms
+	PostAssetChangesProfiler: 1.786ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.170ms
+	UnloadStreamsBegin: 0.063ms
+	PersistCurrentRevisions: 0.160ms
+	Untracked: 4.819ms
+
+Asset Pipeline Refresh (id=59e1407e88dbd0443b48f633e3393814): Total: 0.011 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Importing 'GUID: d58af4fb7704a214a879f52e656f1a01 - Path: Assets/Art/Characters/NpcSmith/NpcSmith.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 34.262482%;
+Keyframe reduction: Ratio: 26.950212%;
+Keyframe reduction: Ratio: 26.575865%;
+Keyframe reduction: Ratio: 26.575205%;
+Keyframe reduction: Ratio: 24.814714%;
+Imported 'GUID: d58af4fb7704a214a879f52e656f1a01' -> (Import Result ID: '0307f82e4e1aedafd044e0d3536b137e') in 0.357 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=886e8f1f91c8f8eb11f8fe373695fb11 DependenciesID=4680bcc9a4e9039c7c186a7e7a9880ee StaticDependenciesID=9b8504e55784def21c8b825fc48f73cc 
+
+Asset Pipeline Refresh (id=76fc5b55df7c2cc408f7c564201e44b3): Total: 0.420 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=1 (actual=1, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=417 ms
+		Asset DB Callback time: managed=1 ms, native=0 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=955, non-scripts=2045
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 5
+	ApplyChangesToAssetFolders: 0.093ms
+	Scan: 17.818ms
+	Collect global state as custom dependencies: 0.632ms
+	ProcessAssetsWithTransientArtifactChanges: 0.111ms
+	CategorizeAssets: 31.735ms
+	ImportOutOfDateAssets: 362.837ms (0.196ms without children)
+		ImportManagerImport: 361.382ms (0.359ms without children)
+		UnloadImportedAssets: 0.382ms
+		ReloadImportedAssets: 3.277ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.512ms
+		ImportSchedulerStart: 0.325ms
+	PostProcessAllAssets: 1.104ms
+		XRBuildSystem.XRAssetImported 0.149ms
+		MonoPostProcessAllAssets: 0.755ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 0.098ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.077ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.072ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.065ms
+	PostAssetChangesProfiler: 0.823ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.161ms
+	PersistCurrentRevisions: 0.182ms
+	Untracked: 4.784ms
+
+Importing 'GUID: 29ae1b9bf10e92245a1224c1d0d82486 - Path: Assets/Art/Characters/NpcSmith/NpcSmith.controller' with importer (NativeFormatImporter)
+Imported 'GUID: 29ae1b9bf10e92245a1224c1d0d82486' -> (Import Result ID: '2679ff6fcfadea8cce4a55aa6603ec19') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c8c00ba761f2be4b03e5c47d3bcb0b33 DependenciesID=9dd9cb99d571350701b9a9505a03cd6c StaticDependenciesID=6da1321c9161a260eaa95c6e518864de 
+Asset Pipeline Refresh (id=f4b5d17fbe4375b479372168a5cadf34): Total: 0.049 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: d3f0f25dbb65b68438ea98ee776d6ebe - Path: Assets/Art/Characters/NpcSmith/NpcSmith_Toon.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d3f0f25dbb65b68438ea98ee776d6ebe' -> (Import Result ID: 'bdbdda628772fea0352d4296081914d7') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=3ac53755f1d0655162e99af8f29865ff DependenciesID=5dd5f1f176c6ee2005d1db5e55520f43 StaticDependenciesID=768dd4b2666925982f44349a8828d98a 
+Asset Pipeline Refresh (id=fa17d1d3cc4218241acde3dbd64ed8c0): Total: 0.048 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: cb08af85a6d6b9b4bb8dc70cb1e732be - Path: Assets/Prefabs/Npcs/NpcSmith_Visual.prefab' with importer (PrefabImporter)
+Imported 'GUID: cb08af85a6d6b9b4bb8dc70cb1e732be' -> (Import Result ID: '2f4ca1c33890e0b5c12e9a6bb06d3eca') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7ba99034fb848e4097dd351614ca6736 DependenciesID=63fa48df1f115833c0711e32004b8636 StaticDependenciesID=7a1d721c012c330d945a3d690e47aa0e 
+Asset Pipeline Refresh (id=ab30c42ce78e76f46be4c6740ffbbcdd): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[NPC] NpcSmith: 5 clips, prefab Assets/Prefabs/Npcs/NpcSmith_Visual.prefab
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.NpcArtPipeline:Build (AdventureKing.ArtPipeline.NpcArtPipeline/Npc,string) (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:152)
+AdventureKing.ArtPipeline.NpcArtPipeline:RebuildAll () (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:58)
+AdventureKing.ArtPipeline.NpcArtPipeline:RebuildFromCommandLine () (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:47)
+
+(Filename: Assets/Editor/ArtPipeline/NpcArtPipeline.cs Line: 152)
+
+Importing 'GUID: aee79e336e207db4fa78adfddf645c46 - Path: Assets/Art/Characters/NpcStorekeeper/Textures' with importer (DefaultImporter)
+Imported 'GUID: aee79e336e207db4fa78adfddf645c46' -> (Import Result ID: 'a615e3171116cb011676f5b001107cac') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=477ecd19a9e5fc9bf1865617ec7645d5 DependenciesID=a63e0627c4f7ff031834cf4c2e68031f StaticDependenciesID=56c83bbd6739327d94ef5dad1261eb1b 
+Importing 'GUID: ddc61737019d5a4469ef918d3fc0513a - Path: Assets/Art/Characters/NpcStorekeeper/Textures/NpcStorekeeper_Body_baseColor.png' with importer (TextureImporter)
+Imported 'GUID: ddc61737019d5a4469ef918d3fc0513a' -> (Import Result ID: '769f6af46dab1a14a75da55591b100a3') in 0.178 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=aabe272ea17d1be0dc5af5969a7783c8 DependenciesID=e6f220233ec66ded682dd88f08f96c2a StaticDependenciesID=da989ff4a3243e7d3563f9939aa3b5d1 
+Importing 'GUID: d25452836cba09f4f81fd595bb10dd4a - Path: Assets/Art/Characters/NpcStorekeeper/NpcStorekeeper.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 33.141335%;
+Keyframe reduction: Ratio: 26.215055%;
+Keyframe reduction: Ratio: 28.187328%;
+Keyframe reduction: Ratio: 27.024530%;
+Keyframe reduction: Ratio: 28.088884%;
+Imported 'GUID: d25452836cba09f4f81fd595bb10dd4a' -> (Import Result ID: '0de204765e3bdedd1d29dea1f1b27e8b') in 0.345 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=127d71a28a6f2258868cf827df5b81ab DependenciesID=0df980656ada433d2f681a62184f3846 StaticDependenciesID=6fed114f9b51b12aa2a7f05ca513b1e6 
+
+Asset Pipeline Refresh (id=061091a2eaa6234489398aa48b717a39): Total: 0.576 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=3 (actual=3, local cache=0, cache server=0)
+		Asset DB Process Time: managed=1 ms, native=571 ms
+		Asset DB Callback time: managed=1 ms, native=1 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=956, non-scripts=2049
+		Asset File Changes: new=2, changed=2, moved=0, deleted=0
+		Scan Filter Count: 0
+	ApplyChangesToAssetFolders: 0.062ms
+	Scan: 11.116ms
+	Collect global state as custom dependencies: 0.312ms
+	CategorizeAssets: 28.993ms
+	ImportOutOfDateAssets: 527.457ms (0.171ms without children)
+		ImportManagerImport: 526.237ms (0.527ms without children)
+			UpdateCategorizedAssets: 0.051ms
+		UnloadImportedAssets: 0.268ms
+		ReloadImportedAssets: 0.249ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.494ms
+		ImportSchedulerStart: 0.244ms
+	PostProcessAllAssets: 2.042ms
+		XRBuildSystem.XRAssetImported 0.137ms
+		VersionControlSettings.HiddenFilePostprocess 0.083ms
+		MonoPostProcessAllAssets: 1.510ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 0.441ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 0.246ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.078ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.076ms
+			SyncVS.PostprocessSyncProject 0.063ms
+	PostAssetChangesProfiler: 1.604ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.234ms
+	UnloadStreamsBegin: 0.072ms
+	PersistCurrentRevisions: 0.187ms
+	Untracked: 4.173ms
+
+Asset Pipeline Refresh (id=b740df9d53c036d46a61b3172e5f6794): Total: 0.012 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Importing 'GUID: d25452836cba09f4f81fd595bb10dd4a - Path: Assets/Art/Characters/NpcStorekeeper/NpcStorekeeper.fbx' with importer (FBXImporter)
+Keyframe reduction: Ratio: 34.096554%;
+Keyframe reduction: Ratio: 27.172421%;
+Keyframe reduction: Ratio: 27.050995%;
+Keyframe reduction: Ratio: 26.859753%;
+Keyframe reduction: Ratio: 24.933279%;
+Imported 'GUID: d25452836cba09f4f81fd595bb10dd4a' -> (Import Result ID: '1db414091429dd83d266347b02a761a4') in 0.352 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5dc46155201ffa9fddd1e177232394d1 DependenciesID=0092cdf63e151288c863b0ca081d34bc StaticDependenciesID=4ea63cad0762707b4ee1ca90e4b15918 
+
+Asset Pipeline Refresh (id=a3a426aa73b5ffd4790ac1fa2d9ee334): Total: 0.410 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=1 (actual=1, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=407 ms
+		Asset DB Callback time: managed=1 ms, native=0 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=956, non-scripts=2049
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 5
+	ApplyChangesToAssetFolders: 0.090ms
+	Scan: 15.707ms
+	Collect global state as custom dependencies: 0.627ms
+	ProcessAssetsWithTransientArtifactChanges: 0.096ms
+	CategorizeAssets: 30.029ms
+	ImportOutOfDateAssets: 356.415ms (0.210ms without children)
+		ImportManagerImport: 354.928ms (0.350ms without children)
+		UnloadImportedAssets: 0.390ms
+		ReloadImportedAssets: 2.211ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.507ms
+		ImportSchedulerStart: 0.329ms
+	PostProcessAllAssets: 1.326ms
+		XRBuildSystem.XRAssetImported 0.207ms
+		MonoPostProcessAllAssets: 0.820ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.084ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.084ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.075ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 0.064ms
+	PostAssetChangesProfiler: 0.823ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.178ms
+	PersistCurrentRevisions: 0.247ms
+	Untracked: 4.761ms
+
+Importing 'GUID: 3df978e89aeeb7b47927ba33300ebd8f - Path: Assets/Art/Characters/NpcStorekeeper/NpcStorekeeper.controller' with importer (NativeFormatImporter)
+Imported 'GUID: 3df978e89aeeb7b47927ba33300ebd8f' -> (Import Result ID: 'fc3db9a83c5fb9625eef29ecf43a799b') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=69ea6680c7e38e1bcce07da69abb6a69 DependenciesID=c28132058fb26d69a5bb1c617ce5ca10 StaticDependenciesID=51ae8618b5329c2c6fdbd0a85309f7a3 
+Asset Pipeline Refresh (id=73cd62d512870c7429c4e98eaa434f6b): Total: 0.050 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 01b41baa2a6caf74faf599cb4d538f00 - Path: Assets/Art/Characters/NpcStorekeeper/NpcStorekeeper_Toon.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 01b41baa2a6caf74faf599cb4d538f00' -> (Import Result ID: '7be7e75155cb8eea61d14b7c17c2a3e5') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=cd24df4f46f3b0fa88c5d2a554018059 DependenciesID=0a4d61875fcaddc661892c117df9f1d9 StaticDependenciesID=7eed4faff48e08bf38149a354f43e2fa 
+Asset Pipeline Refresh (id=ab2cccc32b7c11c4ca58fe31d1133f65): Total: 0.058 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 951dc77357a5db548adcb79219e55392 - Path: Assets/Prefabs/Npcs/NpcStorekeeper_Visual.prefab' with importer (PrefabImporter)
+Imported 'GUID: 951dc77357a5db548adcb79219e55392' -> (Import Result ID: '921ec63586e0e7706ab87132f820c3fc') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=59d80e34bf05c1ad1d422f0d6df3af05 DependenciesID=416aab610d68ebadcb30e2605800804d StaticDependenciesID=9dc74b56ed12ba06652d7484bd12236b 
+Asset Pipeline Refresh (id=7d8f871da4161bb43ba2fb741dcd6fe0): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[NPC] NpcStorekeeper: 5 clips, prefab Assets/Prefabs/Npcs/NpcStorekeeper_Visual.prefab
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.NpcArtPipeline:Build (AdventureKing.ArtPipeline.NpcArtPipeline/Npc,string) (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:152)
+AdventureKing.ArtPipeline.NpcArtPipeline:RebuildAll () (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:58)
+AdventureKing.ArtPipeline.NpcArtPipeline:RebuildFromCommandLine () (at Assets/Editor/ArtPipeline/NpcArtPipeline.cs:47)
+
+(Filename: Assets/Editor/ArtPipeline/NpcArtPipeline.cs Line: 152)
+
+Importing 'GUID: 01b41baa2a6caf74faf599cb4d538f00 - Path: Assets/Art/Characters/NpcStorekeeper/NpcStorekeeper_Toon.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 01b41baa2a6caf74faf599cb4d538f00' -> (Import Result ID: '8f9afd89ddec18e514d941ad89a82abe') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=cd24df4f46f3b0fa88c5d2a554018059 DependenciesID=8faef5e6c1d62e35a83fcfa7e5a8042b StaticDependenciesID=21c56d32b8b0c8d33b93ff845dbd6a7d 
+Importing 'GUID: d3f0f25dbb65b68438ea98ee776d6ebe - Path: Assets/Art/Characters/NpcSmith/NpcSmith_Toon.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d3f0f25dbb65b68438ea98ee776d6ebe' -> (Import Result ID: '7a6639ccf264873941f31fac0e1cd410') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3ac53755f1d0655162e99af8f29865ff DependenciesID=d1cb2722be885924ba1146ae7ca6447c StaticDependenciesID=197755cab40fa9fd68d9590f0cba0f66 
+Importing 'GUID: d905c8e7ba0e63e448a90d764d40220d - Path: Assets/Art/Characters/NpcElder/NpcElder_Toon.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d905c8e7ba0e63e448a90d764d40220d' -> (Import Result ID: '0df235689978edf0896780de40b8d32b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=acd52d0e2bfa158de65d2b001912cb68 DependenciesID=f93d9ccbe44691eac996bc877cd58d3d StaticDependenciesID=a2c83d515b3d66c01108d0511baf37dc 
+Importing 'GUID: 29ae1b9bf10e92245a1224c1d0d82486 - Path: Assets/Art/Characters/NpcSmith/NpcSmith.controller' with importer (NativeFormatImporter)
+Imported 'GUID: 29ae1b9bf10e92245a1224c1d0d82486' -> (Import Result ID: '626e4833e0936849a639fde0c0804b00') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c8c00ba761f2be4b03e5c47d3bcb0b33 DependenciesID=0dc09f4fe4331bb85ed9dc643850e383 StaticDependenciesID=e41f4f690f3b7c3ca574706361422f39 
+Importing 'GUID: 69c944f024498744994f19d688de2aca - Path: Assets/Art/Characters/NpcElder/NpcElder.controller' with importer (NativeFormatImporter)
+Imported 'GUID: 69c944f024498744994f19d688de2aca' -> (Import Result ID: 'c69431582dd53ba7ceb1e5ad8e83a831') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3b1075c15dcedaf208969b8b2398c57e DependenciesID=57fab2eee6f91328fcafbd0c51e9fa55 StaticDependenciesID=d67c7b1efcd8de2144aa943e9e863ccb 
+Importing 'GUID: 3df978e89aeeb7b47927ba33300ebd8f - Path: Assets/Art/Characters/NpcStorekeeper/NpcStorekeeper.controller' with importer (NativeFormatImporter)
+Imported 'GUID: 3df978e89aeeb7b47927ba33300ebd8f' -> (Import Result ID: 'c442e88c43a2daa0a59db3794b694418') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=69ea6680c7e38e1bcce07da69abb6a69 DependenciesID=7d9903f34fd6763b167965e1304bcd79 StaticDependenciesID=b345fbc13cee9ac578139aa65224e257 
+Asset Pipeline Refresh (id=9729bd36f71190d4c82cfd6e324f684f): Total: 0.058 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+MonoPathRemapper: Attempts to remap: 10958; Successful remaps: 400
+Serialized file version minimum: 23, current 23
+Curl error 42: Callback aborted
+Killing ADB server in 2.0966674 seconds.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-PC-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-PC channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794107775273,"processId":11484,"allocatedMemory":18301456,"memoryLabels":[{"Default":209691},{"Permanent":15516},{"NewDelete":75991},{"Thread":4205800},{"Manager":31709},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":843216},{"Material":132},{"GfxDevice":58008},{"Animation":1696},{"Audio":1272},{"Font":2528139},{"FreeType":70074},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":16952},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1274784},{"BaseObject":48912},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":4416},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":969899},{"StaticString":3808},{"Utility":2673718},{"Curl":2676},{"PoolAlloc":2264},{"AI":80},{"TypeTree":23229},{"ScriptManager":12656},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":7552},{"CloudService":7152},{"WebRequest":789},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":592},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":114478},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4494724},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40441},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3594},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

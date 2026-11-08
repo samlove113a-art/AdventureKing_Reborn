@@ -88,22 +88,7 @@ namespace AdventureKing.Tests
 #endif
         }
 
-        /// <summary>Closes everything the game left behind (persistent singletons included).</summary>
-        internal static IEnumerator CloseGame()
-        {
-            Scene empty = SceneManager.CreateScene("EmptyAfterTest_" + Time.frameCount);
-            SceneManager.SetActiveScene(empty);
-            for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
-            {
-                Scene s = SceneManager.GetSceneAt(i);
-                if (s != empty && s.isLoaded) yield return SceneManager.UnloadSceneAsync(s);
-            }
-            if (AdventureServerConnection.Instance) Object.Destroy(AdventureServerConnection.Instance.gameObject);
-            var director = Object.FindAnyObjectByType<AdventureAudioDirector>();
-            if (director) Object.Destroy(director.gameObject);
-            AdventurePlayerSession.Clear();
-            yield return null;
-        }
+        private static IEnumerator CloseGame() => TestRunnerGuard.CloseGame();
 
         private static IEnumerator WaitForScene(string name, float seconds = 20f)
         {
@@ -132,6 +117,7 @@ namespace AdventureKing.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
+            TestRunnerGuard.Protect(); // the game switches scenes in Single mode (logout, portals)
             dbDir = Path.Combine(Path.GetTempPath(), "ak_e2e_" + System.Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dbDir);
             yield return StartServer();

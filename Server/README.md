@@ -12,6 +12,13 @@ dotnet run --project Server/AdventureKing.Server
 dotnet test Server/AdventureKing.Server.Tests
 ```
 
+Phone testing on the home Wi-Fi: `dotnet run --project Server/AdventureKing.Server --environment Lan`
+(listens on `0.0.0.0:5080`, plain HTTP for development builds only) — see `Docs/MOBILE_LAN_TESTING.md`.
+
+World: maps `village_wind_bell` (Thị trấn Chuông Gió) and `meadow_breeze` (Đồng Cỏ Gió). Position saves never
+change map; only `POST /characters/{id}/travel/{portalId}` does, after checking the portal is on the character's
+current map, within reach, and not used again within 1.5 s (double-submit / spam guard).
+
 Database: `Server/AdventureKing.Server/data/adventureking.db` (git-ignored, WAL mode, schema version in
 `PRAGMA user_version`).
 

@@ -183,5 +183,54 @@ def build(out):
     finish(step, P("Footstep_Earth"), -6.0)
 
 
+def finish_loop(x, path, peak_db=-6.0, xfade=0.5):
+    """Seamless loop: the tail is crossfaded into the head (no fades at the ends)."""
+    n = int(xfade * SR)
+    head, body, tail = x[:n], x[n:-n], x[-n:]
+    w = np.linspace(0, 1, n)
+    loop = np.concatenate([tail * (1 - w) + head * w, body])
+    loop = loop - np.mean(loop)
+    loop = loop / (np.max(np.abs(loop)) + 1e-9) * (10 ** (peak_db / 20))
+    with wave.open(path, "wb") as wv:
+        wv.setnchannels(1)
+        wv.setsampwidth(2)
+        wv.setframerate(SR)
+        wv.writeframes((loop * 32767).astype(np.int16).tobytes())
+    print("wrote", os.path.basename(path), f"{len(loop) / SR:.2f}s (loop)")
+
+
+def build_world(out):
+    """World sounds (separate RNG so the combat set above stays byte-identical)."""
+    global rng
+    rng = np.random.default_rng(2611)
+    os.makedirs(out, exist_ok=True)
+    P = lambda n: os.path.join(out, n + ".wav")
+    # Portal hum: 4.5 s loop. Every partial completes whole cycles in the loop (f * 4 is an integer),
+    # a slow 0.5 Hz breathing LFO, a soft airy band of noise and a faint high crystal shimmer.
+    sec = 4.5 + 0.5
+    t = t_axis(sec)
+    k = 2.0 / 9.0  # every frequency is a multiple of 1/4.5 Hz -> identical phase 4.5 s apart (clean crossfade)
+    q = lambda f: round(f / k) * k
+    lfo = 0.75 + 0.25 * np.sin(2 * np.pi * q(0.45) * t)
+    drone = sum(np.sin(2 * np.pi * q(f) * t) * a for f, a in [(98.0, 1.0), (147.0, 0.55), (196.0, 0.35), (293.7, 0.18)])
+    shimmer = sum(np.sin(2 * np.pi * q(f) * t) * a for f, a in [(1174.7, 0.05), (1568.0, 0.035), (2349.3, 0.02)])
+    shimmer *= 0.6 + 0.4 * np.sin(2 * np.pi * q(1.33) * t) ** 2
+    air = biquad_bp(noise(sec), 900 + 400 * np.sin(2 * np.pi * q(0.22) * t), 0.9) * 0.35
+    finish_loop((drone * 0.5 + air) * lfo + shimmer, P("Portal_Hum"), -8.0)
+    # Warp: rising swirl, ascending crystal arpeggio, soft low whoomp at the end.
+    whirl = swish(1.1, 250, 5200, 2.2, 0.7)
+    arp = mix(*[at(sine(f, 0.35) * env(0.35, 0.002, 0.22), i * 0.11) for i, f in enumerate([587, 740, 880, 1175, 1480, 1760, 2349])])
+    whoomp = at(sine(np.linspace(140, 45, int(0.6 * SR)), 0.6) * env(0.6, 0.004, 0.35) * 1.4, 0.85)
+    finish(reverb(mix(whirl * 0.8, arp * 0.5, whoomp), 0.3), P("Portal_Warp"))
+    # Arrival: gentle descending chime + air puff.
+    chime = mix(*[at(sine(f, 0.8) * env(0.8, 0.002, 0.45), i * 0.07) for i, f in enumerate([1760, 1319, 1047, 880])])
+    puff = lowpass(noise(0.3), 1500) * env(0.3, 0.01, 0.15) * 0.6
+    finish(reverb(mix(chime * 0.6, puff), 0.35), P("Portal_Arrive"))
+
+
 if __name__ == "__main__":
-    build(sys.argv[1] if len(sys.argv) > 1 else "Assets/Audio/SFX")
+    out_dir = sys.argv[1] if len(sys.argv) > 1 else "Assets/Audio/SFX"
+    if len(sys.argv) > 2 and sys.argv[2] == "world":
+        build_world(out_dir)
+    else:
+        build(out_dir)

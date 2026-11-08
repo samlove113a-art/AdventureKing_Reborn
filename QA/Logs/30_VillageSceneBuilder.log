@@ -1,0 +1,722 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 12564)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 14220)
+VBCSCompiler prewarm took 6.21 ms
+Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::Module] Trying to connect to existing licensing client channel...
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-08T02:52:25Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 14812)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
+-batchmode
+-quit
+-projectPath
+C:\AdventureKing_Reborn
+-executeMethod
+AdventureKing.ArtPipeline.VillageSceneBuilder.BuildFromCommandLine
+-logFile
+QA\Logs\30_VillageSceneBuilder.log
+Successfully changed project path to: C:\AdventureKing_Reborn
+C:/AdventureKing_Reborn
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [17152]  Target information:
+
+Player connection [17152]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 1330918968 [EditorId] 1330918968 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [17152] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [17152] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-08T02:52:26.1607982Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 14812, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-4220" after 0.5 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              56efaa9258ea49b393cbed2aa3ad63b3
+  Correlation Id:          d51393c24fb8ee22a2db962474bcc2b9
+  External correlation Id: 6761446740482674615
+  Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.08s, handshake: 0.07s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-08T02:52:26.3143694Z"
+[Licensing::Module] Connected to LicensingClient (PId: 14812, launch time: 0.00, total connection time: 0.72s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968527504213-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.76s
+[Licensing::Module] Licensing is initialized (took 0.06s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/AdventureKing_RebornUnity Data Store running and initialised
+[Physics::Module] Selected backend (deferred post-plugins).
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.6.7f1 (b22767f04f04)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=262144, entitiesPerBlock=1024, blocksPerSlotPage=0, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/AdventureKing_Reborn/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+d3d12: failed to query info queue interface (0x80004002).
+Direct3D:
+    Version:         Direct3D 12 [level 12.1]
+    Renderer:        NVIDIA GeForce GTX 1050 Ti (ID=0x1c82)
+    Vendor:          NVIDIA
+    VRAM:            4004 MB
+    App VRAM Budget: 3403 MB
+    Driver:          32.0.15.7680
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56220
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.009452 seconds.
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.328 seconds
+Domain Reload Profiling: 2286ms
+	BeginReloadAssembly (219ms)
+		CreateAndSetChildDomain (16ms)
+	RebuildCommonClasses (8ms)
+	RebuildNativeTypeToScriptingClass (28ms)
+	initialDomainReloadingComplete (112ms)
+	LoadAllAssembliesAndSetupDomain (589ms)
+		LoadAssemblies (202ms)
+		TypeCache.Refresh (403ms)
+			TypeCache.ScanAssembly (379ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (1330ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (18ms)
+			BeforeProcessingInitializeOnLoad (191ms)
+			ProcessInitializeOnLoadAttributes (214ms)
+			ProcessInitializeOnLoadMethodAttributes (547ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 31 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.inputsystem@1.20.1 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.inputsystem@2436e68c60c4)
+    com.unity.searcher@4.9.5 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.profiling.core@1.0.3 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.sprite@752945c75a6f)
+    com.unity.2d.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.tilemap@f4c7bd71ac8a)
+    com.unity.render-pipelines.universal@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal@ffe395a3a1d1)
+    com.unity.test-framework@1.8.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework@ee3fe9477490)
+    com.unity.ugui@2.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ugui@eb824e41fbc7)
+    com.unity.modules.animation@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.audio@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.modules.physics@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.ext.nunit@2.1.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.render-pipelines.core@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.core@13460d8ea9e5)
+    com.unity.shadergraph@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.shadergraph@8b7e693cdbfe)
+    com.unity.render-pipelines.universal-config@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal-config@561422b74439)
+    com.unity.graph-authoring@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.graph-authoring@cfd2588851ee)
+    com.unity.burst@2.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.collections@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.collections@4920e8897b5a)
+    com.unity.test-framework.performance@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework.performance@e8b39e3ef3d9)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 1s654ms
+[625/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[800/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll (+2 others)
+Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
+[801/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.ArtPipeline.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll, with 146 defines and 314 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[802/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.pdb
+[803/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.dll
+*** Tundra build success (1.61 seconds), 5 items updated, 804 evaluated
+Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
+AssetDatabase: script compilation time: 2.401636s
+Begin MonoManager ReloadAssembly
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.725 seconds
+Domain Reload Profiling: 3407ms
+	BeginReloadAssembly (615ms)
+		DisableScriptedObjects (46ms)
+		CreateAndSetChildDomain (188ms)
+	RebuildCommonClasses (23ms)
+	RebuildNativeTypeToScriptingClass (41ms)
+	initialDomainReloadingComplete (102ms)
+	LoadAllAssembliesAndSetupDomain (900ms)
+		LoadAssemblies (550ms)
+		TypeCache.Refresh (203ms)
+			TypeCache.ScanAssembly (186ms)
+		AnalyzeDomain (90ms)
+			BuildScriptInfoCaches (73ms)
+			ResolveRequiredComponents (14ms)
+	FinalizeReload (1727ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (5ms)
+			InitializePlatformSupportModulesInManaged (20ms)
+			BeforeProcessingInitializeOnLoad (237ms)
+			ProcessInitializeOnLoadAttributes (375ms)
+			ProcessInitializeOnLoadMethodAttributes (541ms)
+			AfterProcessingInitializeOnLoad (11ms)
+		AwakeInstancesAfterBackupRestoration (44ms)
+Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=587eca7de6b3df54d82dee1657028c43): Total: 6.860 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2266 ms
+		Asset DB Callback time: managed=302 ms, native=31 ms
+		Scripting: domain reloads=1, domain reload time=1762 ms, compile time=2404 ms, other=93 ms
+		Project Asset Count: scripts=929, non-scripts=1996
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 23.337ms
+	ApplyChangesToAssetFolders: 0.670ms
+	Scan: 83.217ms
+	Collect global state as custom dependencies: 33.453ms
+	OnSourceAssetsModified: 1.185ms
+	CategorizeScriptCompilationAssets: 30.871ms
+	ProcessAssetsWithTransientArtifactChanges: 85.290ms
+	CategorizeAssets: 69.931ms
+	CompileScripts: 2404.118ms
+	ImportOutOfDateAssets: 1739.914ms (1731.375ms without children)
+		UnloadImportedAssets: 4.008ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.897ms
+		ImportSchedulerStart: 3.582ms
+	PostProcessAllAssets: 303.950ms
+		VCAutoAddAssetPostprocess 1.274ms
+		XRBuildSystem.XRAssetImported 0.136ms
+		MonoPostProcessAllAssets: 301.822ms
+			AssetPostprocessor.OnPostprocessAllAssets 154.227ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 36.798ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 30.440ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 12.953ms
+			AssetChangedListener.OnPostprocessAllAssets 4.944ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 4.644ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 4.626ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 3.915ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 3.244ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 3.078ms
+			SyncVS.PostprocessSyncProject 2.916ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.899ms
+			MaterialPostprocessor.OnPostprocessAllAssets 1.184ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.142ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.967ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.963ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.822ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.782ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.739ms
+			PostProcessor.OnPostprocessAllAssets 0.738ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.615ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.612ms
+			AssetProcessor.OnPostprocessAllAssets 0.610ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.573ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.505ms
+			AssetEvents.OnPostprocessAllAssets 0.501ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.459ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.374ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.318ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.313ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.275ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.222ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.216ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.125ms
+	PostAssetChangesProfiler: 8.542ms
+	UnloadStreamsBegin: 2.385ms
+	PersistCurrentRevisions: 0.109ms
+	GenerateScriptTypeHashes: 2.599ms
+	GenerateScriptTypeSerializationHashes: 4.925ms
+	Untracked: 2066.563ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 3.377ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-AdventureKing_Reborn
+Unloading 66 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3889 unused Assets / (9.9 MB). Loaded Objects now: 4822.
+Memory consumption went from 348.7 MB to 338.7 MB.
+Total: 16.415800 ms (FindLiveObjects: 0.772700 ms CreateObjectMapping: 0.286200 ms MarkObjects: 10.858100 ms  DeleteObjects: 4.158700 ms)
+
+Curl error 35: Recv failure: Connection was reset
+Importing 'GUID: a95ed05a6dde0a44f9d743517fd60082 - Path: Assets/Art/UI/ui_panel.png' with importer (TextureImporter)
+Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
+Asset Pipeline Refresh (id=d25b9a48ef649074d822bcac79ae8d5d): Total: 0.138 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: c76076ffd6548c4836e96289ba5cf38d, producedFiles[0].extension: , producedFiles[0].contentHash: 31edcb4c20d915faf16fa993430f4ba3
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: 2d72480f4227fec760398781dcfa85cf, producedFiles[0].extension: , producedFiles[0].contentHash: f14ab2b46531802ee80c28ccb8822b5e
+Importer(TextureImporter) generated inconsistent result for asset(guid:a95ed05a6dde0a44f9d743517fd60082) "Assets/Art/UI/ui_panel.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:520)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:50)
+AdventureKing.ArtPipeline.VillageSceneBuilder:NewWorldScene (UnityEngine.Transform&) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:150)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildTown () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:68)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+[Assets/Editor/ArtPipeline/VillageSceneBuilder.cs line 68]
+
+Importing 'GUID: a95ed05a6dde0a44f9d743517fd60082 - Path: Assets/Art/UI/ui_panel.png' with importer (TextureImporter)
+Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
+Asset Pipeline Refresh (id=5fe5aeae23ccf6d45b23102a87a2b6fc): Total: 0.025 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: c76076ffd6548c4836e96289ba5cf38d, producedFiles[0].extension: , producedFiles[0].contentHash: 31edcb4c20d915faf16fa993430f4ba3
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: 2d72480f4227fec760398781dcfa85cf, producedFiles[0].extension: , producedFiles[0].contentHash: f14ab2b46531802ee80c28ccb8822b5e
+Importer(TextureImporter) generated inconsistent result for asset(guid:a95ed05a6dde0a44f9d743517fd60082) "Assets/Art/UI/ui_panel.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+UnityEditor.AssetDatabase:ImportAsset (string)
+UnityEditor.AssetImporter:SaveAndReimport ()
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:526)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:50)
+AdventureKing.ArtPipeline.VillageSceneBuilder:NewWorldScene (UnityEngine.Transform&) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:150)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildTown () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:68)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+[Assets/Editor/ArtPipeline/VillageSceneBuilder.cs line 68]
+
+Importing 'GUID: a8c53e28846725349a567e4452955eaa - Path: Assets/Art/UI/ui_pill.png' with importer (TextureImporter)
+Imported 'GUID: a8c53e28846725349a567e4452955eaa' -> (Import Result ID: '6e324eeb9bf2ecfc1f13f3cb2a9200f8') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc8abdefac17bd5ed8c245858ea11af DependenciesID=a1a3784a24f0ecb690083fa668622c98 StaticDependenciesID=0d52825a4c7ae9949b742631091bb9f7 
+Asset Pipeline Refresh (id=d7334979e5e5d1a4b815acb56a50c3b7): Total: 0.030 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: 6e324eeb9bf2ecfc1f13f3cb2a9200f8, producedFiles[0].extension: , producedFiles[0].contentHash: 69ce02932a1b0727530639a2ab270257
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: aa659222456c67463407f934f6a93aa8, producedFiles[0].extension: , producedFiles[0].contentHash: b1b82a9ef003c83545902599911a4f05
+Importer(TextureImporter) generated inconsistent result for asset(guid:a8c53e28846725349a567e4452955eaa) "Assets/Art/UI/ui_pill.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:520)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:NewWorldScene (UnityEngine.Transform&) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:150)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildTown () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:68)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+[Assets/Editor/ArtPipeline/VillageSceneBuilder.cs line 68]
+
+Importing 'GUID: a8c53e28846725349a567e4452955eaa - Path: Assets/Art/UI/ui_pill.png' with importer (TextureImporter)
+Imported 'GUID: a8c53e28846725349a567e4452955eaa' -> (Import Result ID: '6e324eeb9bf2ecfc1f13f3cb2a9200f8') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc8abdefac17bd5ed8c245858ea11af DependenciesID=a1a3784a24f0ecb690083fa668622c98 StaticDependenciesID=0d52825a4c7ae9949b742631091bb9f7 
+Asset Pipeline Refresh (id=365eb72d744e52840b5ed748537711df): Total: 0.025 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: 6e324eeb9bf2ecfc1f13f3cb2a9200f8, producedFiles[0].extension: , producedFiles[0].contentHash: 69ce02932a1b0727530639a2ab270257
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: aa659222456c67463407f934f6a93aa8, producedFiles[0].extension: , producedFiles[0].contentHash: b1b82a9ef003c83545902599911a4f05
+Importer(TextureImporter) generated inconsistent result for asset(guid:a8c53e28846725349a567e4452955eaa) "Assets/Art/UI/ui_pill.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+UnityEditor.AssetDatabase:ImportAsset (string)
+UnityEditor.AssetImporter:SaveAndReimport ()
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:526)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:NewWorldScene (UnityEngine.Transform&) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:150)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildTown () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:68)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+[Assets/Editor/ArtPipeline/VillageSceneBuilder.cs line 68]
+
+Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4 unused Assets / (18.3 KB). Loaded Objects now: 4828.
+Memory consumption went from 327.1 MB to 327.0 MB.
+Total: 12.605900 ms (FindLiveObjects: 0.481500 ms CreateObjectMapping: 0.281400 ms MarkObjects: 11.517000 ms  DeleteObjects: 0.040500 ms)
+
+Importing 'GUID: 30502d8313cb3fe48bc883470884b267 - Path: Assets/Art/World/Materials/cutout_backdrop_far_0_0.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 30502d8313cb3fe48bc883470884b267' -> (Import Result ID: '0863afadc397b3697a0057ad443f32a6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b88ab6dc4adacfd83462c2a7aefb8b89 DependenciesID=55816ca0c0ef971bb6ba671face4406e StaticDependenciesID=1b2d09c9dee2d527dfc87b51d914510a 
+Importing 'GUID: 80496dccc622956408bc5f85c24b448d - Path: Assets/Art/World/Materials/cutout_signboard_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 80496dccc622956408bc5f85c24b448d' -> (Import Result ID: 'abeedd8855d73a3bba7afab71be58e8a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=776a07927e7ed4a7f772ca92888bf95f DependenciesID=cd589ce4844f2685ccaa0ac3a8f30fba StaticDependenciesID=563bf30cc0a228023aa0051d4aeb1b90 
+Importing 'GUID: d098b529e761de049a39ac67b9fb6c0d - Path: Assets/Art/World/Materials/cutout_teahouse_3_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d098b529e761de049a39ac67b9fb6c0d' -> (Import Result ID: 'e9e7db99643279480e041daeae2b34b8') in 0.004 seconds [static dependencies only]. Details - ImportResultOutputID=e8b1f8edc70c0f19598d8ae5be385974 DependenciesID=94b65a78d56ea26d0d1017f0fb43d5d0 StaticDependenciesID=915a4980b5919996e59ef559f2da8887 
+Importing 'GUID: d0e982b7ab5f6da45bf640dc09731c74 - Path: Assets/Art/World/Materials/ground_dirt.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d0e982b7ab5f6da45bf640dc09731c74' -> (Import Result ID: '6758a45e9232d031d2b8221bcd84b0d9') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8274d8de1bfc86ac285c78be7ffc973e DependenciesID=7812491f9eaae6aa4c16d9497329f3a1 StaticDependenciesID=91e2d883011d3a93f99d5bd8225643a1 
+Importing 'GUID: 119c084def5f4a1499be654af9b4ca99 - Path: Assets/Art/World/Materials/rope.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 119c084def5f4a1499be654af9b4ca99' -> (Import Result ID: 'b166db36e92b71bb43f8dd95654c8fc9') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=62051115a6a6ede0f9f34f4059c71e03 DependenciesID=178a1eed4a5fa4cb3342f3b4733007f0 StaticDependenciesID=874d3c1aa9ac8f8af9d0bb35b01e9de7 
+Importing 'GUID: 71ccd34a22d07f74494169516113c259 - Path: Assets/Art/World/Materials/deck_deck_high_tiles.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 71ccd34a22d07f74494169516113c259' -> (Import Result ID: '0be9c0f7b4db6cb1b6c9de79ed025195') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=38fb3c928a70dab4fea6b52624c7a9c8 DependenciesID=60d8c5b9ec520d4f5a30ae15d5ff55de StaticDependenciesID=4e250f9e49bc3dba2c0370a9faa7cd23 
+Importing 'GUID: 715d7a3509d4f5f4096d7e8b929879ad - Path: Assets/Art/World/Materials/blob_shadow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 715d7a3509d4f5f4096d7e8b929879ad' -> (Import Result ID: 'd7259ef46ca11c10f70f1a5c4ad27d95') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=5e4973631b473ddd3aebd43c6b597cc0 DependenciesID=f1d5475962b2a3af9b75f04d6b378046 StaticDependenciesID=d17fcefcceb4301eb09190e619898c90 
+Importing 'GUID: c197447a89b840849a4276d8a4ae3c99 - Path: Assets/Art/World/Materials/deck_planks_12.mat' with importer (NativeFormatImporter)
+Imported 'GUID: c197447a89b840849a4276d8a4ae3c99' -> (Import Result ID: '5fc34f57a9dbc644a1426f4bf5ae5d66') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=84fe6966787fde566b86d10bd7ab2e61 DependenciesID=d1cc514ba37a68587ef6dac061be82d4 StaticDependenciesID=5ba5dd2cbef9b75022c6dc6a3ba651de 
+Importing 'GUID: f1642235ea0c5a34fbdaaf4e13ad5464 - Path: Assets/Art/World/Materials/grass_lip.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f1642235ea0c5a34fbdaaf4e13ad5464' -> (Import Result ID: 'b692a40dbcaa23731406d5a22aed3449') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=49032cc580e31672a9046f7fe8f70b59 DependenciesID=7943240c82c5baf8ed6b90fb9179fe60 StaticDependenciesID=00d9a0898ea97518857484c10ad1365c 
+Importing 'GUID: 6245705be5c3b884fbc71ac80096f751 - Path: Assets/Art/World/Materials/cutout_hero_statue_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 6245705be5c3b884fbc71ac80096f751' -> (Import Result ID: '95d6244042c132a06a61348343939e0d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=de7445350ebe89780678cc31cfae25bc DependenciesID=0991fc8a932baa4270c448452f6b6f5c StaticDependenciesID=754ddd7c281256e5242e89d6f24082ef 
+Importing 'GUID: b2c4eea36481296448b9cdf191f074e2 - Path: Assets/Art/World/Materials/cutout_cottage_20_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: b2c4eea36481296448b9cdf191f074e2' -> (Import Result ID: '4468360a87b0328484fcb38f37a47f78') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b3cca72be744cd2147bf87563fe0fe17 DependenciesID=7c65f8ce44eee4917ec675a33142848c StaticDependenciesID=8927338d063c0d4b102bb556d1ade601 
+Importing 'GUID: e239bae4ca3197441accd79c1c43fe07 - Path: Assets/Art/World/Materials/deck_deck_tiles.mat' with importer (NativeFormatImporter)
+Imported 'GUID: e239bae4ca3197441accd79c1c43fe07' -> (Import Result ID: '1fe7623cf1c66aa67b30b507f1ba4f51') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8761a598175be27cdb0c9e2a0c17398d DependenciesID=976164d7762251e1063d20feb5bac5fc StaticDependenciesID=3eb311284258bdc236d6b7c9a1b0691b 
+Importing 'GUID: f20121402d41a734e814d0540e5faad4 - Path: Assets/Art/World/Materials/portal_vortex_violet.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f20121402d41a734e814d0540e5faad4' -> (Import Result ID: '767d2e63aaa860c1fb2fe57db5e89e01') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b40a6a9db844548735ecf2f71b3aba8a DependenciesID=07b2a45ce01dcebc32ebcbb47936ff52 StaticDependenciesID=b22f9eb485f63e534416814320abf82d 
+Importing 'GUID: 13413d7bc936631418dab4062c801fb1 - Path: Assets/Art/World/Materials/river_rock.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 13413d7bc936631418dab4062c801fb1' -> (Import Result ID: '453c7b613be2174a11d045684adb44ee') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=dab1371aec103010c77354626f125583 DependenciesID=166b29e0869601daf91155a7c9dc0e11 StaticDependenciesID=9b29577d3e5177356d18ad9e564f84b3 
+Importing 'GUID: 43cf40bbb41f62e4d9de5de0457acc6d - Path: Assets/Art/World/Materials/portal_crystal.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 43cf40bbb41f62e4d9de5de0457acc6d' -> (Import Result ID: '564e1b1a6b14852b8cbb73c92cda7666') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=67db3379c195b175ee5717c5225852a4 DependenciesID=ee768e2af171be949dc9a18751526f95 StaticDependenciesID=8ee7c00aec696d33b9f07cf8a0c8d2d6 
+Importing 'GUID: 53076cc187a50344ba1681f9b4b29472 - Path: Assets/Art/World/Materials/cutout_crates_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 53076cc187a50344ba1681f9b4b29472' -> (Import Result ID: '0165e5a1d08a0bb1993172a087ef1c52') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=713157f0621710ed5581a20e6df4baaa DependenciesID=b91b90f1ca3a63c7c9540d5d103c2262 StaticDependenciesID=206d0438a93125c2217b5ac254027db6 
+Importing 'GUID: 8397f37b238deab478a355626bc62dfc - Path: Assets/Art/World/Materials/cutout_stone_bridge_8_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 8397f37b238deab478a355626bc62dfc' -> (Import Result ID: 'ab21c18402faa3e80680234ce9628a2b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=e7f91fb516e4c3dad4ad4a7a666c57e8 DependenciesID=49eefdb9e749d2db6ce0aba7945012e6 StaticDependenciesID=19168f033060b36ce0ff0462cb0ef744 
+Importing 'GUID: a3dc60f68c649fa458cf6e9b0f801bde - Path: Assets/Art/World/Materials/stream_water.mat' with importer (NativeFormatImporter)
+Imported 'GUID: a3dc60f68c649fa458cf6e9b0f801bde' -> (Import Result ID: 'ac01c3ce51c105072275f26d436984b3') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=ee1ea09311fdf4bac25b816c402ed18e DependenciesID=fa37b204a550009cbaf013109701f964 StaticDependenciesID=b4a01b75ad382d9e93c1f57e418a5268 
+Importing 'GUID: f3dea46b5b105a84e9c916db624f6663 - Path: Assets/Art/World/Materials/flower_pink.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f3dea46b5b105a84e9c916db624f6663' -> (Import Result ID: '84feba8ca862ec078da790a6ca6a2681') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=1304b42f341fb848d968749c4ce2b725 DependenciesID=3af42e6b2db18c7a18630966e617c9a3 StaticDependenciesID=45e31fa8383c8b0b8f6114e959b4d26e 
+Importing 'GUID: 44670166fc9aba94eaa2abd6f00eb0a8 - Path: Assets/Art/World/Materials/cutout_portal_gate_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 44670166fc9aba94eaa2abd6f00eb0a8' -> (Import Result ID: '8d9250d94a6d28b9d6ea852b00c23607') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3e0e790c823734eb967aebb2b2726150 DependenciesID=3a66b475ef6e707f3eab6b6cd44c5ef5 StaticDependenciesID=715128f8ba9099a32bdf7911b3439e85 
+Importing 'GUID: d49ca12fc8b30a54fad9fa6dbb5757d7 - Path: Assets/Art/World/Materials/flower_yellow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d49ca12fc8b30a54fad9fa6dbb5757d7' -> (Import Result ID: '83713665c87eb90399211d90e57bea4a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=09d1ed82dae83ba3fd8953e45ebd88c2 DependenciesID=959ae8ddcbd58399101c21f0d68c65d8 StaticDependenciesID=39bc83d9c6e8c7f91767de2174fd9473 
+Importing 'GUID: 15fed56917518d84ebfa7b1dcd66b0d0 - Path: Assets/Art/World/Materials/cutout_bell_tower_8_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 15fed56917518d84ebfa7b1dcd66b0d0' -> (Import Result ID: '68603b16057183ecd010167bb68437c3') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=ce0b41e850e0d0bb0020a0e123d0563e DependenciesID=e87178368a446fd4338a9d0ae22e0659 StaticDependenciesID=a0a455e439b229e46586ecf8e2b217c7 
+Importing 'GUID: 259540c4e5362754f8926576e5ac6ac1 - Path: Assets/Art/World/Materials/wood_dark.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 259540c4e5362754f8926576e5ac6ac1' -> (Import Result ID: 'd8cc3c145975dee168d5e8d37b78e392') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b59bbc615c2d2dcfd25849f1c8a21eb7 DependenciesID=92814bf58346946abee4eac6ff676f31 StaticDependenciesID=81ac2d1b5b406cc571f54fab256d6717 
+Importing 'GUID: 35a1cc18a62a7a949b8fd8580790f29c - Path: Assets/Art/World/Materials/deck_planks_10.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 35a1cc18a62a7a949b8fd8580790f29c' -> (Import Result ID: '1a02280a9ed73a91861578f91f3a89d5') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=2330880b1c0bfd8ed3e79a8d8258b75d DependenciesID=6614a60e662939fd5a373162550af2b7 StaticDependenciesID=59410285d972c40943f9a22c98f0ee2f 
+Importing 'GUID: 9597f22c175c4ec45ae4e1dc2d1cb36d - Path: Assets/Art/World/Materials/lotus_leaf.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 9597f22c175c4ec45ae4e1dc2d1cb36d' -> (Import Result ID: '175d54bc18068e7288bb0b4bcf768f3b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=e922ae80df1e5c71780130c354e1d4ad DependenciesID=44cbb6a82ce473a26e6c9d299ca2363b StaticDependenciesID=0e3f1097894487bf2e5e7db264817772 
+Importing 'GUID: c67a82a6a233b554294c688f95a23142 - Path: Assets/Art/World/Materials/deck_planks_16.mat' with importer (NativeFormatImporter)
+Imported 'GUID: c67a82a6a233b554294c688f95a23142' -> (Import Result ID: '47485eb53f172f85cefa5787ef37521c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bc1a52c1097e3c56ba43ae86cea285c7 DependenciesID=a1cb38ed6b26b9120bd81ee11291548d StaticDependenciesID=f6b075ae9a4e40fecae90b8593e743ca 
+Importing 'GUID: 279581d3aa23d1c4aa839af6f7290f47 - Path: Assets/Art/World/Materials/cutout_stone_lantern_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 279581d3aa23d1c4aa839af6f7290f47' -> (Import Result ID: '9c80dbfc725f1bf9b78c8a9be5a4762d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8564feb88cf914f5bb71d900a611a3b9 DependenciesID=3240643ebd5db4aeae0ecc8079140eb5 StaticDependenciesID=081944fe1e90a0e395a02e556e9997c6 
+Importing 'GUID: f7b95e0409af2da4b82b671036593cba - Path: Assets/Art/World/Materials/tuft_a.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f7b95e0409af2da4b82b671036593cba' -> (Import Result ID: '75cf6b8d16c0fb0d90963f3fcbd5eaed') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=5a8efddd834359d6281baf1fa05e1ae5 DependenciesID=ed33b4982167f4b8ba97a62ec055ccd1 StaticDependenciesID=35ade6c1007b4c1fb5f69308c77ab9b5 
+Importing 'GUID: b8e80a4f5a5e2604aa3b47085f710bac - Path: Assets/Art/World/Materials/cutout_lantern_post_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: b8e80a4f5a5e2604aa3b47085f710bac' -> (Import Result ID: 'bd086e06cfade3e5446e5c0a24986c2d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=07058130bfc2e02ed757206f910a45db DependenciesID=e574b4b5df47c57479cf0c4e919d5e98 StaticDependenciesID=82d507b1c85e9a548556326de247ed57 
+Importing 'GUID: b8bbe1972dbd6724db5bbcc4f8ad5196 - Path: Assets/Art/World/Materials/cutout_windmill_22_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: b8bbe1972dbd6724db5bbcc4f8ad5196' -> (Import Result ID: 'c4fb7da1f8d6121aace4cc416b2d1f3f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=934244e552c3236ba9445107e25c0888 DependenciesID=27ec36b20cc0c2a4937c65318fcfa276 StaticDependenciesID=cb47f5d8fee9c645e6439c634e97daf6 
+Importing 'GUID: d811e16820c97ea42811cd8b7c028c95 - Path: Assets/Art/World/Materials/vine_leaf.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d811e16820c97ea42811cd8b7c028c95' -> (Import Result ID: '19328a542119f87598aff2226c86131c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a10bcef48e4bb8e942704ce1ada302f2 DependenciesID=ec7cd7df0b0de2327944a886f9ab7744 StaticDependenciesID=251244643517b635679a527c4441e518 
+Importing 'GUID: 2944ed8592a75e84290c16c44ea81d96 - Path: Assets/Art/World/Materials/tuft_b.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 2944ed8592a75e84290c16c44ea81d96' -> (Import Result ID: '3c64a6c91eb02b93835cf0ce84f35a76') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6a4ba3cb46b13a4d993177fd8fdf7a78 DependenciesID=9a5f07c70d732905213bf21ffcb0256c StaticDependenciesID=93d7ce33c8236627f3cedbc2a3161b7d 
+Importing 'GUID: 298f306c4572faf42a055d6804a35f0c - Path: Assets/Art/World/Materials/flower_white.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 298f306c4572faf42a055d6804a35f0c' -> (Import Result ID: '4370ad30a645a7f9a4266f7188b733f7') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=097f5e5e8401cd8bb03a2a730e089962 DependenciesID=8ceeabb1c2f13ac2b0f886e0dcaca6f0 StaticDependenciesID=3cf9f6e18d598cafe507a8b70e7a4ed9 
+Importing 'GUID: c9ff180e3aa5fe540a673e4752b1fcab - Path: Assets/Art/World/Materials/cutout_cottage_3_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: c9ff180e3aa5fe540a673e4752b1fcab' -> (Import Result ID: '83f4f36c43aa8345ec7c0523c6362489') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=ca68ef11aa0e9cb3f1e38b3ce6edf4e3 DependenciesID=9a98fdb0cd14b9cfd4da6a9acfd514ea StaticDependenciesID=53899f40ccc958dc8eb57ebd2d690f52 
+Importing 'GUID: d98afe757c921a94e945394d2690a30f - Path: Assets/Art/World/Materials/lotus_bloom.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d98afe757c921a94e945394d2690a30f' -> (Import Result ID: 'b4b2ae39b7e9caea98bdea13839554f1') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4f91b2f9a627de7ffe645acaf56b8867 DependenciesID=47d75ea0df761709f041e611ec33a398 StaticDependenciesID=0597b24a6f4ff070c44f2c6b627b9ec6 
+Importing 'GUID: 0acf57ebba6661c45be82e52e9f5e751 - Path: Assets/Art/World/Materials/cutout_banyan_tree_2_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 0acf57ebba6661c45be82e52e9f5e751' -> (Import Result ID: '82a37229e4408cd98f99befc45f5b79b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=7b91ccf2a5eea218a82e1623e4bd5721 DependenciesID=3339a4bbb7785ac6e7f22ffac8e1ee3f StaticDependenciesID=8f48fee699279307530548da51ccbf86 
+Importing 'GUID: 5a2421cd9ed23654c9d18895134233f0 - Path: Assets/Art/World/Materials/wood.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 5a2421cd9ed23654c9d18895134233f0' -> (Import Result ID: 'ba7c566e97346fe27ae97c0a19915ea9') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=e5361c3b14a1dda652281709cf11358b DependenciesID=01f814e13e67c9b5c92fc49f38a1825c StaticDependenciesID=8d273270f5a474e78fbbfdf3847032f7 
+Importing 'GUID: 8b4b1060092a8af41817d9b5cdde720b - Path: Assets/Art/World/Materials/cutout_market_stall_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 8b4b1060092a8af41817d9b5cdde720b' -> (Import Result ID: '41d9e42d3cd42224ae66d67ea67a4fde') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=023fbde69c5db115cf90b39385afe54b DependenciesID=0a6b4fd5f4f2d7416cacb5aa87ff0a56 StaticDependenciesID=da6c2246506279dabee65b585eacd7eb 
+Importing 'GUID: bb3dadbdda7709e41b2d8655015e381a - Path: Assets/Art/World/Materials/deck_planks_20.mat' with importer (NativeFormatImporter)
+Imported 'GUID: bb3dadbdda7709e41b2d8655015e381a' -> (Import Result ID: 'fbaf47a653377b35aa501938bc6d9877') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=1580ebc8498c9f393162fac179c9a4e7 DependenciesID=16dbb4492e8f190846aa221535730979 StaticDependenciesID=79cfa218b59ef01ccf543f64278208a2 
+Importing 'GUID: 7c95f603f633185438a4789d60d334ec - Path: Assets/Art/World/Materials/portal_vortex_cyan.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 7c95f603f633185438a4789d60d334ec' -> (Import Result ID: '104434030c274c120102a7e7e920c684') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=63eecd793f19bd880cb18e2d4ece5fb6 DependenciesID=7f899968182a61e68fdf1c62eef27f4f StaticDependenciesID=ade8911eacffdc6148e8b4a5de82b6d9 
+Importing 'GUID: 8c261447dff16cf4f90f721391822739 - Path: Assets/Art/World/Materials/cutout_banyan_tree_6_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 8c261447dff16cf4f90f721391822739' -> (Import Result ID: 'd5038437296e21c8ad1508c16a240c8e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=71af22ec9c16b92efb6ecce66b90fde4 DependenciesID=af4f364b065e5deff0bcc57278f61e59 StaticDependenciesID=c76146e05932e1fee2ac525aab2bafed 
+Importing 'GUID: bc267a99de0b2704cb302b182d027c60 - Path: Assets/Art/World/Materials/cutout_forge_2_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: bc267a99de0b2704cb302b182d027c60' -> (Import Result ID: '81f4818d7eb7719a150dfe5075da1da1') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=5fbf2f5ce4401d54f05e37cb73b927bb DependenciesID=20828e4c6402e06b41b1d83fb259f3cd StaticDependenciesID=85273a4f58c1d3720b8fd00cb9b0ce54 
+Importing 'GUID: fcf1e4aafb2ff08478a8494c9e4c2c26 - Path: Assets/Art/World/Materials/cutout_bamboo_2_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: fcf1e4aafb2ff08478a8494c9e4c2c26' -> (Import Result ID: '8bb6025f7ff34846fde88fd7171063e3') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=e61a1fbc350b199c22ef7befa6dfc79d DependenciesID=53fe7c9f813e55284486d69132cdb7b1 StaticDependenciesID=07d3e14225fbb950a87b8fe0173acd3b 
+Importing 'GUID: 6d0c653cb8fdfae478ead05dbe23f093 - Path: Assets/Art/World/Materials/portal_core.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 6d0c653cb8fdfae478ead05dbe23f093' -> (Import Result ID: 'e73e9c3c27cc1f0180ec6f6ad2bc809a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f3de0b6520c765dd441c73fa76bf75f0 DependenciesID=7e50a153adb551456d8c8f47fd6da8b5 StaticDependenciesID=24072380f327a07ceb8a848fb078e718 
+Importing 'GUID: 0e615e9194fbd9447b7f633f9e5213cf - Path: Assets/Art/World/Materials/cutout_planter_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 0e615e9194fbd9447b7f633f9e5213cf' -> (Import Result ID: '17fc7f08fabd817707255448f6436903') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=d1baaedca7c026d3d72a886f4171a402 DependenciesID=ab10ef92cfd443813a95ae41f3269b90 StaticDependenciesID=4f7c0bcf67edd73ee8094983c3d0d86d 
+Importing 'GUID: 5e538d94a87d3ee478996aef44e4b25c - Path: Assets/Art/World/Materials/ground_grass.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 5e538d94a87d3ee478996aef44e4b25c' -> (Import Result ID: '054ea8a2c7752d3c215c519a8a2a463f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=35f3a90ab6c74931f89e4e8262a57156 DependenciesID=029119a1fce4e87250ac9b5d0c73b203 StaticDependenciesID=5381e6c533576e3aa809428847d8f105 
+Importing 'GUID: bfc47242719592741b9a8241b62388ca - Path: Assets/Art/World/Materials/cutout_cottage_4_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: bfc47242719592741b9a8241b62388ca' -> (Import Result ID: '17f2cefcfb2255e941ceff80f2d4a22a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f9b354b77a68d4dffbf06adce666bdd0 DependenciesID=8d9e2b47b87a9865c6e16696d47f5451 StaticDependenciesID=3ce66268eaa325242f7eb0d95df2e7f6 
+Importing 'GUID: efb3f7a2a5f4add43842426122052040 - Path: Assets/Art/World/Materials/path_stone.mat' with importer (NativeFormatImporter)
+Imported 'GUID: efb3f7a2a5f4add43842426122052040' -> (Import Result ID: 'deafb943d2792339f48d38a9b973168e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a7e188d3d44ff7119872e2a835fe58c4 DependenciesID=f3a099adb407424feb3e0807ebb2ed37 StaticDependenciesID=3ed34ca2e4e33f2c76f938b8818043f0 
+Asset Pipeline Refresh (id=f8acd1a85a66e104da9e08d6ea1d03d3): Total: 0.105 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2c1b2e1b71b0050478db36a7a3331c7d - Path: Assets/Scenes/AK_Village.unity' with importer (DefaultImporter)
+Imported 'GUID: 2c1b2e1b71b0050478db36a7a3331c7d' -> (Import Result ID: '2e5dbabf27d706b3b43cba3d57f6f42d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=ce6b9d2e6ff0e1f31c7e860a344b2204 DependenciesID=da1521ae93c4a1c07db456c51fdd4743 StaticDependenciesID=f2bede4b09d4f8645a387db21d6bf455 
+Asset Pipeline Refresh (id=e86741bd086f21a4ba13c9c511e7af2b): Total: 0.051 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[WORLD] Scene built: Assets/Scenes/AK_Village.unity
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.VillageSceneBuilder:FinishWorld (UnityEngine.SceneManagement.Scene,string,UnityEngine.Transform,string,string,UnityEngine.Vector2,single,single,single,AdventureKing.Gameplay.AdventureMusicStage) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:256)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildTown () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:114)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+(Filename: Assets/Editor/ArtPipeline/VillageSceneBuilder.cs Line: 256)
+
+Importing 'GUID: a95ed05a6dde0a44f9d743517fd60082 - Path: Assets/Art/UI/ui_panel.png' with importer (TextureImporter)
+Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
+Asset Pipeline Refresh (id=974bfac9069b4dd408d858865cafccc2): Total: 0.021 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: c76076ffd6548c4836e96289ba5cf38d, producedFiles[0].extension: , producedFiles[0].contentHash: 31edcb4c20d915faf16fa993430f4ba3
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: 2d72480f4227fec760398781dcfa85cf, producedFiles[0].extension: , producedFiles[0].contentHash: f14ab2b46531802ee80c28ccb8822b5e
+Importer(TextureImporter) generated inconsistent result for asset(guid:a95ed05a6dde0a44f9d743517fd60082) "Assets/Art/UI/ui_panel.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:520)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:50)
+AdventureKing.ArtPipeline.VillageSceneBuilder:NewWorldScene (UnityEngine.Transform&) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:150)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildMeadow () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:121)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:52)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+[Assets/Editor/ArtPipeline/VillageSceneBuilder.cs line 121]
+
+Importing 'GUID: a95ed05a6dde0a44f9d743517fd60082 - Path: Assets/Art/UI/ui_panel.png' with importer (TextureImporter)
+Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
+Asset Pipeline Refresh (id=fc84763fc6920bb4e883710436d4a1ef): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: c76076ffd6548c4836e96289ba5cf38d, producedFiles[0].extension: , producedFiles[0].contentHash: 31edcb4c20d915faf16fa993430f4ba3
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: 2d72480f4227fec760398781dcfa85cf, producedFiles[0].extension: , producedFiles[0].contentHash: f14ab2b46531802ee80c28ccb8822b5e
+Importer(TextureImporter) generated inconsistent result for asset(guid:a95ed05a6dde0a44f9d743517fd60082) "Assets/Art/UI/ui_panel.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+UnityEditor.AssetDatabase:ImportAsset (string)
+UnityEditor.AssetImporter:SaveAndReimport ()
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:526)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:50)
+AdventureKing.ArtPipeline.VillageSceneBuilder:NewWorldScene (UnityEngine.Transform&) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:150)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildMeadow () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:121)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:52)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+[Assets/Editor/ArtPipeline/VillageSceneBuilder.cs line 121]
+
+Importing 'GUID: a8c53e28846725349a567e4452955eaa - Path: Assets/Art/UI/ui_pill.png' with importer (TextureImporter)
+Imported 'GUID: a8c53e28846725349a567e4452955eaa' -> (Import Result ID: '6e324eeb9bf2ecfc1f13f3cb2a9200f8') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc8abdefac17bd5ed8c245858ea11af DependenciesID=a1a3784a24f0ecb690083fa668622c98 StaticDependenciesID=0d52825a4c7ae9949b742631091bb9f7 
+Asset Pipeline Refresh (id=e0ea92f02b882274596c01eb841879e9): Total: 0.020 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: 6e324eeb9bf2ecfc1f13f3cb2a9200f8, producedFiles[0].extension: , producedFiles[0].contentHash: 69ce02932a1b0727530639a2ab270257
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: aa659222456c67463407f934f6a93aa8, producedFiles[0].extension: , producedFiles[0].contentHash: b1b82a9ef003c83545902599911a4f05
+Importer(TextureImporter) generated inconsistent result for asset(guid:a8c53e28846725349a567e4452955eaa) "Assets/Art/UI/ui_pill.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:520)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:NewWorldScene (UnityEngine.Transform&) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:150)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildMeadow () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:121)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:52)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+[Assets/Editor/ArtPipeline/VillageSceneBuilder.cs line 121]
+
+Importing 'GUID: a8c53e28846725349a567e4452955eaa - Path: Assets/Art/UI/ui_pill.png' with importer (TextureImporter)
+Imported 'GUID: a8c53e28846725349a567e4452955eaa' -> (Import Result ID: '6e324eeb9bf2ecfc1f13f3cb2a9200f8') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc8abdefac17bd5ed8c245858ea11af DependenciesID=a1a3784a24f0ecb690083fa668622c98 StaticDependenciesID=0d52825a4c7ae9949b742631091bb9f7 
+Asset Pipeline Refresh (id=6242b45f2a9145c45acb08197f3663a0): Total: 0.020 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: 6e324eeb9bf2ecfc1f13f3cb2a9200f8, producedFiles[0].extension: , producedFiles[0].contentHash: 69ce02932a1b0727530639a2ab270257
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: aa659222456c67463407f934f6a93aa8, producedFiles[0].extension: , producedFiles[0].contentHash: b1b82a9ef003c83545902599911a4f05
+Importer(TextureImporter) generated inconsistent result for asset(guid:a8c53e28846725349a567e4452955eaa) "Assets/Art/UI/ui_pill.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+UnityEditor.AssetDatabase:ImportAsset (string)
+UnityEditor.AssetImporter:SaveAndReimport ()
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:526)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:51)
+AdventureKing.ArtPipeline.VillageSceneBuilder:NewWorldScene (UnityEngine.Transform&) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:150)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildMeadow () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:121)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:52)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+[Assets/Editor/ArtPipeline/VillageSceneBuilder.cs line 121]
+
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 864 unused Assets / (13.2 MB). Loaded Objects now: 4852.
+Memory consumption went from 392.8 MB to 379.6 MB.
+Total: 11.658900 ms (FindLiveObjects: 0.762600 ms CreateObjectMapping: 0.315100 ms MarkObjects: 9.224300 ms  DeleteObjects: 0.976500 ms)
+
+Importing 'GUID: 30502d8313cb3fe48bc883470884b267 - Path: Assets/Art/World/Materials/cutout_backdrop_far_0_0.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 30502d8313cb3fe48bc883470884b267' -> (Import Result ID: '0863afadc397b3697a0057ad443f32a6') in 0.007 seconds [static dependencies only]. Details - ImportResultOutputID=b88ab6dc4adacfd83462c2a7aefb8b89 DependenciesID=55816ca0c0ef971bb6ba671face4406e StaticDependenciesID=1b2d09c9dee2d527dfc87b51d914510a 
+Importing 'GUID: 80496dccc622956408bc5f85c24b448d - Path: Assets/Art/World/Materials/cutout_signboard_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 80496dccc622956408bc5f85c24b448d' -> (Import Result ID: 'abeedd8855d73a3bba7afab71be58e8a') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=776a07927e7ed4a7f772ca92888bf95f DependenciesID=cd589ce4844f2685ccaa0ac3a8f30fba StaticDependenciesID=563bf30cc0a228023aa0051d4aeb1b90 
+Importing 'GUID: a0175783d6aeb94418759ffdd3431cfd - Path: Assets/Art/World/Materials/cutout_bamboo_4_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: a0175783d6aeb94418759ffdd3431cfd' -> (Import Result ID: 'a671a5fc7b9a9a75b978afb7d127784c') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=07c112271708362c6c7c652d503f1c9e DependenciesID=afe6912f2a5b3eccd014b77eb78ad58f StaticDependenciesID=db30e2af7be599ccf6784c0a7e978e80 
+Importing 'GUID: d0e982b7ab5f6da45bf640dc09731c74 - Path: Assets/Art/World/Materials/ground_dirt.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d0e982b7ab5f6da45bf640dc09731c74' -> (Import Result ID: '8b1796b2dd5e9a531840fd6aeccb16ff') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8274d8de1bfc86ac285c78be7ffc973e DependenciesID=eb6d01a51bdec9e6059d16e4e85b4bf6 StaticDependenciesID=10ce992e5957457247875c9440305fa8 
+Importing 'GUID: 119c084def5f4a1499be654af9b4ca99 - Path: Assets/Art/World/Materials/rope.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 119c084def5f4a1499be654af9b4ca99' -> (Import Result ID: 'b166db36e92b71bb43f8dd95654c8fc9') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=62051115a6a6ede0f9f34f4059c71e03 DependenciesID=178a1eed4a5fa4cb3342f3b4733007f0 StaticDependenciesID=874d3c1aa9ac8f8af9d0bb35b01e9de7 
+Importing 'GUID: 715d7a3509d4f5f4096d7e8b929879ad - Path: Assets/Art/World/Materials/blob_shadow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 715d7a3509d4f5f4096d7e8b929879ad' -> (Import Result ID: 'd7259ef46ca11c10f70f1a5c4ad27d95') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=5e4973631b473ddd3aebd43c6b597cc0 DependenciesID=f1d5475962b2a3af9b75f04d6b378046 StaticDependenciesID=d17fcefcceb4301eb09190e619898c90 
+Importing 'GUID: f1642235ea0c5a34fbdaaf4e13ad5464 - Path: Assets/Art/World/Materials/grass_lip.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f1642235ea0c5a34fbdaaf4e13ad5464' -> (Import Result ID: 'b692a40dbcaa23731406d5a22aed3449') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=49032cc580e31672a9046f7fe8f70b59 DependenciesID=7943240c82c5baf8ed6b90fb9179fe60 StaticDependenciesID=00d9a0898ea97518857484c10ad1365c 
+Importing 'GUID: 92913a74e166ebe408b651395b42f3c4 - Path: Assets/Art/World/Materials/cutout_bamboo_3_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 92913a74e166ebe408b651395b42f3c4' -> (Import Result ID: '97209d83a31bad5235314f103e287925') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6f5158fcb0b0b5f7fce5d5773bfafb19 DependenciesID=3d7a2e7a90c4d051b6d8cd073c8e7e61 StaticDependenciesID=d5bad32ef1f612bd8bf6c6bdd0153b76 
+Importing 'GUID: e239bae4ca3197441accd79c1c43fe07 - Path: Assets/Art/World/Materials/deck_deck_tiles.mat' with importer (NativeFormatImporter)
+Imported 'GUID: e239bae4ca3197441accd79c1c43fe07' -> (Import Result ID: '1fe7623cf1c66aa67b30b507f1ba4f51') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8761a598175be27cdb0c9e2a0c17398d DependenciesID=976164d7762251e1063d20feb5bac5fc StaticDependenciesID=3eb311284258bdc236d6b7c9a1b0691b 
+Importing 'GUID: f20121402d41a734e814d0540e5faad4 - Path: Assets/Art/World/Materials/portal_vortex_violet.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f20121402d41a734e814d0540e5faad4' -> (Import Result ID: '767d2e63aaa860c1fb2fe57db5e89e01') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b40a6a9db844548735ecf2f71b3aba8a DependenciesID=07b2a45ce01dcebc32ebcbb47936ff52 StaticDependenciesID=b22f9eb485f63e534416814320abf82d 
+Importing 'GUID: 43cf40bbb41f62e4d9de5de0457acc6d - Path: Assets/Art/World/Materials/portal_crystal.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 43cf40bbb41f62e4d9de5de0457acc6d' -> (Import Result ID: '564e1b1a6b14852b8cbb73c92cda7666') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=67db3379c195b175ee5717c5225852a4 DependenciesID=ee768e2af171be949dc9a18751526f95 StaticDependenciesID=8ee7c00aec696d33b9f07cf8a0c8d2d6 
+Importing 'GUID: 53e092923afe04a4b9fe6211a01cc87c - Path: Assets/Art/World/Materials/cutout_banyan_tree_8_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 53e092923afe04a4b9fe6211a01cc87c' -> (Import Result ID: '6c8fae07c0f14fc2d7902595f9ac9de7') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=034c6f86aa24e2c4e6b9a2ff2779eee3 DependenciesID=d1afe96ca270cc7e00f0a6fd405d2cd7 StaticDependenciesID=9607fe79d426eb7048408d1b4930a6af 
+Importing 'GUID: 53076cc187a50344ba1681f9b4b29472 - Path: Assets/Art/World/Materials/cutout_crates_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 53076cc187a50344ba1681f9b4b29472' -> (Import Result ID: '0165e5a1d08a0bb1993172a087ef1c52') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=713157f0621710ed5581a20e6df4baaa DependenciesID=b91b90f1ca3a63c7c9540d5d103c2262 StaticDependenciesID=206d0438a93125c2217b5ac254027db6 
+Importing 'GUID: f3dea46b5b105a84e9c916db624f6663 - Path: Assets/Art/World/Materials/flower_pink.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f3dea46b5b105a84e9c916db624f6663' -> (Import Result ID: '84feba8ca862ec078da790a6ca6a2681') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=1304b42f341fb848d968749c4ce2b725 DependenciesID=3af42e6b2db18c7a18630966e617c9a3 StaticDependenciesID=45e31fa8383c8b0b8f6114e959b4d26e 
+Importing 'GUID: 44670166fc9aba94eaa2abd6f00eb0a8 - Path: Assets/Art/World/Materials/cutout_portal_gate_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 44670166fc9aba94eaa2abd6f00eb0a8' -> (Import Result ID: '8d9250d94a6d28b9d6ea852b00c23607') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3e0e790c823734eb967aebb2b2726150 DependenciesID=3a66b475ef6e707f3eab6b6cd44c5ef5 StaticDependenciesID=715128f8ba9099a32bdf7911b3439e85 
+Importing 'GUID: d49ca12fc8b30a54fad9fa6dbb5757d7 - Path: Assets/Art/World/Materials/flower_yellow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d49ca12fc8b30a54fad9fa6dbb5757d7' -> (Import Result ID: '83713665c87eb90399211d90e57bea4a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=09d1ed82dae83ba3fd8953e45ebd88c2 DependenciesID=959ae8ddcbd58399101c21f0d68c65d8 StaticDependenciesID=39bc83d9c6e8c7f91767de2174fd9473 
+Importing 'GUID: 259540c4e5362754f8926576e5ac6ac1 - Path: Assets/Art/World/Materials/wood_dark.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 259540c4e5362754f8926576e5ac6ac1' -> (Import Result ID: 'd8cc3c145975dee168d5e8d37b78e392') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b59bbc615c2d2dcfd25849f1c8a21eb7 DependenciesID=92814bf58346946abee4eac6ff676f31 StaticDependenciesID=81ac2d1b5b406cc571f54fab256d6717 
+Importing 'GUID: c67a82a6a233b554294c688f95a23142 - Path: Assets/Art/World/Materials/deck_planks_16.mat' with importer (NativeFormatImporter)
+Imported 'GUID: c67a82a6a233b554294c688f95a23142' -> (Import Result ID: '47485eb53f172f85cefa5787ef37521c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bc1a52c1097e3c56ba43ae86cea285c7 DependenciesID=a1cb38ed6b26b9120bd81ee11291548d StaticDependenciesID=f6b075ae9a4e40fecae90b8593e743ca 
+Importing 'GUID: 279581d3aa23d1c4aa839af6f7290f47 - Path: Assets/Art/World/Materials/cutout_stone_lantern_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 279581d3aa23d1c4aa839af6f7290f47' -> (Import Result ID: '9c80dbfc725f1bf9b78c8a9be5a4762d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8564feb88cf914f5bb71d900a611a3b9 DependenciesID=3240643ebd5db4aeae0ecc8079140eb5 StaticDependenciesID=081944fe1e90a0e395a02e556e9997c6 
+Importing 'GUID: f7b95e0409af2da4b82b671036593cba - Path: Assets/Art/World/Materials/tuft_a.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f7b95e0409af2da4b82b671036593cba' -> (Import Result ID: '75cf6b8d16c0fb0d90963f3fcbd5eaed') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=5a8efddd834359d6281baf1fa05e1ae5 DependenciesID=ed33b4982167f4b8ba97a62ec055ccd1 StaticDependenciesID=35ade6c1007b4c1fb5f69308c77ab9b5 
+Importing 'GUID: b8e80a4f5a5e2604aa3b47085f710bac - Path: Assets/Art/World/Materials/cutout_lantern_post_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: b8e80a4f5a5e2604aa3b47085f710bac' -> (Import Result ID: 'bd086e06cfade3e5446e5c0a24986c2d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=07058130bfc2e02ed757206f910a45db DependenciesID=e574b4b5df47c57479cf0c4e919d5e98 StaticDependenciesID=82d507b1c85e9a548556326de247ed57 
+Importing 'GUID: b8bbe1972dbd6724db5bbcc4f8ad5196 - Path: Assets/Art/World/Materials/cutout_windmill_22_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: b8bbe1972dbd6724db5bbcc4f8ad5196' -> (Import Result ID: 'c4fb7da1f8d6121aace4cc416b2d1f3f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=934244e552c3236ba9445107e25c0888 DependenciesID=27ec36b20cc0c2a4937c65318fcfa276 StaticDependenciesID=cb47f5d8fee9c645e6439c634e97daf6 
+Importing 'GUID: d811e16820c97ea42811cd8b7c028c95 - Path: Assets/Art/World/Materials/vine_leaf.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d811e16820c97ea42811cd8b7c028c95' -> (Import Result ID: '19328a542119f87598aff2226c86131c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a10bcef48e4bb8e942704ce1ada302f2 DependenciesID=ec7cd7df0b0de2327944a886f9ab7744 StaticDependenciesID=251244643517b635679a527c4441e518 
+Importing 'GUID: 2944ed8592a75e84290c16c44ea81d96 - Path: Assets/Art/World/Materials/tuft_b.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 2944ed8592a75e84290c16c44ea81d96' -> (Import Result ID: '3c64a6c91eb02b93835cf0ce84f35a76') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6a4ba3cb46b13a4d993177fd8fdf7a78 DependenciesID=9a5f07c70d732905213bf21ffcb0256c StaticDependenciesID=93d7ce33c8236627f3cedbc2a3161b7d 
+Importing 'GUID: 298f306c4572faf42a055d6804a35f0c - Path: Assets/Art/World/Materials/flower_white.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 298f306c4572faf42a055d6804a35f0c' -> (Import Result ID: '4370ad30a645a7f9a4266f7188b733f7') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=097f5e5e8401cd8bb03a2a730e089962 DependenciesID=8ceeabb1c2f13ac2b0f886e0dcaca6f0 StaticDependenciesID=3cf9f6e18d598cafe507a8b70e7a4ed9 
+Importing 'GUID: 5a2421cd9ed23654c9d18895134233f0 - Path: Assets/Art/World/Materials/wood.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 5a2421cd9ed23654c9d18895134233f0' -> (Import Result ID: 'ba7c566e97346fe27ae97c0a19915ea9') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=e5361c3b14a1dda652281709cf11358b DependenciesID=01f814e13e67c9b5c92fc49f38a1825c StaticDependenciesID=8d273270f5a474e78fbbfdf3847032f7 
+Importing 'GUID: 7c95f603f633185438a4789d60d334ec - Path: Assets/Art/World/Materials/portal_vortex_cyan.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 7c95f603f633185438a4789d60d334ec' -> (Import Result ID: '104434030c274c120102a7e7e920c684') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=63eecd793f19bd880cb18e2d4ece5fb6 DependenciesID=7f899968182a61e68fdf1c62eef27f4f StaticDependenciesID=ade8911eacffdc6148e8b4a5de82b6d9 
+Importing 'GUID: 8c261447dff16cf4f90f721391822739 - Path: Assets/Art/World/Materials/cutout_banyan_tree_6_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 8c261447dff16cf4f90f721391822739' -> (Import Result ID: 'd5038437296e21c8ad1508c16a240c8e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=71af22ec9c16b92efb6ecce66b90fde4 DependenciesID=af4f364b065e5deff0bcc57278f61e59 StaticDependenciesID=c76146e05932e1fee2ac525aab2bafed 
+Importing 'GUID: 6d0c653cb8fdfae478ead05dbe23f093 - Path: Assets/Art/World/Materials/portal_core.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 6d0c653cb8fdfae478ead05dbe23f093' -> (Import Result ID: 'e73e9c3c27cc1f0180ec6f6ad2bc809a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f3de0b6520c765dd441c73fa76bf75f0 DependenciesID=7e50a153adb551456d8c8f47fd6da8b5 StaticDependenciesID=24072380f327a07ceb8a848fb078e718 
+Importing 'GUID: 0e615e9194fbd9447b7f633f9e5213cf - Path: Assets/Art/World/Materials/cutout_planter_0_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 0e615e9194fbd9447b7f633f9e5213cf' -> (Import Result ID: '17fc7f08fabd817707255448f6436903') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=d1baaedca7c026d3d72a886f4171a402 DependenciesID=ab10ef92cfd443813a95ae41f3269b90 StaticDependenciesID=4f7c0bcf67edd73ee8094983c3d0d86d 
+Importing 'GUID: 5e538d94a87d3ee478996aef44e4b25c - Path: Assets/Art/World/Materials/ground_grass.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 5e538d94a87d3ee478996aef44e4b25c' -> (Import Result ID: '77d895ff68802158b2a15a88a0a47e59') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=35f3a90ab6c74931f89e4e8262a57156 DependenciesID=06ef57c0c40764378182339561e40f5a StaticDependenciesID=67f8cfe02857519af7c43d1a44a0a357 
+Importing 'GUID: bfe4a643fdf596c45a751a7bab33134d - Path: Assets/Art/World/Materials/cutout_stone_bridge_6_100.mat' with importer (NativeFormatImporter)
+Imported 'GUID: bfe4a643fdf596c45a751a7bab33134d' -> (Import Result ID: 'be083a7b5f3d47dd96f4a4b3f5f67679') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=0836d1c4271ac5418eb9ba4aad9225f5 DependenciesID=52534cf43ac54b96fd5d47736e9edc8c StaticDependenciesID=ffaa19e26e7baacad48fb38f41820dae 
+Importing 'GUID: efb3f7a2a5f4add43842426122052040 - Path: Assets/Art/World/Materials/path_stone.mat' with importer (NativeFormatImporter)
+Imported 'GUID: efb3f7a2a5f4add43842426122052040' -> (Import Result ID: 'deafb943d2792339f48d38a9b973168e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a7e188d3d44ff7119872e2a835fe58c4 DependenciesID=f3a099adb407424feb3e0807ebb2ed37 StaticDependenciesID=3ed34ca2e4e33f2c76f938b8818043f0 
+Asset Pipeline Refresh (id=b43e10f66ef2f7a45b4589ddff469b5b): Total: 0.110 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5179aa7e33a3bc145a3a91f8933d45ac - Path: Assets/Scenes/AK_Meadow.unity' with importer (DefaultImporter)
+Imported 'GUID: 5179aa7e33a3bc145a3a91f8933d45ac' -> (Import Result ID: '77adf68ac2e74997f57d1d9399aae4ad') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=ad65335157123bab9aa16be6490db8b9 DependenciesID=abf89cab52a60d5bd62de83772a61ab4 StaticDependenciesID=2cc13baa9e896c63206aaaf3bd60d377 
+Asset Pipeline Refresh (id=63cac08dabc9f354abb808c8389f36f1): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[WORLD] Scene built: Assets/Scenes/AK_Meadow.unity
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.VillageSceneBuilder:FinishWorld (UnityEngine.SceneManagement.Scene,string,UnityEngine.Transform,string,string,UnityEngine.Vector2,single,single,single,AdventureKing.Gameplay.AdventureMusicStage) (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:256)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildMeadow () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:142)
+AdventureKing.ArtPipeline.VillageSceneBuilder:Build () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:52)
+AdventureKing.ArtPipeline.VillageSceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/VillageSceneBuilder.cs:44)
+
+(Filename: Assets/Editor/ArtPipeline/VillageSceneBuilder.cs Line: 256)
+
+MonoPathRemapper: Attempts to remap: 8822; Successful remaps: 0
+Worker ready: AssetImportWorkerHW0 0
+Serialized file version minimum: 22, current 23
+Killing ADB server in 2.0968698 seconds.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-PC-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-PC channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794106366984,"processId":4220,"allocatedMemory":15227707,"memoryLabels":[{"Default":199632},{"Permanent":15516},{"NewDelete":72375},{"Thread":4201928},{"Manager":31709},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":839496},{"Material":132},{"GfxDevice":58008},{"Animation":952},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":16576},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1258384},{"BaseObject":58064},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":13323},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":511100},{"StaticString":3808},{"Utility":2673718},{"Curl":2676},{"PoolAlloc":2264},{"AI":80},{"TypeTree":23229},{"ScriptManager":12656},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":7296},{"WebRequest":4908},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":592},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":130942},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4482676},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40441},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3594},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

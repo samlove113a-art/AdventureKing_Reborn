@@ -19,6 +19,9 @@ namespace AdventureKing.Gameplay
         [SerializeField, Min(0f)] private float coyoteSeconds = 0.1f;
         [SerializeField, Min(0f)] private float jumpBufferSeconds = 0.12f;
         [SerializeField, Min(0.1f)] private float climbSpeed = 3f;
+        [Tooltip("Layer of one-way platforms. While climbing, the player passes through them (so ladders can go " +
+                 "down through a deck). -1 = feature off.")]
+        [SerializeField] private int oneWayLayer = -1;
 
         private LadderZone2D ladder;
         private float normalGravity;
@@ -27,6 +30,8 @@ namespace AdventureKing.Gameplay
         // QA fix: the probe still overlaps the ground for a few physics steps after take-off;
         // without this lockout a second buffered press re-grounds the player and double-jumps.
         private const float GroundLockoutAfterJump = 0.1f;
+        /// <summary>Climb zones end this far above the deck they lead to (see TownLayout.Climb), minus a margin.</summary>
+        private const float LadderTopClearance = 1.35f;
         private float jumpedAt = float.NegativeInfinity;
         private bool climbing, jumpRequested, cutJump;
         private int facing = 1;
@@ -59,7 +64,12 @@ namespace AdventureKing.Gameplay
                 Physics2D.OverlapCircle(groundProbe.position, probeRadius, groundMask) != null;
             if (IsGrounded) lastGroundAt = Time.time;
 
-            if (ladder && !climbing && Mathf.Abs(controls.Vertical) > 0.15f)
+            bool atLadderFoot = oneWayLayer >= 0 && ladder && groundProbe && groundProbe.position.y <= ladder.Bottom + 0.05f;
+            // At the top: the zone reaches LadderTopClearance above the deck so the feet clear the floor; once the
+            // feet are at deck level, holding Up must not restart the climb (otherwise the player bobs forever).
+            bool atLadderTop = oneWayLayer >= 0 && ladder && groundProbe && groundProbe.position.y >= ladder.Top - LadderTopClearance;
+            if (ladder && !climbing && Mathf.Abs(controls.Vertical) > 0.15f &&
+                !(atLadderFoot && controls.Vertical < 0f) && !(atLadderTop && controls.Vertical > 0f))
                 SetClimbing(true);
 
             // QA fix: once the player is standing on the floor inside a ladder zone and walks
@@ -80,6 +90,14 @@ namespace AdventureKing.Gameplay
                     jumpRequested = false;
                     lastJumpAt = float.NegativeInfinity;
                     cutJump = false;
+                }
+                else if (oneWayLayer >= 0 && groundProbe && controls.Vertical < -0.15f &&
+                         groundProbe.position.y <= ladder.Bottom + 0.02f)
+                {
+                    // Reached the foot of the ladder while climbing down: stand on whatever floor is here
+                    // (one-way decks are passed through only while ON the ladder, never below its foot).
+                    SetClimbing(false);
+                    body.linearVelocity = new Vector2(body.linearVelocity.x, 0f);
                 }
                 else
                 {
@@ -131,6 +149,7 @@ namespace AdventureKing.Gameplay
         {
             if (climbing == value) return;
             climbing = value;
+            if (oneWayLayer >= 0) Physics2D.IgnoreLayerCollision(gameObject.layer, oneWayLayer, value);
             body.gravityScale = value ? 0f : normalGravity;
             body.linearVelocity = new Vector2(body.linearVelocity.x, 0f);
         }
@@ -145,6 +164,7 @@ namespace AdventureKing.Gameplay
         {
             climbing = jumpRequested = false;
             ladder = null;
+            if (oneWayLayer >= 0) Physics2D.IgnoreLayerCollision(gameObject.layer, oneWayLayer, false);
             if (body) body.gravityScale = normalGravity;
         }
 

@@ -27,13 +27,57 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Text characterLabel;
         [SerializeField] private Text statusLabel;
         [SerializeField, Min(3f)] private float autosaveSeconds = 15f;
+        [Header("World safety + travel")]
+        [Tooltip("Below this height the player has fallen out of the map and is returned to the last safe ground.")]
+        [SerializeField] private float killY = -12f;
+        [SerializeField] private CanvasGroup screenFade;
+        [SerializeField] private AudioSource sfx;
+        [SerializeField] private AudioClip warpClip, arriveClip;
+        [SerializeField] private AdventureMusicStage musicStage = AdventureMusicStage.Village;
+        [Header("Portal UI")]
+        [SerializeField] private GameObject confirmPanel;
+        [SerializeField] private Text confirmText;
+        [SerializeField] private GameObject loadingPanel;
+        [SerializeField] private Text loadingTitle;
+        [SerializeField] private Image loadingBar;
+        [SerializeField] private Text loadingTip;
+        private PortalGate2D pendingPortal;
+        private static readonly string[] Tips =
+        {
+            "Mẹo: đứng trong vòng rune và nhấn ▲ / W để dùng cổng dịch chuyển.",
+            "Mẹo: nhấn ▼ / S trên thang để leo xuống xuyên qua sàn gỗ.",
+            "Mẹo: tiến trình được lưu trên máy chủ mỗi khi bạn dịch chuyển hoặc thoát.",
+            "Mẹo: Thị trấn Chuông Gió là nơi an toàn để gặp gỡ bạn bè.",
+        };
+
+        public bool ConfirmOpen => confirmPanel && confirmPanel.activeSelf;
+        public bool LoadingVisible => loadingPanel && loadingPanel.activeSelf;
+
+        /// <summary>Server map id -> Unity scene. The server decides the map; the client only loads its scene.</summary>
+        public static readonly System.Collections.Generic.Dictionary<string, string> SceneForMap = new()
+        {
+            ["village_wind_bell"] = "AK_Village",
+            ["meadow_breeze"] = "AK_Meadow",
+        };
+
+        public static AdventureWorldSession Current { get; private set; }
 
         private AdventureCharacterSnapshot character;
-        private Vector2 lastSaved;
+        private Vector2 lastSaved, lastSafeGround;
         private float nextAutosave;
         private bool saving, leaving;
 
         public string MapId => mapId;
+        public bool Traveling { get; private set; }
+        public int FallRecoveries { get; private set; }
+        public PlayerMotor2D Player => player;
+
+        private void Awake() => Current = this;
+
+        private void OnDestroy()
+        {
+            if (Current == this) Current = null;
+        }
         public AdventureCharacterSnapshot Character => character;
         public GameObject HeroModel { get; private set; }
         public bool Saving => saving;
@@ -52,6 +96,15 @@ namespace AdventureKing.Gameplay
                 return;
             }
 
+            // The server's saved map wins: if this scene is not the character's map, load the right one.
+            if (!string.IsNullOrEmpty(character.lastMapId) && character.lastMapId != mapId &&
+                SceneForMap.TryGetValue(character.lastMapId, out string correctScene))
+            {
+                if (player) player.gameObject.SetActive(false);
+                SceneManager.LoadScene(correctScene);
+                return;
+            }
+
             SpawnHero();
             Vector2 start = spawnPoint ? (Vector2)spawnPoint.position : Vector2.zero;
             if (character.hasPosition && character.lastMapId == mapId)
@@ -62,12 +115,18 @@ namespace AdventureKing.Gameplay
                 Rigidbody2D body = player.GetComponent<Rigidbody2D>();
                 if (body) { body.position = start; body.linearVelocity = Vector2.zero; }
             }
-            lastSaved = start;
+            lastSaved = lastSafeGround = start;
             nextAutosave = Time.time + autosaveSeconds;
+            if (screenFade) StartCoroutine(Fade(1f, 0f, 0.45f));
+            if (AdventurePlayerSession.ArrivedByPortal)
+            {
+                AdventurePlayerSession.ArrivedByPortal = false;
+                if (sfx && arriveClip) sfx.PlayOneShot(arriveClip);
+            }
             if (characterLabel)
                 characterLabel.text = character.characterName + "  ·  Lv." + character.level + "  ·  " +
                                       HeroClassCatalog.Get(character.heroClass).displayName;
-            if (AdventureAudioDirector.Instance) AdventureAudioDirector.Instance.PlayStage(AdventureMusicStage.Village);
+            if (AdventureAudioDirector.Instance) AdventureAudioDirector.Instance.PlayStage(musicStage);
             SetStatus("");
         }
 
@@ -87,15 +146,171 @@ namespace AdventureKing.Gameplay
                 playerVisual.Bind(HeroModel.transform, HeroModel.GetComponentInChildren<Animator>(true));
         }
 
+        private void FixedUpdate()
+        {
+            if (character == null || !player || Traveling) return;
+            // Read the physics body, not the (interpolated) transform, which lags a teleport by a step or more.
+            Rigidbody2D body = player.GetComponent<Rigidbody2D>();
+            Vector2 pos = body ? body.position : (Vector2)player.transform.position;
+            if (player.IsGrounded && !player.IsClimbing && pos.y > killY + 1f) lastSafeGround = pos;
+            if (pos.y < killY)
+            {
+                // Fell out of the playable area: return to the last ground the player stood on.
+                FallRecoveries++;
+                Vector2 back = lastSafeGround + Vector2.up * 0.4f;
+                if (body)
+                {
+                    body.linearVelocity = Vector2.zero;
+                    body.position = back;
+                }
+                player.transform.position = back;
+                Physics2D.SyncTransforms();
+            }
+        }
+
         private void Update()
         {
-            if (character == null || leaving || saving || !player) return;
+#if ENABLE_INPUT_SYSTEM
+            if (ConfirmOpen && UnityEngine.InputSystem.Keyboard.current is { } k)
+            {
+                if (k.enterKey.wasPressedThisFrame || k.eKey.wasPressedThisFrame) ConfirmPortal();
+                else if (k.escapeKey.wasPressedThisFrame) CancelPortal();
+            }
+#endif
+            if (character == null || leaving || saving || Traveling || !player) return;
             if (Time.time >= nextAutosave)
             {
                 nextAutosave = Time.time + autosaveSeconds;
                 Vector2 pos = player.transform.position;
                 if (player.IsGrounded && (pos - lastSaved).sqrMagnitude > 0.25f) SaveNow(null);
             }
+        }
+
+        /// <summary>
+        /// Portal travel: the server validates the portal (current map + reach) and moves the character;
+        /// only then does the client fade out and load the destination scene.
+        /// </summary>
+        /// <summary>Opens the "travel to …?" dialog; the player can confirm or stay.</summary>
+        public void AskPortalConfirmation(PortalGate2D portal)
+        {
+            if (Traveling || leaving || ConfirmOpen || !portal) return;
+            if (!confirmPanel) { UsePortal(portal); return; }
+            pendingPortal = portal;
+            SetInput(false);
+            if (confirmText) confirmText.text = "Rời " + DisplayNameForMap(mapId) + " để đến\n<b>" + portal.DestinationName + "</b>?";
+            confirmPanel.SetActive(true);
+        }
+
+        public void ConfirmPortal()
+        {
+            PortalGate2D p = pendingPortal;
+            pendingPortal = null;
+            if (confirmPanel) confirmPanel.SetActive(false);
+            if (p) UsePortal(p);
+            else SetInput(true);
+        }
+
+        public void CancelPortal()
+        {
+            pendingPortal = null;
+            if (confirmPanel) confirmPanel.SetActive(false);
+            SetInput(true);
+        }
+
+        private static string DisplayNameForMap(string id) => id == TownLayout.Meadow.MapId ? TownLayout.Meadow.DisplayName : TownLayout.Hub.DisplayName;
+
+        private void SetInput(bool on)
+        {
+            if (!player) return;
+            PlayerInput2D input = player.GetComponent<PlayerInput2D>();
+            if (input) input.enabled = on;
+        }
+
+        /// <summary>
+        /// Portal travel: the server validates the portal (current map, reach, cooldown) and moves the character;
+        /// only then does the client play the warp, show the loading screen and load the destination scene.
+        /// A lost connection or a refusal leaves the player where they were, with the reason shown.
+        /// </summary>
+        public void UsePortal(PortalGate2D portal)
+        {
+            AdventureServerConnection server = AdventureServerConnection.Instance;
+            if (Traveling || leaving || character == null || !server || !player || !portal) return;
+            Traveling = true; // client-side guard against double activation; the server enforces a cooldown too
+            SetInput(false);
+            SetStatus("Đang mở cổng tới " + portal.DestinationName + "...");
+            server.Travel(character.characterId, portal.PortalId, player.transform.position, (ok, updated, message) =>
+            {
+                if (!ok || updated == null || !SceneForMap.TryGetValue(updated.lastMapId, out string scene))
+                {
+                    Traveling = false;
+                    SetInput(true);
+                    SetStatus(string.IsNullOrEmpty(message) ? "Không thể dịch chuyển. Hãy thử lại." : message);
+                    return;
+                }
+                character.lastMapId = updated.lastMapId;
+                character.posX = updated.posX;
+                character.posY = updated.posY;
+                character.hasPosition = true;
+                character.serverRevision = updated.serverRevision;
+                AdventurePlayerSession.ArrivedByPortal = true;
+                SetStatus("");
+                if (sfx && warpClip) sfx.PlayOneShot(warpClip);
+                portal.PlayActivation();
+                StartCoroutine(TravelAndLoad(scene, portal.DestinationName));
+            });
+        }
+
+        private IEnumerator TravelAndLoad(string scene, string destination)
+        {
+            // Warp: the hero shrinks into the vortex while the screen fades.
+            Transform hero = HeroModel ? HeroModel.transform : null;
+            Vector3 heroScale = hero ? hero.localScale : Vector3.one;
+            yield return Fade(0f, 1f, 0.6f, t => { if (hero) hero.localScale = heroScale * (1f - 0.8f * t); });
+            if (loadingPanel)
+            {
+                if (loadingTitle) loadingTitle.text = destination;
+                if (loadingTip) loadingTip.text = Tips[Random.Range(0, Tips.Length)];
+                if (loadingBar) loadingBar.fillAmount = 0f;
+                loadingPanel.SetActive(true);
+            }
+            AsyncOperation op = SceneManager.LoadSceneAsync(scene);
+            op.allowSceneActivation = false;
+            float shown = 0f, minEnd = Time.unscaledTime + 0.8f; // never flash the loading screen for one frame
+            while (op.progress < 0.9f || Time.unscaledTime < minEnd || shown < 0.99f)
+            {
+                float target = Mathf.Clamp01(op.progress / 0.9f);
+                shown = Mathf.MoveTowards(shown, target, Time.unscaledDeltaTime * 1.6f);
+                if (loadingBar) loadingBar.fillAmount = shown;
+                yield return null;
+            }
+            op.allowSceneActivation = true;
+        }
+
+        private IEnumerator Fade(float from, float to, float seconds, System.Action<float> each)
+        {
+            if (!screenFade) yield break;
+            screenFade.blocksRaycasts = to > 0.5f;
+            for (float t = 0f; t < seconds; t += Time.unscaledDeltaTime)
+            {
+                float k = t / seconds;
+                screenFade.alpha = Mathf.Lerp(from, to, k);
+                each?.Invoke(k);
+                yield return null;
+            }
+            screenFade.alpha = to;
+            each?.Invoke(1f);
+        }
+
+        private IEnumerator Fade(float from, float to, float seconds)
+        {
+            if (!screenFade) yield break;
+            screenFade.blocksRaycasts = to > 0.5f;
+            for (float t = 0f; t < seconds; t += Time.unscaledDeltaTime)
+            {
+                screenFade.alpha = Mathf.Lerp(from, to, t / seconds);
+                yield return null;
+            }
+            screenFade.alpha = to;
         }
 
         /// <summary>Saves the current position to the server (grounded positions are preferred).</summary>

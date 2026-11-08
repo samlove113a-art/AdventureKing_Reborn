@@ -43,6 +43,7 @@ namespace AdventureKing.Gameplay
                 return;
             }
             Instance = this;
+            ApplyEndpointOverride();
             if (transform.parent == null) DontDestroyOnLoad(gameObject);
             if (entryFlow) entryFlow.SetAccountService(this);
         }
@@ -52,15 +53,42 @@ namespace AdventureKing.Gameplay
             if (Instance == this) Instance = null;
         }
 
-        /// <summary>For tests / launcher configuration. Only loopback or HTTPS URLs are accepted.</summary>
+        /// <summary>
+        /// For tests / launcher configuration. Accepted: loopback, HTTPS, or (development builds only) plain HTTP to a
+        /// private LAN address (192.168.x.x, 10.x.x.x, 172.16–31.x.x) so a phone can reach the PC test server.
+        /// </summary>
         public void SetBaseUrl(string url)
         {
-            if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException("url");
-            bool loopback = url.StartsWith("http://127.0.0.1", StringComparison.Ordinal) ||
-                            url.StartsWith("http://localhost", StringComparison.Ordinal);
-            if (!loopback && !url.StartsWith("https://", StringComparison.Ordinal))
-                throw new ArgumentException("Non-local servers must use HTTPS.");
-            baseUrl = url.TrimEnd('/');
+            if (!IsAllowedUrl(url, Debug.isDebugBuild || Application.isEditor))
+                throw new ArgumentException("Server URL must be HTTPS (or loopback / private LAN in development builds).");
+            baseUrl = url.Trim().TrimEnd('/');
+        }
+
+        public static bool IsAllowedUrl(string url, bool developmentBuild)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return false;
+            url = url.Trim();
+            if (url.StartsWith("https://", StringComparison.Ordinal)) return true;
+            if (!url.StartsWith("http://", StringComparison.Ordinal)) return false;
+            string host = url.Substring(7).Split('/', ':')[0];
+            if (host == "127.0.0.1" || host == "localhost") return true;
+            if (!developmentBuild) return false;
+            string[] p = host.Split('.');
+            if (p.Length != 4 || !int.TryParse(p[0], out int a) || !int.TryParse(p[1], out int b)) return false;
+            return a == 10 || (a == 192 && b == 168) || (a == 172 && b >= 16 && b <= 31);
+        }
+
+        /// <summary>
+        /// Optional override shipped in Resources/ServerEndpoint.txt (one line, e.g. http://192.168.1.46:5080/api/v1)
+        /// so a phone build can reach the PC test server over the LAN. Ignored when invalid.
+        /// </summary>
+        private void ApplyEndpointOverride()
+        {
+            TextAsset t = Resources.Load<TextAsset>("ServerEndpoint");
+            if (!t) return;
+            string url = t.text.Trim();
+            if (url.Length > 0 && IsAllowedUrl(url, Debug.isDebugBuild || Application.isEditor)) baseUrl = url.TrimEnd('/');
+            else if (url.Length > 0) Debug.LogWarning("ServerEndpoint.txt ignored: URL not allowed in this build.");
         }
 
         // ------------------------------------------------------------------ IAdventureAccountService
@@ -144,6 +172,15 @@ namespace AdventureKing.Gameplay
             string body = JsonUtility.ToJson(new LocationBody { mapId = mapId, x = position.x, y = position.y });
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/location", body, true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<AdventureCharacterSnapshot>(json) : null, err));
+        }
+
+        /// <summary>Asks the server to use a portal; the server checks map + reach and returns the new location.</summary>
+        public void Travel(string characterId, string portalId, Vector2 position,
+            Action<bool, AdventureCharacterSnapshot, string> completed)
+        {
+            string body = JsonUtility.ToJson(new LocationBody { mapId = "", x = position.x, y = position.y });
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/travel/" + UnityWebRequest.EscapeURL(portalId),
+                body, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<AdventureCharacterSnapshot>(json) : null, err));
         }
 
         public void SignOut()

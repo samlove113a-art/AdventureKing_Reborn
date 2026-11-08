@@ -115,6 +115,8 @@ api.MapPost("/characters/{id}/enter", (string id, HttpContext ctx, AccountServic
     chars.Enter(accounts.Authenticate(Bearer(ctx)), id));
 api.MapPost("/characters/{id}/location", (string id, LocationDto body, HttpContext ctx, AccountService accounts, CharacterService chars) =>
     chars.SaveLocation(accounts.Authenticate(Bearer(ctx)), id, body.mapId, body.x, body.y));
+api.MapPost("/characters/{id}/travel/{portalId}", (string id, string portalId, LocationDto body, HttpContext ctx, AccountService accounts, CharacterService chars) =>
+    chars.Travel(accounts.Authenticate(Bearer(ctx)), id, portalId, body.x, body.y));
 api.MapPost("/characters/{id}/tutorial/{step:int}", (string id, int step, HttpContext ctx, AccountService accounts, CharacterService chars) =>
     chars.CompleteTutorialStep(accounts.Authenticate(Bearer(ctx)), id, step));
 

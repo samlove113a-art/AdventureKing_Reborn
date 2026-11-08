@@ -44,11 +44,123 @@ namespace AdventureKing.ArtPipeline
 
         internal static Sprite PanelSprite => panelSprite;
 
+        private static Font boldFont;
+
         internal static void InitUi()
         {
-            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            // Be Vietnam Pro (SIL OFL 1.1, Assets/Art/Fonts): crisp Vietnamese diacritics; real Bold file for bold text.
+            font = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf");
+            boldFont = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            if (!font) font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if (!boldFont) boldFont = font;
             panelSprite = RoundedSprite("ui_panel", 64, 18);
             pillSprite = RoundedSprite("ui_pill", 64, 30);
+            enamelSprite = GeneratedUiSprite("ui_enamel", 128, 30, Enamel);
+            rimSprite = GeneratedUiSprite("ui_gilded_rim", 128, 30, GildedRim);
+            framePanel = FantasySprite("Assets/Art/UI/Fantasy/frame_panel.png", new Vector4(112, 112, 112, 136));
+            frameBar = FantasySprite("Assets/Art/UI/Fantasy/frame_bar.png", new Vector4(150, 52, 150, 52));
+        }
+
+        // ------------------------------------------------------------ fantasy UI kit
+        private static Sprite enamelSprite, rimSprite, framePanel, frameBar;
+        internal static Sprite FramePanelSprite => framePanel;
+
+        /// <summary>Glossy enamel body: vertical light gradient so a tint reads as polished lacquer.</summary>
+        private static Color Enamel(float d, float v, int radius)
+        {
+            float a = Mathf.Clamp01(radius - d + 0.5f);
+            float shade = Mathf.Lerp(0.72f, 1f, Mathf.SmoothStep(0f, 1f, v));
+            float gloss = v > 0.58f ? Mathf.Lerp(0f, 0.18f, Mathf.InverseLerp(0.58f, 0.95f, v)) : 0f;
+            float c = Mathf.Min(1f, shade + gloss);
+            return new Color(c, c, c, a);
+        }
+
+        /// <summary>Gilded rim: dark outer line, bright bevelled gold band, light inner line; transparent inside.</summary>
+        private static Color GildedRim(float d, float v, int radius)
+        {
+            // d = distance outside the inner rounded rect (0 inside the corner circle centre); radius = corner radius
+            float edge = radius - d;                 // distance from the outer edge inward (px)
+            if (edge < -0.5f) return Color.clear;
+            const float band = 7f;
+            if (edge > band + 1.5f) return Color.clear;
+            float aa = Mathf.Clamp01(edge + 0.5f) * Mathf.Clamp01(band + 1.5f - edge);
+            Color dark = new Color(0.32f, 0.2f, 0.07f), mid = new Color(0.86f, 0.64f, 0.26f), light = new Color(1f, 0.92f, 0.62f);
+            float t = Mathf.Clamp01(edge / band);
+            Color c = t < 0.15f ? Color.Lerp(dark, mid, t / 0.15f) : t < 0.55f ? Color.Lerp(mid, light, (t - 0.15f) / 0.4f) : Color.Lerp(light, mid, (t - 0.55f) / 0.45f);
+            c = Color.Lerp(c * 0.8f, c, v); // top catches more light
+            c.a = aa;
+            return c;
+        }
+
+        private static Sprite GeneratedUiSprite(string name, int size, int radius, System.Func<float, float, int, Color> shader)
+        {
+            Directory.CreateDirectory(UiDir);
+            string path = $"{UiDir}/{name}.png";
+            var t = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = Mathf.Max(0, Mathf.Max(radius - x - 0.5f, x + 0.5f - (size - radius)));
+                    float dy = Mathf.Max(0, Mathf.Max(radius - y - 0.5f, y + 0.5f - (size - radius)));
+                    // distance from the rounded-rect outline measured as "radius - inward depth"
+                    float inward = Mathf.Min(Mathf.Min(x + 0.5f, size - x - 0.5f), Mathf.Min(y + 0.5f, size - y - 0.5f));
+                    float d = dx > 0 && dy > 0 ? Mathf.Sqrt(dx * dx + dy * dy) : radius - inward;
+                    t.SetPixel(x, y, shader(d, y / (float)(size - 1), radius));
+                }
+            t.Apply();
+            File.WriteAllBytes(path, t.EncodeToPNG());
+            Object.DestroyImmediate(t);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+            ti.textureType = TextureImporterType.Sprite;
+            ti.spriteBorder = new Vector4(radius + 4, radius + 4, radius + 4, radius + 4);
+            ti.alphaIsTransparency = true;
+            ti.mipmapEnabled = false;
+            ti.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
+
+        private static Sprite FantasySprite(string path, Vector4 border)
+        {
+            if (!File.Exists(path)) return null;
+            var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+            if (ti.textureType != TextureImporterType.Sprite || ti.spriteBorder != border)
+            {
+                ti.textureType = TextureImporterType.Sprite;
+                ti.spriteBorder = border;
+                ti.alphaIsTransparency = true;
+                ti.mipmapEnabled = false;
+                ti.maxTextureSize = 2048;
+                ti.textureCompression = TextureImporterCompression.CompressedHQ;
+                ti.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
+
+        /// <summary>Turns a plain panel into the gold-filigree fantasy frame (Meshy art, 9-sliced).</summary>
+        internal static void Frame(GameObject panel, float thickness = 3f)
+        {
+            if (!framePanel) return;
+            var img = panel.GetComponent<Image>();
+            img.sprite = framePanel;
+            img.type = Image.Type.Sliced;
+            img.color = Color.white;
+            img.pixelsPerUnitMultiplier = thickness; // higher = thinner frame band
+        }
+
+        /// <summary>Gilded rim overlay on top of an element (buttons, fields, small panels).</summary>
+        internal static void Rim(Transform parent, float alpha = 1f)
+        {
+            if (!rimSprite) return;
+            var go = new GameObject("GildedRim", typeof(RectTransform));
+            go.layer = 5;
+            go.transform.SetParent(parent, false);
+            Stretch((RectTransform)go.transform);
+            var img = go.AddComponent<Image>();
+            img.sprite = rimSprite;
+            img.type = Image.Type.Sliced;
+            img.color = new Color(1f, 1f, 1f, alpha);
+            img.raycastTarget = false;
         }
 
         public const string LogoPath = "Assets/Art/Branding/SAM_Logo.png";
@@ -335,7 +447,8 @@ namespace AdventureKing.ArtPipeline
         {
             GameObject root = Panel(canvas, "AuthRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.05f, 0.07f, 0.12f, 1f), null);
             Img(root.transform, "Glow", new Vector2(0.5f, 0.55f), new Vector2(1400, 900), new Color(0.25f, 0.35f, 0.6f, 0.25f), RoundedSprite("ui_glow", 128, 60));
-            GameObject card = Panel(root.transform, "AuthCard", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -20), new Vector2(640, 760), Ink, panelSprite);
+            GameObject card = Panel(root.transform, "AuthCard", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -20), new Vector2(700, 800), Ink, panelSprite);
+            Frame(card, 2.6f);
             Label(card.transform, "Title", "Đăng nhập", 50, Gold, new Vector2(0.5f, 1f), new Vector2(0, -70), new Vector2(560, 70), FontStyle.Bold);
             Label(card.transform, "Subtitle", "Tài khoản Adventure King", 24, Muted, new Vector2(0.5f, 1f), new Vector2(0, -122), new Vector2(560, 36));
             acc = Field(card.transform, "AccountInput", "Tên tài khoản hoặc email", new Vector2(0, -200), false);
@@ -379,10 +492,15 @@ namespace AdventureKing.ArtPipeline
             var vignette = Img(root.transform, "Vignette", new Vector2(0.5f, 0.5f), new Vector2(1920, 1080), new Color(0, 0, 0, 0.0f), null);
             vignette.raycastTarget = false;
 
-            Label(root.transform, "HallTitle", "Chọn Anh Hùng", 46, Gold, new Vector2(0.5f, 1f), new Vector2(0, -60), new Vector2(800, 64), FontStyle.Bold).raycastTarget = false;
+            Text hallTitle = Label(root.transform, "HallTitle", "Chọn Anh Hùng", 52, Gold, new Vector2(0.5f, 1f), new Vector2(0, -60), new Vector2(800, 70), FontStyle.Bold);
+            hallTitle.raycastTarget = false;
+            var outline = hallTitle.gameObject.AddComponent<Outline>();
+            outline.effectColor = new Color(0.25f, 0.13f, 0.04f, 0.9f);
+            outline.effectDistance = new Vector2(2f, -2f);
 
             // Class cards (left)
-            GameObject cards = Panel(root.transform, "ClassCards", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(200, 40), new Vector2(330, 620), InkSoft, panelSprite);
+            GameObject cards = Panel(root.transform, "ClassCards", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(210, 40), new Vector2(370, 680), InkSoft, panelSprite);
+            Frame(cards, 3.2f);
             (string name, string role, HeroClass c, Color tint)[] classes =
             {
                 ("Kiếm Sĩ", "Cận chiến • Bền bỉ", HeroClass.Swordsman, new Color(1f, 0.55f, 0.35f)),
@@ -408,7 +526,8 @@ namespace AdventureKing.ArtPipeline
             }
 
             // Detail panel (right)
-            GameObject info = Panel(root.transform, "ClassInfo", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-240, 70), new Vector2(420, 560), InkSoft, panelSprite);
+            GameObject info = Panel(root.transform, "ClassInfo", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-250, 60), new Vector2(460, 620), InkSoft, panelSprite);
+            Frame(info, 3.0f);
             heroName = Label(info.transform, "HeroName", "", 48, Gold, new Vector2(0.5f, 1f), new Vector2(0, -56), new Vector2(380, 64), FontStyle.Bold);
             heroDesc = Label(info.transform, "HeroDescription", "", 24, Cream, new Vector2(0.5f, 1f), new Vector2(0, -150), new Vector2(370, 110));
             heroDesc.alignment = TextAnchor.UpperCenter;
@@ -422,7 +541,14 @@ namespace AdventureKing.ArtPipeline
             {
                 float y = -300 - i * 54;
                 Label(info.transform, "StatLabel" + i, statNames[i], 20, Muted, new Vector2(0.5f, 1f), new Vector2(-110, y), new Vector2(170, 30)).alignment = TextAnchor.MiddleLeft;
-                Img(info.transform, "StatBack" + i, new Vector2(0.5f, 1f), new Vector2(200, 14), new Color(1, 1, 1, 0.12f), pillSprite).rectTransform.anchoredPosition = new Vector2(80, y);
+                if (frameBar)
+                {
+                    // Gilded bar frame (Meshy art) behind the fill; its dark groove is the empty part of the bar.
+                    var fr = Img(info.transform, "StatFrame" + i, new Vector2(0.5f, 1f), new Vector2(272, 40), Color.white, frameBar);
+                    fr.pixelsPerUnitMultiplier = 4.5f;
+                    fr.rectTransform.anchoredPosition = new Vector2(80, y);
+                }
+                Img(info.transform, "StatBack" + i, new Vector2(0.5f, 1f), new Vector2(200, 14), new Color(1, 1, 1, 0.06f), pillSprite).rectTransform.anchoredPosition = new Vector2(80, y);
                 var fill = Img(info.transform, "StatFill" + i, new Vector2(0.5f, 1f), new Vector2(200, 14), Gold, pillSprite);
                 fill.rectTransform.pivot = new Vector2(0f, 0.5f);
                 fill.rectTransform.anchoredPosition = new Vector2(-20, y);
@@ -441,7 +567,8 @@ namespace AdventureKing.ArtPipeline
             Label(root.transform, "DragHint", "Kéo để xoay nhân vật", 20, Muted, new Vector2(0.5f, 0.5f), new Vector2(0, -280), new Vector2(400, 30)).raycastTarget = false;
 
             // Slots + naming (bottom bar)
-            GameObject bottom = Panel(root.transform, "SlotBar", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0, 90), new Vector2(1700, 150), Ink, panelSprite);
+            GameObject bottom = Panel(root.transform, "SlotBar", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0, 98), new Vector2(1760, 186), Ink, panelSprite);
+            Frame(bottom, 3.4f);
             slots = new Text[4];
             for (int i = 0; i < 4; i++)
             {
@@ -574,7 +701,9 @@ namespace AdventureKing.ArtPipeline
             r.anchoredPosition = pos;
             r.sizeDelta = box;
             var t = go.AddComponent<Text>();
-            t.font = font; t.text = text; t.fontSize = size; t.color = c; t.fontStyle = style;
+            bool bold = style == FontStyle.Bold && boldFont && boldFont != font;
+            t.font = bold ? boldFont : font; t.text = text; t.fontSize = size; t.color = c;
+            t.fontStyle = bold ? FontStyle.Normal : style;
             t.alignment = TextAnchor.MiddleCenter;
             t.horizontalOverflow = HorizontalWrapMode.Wrap;
             t.verticalOverflow = VerticalWrapMode.Overflow;
@@ -600,15 +729,17 @@ namespace AdventureKing.ArtPipeline
             r.anchoredPosition = pos;
             r.sizeDelta = size;
             var img = go.AddComponent<Image>();
-            img.sprite = pillSprite;
+            img.sprite = enamelSprite ? enamelSprite : pillSprite;
             img.type = Image.Type.Sliced;
             img.color = bg;
             var b = go.AddComponent<Button>();
             var cb = b.colors;
-            cb.highlightedColor = new Color(1.12f, 1.12f, 1.12f, 1f);
-            cb.pressedColor = new Color(0.82f, 0.82f, 0.82f, 1f);
+            cb.highlightedColor = new Color(1.15f, 1.15f, 1.15f, 1f);
+            cb.pressedColor = new Color(0.78f, 0.78f, 0.78f, 1f);
+            cb.selectedColor = new Color(1.08f, 1.08f, 1.08f, 1f);
             cb.fadeDuration = 0.08f;
             b.colors = cb;
+            if (bg.a > 0.05f) Rim(go.transform);
             if (!string.IsNullOrEmpty(label))
                 Label(go.transform, "Text", label, size.y > 60 ? 26 : 22, fg, new Vector2(0.5f, 0.5f), Vector2.zero, size, FontStyle.Bold).raycastTarget = false;
             return b;
@@ -626,7 +757,8 @@ namespace AdventureKing.ArtPipeline
             r.anchoredPosition = pos;
             r.sizeDelta = sz;
             var img = go.AddComponent<Image>();
-            img.sprite = pillSprite; img.type = Image.Type.Sliced; img.color = new Color(1, 1, 1, 0.1f);
+            img.sprite = enamelSprite ? enamelSprite : pillSprite; img.type = Image.Type.Sliced; img.color = new Color(0.05f, 0.06f, 0.11f, 0.82f);
+            Rim(go.transform, 0.85f);
             var text = Label(go.transform, "Text", "", 24, Cream, new Vector2(0.5f, 0.5f), Vector2.zero, sz - new Vector2(40, 10));
             text.alignment = TextAnchor.MiddleLeft;
             text.supportRichText = false;
