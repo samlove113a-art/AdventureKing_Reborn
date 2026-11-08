@@ -7,7 +7,7 @@
 
 ---
 ## ★★ Cập nhật mới nhất — Giai đoạn A, đợt 2 (nhân vật, animation, sảnh)
-**Commit:** "Phase A2: hero faces, seamless loops, town polish" trên `feat/diamond-store-catalog-20261107`, nối tiếp `85c770d` (SHA: `git log -1`). **Meshy: 0 credit** (chỉ Unity + công cụ tự viết; số dư vẫn 931).
+**Commit:** `ab47513` "Phase A2: hero faces, seamless loops, town polish" + commit tiếp theo "Rung-accurate ladder climb" (clip leo mới) trên `feat/diamond-store-catalog-20261107`, nối tiếp `85c770d`. **Meshy: 0 credit** (chỉ Unity + công cụ tự viết; số dư vẫn 931).
 
 ### Ưu tiên 1 — Biểu cảm khuôn mặt 4 nghề (đã làm, có kiểm chứng Play Mode)
 - **Kiểm tra thực tế:** FBX Meshy **không có** xương mặt, xương ngón, blendshape; mắt/miệng chỉ là hình vẽ trên atlas texture bị chia mảnh ⇒ shape key hình học sẽ làm méo hình vẽ. **Không giả vờ có blendshape.**
@@ -23,7 +23,10 @@
 - **Sau sửa (Play Mode, Animator thật, 4 s × 4 nghề):** Idle hông ≤ 0.07 cm/frame (thở nhẹ, không lắc), Run không có frame nhảy (max ≤ 2.2× p90), Climb hông ≤ 0.65 cm/frame (hết giật 30 cm). File: `QA/AnimAudit/playmode_motion.txt`, `motion_quality.md`, `loop_search.md`.
 - Trạng thái: test `All_Gameplay_States_Reached_And_Captured` — 4 nghề × Idle/Run/Jump/Fall/Climb/Attack/Skill/Hit đều vào đúng state, ảnh `QA/AnimAudit/play_states_all.png`. Vũ khí bám tay ≤ 5.2 cm, trượt chân khi chạy 0%.
 - Camera: đã kiểm (Rigidbody2D Interpolate + SmoothDamp trong LateUpdate) — không phải nguồn rung.
-- **Hạn chế còn lại:** tay khi leo thang chỉ đi 10–13% tốc độ leo ở 1× (take Meshy với tầm với ~0.18 m/chu kỳ); dù phát nhanh 3.5× vẫn trượt trên thanh thang ~3×. Cần clip leo mới (keyframe Blender) hoặc giảm tốc độ leo — **cần chủ dự án chọn**. Không có xương ngón tay ⇒ bàn tay nắm cố định.
+- **Leo thang — đã làm clip leo mới (chủ dự án chọn "New climb clip"):** `ClimbClipBaker` bake clip leo bằng IK hai khớp cho từng nghề: tay và chân đặt **đúng lên thanh thang thật** (khoảng cách thanh 0.30 m, mặt phẳng thang 0.40 m), luân phiên tay trái/chân phải ↔ tay phải/chân trái, pha bám 55% chu kỳ, pha với lên vòng ra ngoài để không xuyên thanh; thân/đầu lấy từ take Meshy (tại chỗ). Thời gian clip **gắn với độ cao thật** của nhân vật trên thang (`ClimbPhase`) ⇒ tay đang bám đứng yên ở mọi tốc độ leo, dừng thì giữ nguyên tư thế, leo xuống thì động tác chạy ngược. Khi leo, thân hình tự canh vào giữa thang (chỉ phần hình ảnh). Làm trong Unity editor thay vì xuất qua Blender để không phải xuất lại FBX/rig (cùng kết quả, không tốn credit).
+  - Thanh thang đổi 0.42 → **0.30 m** cho đúng tỉ lệ chibi (tay dài 0.26–0.33 m không với tới 0.52 m mỗi lần bám) — chỉ là hình, collider leo không đổi.
+  - **Bằng chứng:** test `Climb_Hands_Stay_On_Rungs`: 4 nghề, thân đi lên 1.2 cm/frame, tay đang bám trượt **< 0.05 cm/frame**, lệch độ cao thanh < 0.05 cm, lệch mặt phẳng thang < 0.05 cm (`QA/AnimAudit/climb_rungs.txt`); baker: Pháp Sư thiếu tầm với tối đa 1.9 cm ở mép đầu/cuối pha bám. Ảnh video thật: `QA/Video/climb_frames_strip.png` (leo xuống thang Hiên Quán Trà).
+  - Còn lại: leo **dây** dùng cùng clip (dây không có thanh — tay bám đúng độ cao, nhìn chấp nhận được); không có xương ngón tay ⇒ bàn tay nắm cố định quanh thanh.
 
 ### Ưu tiên 3 — Sảnh 3D (đã sửa, ảnh trước/sau)
 Ảnh trước: `QA/Before_PhaseA2/`; ảnh sau: `QA/WorldCaptures/`, `QA/HubTest/`.
@@ -41,13 +44,13 @@
 Ảnh Play Mode 3 tỉ lệ: PC 16:9 (`01_spawn`), điện thoại 19.5:9 (`01b`, `00b` hộp thoại), máy tính bảng 4:3 (`01d`): joystick tròn không méo, nút không đè nhân vật/viền, hướng dẫn phím ẩn trên cảm ứng, chữ trong khung. Joystick đa chạm có test riêng. Bàn phím PC vẫn qua toàn bộ test di chuyển. **Thanh HP/MP chưa có trong HUD thị trấn** (chỉ có ở sảnh chọn nhân vật) — thuộc hệ chiến đấu.
 
 ### Ưu tiên 5 — Kiểm thử
-- Server **72/72**, EditMode **4/4**, PlayMode **31 đạt / 0 lỗi / 2 bỏ qua** (gói Input System), log không có Exception/lỗi shader — bao gồm test mới: HeroFaceTests, HeroMotionTests ×2, Town_Pc_Frame_Rate, kiểm tra đèn đêm và ảnh 4:3.
+- Server **72/72**, EditMode **4/4**, PlayMode **32 đạt / 0 lỗi / 2 bỏ qua** (gói Input System; lần chạy sau khi thêm clip leo mới), log không có Exception/lỗi shader — bao gồm test mới: HeroFaceTests, HeroMotionTests ×2, Town_Pc_Frame_Rate, kiểm tra đèn đêm và ảnh 4:3.
 - Cổng Làng ↔ Đồng Cỏ Gió, đăng nhập lại giữ vị trí/dữ liệu: `TownHubTests`, `ServerEndToEndTests` (chạy lại).
 - **FPS PC:** 60 FPS ổn định (trung bình 16.7 ms, p95 16.8 ms, tệ nhất 18 ms — chạm giới hạn vsync) trên GTX 1050 Ti + Xeon E3-1230 v3, Editor Play Mode. `QA/HubTest/fps_pc.txt`. **FPS điện thoại: CHƯA đo — không có thiết bị.**
 - Video Play Mode: `QA/Video/town_playmode_2026-11-08_phaseA2.mp4`.
 
 ### Cần chủ dự án quyết định (đợt 2)
-1. Leo thang: làm clip leo mới bằng Blender (tay bám đúng thanh) hay giảm tốc độ leo trong game?
+1. ~~Leo thang~~ → đã chọn và đã làm clip leo mới (xem Ưu tiên 2).
 2. Xương ngón tay: cho phép rig lại bàn tay 4 nhân vật trong Blender (mất 1–2 phiên, không tốn credit)?
 3. Các mục cũ vẫn chờ: ngân sách Meshy, ngưỡng VIP 1–14, khung tên bản sạch, nguồn nhạc, điện thoại Android để thử APK.
 

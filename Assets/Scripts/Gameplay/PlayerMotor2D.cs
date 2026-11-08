@@ -38,6 +38,8 @@ namespace AdventureKing.Gameplay
 
         public int Facing => facing;
         public bool IsClimbing => climbing;
+        /// <summary>The ladder/rope zone the player is in (null outside), for climb visuals.</summary>
+        public LadderZone2D Ladder => ladder;
         public bool IsGrounded { get; private set; }
         public Vector2 Velocity => body ? body.linearVelocity : Vector2.zero;
 

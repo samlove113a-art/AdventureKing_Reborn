@@ -355,7 +355,7 @@ namespace AdventureKing.ArtPipeline
             rise = Mathf.Abs(y1 - y0) / Mathf.Max(1e-4f, model.transform.lossyScale.y);
             if (anim) anim.runtimeAnimatorController = keep;
 
-            var clip = new AnimationClip { name = "Climb", frameRate = src.frameRate };
+            var clip = new AnimationClip { name = "ClimbBase", frameRate = src.frameRate };
             foreach (EditorCurveBinding b in AnimationUtility.GetCurveBindings(src))
             {
                 AnimationCurve curve = AnimationUtility.GetEditorCurve(src, b);
@@ -385,10 +385,10 @@ namespace AdventureKing.ArtPipeline
             settings.loopTime = true;
             settings.loopBlend = true;
             AnimationUtility.SetAnimationClipSettings(clip, settings);
-            // File name = asset name = "Climb", so lookups by state/clip name keep working.
+            // Torso/head source for the rung-accurate climb (ClimbClipBaker writes InPlace/Climb.anim).
             Directory.CreateDirectory($"{h.Folder}/InPlace");
             AssetDatabase.DeleteAsset($"{h.Folder}/{h.Class}_Climb_InPlace.anim"); // earlier name
-            string path = $"{h.Folder}/InPlace/Climb.anim";
+            string path = $"{h.Folder}/InPlace/ClimbBase.anim";
             AssetDatabase.DeleteAsset(path);
             AssetDatabase.CreateAsset(clip, path);
             Debug.Log($"[ART] {h.Class} climb: removed hip rise {rise:0.000} m/cycle (model scale) -> in-place loop {path}");
@@ -475,8 +475,24 @@ namespace AdventureKing.ArtPipeline
             // cycle climbs, so it becomes the playback reference (hands stay on the rungs at any motor speed).
             AnimationClip inPlace = MakeInPlaceClimb(h, model, climbClip, out float risePerCycle);
             motion.climbAdvancePerCycle = risePerCycle;
+            // Rung-accurate climb (ClimbClipBaker): hands/feet placed on the ladder rungs by IK, torso from the take.
+            // Its normalized time is driven by the hero's real height on the ladder ("ClimbPhase"), so a gripping
+            // hand stays on its rung at any speed, holds still when stopped and reverses when climbing down.
+            var baked = ClimbClipBaker.Bake(h, model, inPlace, $"{h.Folder}/InPlace/Climb.anim");
+            motion.climbPhaseDriven = true;
+            motion.climbGripTop = baked.GripTop;
+            motion.rungSpacing = ClimbClipBaker.RungSpacing;
+            motion.firstRung = ClimbClipBaker.FirstRung;
+            if (!controller.parameters.Any(p => p.name == "ClimbPhase"))
+                controller.AddParameter("ClimbPhase", AnimatorControllerParameterType.Float);
             foreach (var st in controller.layers[0].stateMachine.states)
-                if (st.state.name == "Climb") st.state.motion = inPlace;
+                if (st.state.name == "Climb")
+                {
+                    st.state.motion = baked.Clip;
+                    st.state.speedParameterActive = false;
+                    st.state.timeParameterActive = true;
+                    st.state.timeParameter = "ClimbPhase";
+                }
             EditorUtility.SetDirty(controller);
             anim.runtimeAnimatorController = null;
             controller.animationClips.First(c => c.name == "Idle").SampleAnimation(model, 0f);

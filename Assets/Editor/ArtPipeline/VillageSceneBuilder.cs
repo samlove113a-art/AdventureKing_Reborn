@@ -829,7 +829,8 @@ namespace AdventureKing.ArtPipeline
                 {
                     foreach (float dx in new[] { -0.42f, 0.42f })
                         WorldKit.AppendRoundedBox(vv, cc, tt, new Vector3(dx, h * 0.5f, 0f), new Vector3(0.13f, h, 0.13f), 0.05f, dark, Quaternion.identity, 1);
-                    for (float y = 0.35f; y < h - 0.1f; y += 0.42f)
+                    // rung spacing shared with the climb clip (ClimbClipBaker): hands land on these exact rungs
+                    for (float y = ClimbClipBaker.FirstRung; y < h - 0.1f; y += ClimbClipBaker.RungSpacing)
                         WorldKit.AppendRoundedBox(vv, cc, tt, new Vector3(0f, y, 0f), new Vector3(0.84f, 0.08f, 0.1f), 0.03f, wood, Quaternion.identity, 1);
                 });
                 MeshObject(v, "Ladder", ladder, Structures, new Vector3(c.X, c.Bottom, 0.4f));

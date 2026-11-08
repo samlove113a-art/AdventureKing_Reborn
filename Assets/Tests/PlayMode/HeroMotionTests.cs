@@ -105,6 +105,82 @@ namespace AdventureKing.Tests
             }
         }
 
+        /// <summary>
+        /// The rung-accurate climb: the hero rises up a ladder (foot at y = 0, rungs every 0.42 m from 0.35 m, ladder
+        /// plane 0.4 m in front) with the clip time driven exactly as in game; while a hand grips, it must stay still
+        /// in the world, at rung height and on the ladder plane (no sliding along the ladder).
+        /// </summary>
+        [UnityTest]
+        public IEnumerator Climb_Hands_Stay_On_Rungs()
+        {
+            TestRunnerGuard.Protect();
+            var report = new List<string>();
+            try
+            {
+                foreach (string hero in Heroes)
+                {
+#if UNITY_EDITOR
+                    var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Heroes/{hero}_Visual.prefab");
+#else
+                    GameObject prefab = null;
+#endif
+                    GameObject go = Object.Instantiate(prefab);
+                    go.transform.localScale = Vector3.one * 1.55f;
+                    go.transform.rotation = Quaternion.identity; // climbing yaw: facing the ladder (+Z)
+                    var profile = go.GetComponent<AdventureKing.Gameplay.HeroMotionProfile>();
+                    Assert.IsTrue(profile && profile.climbPhaseDriven, hero + " has the rung-accurate climb");
+                    var anim = go.GetComponentInChildren<Animator>();
+                    anim.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                    anim.SetBool("Climbing", true);
+                    for (int i = 0; i < 20; i++) { anim.Update(0.02f); yield return null; }
+                    Assert.IsTrue(anim.GetCurrentAnimatorStateInfo(0).IsName("Climb"), hero + " in Climb");
+                    var all = go.GetComponentsInChildren<Transform>();
+                    Transform a = all.First(t => t.name == "LeftHand"), b = all.First(t => t.name == "RightHand");
+                    Transform leftHand = a.position.x < b.position.x ? a : b, rightHand = leftHand == a ? b : a;
+
+                    const float grip = 0.55f, margin = 0.06f, rise = 0.012f; // 0.72 m/s at 60 fps
+                    float spacing = profile.rungSpacing, first = profile.firstRung;
+                    Vector3 prevL = default, prevR = default;
+                    float worstSlide = 0f, worstRung = 0f, worstPlane = 0f;
+                    int gripFrames = 0;
+                    for (int f = 0; f < 300; f++)
+                    {
+                        float feet = f * rise;
+                        go.transform.position = new Vector3(0f, feet, 0f);
+                        float phase = profile.ClimbPhase(feet, 0f, 1.55f);
+                        anim.SetFloat("ClimbPhase", phase);
+                        anim.Update(1f / 60f);
+                        foreach (var (hand, offset, prev) in new[] { (leftHand, 0f, prevL), (rightHand, 0.5f, prevR) })
+                        {
+                            float q = Mathf.Repeat(phase + offset, 1f);
+                            bool holding = q > margin && q < grip - margin && f > 0;
+                            if (!holding) continue;
+                            gripFrames++;
+                            worstSlide = Mathf.Max(worstSlide, Vector3.Distance(hand.position, prev));
+                            float rungY = first + Mathf.Round((hand.position.y + 0.03f - first) / spacing) * spacing;
+                            worstRung = Mathf.Max(worstRung, Mathf.Abs(hand.position.y + 0.03f - rungY));
+                            worstPlane = Mathf.Max(worstPlane, Mathf.Abs(hand.position.z - (0.4f - 0.12f)));
+                        }
+                        prevL = leftHand.position; prevR = rightHand.position;
+                    }
+                    report.Add($"{hero}: grip frames {gripFrames}, hand slide max {worstSlide * 100f:0.0} cm/frame (body rises {rise * 100f:0.0}), " +
+                               $"off rung height max {worstRung * 100f:0.0} cm, off ladder plane max {worstPlane * 100f:0.0} cm");
+                    Assert.Greater(gripFrames, 100, hero + " grip frames measured");
+                    Assert.Less(worstSlide, rise * 0.35f, $"{hero}: gripping hand slides {worstSlide * 100f:0.0} cm per frame");
+                    Assert.Less(worstRung, 0.05f, $"{hero}: gripping hand {worstRung * 100f:0.0} cm off the rung height");
+                    Assert.Less(worstPlane, 0.08f, $"{hero}: gripping hand {worstPlane * 100f:0.0} cm off the ladder plane");
+                    Object.Destroy(go);
+                    yield return null;
+                }
+            }
+            finally
+            {
+                foreach (string line in report) TestContext.WriteLine(line);
+                System.IO.Directory.CreateDirectory("QA/AnimAudit");
+                System.IO.File.WriteAllLines("QA/AnimAudit/climb_rungs.txt", report);
+            }
+        }
+
         [UnityTest]
         public IEnumerator Loops_Play_Without_Pops_Or_Hip_Jumps()
         {
@@ -132,7 +208,7 @@ namespace AdventureKing.Tests
                              {
                                  ("Idle", () => { }),
                                  ("Run", () => { anim.SetFloat("Speed", 4.6f); anim.SetFloat("RunPlayback", 2.2f); }),
-                                 ("Climb", () => { anim.SetBool("Climbing", true); anim.SetFloat("ClimbPlayback", 1.6f); }),
+                                 ("Climb", () => { anim.SetBool("Climbing", true); anim.SetFloat("ClimbPhase", 0f); }),
                              })
                     {
                         anim.Rebind();
@@ -148,6 +224,8 @@ namespace AdventureKing.Tests
                         var hipSteps = new List<float>();
                         for (int f = 0; f < 240; f++) // 4 s = several cycles, so seams are crossed
                         {
+                            // climb time follows ladder height: at 2.2 m/s and two 0.30 m rungs per cycle = 3.7 cycles/s
+                            if (state == "Climb") anim.SetFloat("ClimbPhase", Mathf.Repeat(f / 60f * 2.2f / 0.6f, 1f));
                             yield return null;
                             float step = 0f;
                             for (int i = 0; i < bones.Length; i++)

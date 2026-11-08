@@ -51,6 +51,9 @@ namespace AdventureKing.Gameplay
         }
 
         private HeroFace face;
+        private static readonly int ClimbPhaseId = Animator.StringToHash("ClimbPhase");
+        private bool hasClimbPhase, hasBaseLocal;
+        private Vector3 baseLocal;
 
         /// <summary>Wires a visual prefab instantiated at runtime (e.g. from the selected class).</summary>
         public void Bind(Transform root, Animator anim)
@@ -69,12 +72,13 @@ namespace AdventureKing.Gameplay
                 profile = visualRoot.GetComponentInParent<HeroMotionProfile>();
                 if (!profile) profile = visualRoot.GetComponentInChildren<HeroMotionProfile>();
             }
-            hasRunPlayback = hasClimbPlayback = false;
+            hasRunPlayback = hasClimbPlayback = hasClimbPhase = false;
             if (!animator) return;
             foreach (AnimatorControllerParameter p in animator.parameters)
             {
                 if (p.nameHash == RunPlayback) hasRunPlayback = true;
                 if (p.nameHash == ClimbPlayback) hasClimbPlayback = true;
+                if (p.nameHash == ClimbPhaseId) hasClimbPhase = true;
             }
         }
 
@@ -135,6 +139,15 @@ namespace AdventureKing.Gameplay
                 Quaternion target = Quaternion.Euler(0f, yaw, 0f);
                 float factor = 1f - Mathf.Exp(-turnSpeed * Time.deltaTime);
                 visualRoot.localRotation = Quaternion.Slerp(visualRoot.localRotation, target, factor);
+
+                // On a ladder the body eases onto the ladder's centre line so the hands meet the rungs
+                // (the physics body may drift sideways inside the zone; this is visual only).
+                if (!hasBaseLocal) { baseLocal = visualRoot.localPosition; hasBaseLocal = true; }
+                LadderZone2D ladder = motor.IsClimbing ? motor.Ladder : null;
+                float wantX = ladder ? Mathf.Clamp(ladder.transform.position.x - transform.position.x, -0.6f, 0.6f) : 0f;
+                Vector3 lp = visualRoot.localPosition;
+                lp.x = Mathf.Lerp(lp.x, baseLocal.x + wantX, 1f - Mathf.Exp(-14f * Time.deltaTime));
+                visualRoot.localPosition = lp;
             }
 
             if (!animator) return;
@@ -145,6 +158,8 @@ namespace AdventureKing.Gameplay
             animator.SetBool(Climbing, motor.IsClimbing);
             if (hasRunPlayback) animator.SetFloat(RunPlayback, RunPlaybackFor(Mathf.Abs(motion.x)));
             if (hasClimbPlayback) animator.SetFloat(ClimbPlayback, ClimbPlaybackFor(motion.y));
+            if (hasClimbPhase && profile && profile.climbPhaseDriven && motor.Ladder && visualRoot)
+                animator.SetFloat(ClimbPhaseId, profile.ClimbPhase(visualRoot.position.y, motor.Ladder.Bottom, Mathf.Abs(visualRoot.lossyScale.y)));
             if (health) animator.SetBool(Dead, health.IsDead);
         }
 
