@@ -149,7 +149,7 @@ public class AccountAndCharacterTests : IDisposable
         // An immediate second jump (double-click, lag retry, spam) is refused even from a valid spot.
         clock += 300;
         Assert.Equal("portal_cooldown", Assert.Throws<GameError>(() => chars.Travel(a, id, "meadow_west_hub", -39f, 0.9f)).Code);
-        Assert.Equal("meadow_breeze", chars.Enter(a, id).lastMapId);
+        Assert.Equal("meadow_breeze", chars.LoadProfile(a).characters.Single(c => c.characterId == id).lastMapId); // (Enter = login: back to the hub)
         clock += 2000;
         CharacterService.Portal p = CharacterService.Portals["hub_east_meadow"];
         Assert.Equal("meadow_breeze", there.lastMapId);

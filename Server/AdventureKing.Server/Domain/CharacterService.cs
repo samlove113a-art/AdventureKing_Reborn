@@ -111,6 +111,14 @@ public sealed class CharacterService
                               ?? throw new GameError("character_not_found", "Không tìm thấy nhân vật thuộc tài khoản này.", 404);
             // Characters created before the welcome Gold existed receive it once (idempotent ledger key).
             GrantStarterGold(c, tx, accountId, ch.characterId);
+            // Logging in (after logout, a crash or a lost connection) always starts at the safe spawn in the hub
+            // (Làng Chuông Gió), never back in a farm field. Gold, items, level, EXP and quests are untouched.
+            if (ch.lastMapId != StartMap)
+            {
+                Database.Exec(c, tx, "UPDATE characters SET map_id=$m, has_position=0, revision=revision+1, saved_ms=$t WHERE id=$id",
+                    ("$m", StartMap), ("$t", Database.NowMs()), ("$id", ch.characterId));
+                AccountService.Audit(c, tx, accountId, "login_to_hub", $"{ch.characterId} from {ch.lastMapId}");
+            }
             return Query(c, tx, "c.id=$id", ("$id", ch.characterId)).Single();
         });
     }
@@ -146,7 +154,17 @@ public sealed class CharacterService
     public Func<long> Clock { get; set; } = Database.NowMs;
 
     /// <summary>Uses a portal: validated against the character's saved map and its current position.</summary>
+    /// <summary>Quest progress hook (accountId, characterId, event, amount): "travel:{map}" after a portal trip.</summary>
+    public Action<string, string, string, int>? QuestEvent { get; set; }
+
     public CharacterDto Travel(string accountId, string characterId, string? portalId, float x, float y)
+    {
+        CharacterDto moved = TravelCore(accountId, characterId, portalId, x, y);
+        QuestEvent?.Invoke(accountId, characterId, "travel:" + moved.lastMapId, 1);
+        return moved;
+    }
+
+    private CharacterDto TravelCore(string accountId, string characterId, string? portalId, float x, float y)
     {
         if (portalId == null || !Portals.TryGetValue(portalId, out Portal? p))
             throw new GameError("portal_unknown", "Cổng dịch chuyển không tồn tại.", 404);

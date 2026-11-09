@@ -260,6 +260,10 @@ public sealed class FarmService
     public Func<string, (int attack, int defense)>? EquipmentBonus { get; set; }
     private (int attack, int defense) Bonus(string characterId) => EquipmentBonus?.Invoke(characterId) ?? (0, 0);
 
+    /// <summary>Quest progress hook (accountId, characterId, event, amount): kills, pickups, skills that hit.</summary>
+    public Action<string, string, string, int>? QuestEvent { get; set; }
+    private void Fire(string acc, string ch, string ev, int n = 1) { try { QuestEvent?.Invoke(acc, ch, ev, n); } catch (Exception e) { Console.Error.WriteLine("quest hook: " + e.Message); } }
+
     /// <summary>Revives a dead monster whose respawn time has passed (server clock).</summary>
     private void Tick(SpawnPoint s, long t)
     {
@@ -454,6 +458,7 @@ public sealed class FarmService
             lastSwing[characterId] = t;
             int dmg = stats.damage + Bonus(characterId).attack;
             SkillHitDto hit = Damage(s, dmg, accountId, characterId, mapId, t);
+            if (hit.killed) { Fire(accountId, characterId, "kill:" + s.type); Fire(accountId, characterId, "kill:any"); }
             return new AttackResultDto { damage = dmg, killed = hit.killed, drop = hit.drop, monster = hit.monster, hero = Drain(h, t) };
         }
     }
@@ -553,6 +558,9 @@ public sealed class FarmService
             h.GlobalReady = t + (long)(Skills.globalCooldownSeconds * 1000f);
             int dmg = (int)MathF.Round((stats.damage + Bonus(characterId).attack) * sk.damageMultiplier);
             var hits = targets.Select(sp => Damage(sp, dmg, accountId, characterId, mapId, t)).ToArray();
+            Fire(accountId, characterId, "skill:any");
+            foreach (var (sp, h2) in targets.Zip(hits))
+                if (h2.killed) { Fire(accountId, characterId, "kill:" + sp.type); Fire(accountId, characterId, "kill:any"); }
             return new SkillResultDto { slot = sk.slot, skillId = sk.id, name = sk.name, mpSpent = cost, cx = cx, cy = cy, hits = hits, hero = Drain(h, t) };
         }
     }
@@ -611,12 +619,14 @@ public sealed class FarmService
         }
         try
         {
-            return db.InTransaction((c, tx) =>
+            PickupResultDto res = db.InTransaction((c, tx) =>
             {
                 LedgerResult r = Wallet.Gold(c, tx, accountId, characterId, d.Amount, "loot:" + d.Type, "loot:" + d.Id);
-                if (r.Applied) AccountService.Audit(c, tx, accountId, "loot", $"{characterId} {d.Id} +{d.Amount}gold");
+                if (r.Applied) { AccountService.Audit(c, tx, accountId, "loot", $"{characterId} {d.Id} +{d.Amount}gold"); }
                 return new PickupResultDto { dropId = d.Id, amount = r.Applied ? d.Amount : 0, gold = r.Balance, hero = heroDto };
             });
+            if (res.amount > 0) Fire(accountId, characterId, "pickup:gold");
+            return res;
         }
         catch
         {

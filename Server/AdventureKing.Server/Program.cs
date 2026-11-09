@@ -51,6 +51,10 @@ string skillsPath = Path.Combine(contentRoot, cfg["SkillConfigPath"] ?? "config/
 builder.Services.AddSingleton(sp => new FarmService(sp.GetRequiredService<Database>(), FarmConfig.Load(monstersPath), skills: SkillConfig.Load(skillsPath)));
 string itemsPath = Path.Combine(contentRoot, cfg["ItemConfigPath"] ?? "config/items.json");
 builder.Services.AddSingleton(sp => new InventoryService(sp.GetRequiredService<Database>(), ItemConfig.Load(itemsPath), sp.GetRequiredService<FarmService>()));
+builder.Services.AddSingleton(sp => new ShopService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
+string questsPath = Path.Combine(contentRoot, cfg["QuestConfigPath"] ?? "config/quests.json");
+builder.Services.AddSingleton(sp => new QuestService(sp.GetRequiredService<Database>(),
+    QuestConfig.Load(questsPath, sp.GetRequiredService<InventoryService>().Config), sp.GetRequiredService<InventoryService>()));
 // Production config = the owner's DRAFT (enabled=false) until rewards are approved; tests point this at welfare.dev.json.
 string welfarePath = Path.Combine(contentRoot, cfg["WelfareConfigPath"] ?? "config/welfare.json");
 builder.Services.AddSingleton(sp => new CheckinService(sp.GetRequiredService<Database>(), WelfareConfig.Load(welfarePath), sp.GetRequiredService<CosmeticShop>().Catalog));
@@ -59,6 +63,15 @@ builder.Services.AddKeyedSingleton("register", new AttemptLimiter(5, TimeSpan.Fr
 
 var app = builder.Build();
 app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses into farm combat from the start
+{
+    // quest progress comes from server events only (plus the small client allowlist in QuestService.ClientEvent)
+    var quests = app.Services.GetRequiredService<QuestService>();
+    Action<string, string, string, int> record = (a, c, e, n) => quests.Record(a, c, e, n);
+    app.Services.GetRequiredService<FarmService>().QuestEvent = record;
+    app.Services.GetRequiredService<InventoryService>().QuestEvent = record;
+    app.Services.GetRequiredService<ShopService>().QuestEvent = record;
+    app.Services.GetRequiredService<CharacterService>().QuestEvent = record;
+}
 
 app.Use(async (ctx, next) =>
 {
@@ -162,6 +175,20 @@ api.MapPost("/characters/{id}/inventory/use", (string id, UseItemRequestDto body
     inv.Use(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/inventory/equip", (string id, EquipRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
     inv.Equip(accounts.Authenticate(Bearer(ctx)), id, body));
+// ---------------------------------------------------------------- NPC shops + ticket travel
+api.MapGet("/shops/{shopId}", (string shopId, ShopService shops) => shops.Get(shopId));
+api.MapPost("/characters/{id}/shop/buy", (string id, BuyRequestDto body, HttpContext ctx, AccountService accounts, ShopService shops) =>
+    shops.Buy(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/travel/ticket", (string id, TicketRequestDto body, HttpContext ctx, AccountService accounts, ShopService shops) =>
+    shops.UseTicket(accounts.Authenticate(Bearer(ctx)), id, body));
+
+// ---------------------------------------------------------------- quests
+api.MapGet("/characters/{id}/quests", (string id, HttpContext ctx, AccountService accounts, QuestService quests) =>
+    quests.Log(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/quests/claim", (string id, QuestClaimDto body, HttpContext ctx, AccountService accounts, QuestService quests) =>
+    quests.Claim(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/quests/event", (string id, QuestEventDto body, HttpContext ctx, AccountService accounts, QuestService quests) =>
+    quests.ClientEvent(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/inventory/unequip", (string id, UnequipRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
     inv.Unequip(accounts.Authenticate(Bearer(ctx)), id, body));
 

@@ -101,6 +101,14 @@ public sealed class Database
             Exec(c, tx, Schema.V5);
             Exec(c, tx, "PRAGMA user_version=5;");
             tx.Commit();
+            version = 5;
+        }
+        if (version < 6)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V6);
+            Exec(c, tx, "PRAGMA user_version=6;");
+            tx.Commit();
         }
     }
 
@@ -133,7 +141,20 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 5;
+    public const int Current = 6;
+
+    // V6: quest progress. period = '' for main/side quests, the Vietnam calendar day for daily quests. claimed_ms set
+    // once: the primary key + the claimed check make a second reward for the same (quest, period) impossible.
+    public const string V6 = """
+    CREATE TABLE quest_progress (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        quest_id     TEXT NOT NULL,
+        period       TEXT NOT NULL DEFAULT '',
+        counts_json  TEXT NOT NULL DEFAULT '{}',
+        claimed_ms   INTEGER,
+        PRIMARY KEY (character_id, quest_id, period)
+    );
+    """;
 
     // V5: character bag (stackable items, max 99 per slot) + equipped gear + one-time grants (starter kit).
     // (character_id, slot_index) is the bag cell; an item lives in exactly one row, so it cannot exist twice.

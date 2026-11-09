@@ -18,7 +18,15 @@ public sealed class ItemDef
     public int[] classes { get; set; } = Array.Empty<int>();
     public int attack { get; set; }
     public int defense { get; set; }
+    // tickets
+    public string destMap { get; set; } = "";
+    public float destX { get; set; }
+    public float destY { get; set; }
+    public int minLevel { get; set; } = 1;
 }
+
+public sealed class ShopTab { public string id { get; set; } = ""; public string name { get; set; } = ""; public string[] items { get; set; } = Array.Empty<string>(); }
+public sealed class ShopDef { public string id { get; set; } = ""; public string npc { get; set; } = ""; public string mapId { get; set; } = ""; public ShopTab[] tabs { get; set; } = Array.Empty<ShopTab>(); }
 
 public sealed class KitEntry { public string itemId { get; set; } = ""; public int qty { get; set; } = 1; public int? heroClass { get; set; } }
 
@@ -30,6 +38,7 @@ public sealed class ItemConfig
     public float potionCooldownSeconds { get; set; } = 1f;
     public ItemDef[] items { get; set; } = Array.Empty<ItemDef>();
     public KitEntry[] starterKit { get; set; } = Array.Empty<KitEntry>();
+    public ShopDef[] shops { get; set; } = Array.Empty<ShopDef>();
 
     public static ItemConfig Load(string path)
     {
@@ -37,7 +46,14 @@ public sealed class ItemConfig
         if (cfg.stackMax < 1 || cfg.stackMax > 99 || cfg.bagSlots < 1) throw new InvalidDataException("bad bag config");
         if (cfg.items.Select(i => i.id).Distinct().Count() != cfg.items.Length) throw new InvalidDataException("duplicate item id");
         foreach (ItemDef i in cfg.items)
+        {
             if (i.kind == "equipment" && i.equipSlot is not ("weapon" or "armor" or "accessory")) throw new InvalidDataException(i.id + ": bad equip slot");
+            // a ticket may only lead to a map the server really has (never to an unbuilt map)
+            if (i.kind == "ticket" && !CharacterService.Maps.ContainsKey(i.destMap)) throw new InvalidDataException(i.id + ": ticket to unknown map " + i.destMap);
+        }
+        foreach (ShopDef s in cfg.shops)
+            foreach (string id in s.tabs.SelectMany(t => t.items))
+                if (cfg.items.FirstOrDefault(x => x.id == id) is not { priceGold: > 0 }) throw new InvalidDataException($"shop {s.id}: {id} unknown or unpriced");
         foreach (KitEntry k in cfg.starterKit)
             if (cfg.items.All(i => i.id != k.itemId) || k.qty < 1) throw new InvalidDataException("starter kit: unknown item " + k.itemId);
         return cfg;
@@ -60,6 +76,7 @@ public sealed class BagSlotDto
     public int attack { get; set; }
     public int defense { get; set; }
     public bool usableByClass { get; set; } = true;
+    public string destMap { get; set; } = "";
 }
 
 public sealed class EquippedDto { public string equipSlot { get; set; } = ""; public BagSlotDto item { get; set; } = new(); }
@@ -167,6 +184,22 @@ public sealed class InventoryService
         if (left > 0) throw new GameError("bag_full", "Túi đồ không đủ chỗ.", 409); // the transaction rolls back: nothing added
     }
 
+    /// <summary>Removes qty of an item from one bag cell (inside the caller's transaction). Fails if the cell does not
+    /// hold that item in that quantity.</summary>
+    public void RemoveFromSlot(SqliteConnection c, SqliteTransaction tx, string characterId, int slot, string itemId, int qty)
+    {
+        var bag = Bag(c, tx, characterId);
+        if (!bag.TryGetValue(slot, out var cell) || cell.item != itemId || cell.qty < qty) throw new GameError("slot_empty", "Ô này không có vật phẩm.", 409);
+        if (cell.qty > qty) Database.Exec(c, tx, "UPDATE bag_slots SET qty=qty-$n WHERE character_id=$c AND slot_index=$s AND qty=$q", ("$n", qty), ("$c", characterId), ("$s", slot), ("$q", cell.qty));
+        else Database.Exec(c, tx, "DELETE FROM bag_slots WHERE character_id=$c AND slot_index=$s AND qty=$q", ("$c", characterId), ("$s", slot), ("$q", qty));
+    }
+
+    public (string item, int qty)? Cell(SqliteConnection c, SqliteTransaction tx, string characterId, int slot) =>
+        Bag(c, tx, characterId).TryGetValue(slot, out var cell) ? cell : null;
+
+    public InventoryDto SnapshotFor(SqliteConnection c, SqliteTransaction tx, string accountId, string characterId) =>
+        Snapshot(c, tx, characterId, ClassOf(c, tx, accountId, characterId));
+
     /// <summary>Space check without changing anything (for shops: check before taking Gold).</summary>
     public bool Fits(SqliteConnection c, SqliteTransaction tx, string characterId, string itemId, int qty)
     {
@@ -195,7 +228,7 @@ public sealed class InventoryService
             return new BagSlotDto
             {
                 index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, qty = qty,
-                equipSlot = d.equipSlot, attack = d.attack, defense = d.defense,
+                equipSlot = d.equipSlot, attack = d.attack, defense = d.defense, destMap = d.destMap,
                 usableByClass = d.kind != "equipment" || d.classes.Length == 0 || d.classes.Contains(heroClass),
             };
         }
@@ -219,7 +252,16 @@ public sealed class InventoryService
         return Snapshot(c, tx, characterId, cls);
     });
 
+    public Action<string, string, string, int>? QuestEvent { get; set; }
+
     public UseItemResultDto Use(string accountId, string characterId, UseItemRequestDto? req)
+    {
+        UseItemResultDto r = UseCore(accountId, characterId, req);
+        QuestEvent?.Invoke(accountId, characterId, "use:potion", 1);
+        return r;
+    }
+
+    private UseItemResultDto UseCore(string accountId, string characterId, UseItemRequestDto? req)
     {
         if (req == null) throw new GameError("bad_request", "Thiếu dữ liệu.");
         long t = now();

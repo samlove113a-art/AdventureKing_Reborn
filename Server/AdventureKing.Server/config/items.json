@@ -16,7 +16,15 @@
     { "id": "gear_novice_daggers", "name": "Song Đao Tập Sự", "kind": "equipment", "icon": "item_weapon_dagger", "equipSlot": "weapon", "classes": [2], "attack": 3, "defense": 0, "desc": "Vũ khí đầu tiên của Sát Thủ. +3 tấn công." },
     { "id": "gear_novice_bow", "name": "Cung Tập Sự", "kind": "equipment", "icon": "item_weapon_bow", "equipSlot": "weapon", "classes": [3], "attack": 4, "defense": 0, "desc": "Vũ khí đầu tiên của Cung Thủ. +4 tấn công." },
     { "id": "gear_cloth_vest", "name": "Áo Vải Lữ Khách", "kind": "equipment", "icon": "item_armor_vest", "equipSlot": "armor", "classes": [0, 1, 2, 3], "attack": 0, "defense": 4, "desc": "Áo vải bền chắc. +4 phòng thủ." },
+    { "id": "ticket_meadow", "name": "Vé Dịch Chuyển: Đồng Cỏ Gió", "kind": "ticket", "icon": "item_ticket", "destMap": "meadow_breeze", "destX": -36, "destY": 0.9, "minLevel": 1, "priceGold": 40, "desc": "Dịch chuyển ngay tới Đồng Cỏ Gió (dùng một lần)." },
     { "id": "gear_wind_charm", "name": "Bùa Chuông Gió", "kind": "equipment", "icon": "item_charm", "equipSlot": "accessory", "classes": [0, 1, 2, 3], "attack": 1, "defense": 1, "desc": "Bùa may mắn của làng. +1 tấn công, +1 phòng thủ." }
+  ],
+  "shops": [
+    { "id": "healer", "npc": "Dược Sư Mộc Linh", "mapId": "village_wind_bell",
+      "tabs": [
+        { "id": "potions", "name": "Dược Phẩm", "items": ["potion_hp_s", "potion_hp_m", "potion_hp_l", "potion_mp_s", "potion_mp_m", "potion_mp_l"] },
+        { "id": "tickets", "name": "Vé Dịch Chuyển", "items": ["ticket_meadow"] }
+      ] }
   ],
   "starterKit": [
     { "itemId": "potion_hp_s", "qty": 10 },
