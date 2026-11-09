@@ -43,7 +43,16 @@
      - thêm sao lấp lánh cho Sự kiện và dấu sáp cho Thư.
    - Vẫn là art tự vẽ bằng code, không lấy của game khác.
    - **Chưa đạt** mức ảnh mẫu thương mại vẽ tay. Nếu muốn mức đó cần art riêng (chờ duyệt).
-5. **Logo màn đăng nhập (ĐỀ XUẤT chờ duyệt):**
+5. **Logo màn đăng nhập — CẬP NHẬT 2026-11-10: dùng logo của chủ dự án.**
+   - Chủ dự án gửi logo (rồng, vòng cung, vương miện, chữ ADVENTURE KING khắc rune, ruy băng REBORN).
+   - Nguồn: `ArtSource/OwnerProvided/Logo/AK_Logo_Owner_white.png`, nền trắng, 1024×576.
+   - `LogoArt.cs` tách nền trắng thành trong suốt, cả vùng trắng bên trong vòng cung. Bóng xám chuyển thành bóng tối bán trong suốt.
+   - File game: `Assets/Art/Branding/AK_TitleLogo.png`. Hiện bên trái khung đăng nhập trên PC/điện thoại; ẩn trên 4:3 vì không đủ chỗ.
+   - **Đã xóa theo yêu cầu** các logo cũ: logo đề xuất tự dựng (chữ 3D + vương miện 3D), các phần ghép của nó, bản nền đá cẩm thạch.
+   - Logo SAM (màn mở đầu của studio) giữ nguyên.
+   - Độ phân giải gốc chỉ 1024×576: đủ cho 1080p. Nếu cần nét hơn trên màn 2K/4K, cần bản PNG lớn hơn (tốt nhất nền trong suốt).
+   - *Mục cũ dưới đây đã thay thế:*
+   **Logo màn đăng nhập (ĐỀ XUẤT chờ duyệt — ĐÃ THAY):**
    - Logo "ADVENTURE KING / REBORN" dựng hoàn toàn trong Unity (`LogoArt.cs`): vương miện gắn ngọc, chữ vàng chuyển màu viền nâu đậm, ruy băng đỏ.
    - File `Assets/Art/Branding/AK_TitleLogo_PROPOSAL.png`.
    - Đặt bên trái, cân với khung đăng nhập. Tự ẩn trên màn 4:3 vì khung nằm giữa, không đủ chỗ.

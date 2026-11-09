@@ -218,7 +218,7 @@ namespace AdventureKing.ArtPipeline
         {
             EnsureLayer();
             InitUi();
-            if (!File.Exists(LogoArt.OutPath)) LogoArt.Build(); // in-engine title logo (proposal for the owner)
+            if (!File.Exists(LogoArt.OutPath) && File.Exists(LogoArt.OwnerSource)) LogoArt.Build(); // owner's title logo, cut out
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             // ---------------------------------------------------------------- audio + input
