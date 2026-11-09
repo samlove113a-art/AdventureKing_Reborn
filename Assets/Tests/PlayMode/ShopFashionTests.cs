@@ -30,7 +30,7 @@ namespace AdventureKing.Tests
         public IEnumerator SetUp()
         {
             TestRunnerGuard.Protect();
-            server = new TestServer(5203, starterGold: 5000); // fixture: enough Gold to exercise several purchases (production starter Gold is 800)
+            server = new TestServer(5203, starterGold: 5000); // fixture: enough Gold to exercise several purchases (explicit fixture)
             yield return server.Start();
             Directory.CreateDirectory(Dir);
         }

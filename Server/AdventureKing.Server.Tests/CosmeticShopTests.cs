@@ -205,7 +205,7 @@ public class CosmeticHttpTests : IDisposable
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", (await reg.Content.ReadFromJsonAsync<Session>())!.token);
         CharacterDto ch = (await (await http.PostAsJsonAsync("/api/v1/characters", new { characterName = "Mua Sắm", heroClass = 2, slotIndex = 0 }))
             .Content.ReadFromJsonAsync<CharacterDto>())!;
-        Assert.Equal(800, ch.gold); // approved production starter Gold
+        Assert.Equal(5000, ch.gold); // production starter Gold (current PROPOSAL)
 
         var wardrobe = await http.GetFromJsonAsync<WardrobeDto>($"/api/v1/characters/{ch.characterId}/wardrobe");
         Assert.Contains(wardrobe!.items, i => i.id == "acc_silver_bell" && i.price == 600 && i.currency == "gold");

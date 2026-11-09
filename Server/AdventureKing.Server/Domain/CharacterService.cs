@@ -44,7 +44,7 @@ public sealed class CharacterService
 
     /// <summary>
     /// One-time welcome Gold per character (server rule, ledger key starter_gold:&lt;id&gt; so it can never be paid twice).
-    /// Amount approved by the owner 2026-11-09 (800); configured by AdventureKing:StarterGold.
+    /// Amount is a PROPOSAL pending owner approval (5000 now; 800 was proposed); configured by AdventureKing:StarterGold.
     /// </summary>
     public long StarterGold { get; }
 

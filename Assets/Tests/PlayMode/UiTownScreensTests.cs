@@ -23,7 +23,7 @@ namespace AdventureKing.Tests
         public IEnumerator SetUp()
         {
             TestRunnerGuard.Protect();
-            server = new TestServer(5213, starterGold: 5000, devWelfare: true); // fixture: the audit buys an item (production starter Gold is 800)
+            server = new TestServer(5213, starterGold: 5000, devWelfare: true); // fixture: the audit buys an item (explicit fixture)
             yield return server.Start();
             Directory.CreateDirectory(Dir);
         }

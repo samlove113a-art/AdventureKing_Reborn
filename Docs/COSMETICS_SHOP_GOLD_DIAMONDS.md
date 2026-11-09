@@ -5,7 +5,7 @@ Approved by project owner 2026-11-07. This is a design/integration specification
 - **Trang phục/phụ kiện bán từng món**: mua bằng **Gold (Vàng)**, loại tiền kiếm được khi chơi. Danh mục phải phong phú, có thể phối nhiều món với nhau. Không ép mua Diamonds để mặc đẹp.
 - **Skin đặc biệt nguyên bộ (Premium / Legendary / Event)**: mua bằng **Diamonds (Kim Cương)**; có thiết kế riêng nổi bật, có thể kèm hiệu ứng kỹ năng/cổng xuất hiện/Idle/âm thanh riêng ở mức thẩm mỹ. Không cộng sát thương, HP, phòng thủ, tốc độ, tỷ lệ rơi đồ hay buff PVP chỉ vì mua bằng tiền.
 - Tuyệt đối không tự ý chuyển sản phẩm Gold sang Diamonds khi chưa được chủ dự án duyệt. Không tự phát sinh thanh toán tiền thật hoặc tích hợp nhà cung cấp thanh toán khi chưa được phép.
-- **Giá đã được chủ dự án duyệt ngày 2026-11-09** (bảng ở cuối tài liệu). Dùng data-driven catalog để thay đổi giá trên server; không tuyên bố mức giá giả định là cuối cùng.
+- **Giá cụ thể CHƯA được chủ dự án duyệt** (đề xuất ở cuối tài liệu; 2026-11-10 chủ dự án xác nhận chưa duyệt). Dùng data-driven catalog để thay đổi giá trên server; không tuyên bố mức giá giả định là cuối cùng.
 
 ## Hệ thống skin từng món (Gold)
 - Danh mục phối đồ 3D: tóc, mũ, khuôn mặt/phụ kiện mặt, áo, quần hoặc váy, găng tay, giày, áo choàng/cánh thời trang, hiệu ứng ngoại hình nhỏ, vũ khí hiển thị/thời trang. Các item phải có slot rõ ràng và tương thích nghề (nếu hạn chế, phải hiển thị).
@@ -49,8 +49,8 @@ Approved by project owner 2026-11-07. This is a design/integration specification
 ### Ghi chú lịch sử
 Trước đây đây chỉ là **yêu cầu và hướng tích hợp**. Code nền AdventurePlayerSaveContracts có inventory, ownedSkinIds và equipped appearance, nhưng chưa đầy đủ hệ thống slot mỹ phẩm + transaction server. Không có cam kết rằng vật phẩm/shop/art đã được dựng trong Unity. Cần Claude Code xây, tích hợp, kiểm thử thật và ghi bằng chứng.
 
-## Bảng giá + mô phỏng thu nhập Vàng — ĐÃ ĐƯỢC CHỦ DỰ ÁN DUYỆT 2026-11-09
-Chủ dự án đã duyệt bảng giá dưới đây và Vàng khởi đầu 800 (đã áp dụng trong `appsettings.json`). Server đọc giá từ `Server/AdventureKing.Server/config/cosmetics.json` (catalog v2), nên đổi giá không cần sửa code.
+## Đề xuất giá + mô phỏng thu nhập Vàng — CHỜ CHỦ DỰ ÁN DUYỆT
+Ngày 2026-11-10 chủ dự án xác nhận **chưa duyệt**: bảng giá dưới đây và Vàng khởi đầu vẫn chỉ là ĐỀ XUẤT. Server đang dùng các giá đề xuất này (chỉ máy chủ thử nghiệm, chưa có người chơi thật, thanh toán tắt). Server đọc giá từ `Server/AdventureKing.Server/config/cosmetics.json` (catalog v2), nên đổi giá không cần sửa code.
 
 **Mô hình thu nhập** (chưa có rơi vàng thật — Đợt 5 sẽ đo lại trong game):
 - Bãi farm khoảng 6 quái, mỗi con hồi sinh sau 60 giây (server).
@@ -70,7 +70,7 @@ Chủ dự án đã duyệt bảng giá dưới đây và Vàng khởi đầu 80
 **Vàng khởi đầu:**
 - Hiện tại là 5.000. Mức này mua ngay được khoảng 4 món, tương đương khoảng 2,6 giờ cày, nên làm mất động lực farm.
 - Đề xuất **800**: đủ mua ngay một món nhỏ (chuông 600, găng 700) để người mới thử hệ thống, còn món mũ phải cày thêm khoảng 30 phút.
-- **Đã duyệt và áp dụng: 800** (biến `StarterGold`).
+- **Chưa duyệt.** Server trả về mức trước đó **5.000** (biến `StarterGold`); 800 vẫn là đề xuất.
 
 **Kim Cương** (chỉ dành cho skin nguyên bộ, theo luật server):
 - Thiên Phong Pha Lê 300, Khủng Long Con 240, Cá Mập Nhỏ 240, Giấc Mơ Ngọt Ngào 180.

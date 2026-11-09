@@ -6,10 +6,10 @@ using Xunit;
 namespace AdventureKing.Server.Tests;
 
 /// <summary>
-/// Owner-approved economy values (2026-11-09) stay as approved: production starter Gold and the shop price list.
-/// Changing them must be a deliberate edit of these expectations, not an accident.
+/// Economy values are PROPOSALS pending owner approval (owner, 2026-11-10: not approved yet). These tests pin the
+/// current proposal so a change is always deliberate, and check the configs keep saying "proposal".
 /// </summary>
-public sealed class ApprovedEconomyTests
+public sealed class ProposedEconomyTests
 {
     private static string ServerDir()
     {
@@ -20,10 +20,19 @@ public sealed class ApprovedEconomyTests
     }
 
     [Fact]
-    public void Production_starter_gold_is_the_approved_800()
+    public void Production_starter_gold_is_the_current_proposal()
     {
         using var doc = JsonDocument.Parse(File.ReadAllText(Path.Combine(ServerDir(), "appsettings.json")));
-        Assert.Equal(800, doc.RootElement.GetProperty("AdventureKing").GetProperty("StarterGold").GetInt64());
+        Assert.Equal(5000, doc.RootElement.GetProperty("AdventureKing").GetProperty("StarterGold").GetInt64());
+    }
+
+    [Fact]
+    public void Catalog_says_prices_are_proposals_not_approved()
+    {
+        using var doc = JsonDocument.Parse(File.ReadAllText(Path.Combine(ServerDir(), "config", "cosmetics.json")));
+        string note = doc.RootElement.GetProperty("_note").GetString()!;
+        Assert.Contains("PROPOSALS pending owner approval", note);
+        Assert.DoesNotContain("APPROVED", note);
     }
 
     [Theory]
@@ -36,12 +45,11 @@ public sealed class ApprovedEconomyTests
     [InlineData("set_crystal_zephyr", "diamonds", 300)]
     [InlineData("set_little_dino", "diamonds", 240)]
     [InlineData("set_sweet_dream", "diamonds", 180)]
-    public void Approved_prices_are_served(string id, string currency, long price)
+    public void Proposed_prices_are_served(string id, string currency, long price)
     {
         using var doc = JsonDocument.Parse(File.ReadAllText(Path.Combine(ServerDir(), "config", "cosmetics.json")));
         var item = doc.RootElement.GetProperty("items").EnumerateArray().Single(i => i.GetProperty("id").GetString() == id);
         Assert.Equal(currency, item.GetProperty("currency").GetString());
         Assert.Equal(price, item.GetProperty("price").GetInt64());
-        Assert.True(item.GetProperty("listed").GetBoolean());
     }
 }

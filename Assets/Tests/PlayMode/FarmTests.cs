@@ -24,7 +24,7 @@ namespace AdventureKing.Tests
         public IEnumerator SetUp()
         {
             TestRunnerGuard.Protect();
-            server = new TestServer(5221); // real production config: starter Gold 800
+            server = new TestServer(5221); // real production config (starter Gold = current proposal, 5000)
             yield return server.Start();
             Directory.CreateDirectory("QA/Farm");
         }
@@ -78,7 +78,8 @@ namespace AdventureKing.Tests
             yield return server.OpenGame();
             yield return TestServer.RegisterCreateAndEnter("farm" + Random.Range(1000, 9999), "farm-pass-2026", HeroClass.Swordsman, "Nông Dân Gió");
             var world = AdventureWorldSession.Current;
-            Assert.AreEqual(800, world.Character.gold, "approved starter Gold");
+            long start = world.Character.gold;
+            Assert.AreEqual(5000, start, "production starter Gold (proposal)");
             Assert.IsNull(Object.FindAnyObjectByType<FarmField>(), "the hub is a safe zone: no monsters");
 
             // ---- portal to the meadow
@@ -147,17 +148,17 @@ namespace AdventureKing.Tests
             while (farm.GoldPickedUp == 0 && Time.time < until) yield return null;
             Assert.AreEqual(amount, farm.GoldPickedUp, "picked up; last error: " + farm.LastError);
             Assert.AreEqual(1, farm.CoinChimes, "coin chime played once");
-            Assert.AreEqual(800 + amount, world.Character.gold);
+            Assert.AreEqual(start + amount, world.Character.gold);
             yield return new WaitForSeconds(0.3f);
             var hud = Object.FindAnyObjectByType<PlayerHud>();
-            Assert.AreEqual((800 + amount).ToString("N0", new System.Globalization.CultureInfo("vi-VN")), hud.GoldShown, "HUD shows the server balance");
+            Assert.AreEqual((start + amount).ToString("N0", new System.Globalization.CultureInfo("vi-VN")), hud.GoldShown, "HUD shows the server balance");
             yield return Shot("04_picked_up");
 
             // the server really has it (fresh read, not the client's copy)
             bool done = false; long serverGold = -1;
             AdventureServerConnection.Instance.GetWardrobe(world.Character.characterId, (ok, w, err) => { done = true; serverGold = ok ? w.gold : -1; });
             while (!done) yield return null;
-            Assert.AreEqual(800 + amount, serverGold, "server wallet credited exactly once");
+            Assert.AreEqual(start + amount, serverGold, "server wallet credited exactly once");
 
             // ---- the slime comes back on the server's 60 s timer, without any client action
             until = Time.time + 70f;

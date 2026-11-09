@@ -42,8 +42,13 @@
 | Âm thanh BGM | 6 BGM nháp trong `Assets/Audio/AKOriginalDrafts/` **chưa gắn vào game**: gói ghi là bản nháp chưa duyệt. Đã có tiếng nhặt vàng tự tạo. |
 | HUD theo ảnh mẫu | Đã có: cụm trái, icon phải, minimap, mũi tên. Chưa có: khung chat có tab, thanh nút dưới (túi đồ/nhân vật/pet/shop/bang/kết hôn/kỹ năng), nút skill + Auto, bảng nhiệm vụ, Lực Chiến. |
 
-### Giá shop + 800 Vàng khởi đầu
-Được áp dụng sau tin nhắn của chủ dự án trong phiên ngày 2026-11-09: "Approve, start Đợt 5". Đó là nút trả lời Claude đề xuất, chủ dự án đã bấm. Nếu đó **không phải** ý duyệt chính thức, cần báo để trả về trạng thái "đề xuất". Test `ApprovedEconomyTests` sẽ báo đỏ khi giá thay đổi.
+### Giá shop + Vàng khởi đầu — VẪN LÀ ĐỀ XUẤT (chủ dự án xác nhận 2026-11-10)
+- Chủ dự án xác nhận chưa duyệt: lần bấm "Approve, start Đợt 5" không phải ý duyệt chính thức.
+- Đã trả về trạng thái **đề xuất**:
+  - `cosmetics.json` ghi "PROPOSALS pending owner approval";
+  - Vàng khởi đầu trở lại **5.000** (mức trước đó, cũng chỉ là đề xuất; 800 vẫn là phương án đề xuất trong tài liệu kinh tế);
+  - tài liệu `COSMETICS_SHOP_GOLD_DIAMONDS.md` ghi "chưa duyệt".
+- Test `ProposedEconomyTests` ghim giá trị đề xuất hiện tại (muốn đổi phải sửa có chủ đích) và kiểm tra config không ghi "APPROVED".
 
 ### Lưu ý commit
 Commit `6866036` đã vô tình gom luôn các file gói 17H mà chủ dự án đặt vào repo: tài liệu, ảnh tham khảo, `EquipmentManager.cs`, WAV nháp. Đã đọc lại: không có khóa/bí mật.
@@ -52,10 +57,7 @@ Commit `6866036` đã vô tình gom luôn các file gói 17H mà chủ dự án 
 ## ★★★★★★★★★ Đợt 5 (2026-11-09 đêm): quái + vàng rơi do server quản lý; bảng giá & Vàng khởi đầu đã duyệt
 **Trạng thái:** đã test, đã commit, **chưa push**. Meshy vẫn 931.
 
-**Chủ dự án đã duyệt (2026-11-09):**
-- Bảng giá Vàng/KC trong `config/cosmetics.json` (ghi chú đổi thành APPROVED).
-- Vàng khởi đầu **800**: đã áp dụng trong `appsettings.json` và mặc định `Program.cs`.
-- Test `ApprovedEconomyTests` ghim các giá trị này.
+**[ĐÃ THU HỒI 2026-11-10 — xem mục ★★★★★★★★★★]** Lúc này giá và Vàng khởi đầu 800 từng được ghi là "đã duyệt". Chủ dự án sau đó xác nhận **chưa duyệt**: giá đã trả về "đề xuất", Vàng khởi đầu về 5.000.
 - Test PlayMode cần mua nhiều món (`ShopFashionTests`, `UiTownScreensTests`) truyền rõ fixture 5.000 qua `TestServer(port, starterGold)`. Test HTTP mua chuông 600 thay vì giày 900 (800 không đủ mua giày, đúng hành vi).
 
 **Server (authoritative) — `Domain/FarmService.cs`, `config/monsters.json`, endpoint `/characters/{id}/farm`, `/farm/attack`, `/farm/pickup`:**
