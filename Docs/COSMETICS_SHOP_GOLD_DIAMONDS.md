@@ -48,3 +48,32 @@ Approved by project owner 2026-11-07. This is a design/integration specification
 
 ### Ghi chú lịch sử
 Trước đây đây chỉ là **yêu cầu và hướng tích hợp**. Code nền AdventurePlayerSaveContracts có inventory, ownedSkinIds và equipped appearance, nhưng chưa đầy đủ hệ thống slot mỹ phẩm + transaction server. Không có cam kết rằng vật phẩm/shop/art đã được dựng trong Unity. Cần Claude Code xây, tích hợp, kiểm thử thật và ghi bằng chứng.
+
+## Đề xuất giá + mô phỏng thu nhập Vàng (2026-11-09) — CHỜ CHỦ DỰ ÁN DUYỆT
+Chưa có giá nào được duyệt. Server đọc giá từ `Server/AdventureKing.Server/config/cosmetics.json` (catalog v2), nên đổi giá không cần sửa code.
+
+**Mô hình thu nhập** (chưa có rơi vàng thật — Đợt 5 sẽ đo lại trong game):
+- Bãi farm khoảng 6 quái, mỗi con hồi sinh sau 60 giây (server).
+- Một người chơi thường hạ khoảng **4 con/phút**, tính cả thời gian di chuyển.
+- Mỗi con rơi trung bình **8 Vàng** (từ 5 đến 11).
+- Thu nhập ≈ **32 Vàng/phút**, tức khoảng 1.900 Vàng/giờ. Không giới hạn theo ngày, không giảm thưởng.
+
+| Mức | Giá đề xuất (Vàng) | Thời gian cày tương ứng |
+|---|---|---|
+| Phụ kiện / găng / giày | 600–1.100 | 19–34 phút |
+| Mũ / bờm vui nhộn, áo, váy | 1.000–1.600 | 31–50 phút |
+| Mũ hiếm (Vòng Đầu Chuông Gió) | 1.800 | 56 phút |
+| Áo choàng / cánh (epic) | 2.000–2.500 | 63–78 phút |
+
+→ Món đầu tiên "đáng mua" (một chiếc mũ hoặc bờm khoảng 1.000–1.200) mất khoảng **31–38 phút**, nằm trong mục tiêu 30–60 phút.
+
+**Vàng khởi đầu:**
+- Hiện tại là 5.000. Mức này mua ngay được khoảng 4 món, tương đương khoảng 2,6 giờ cày, nên làm mất động lực farm.
+- Đề xuất **800**: đủ mua ngay một món nhỏ (chuông 600, găng 700) để người mới thử hệ thống, còn món mũ phải cày thêm khoảng 30 phút.
+- **Chưa đổi** — cần chủ dự án duyệt (biến `StarterGold`).
+
+**Kim Cương** (chỉ dành cho skin nguyên bộ, theo luật server):
+- Thiên Phong Pha Lê 300, Khủng Long Con 240, Cá Mập Nhỏ 240, Giấc Mơ Ngọt Ngào 180.
+- Nạp Kim Cương bằng tiền thật **chưa bật**.
+
+**Tỷ lệ:** 17 món Vàng và 4 bộ Kim Cương (khoảng 80/20 theo số lượng). Đồ đẹp vẫn chủ yếu mua bằng Vàng, đúng chính sách "không ép mua Kim Cương".

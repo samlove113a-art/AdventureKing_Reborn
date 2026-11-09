@@ -19,7 +19,7 @@ namespace AdventureKing.ArtPipeline
     ///  - extra joints for secondary motion (cape chain, wing roots, bell pivots) animated by HeroOutfit.
     /// Output: Assets/Art/Outfits/** and Resources/CosmeticLibrary.asset (+ icons rendered from the meshes).
     /// </summary>
-    public static class OutfitArtPipeline
+    public static partial class OutfitArtPipeline
     {
         public const string Dir = "Assets/Art/Outfits";
         public const string LibraryPath = "Assets/Resources/CosmeticLibrary.asset";
@@ -224,6 +224,17 @@ namespace AdventureKing.ArtPipeline
                     Put("back_wind_cape", "back", () => Cape(h, "wind"));
                     Put("back_dragonfly_wings", "back", () => Wings(h, false));
                     Put("set_crystal_zephyr", "set", () => CrystalSet(h), "head", "back");
+                    // themed, funny pieces (OutfitThemes.cs): different silhouettes, not recolours
+                    Put("head_duck_buddy", "head", () => DuckBuddy(h));
+                    Put("head_frog_eyes", "head", () => FrogEyes(h));
+                    Put("head_bunny_ears", "head", () => BunnyEars(h));
+                    Put("head_cat_ears", "head", () => CatEars(h));
+                    Put("head_panda_ears", "head", () => PandaEars(h));
+                    Put("head_mushroom_cap", "head", () => MushroomCap(h));
+                    Put("head_chef_toque", "head", () => ChefToque(h));
+                    Put("set_little_dino", "set", () => DinoSet(h), "head", "back", "top");
+                    Put("set_baby_shark", "set", () => SharkSet(h), "head", "back", "top");
+                    Put("set_sweet_dream", "set", () => DreamSet(h), "head", "top");
                     Debug.Log($"[OUTFIT] {c}: built {arts.Count} items (H={h.H:0.0} mesh units)");
                 }
                 finally { Object.DestroyImmediate(h.Inst); }
@@ -432,7 +443,11 @@ namespace AdventureKing.ArtPipeline
             return pieces.ToArray();
         }
 
-        private static OutfitPiece[] Top(Hero h)
+        private static OutfitPiece[] Top(Hero h) =>
+            TopShell(h, "top_brocade_vest", "Top_Brocade", "brocade", new Color(0.95f, 0.76f, 0.3f), new Color(1f, 0.9f, 0.55f));
+
+        /// <summary>Short-sleeved torso garment with a pattern texture and a coloured collar/hem rim.</summary>
+        private static OutfitPiece[] TopShell(Hero h, string id, string matName, string pattern, Color rimLo, Color rimHi)
         {
             // Torso by height band (Meshy auto-rigs weight the lower torso to the thighs, so bone sets alone miss it):
             // everything between the top of the legs and the neck that is not head- or arm-driven, plus short sleeves.
@@ -458,9 +473,8 @@ namespace AdventureKing.ArtPipeline
                 }
                 return false;
             }
-            var r = Shell(h, Pred, 0.0075f * h.H, false, 3f, 0.16f * h.H, 0.012f * h.H, 0.016f * h.H,
-                new Color(0.95f, 0.76f, 0.3f), new Color(1f, 0.9f, 0.55f));
-            return Garment(h, "top_brocade_vest", r, ToonMat("Top_Brocade", PatternTex("brocade"), false, Color.black));
+            var r = Shell(h, Pred, 0.0075f * h.H, false, 3f, 0.16f * h.H, 0.012f * h.H, 0.016f * h.H, rimLo, rimHi);
+            return Garment(h, id, r, ToonMat(matName, PatternTex(pattern), false, Color.black));
         }
 
         private static OutfitPiece[] Gloves(Hero h)
@@ -1114,6 +1128,7 @@ namespace AdventureKing.ArtPipeline
 
         private static Color PatternPixel(string kind, float u, float v)
         {
+            if (ThemePattern(kind, u, v, out Color themed)) return themed; // OutfitThemes.cs
             switch (kind)
             {
                 case "brocade":

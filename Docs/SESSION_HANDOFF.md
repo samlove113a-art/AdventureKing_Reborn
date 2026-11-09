@@ -6,6 +6,52 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★ Đợt 4 (2026-11-09 đêm): skin vui nhộn khác dáng thật, giá đề xuất — dựng trong engine, 0 credit Meshy
+**Trạng thái:** đã test, đã commit, **chưa push**. Chủ dự án chọn "chỉ dựng trong engine". **Meshy vẫn 931.**
+
+**Đã làm:**
+- File mới `Assets/Editor/ArtPipeline/OutfitThemes.cs` (partial của `OutfitArtPipeline`) dựng 10 món mới cho cả 4 nghề. Mỗi món đổi **dáng**, không chỉ đổi màu.
+- **Vàng (7 món):**
+  - Vịt Con Đội Đầu: chú vịt ngồi trên đỉnh đầu, kể cả chóp mũ Pháp Sư.
+  - Bờm Ếch Mắt Lồi.
+  - Bờm Tai Thỏ: tai có khớp riêng, nhún theo bước chạy.
+  - Bờm Tai Mèo Cam (có chuông).
+  - Bờm Tai Gấu Trúc (nhánh trúc).
+  - Nấm Đỏ Chấm Bi.
+  - Mũ Đầu Bếp.
+- **Kim Cương (3 bộ):**
+  - Khủng Long Con: gai đầu, áo vảy, đuôi gai biết vẫy.
+  - Cá Mập Nhỏ: vây đầu + răng, áo xám bụng trắng, đuôi chẻ.
+  - Giấc Mơ Ngọt Ngào: mũ ngủ rủ quả bông, áo flannel in sao.
+- **Lưu ý thiết kế:** mũ của từng nghề nằm trong mesh thân (mũ phù thuỷ, mũ cung thủ), nên món đầu dùng bờm theo vòng đầu hoặc đậu lên đỉnh đầu, không trùm đầu (trùm sẽ thành khối khổng lồ trên mũ Pháp Sư).
+- **Server:** `cosmetics.json` lên v2, 21 món. Server tự chặn sai chính sách (món lẻ = Vàng, bộ = KC). Giữ nguyên ID cũ.
+- **Giá:** tất cả là **ĐỀ XUẤT chờ duyệt**. Mô phỏng thu nhập + đề xuất Vàng khởi đầu 800 (hiện 5.000, **chưa đổi**) nằm trong `Docs/COSMETICS_SHOP_GOLD_DIAMONDS.md`, mục cuối.
+- **Test:**
+  - Mới: `Every_Catalog_Item_Builds_On_Every_Class` — mọi món trong catalog server đều có art 3D thật, dựng và skin đúng xương trên cả 4 nghề.
+  - Test trạng thái (Idle / Run / Jump / Climb / Attack / Skill) thêm 6 bộ phối mới; ảnh trong `QA/Shop/states_fun_*.png` và `states_set_*.png`.
+  - Một assert kiểm tra bounds đã bị gỡ: bounds của SkinnedMeshRenderer tính từ xương nên không phản ánh vị trí món đồ (chính Vòng Hoa Sen cũ cũng báo 2,5 m). Vị trí được kiểm bằng ảnh.
+
+**Kiểm thử:**
+- Server 83/83, EditMode 4/4, PlayMode **41** (39 qua + 2 bỏ qua), 0 exception.
+- UI audit 0 lỗi.
+- Đã xem bảng ảnh trạng thái của các bộ dino, shark, dream, duck, bunny trên 4 nghề.
+- Đã sửa sau khi xem ảnh:
+  - tai thỏ/gấu nổi trên mũ;
+  - mắt ếch, tai mèo, gai, vây quá nhỏ;
+  - áo cá mập thành sọc rách (texture lặp 3 lần quanh thân);
+  - viền vàng áo dino nhìn răng cưa;
+  - mũ ngủ quá nhỏ.
+
+**Còn lại / hạn chế:**
+- Chưa có skin vũ khí: slot "Vũ khí" có bộ lọc nhưng chưa có món.
+- Chưa có tóc rời.
+- Viền cổ/gấu áo dạng "shell" hơi răng cưa ở vài góc.
+- Icon bộ KC chụp cả người nên chi tiết nhỏ.
+- Món mới nằm ở phía dưới lưới, phải cuộn mới thấy.
+- Thu nhập Vàng mới là mô hình, Đợt 5 sẽ đo thật.
+- **Chủ dự án cần duyệt:** bảng giá Vàng/KC, Vàng khởi đầu (đề xuất 800).
+
+---
 ## ★★★★★★★ Đợt 3 (2026-11-09 tối): hoàn thiện thẩm mỹ + UX shop (giữ nguyên chức năng thật)
 **Trạng thái:** đã test, đã commit, **chưa push**.
 

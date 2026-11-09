@@ -319,7 +319,51 @@ namespace AdventureKing.Tests
                 .With("gloves", "gloves_jade_silk").With("shoes", "shoes_cloud_boots").With("accessory", "acc_silver_bell").With("back", "back_wind_cape")),
             ("gold_B", new OutfitLoadout().With("head", "head_bell_circlet").With("shoes", "shoes_ember_boots").With("back", "back_dragonfly_wings")),
             ("premium", new OutfitLoadout().With("gloves", "gloves_jade_silk").WithSet("set_crystal_zephyr")),
+            ("fun_duck", new OutfitLoadout().With("head", "head_duck_buddy").With("gloves", "gloves_jade_silk").With("shoes", "shoes_ember_boots")),
+            ("fun_bunny", new OutfitLoadout().With("head", "head_bunny_ears").With("bottom", "bottom_pleat_skirt").With("shoes", "shoes_cloud_boots")),
+            ("fun_frog", new OutfitLoadout().With("head", "head_frog_eyes").With("accessory", "acc_silver_bell").With("shoes", "shoes_cloud_boots")),
+            ("set_dino", new OutfitLoadout().WithSet("set_little_dino")),
+            ("set_shark", new OutfitLoadout().WithSet("set_baby_shark")),
+            ("set_dream", new OutfitLoadout().With("shoes", "shoes_cloud_boots").WithSet("set_sweet_dream")),
         };
+
+        /// <summary>Every catalog item (server config) has real art that builds and skins on every class.</summary>
+        [UnityTest]
+        public IEnumerator Every_Catalog_Item_Builds_On_Every_Class()
+        {
+            string json = System.IO.File.ReadAllText("Server/AdventureKing.Server/config/cosmetics.json");
+            var ids = System.Text.RegularExpressions.Regex.Matches(json, "\"id\":\\s*\"([a-z0-9_]+)\"").Cast<System.Text.RegularExpressions.Match>().Select(m => m.Groups[1].Value).ToArray();
+            Assert.GreaterOrEqual(ids.Length, 21, "catalog items");
+            var lib = CosmeticLibrary.Load();
+            for (int hi = 0; hi < Heroes.Length; hi++)
+            {
+#if UNITY_EDITOR
+                var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Heroes/{Heroes[hi]}_Visual.prefab");
+#else
+                GameObject prefab = null;
+#endif
+                GameObject go = Object.Instantiate(prefab);
+                HeroOutfit outfit = AdventureWorldSession.DressHero(go, (HeroClass)hi);
+                foreach (string id in ids)
+                {
+                    CosmeticArt art = lib.Get(id);
+                    Assert.IsNotNull(art, id + ": listed in the server catalog but has no 3D art");
+                    outfit.Apply(art.slot == "set" ? new OutfitLoadout().WithSet(id) : new OutfitLoadout().With(art.slot, id));
+                    yield return null;
+                    Assert.Greater(outfit.PieceCount, 0, $"{Heroes[hi]} {id}: pieces built");
+                    foreach (GameObject p in outfit.Pieces)
+                    {
+                        var smr = p ? p.GetComponent<SkinnedMeshRenderer>() : null;
+                        if (!smr) continue;
+                        Assert.IsTrue(smr.bones.All(b => b), $"{Heroes[hi]} {id} {p.name}: all bones resolved");
+                        Assert.Greater(smr.sharedMesh.vertexCount, 0, $"{Heroes[hi]} {id} {p.name}: has vertices");
+                        // (placement is checked visually in the per-state contact sheets: skinned-renderer bounds are bone-derived and coarse)
+                    }
+                }
+                Object.Destroy(go);
+                yield return null;
+            }
+        }
 
         /// <summary>
         /// Each class wears each test look while the real animator plays Idle, Run, Jump, Climb, Attack and Skill.
