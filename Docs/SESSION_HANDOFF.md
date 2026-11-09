@@ -6,6 +6,33 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★ Đợt 3 (2026-11-09 tối): hoàn thiện thẩm mỹ + UX shop (giữ nguyên chức năng thật)
+**Trạng thái:** đã test, đã commit, **chưa push**.
+
+**Đã làm:**
+- **Sân khấu thử đồ:**
+  - Bục đá mặt trăng màu oải hương nhiều tầng: viền vàng, vòng ngọc bích.
+  - Đèn spotlight ấm "thở" sau nhân vật, hạt sáng vàng bay lên (`ShopStageFx`, chỉ dùng UI, texture tạo lúc chạy).
+- **Icon món đồ chụp đúng món:** áo, váy chụp theo mảnh đồ (trước đây cả nhân vật tí hon); găng chụp một tay (`OutfitIcons`).
+- **Thẻ món:** huy hiệu góc "Đang mặc" (ngọc bích) hoặc "Đã có" (đá xám).
+- **Khung chi tiết** gọn hơn (196), để lưới hiện gần 2 hàng trên điện thoại 16:9.
+- **Trạng thái trống:** hiện hướng dẫn và biểu tượng tiền tệ của tab.
+- **Chức năng giữ nguyên:**
+  - mặc thử / bỏ thử / mua / trang bị / tháo / lưu bộ phối;
+  - giá và sở hữu do server quyết định;
+  - đăng nhập lại vẫn còn (ShopFashionTests 2/2).
+
+**Kiểm thử:**
+- Server 83/83, EditMode 4/4, PlayMode 38 + 2 bỏ qua, 0 exception.
+- UI audit 0 lỗi ở 5 độ phân giải.
+- Đã xem ảnh shop (PC, 4:3, 16:9, 19.5:9).
+
+**Còn lại:**
+- Icon găng vẫn lộ một phần thân (mesh 2 tay chung một mảnh).
+- Chưa có nhiều món để lấp lưới (Đợt 4: skin khác biệt + giá, cần chủ dự án duyệt).
+- Hạt sáng khá nhẹ trên nền trời sáng.
+
+---
 ## ★★★★★★ Đợt 2 (2026-11-09 tối): ngày/đêm theo giờ VN, chiều sâu sảnh, minimap
 **Trạng thái:** đã test, đã commit, **chưa push**.
 

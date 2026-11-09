@@ -269,6 +269,19 @@ namespace AdventureKing.Gameplay
             icon.sprite = IconFor(it.id); icon.preserveAspect = true; icon.raycastTarget = false;
             var strip = Panel(go.transform, "Rarity", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -6f), new Vector2(150f, 6f), rc, pillSprite);
             strip.GetComponent<Image>().raycastTarget = false;
+            if (it.owned)
+            {
+                // corner badge on the icon: jade "Đang mặc" when worn, slate "Đã có" when only owned
+                bool worn = it.equipped;
+                var badge = Panel(go.transform, "OwnedBadge", new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-50f, -26f), new Vector2(92f, 30f),
+                    worn ? new Color(0.2f, 0.62f, 0.45f) : new Color(0.3f, 0.32f, 0.44f), pillSprite);
+                var bimg = badge.GetComponent<Image>();
+                bimg.raycastTarget = false;
+                Skin(bimg, worn ? "btn_jade" : "btn_slate", 0.45f);
+                Text bt = Label(badge.transform, "BadgeText", worn ? "Đang mặc" : "Đã có", 15, new Color(1f, 0.97f, 0.9f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, true);
+                UiKit.Stretch(bt.rectTransform, 8f, 1f, 8f, 1f);
+                bt.gameObject.AddComponent<FitOneLine>().Configure(15, 11);
+            }
             Text name = Label(go.transform, "Name", it.name, 20, Cream, new Vector2(0.5f, 0f), new Vector2(0f, 70f), new Vector2(180f, 50f), true);
             name.resizeTextForBestFit = true;
             name.verticalOverflow = VerticalWrapMode.Truncate;
@@ -333,7 +346,9 @@ namespace AdventureKing.Gameplay
             if (it == null)
             {
                 detailName.text = Wardrobe == null ? "" : "Chọn một món để xem và mặc thử";
-                detailDesc.text = detailPrice.text = "";
+                detailDesc.text = Wardrobe == null ? "" : "Bấm vào thẻ bên trên: nhân vật sẽ mặc thử ngay trên sân khấu. Giá và quyền sở hữu do máy chủ xác nhận.";
+                detailPrice.text = "";
+                if (coinIcon) { detailIcon.enabled = Wardrobe != null; detailIcon.sprite = CurrentTab == Tab.Premium && diamondIcon ? diamondIcon : coinIcon; }
                 return;
             }
             detailIcon.sprite = IconFor(it.id);
@@ -680,6 +695,7 @@ namespace AdventureKing.Gameplay
             previewImage.transform.SetParent(stageBg.transform, false);
             UiKit.Stretch(previewImage.rectTransform, 0f, 110f, 0f, 0f);
             previewImage.texture = previewRT;
+            stageBg.AddComponent<ShopStageFx>().Build(stageBg.GetComponent<RectTransform>(), previewImage.transform); // spotlight behind, motes in front
             previewImage.gameObject.AddComponent<DragRotate>().shop = this;
             var fitter = previewImage.gameObject.AddComponent<AspectRatioFitter>();
             fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
@@ -769,9 +785,13 @@ namespace AdventureKing.Gameplay
                     d.GetComponent<Renderer>().sharedMaterial = m;
                 }
             }
-            Dais("DaisBase", -0.09f, 1.25f, 0.05f, new Color(0.36f, 0.38f, 0.48f));
-            Dais("DaisRing", -0.04f, 1.05f, 0.012f, new Color(0.95f, 0.76f, 0.38f));
-            Dais("DaisTop", -0.035f, 0.98f, 0.012f, new Color(0.5f, 0.52f, 0.62f));
+            // lavender moonstone dais: wide base, gold inlay, jade inner ring, pale top
+            Dais("DaisBase", -0.11f, 1.3f, 0.06f, new Color(0.34f, 0.29f, 0.5f));
+            Dais("DaisStep", -0.06f, 1.14f, 0.03f, new Color(0.46f, 0.4f, 0.64f));
+            Dais("DaisRing", -0.032f, 1.06f, 0.012f, new Color(1f, 0.8f, 0.4f));
+            Dais("DaisTop", -0.028f, 0.98f, 0.012f, new Color(0.45f, 0.4f, 0.66f));
+            Dais("DaisJade", -0.024f, 0.6f, 0.012f, new Color(0.3f, 0.78f, 0.68f));
+            Dais("DaisCore", -0.021f, 0.54f, 0.012f, new Color(0.52f, 0.47f, 0.72f));
 
             // ---- right: catalogue
             var right = new GameObject("Catalogue", typeof(RectTransform));
@@ -841,9 +861,9 @@ namespace AdventureKing.Gameplay
 
             // details: icon | name, rarity, description | price + actions
             var det = Panel(rr, "Detail", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, new Color(0.12f, 0.14f, 0.28f, 0.95f), panelSprite);
-            UiKit.Size(det.transform, 214f);
+            UiKit.Size(det.transform, 196f); // compact: leaves the grid ~2 full rows on 16:9 phones
             if (!Skin(det.GetComponent<Image>(), "item_cell", 1.2f)) Rim(det.transform, 0.7f);
-            var iconWell = Panel(det.transform, "IconWell", new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(104f, 0f), new Vector2(172f, 172f), new Color(0.06f, 0.07f, 0.16f, 0.9f), panelSprite);
+            var iconWell = Panel(det.transform, "IconWell", new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(98f, 0f), new Vector2(158f, 158f), new Color(0.06f, 0.07f, 0.16f, 0.9f), panelSprite);
             iconWell.GetComponent<Image>().raycastTarget = false;
             detailIcon = new GameObject("Icon", typeof(RectTransform)).AddComponent<Image>();
             detailIcon.transform.SetParent(iconWell.transform, false);

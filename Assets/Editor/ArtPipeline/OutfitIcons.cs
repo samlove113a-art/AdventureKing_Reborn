@@ -71,8 +71,16 @@ namespace AdventureKing.ArtPipeline
                             }
                             Object.DestroyImmediate(m);
                         }
-                        foreach (GameObject p in outfit.Pieces) { if (!p) continue; var s = p.GetComponent<SkinnedMeshRenderer>(); if (s) Add(s); } // (no "is": editor fake-null)
-                        if (art.slot is "set" or "back" or "top" or "bottom") Add(body);
+                        // frame the ITEM, not the whole hero: tops/skirts on their own pieces, gloves on one hand
+                        foreach (GameObject p in outfit.Pieces)
+                        {
+                            if (!p) continue;
+                            var s = p.GetComponent<SkinnedMeshRenderer>(); // (no "is": editor fake-null)
+                            if (!s) continue;
+                            Add(s);
+                            if (art.slot == "gloves") break;
+                        }
+                        if (art.slot is "set" or "back" || (bb == null && art.slot is "top" or "bottom")) Add(body);
                         if (bb == null) { Object.DestroyImmediate(inst); continue; }
                         Bounds b = bb.Value;
                         Vector3 dir = Quaternion.Euler(-12f, 0f, 0f) * Vector3.back; // camera on the -z side, slightly above
