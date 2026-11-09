@@ -419,6 +419,15 @@ namespace AdventureKing.Gameplay
             if (authRoot) authRoot.SetActive(destination == EntryScreen.Authentication);
             if (selectionRoot) selectionRoot.SetActive(destination == EntryScreen.CharacterSelection);
             SetStatus("");
+            if (AdventureAudioDirector.Instance)
+            {
+                AdventureMusicStage stage = destination == EntryScreen.Splash
+                    ? AdventureMusicStage.Splash :
+                    destination == EntryScreen.Authentication
+                        ? AdventureMusicStage.Authentication
+                        : AdventureMusicStage.CharacterSelection;
+                AdventureAudioDirector.Instance.PlayStage(stage);
+            }
             if (destination == EntryScreen.CharacterSelection) SelectClass(selectedClass);
         }
 
