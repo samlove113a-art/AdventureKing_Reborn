@@ -6,6 +6,78 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★★★★★★ GIAI ĐOẠN B — đợt 2: Dược Sư Mộc Linh, vé dịch chuyển, nhiệm vụ, đăng nhập về sảnh (2026-11-10)
+**Trạng thái:** đã làm và kiểm thử. Server commit `fa31b37`, client: xem `git log`. Với phần này, **Giai đoạn B đã đủ hạng mục** theo chỉ thị.
+Không tiêu Meshy, không mua gì, không bật thanh toán. Giá, quà và chỉ số vẫn là ĐỀ XUẤT.
+
+### Server
+- **Cửa hàng Mộc Linh** (`items.json` → `shops`):
+  - 2 tab: Dược Phẩm (thuốc HP/MP nhỏ, vừa, lớn) và Vé Dịch Chuyển.
+  - Mỗi lần mua **1–99**. Kiểm tra theo thứ tự:
+    1. mặt hàng có trong danh sách của shop;
+    2. nhân vật đang ở bản đồ của shop;
+    3. **túi đồ đủ chỗ, trước khi trừ Gold**;
+    4. đủ Gold.
+  - Gold và vật phẩm thay đổi trong cùng một transaction. Khóa ledger `shop:{nhân vật}:{mã yêu cầu}`: bấm hai lần hoặc gửi lại không bị trừ tiền hay giao hàng hai lần.
+  - Thức ăn Pet **chưa bán**, vì chưa có Pet (Giai đoạn C).
+- **Vé dịch chuyển:**
+  - Server khi khởi động **từ chối vé dẫn tới bản đồ chưa tồn tại**. Hiện chỉ có vé Đồng Cỏ Gió, vì chỉ có 2 bản đồ thật.
+  - Dùng vé: bỏ đúng 1 vé và chuyển bản đồ trong một transaction.
+  - Đang ở sẵn nơi đó, thiếu cấp, hoặc vật phẩm không phải vé: từ chối và **giữ nguyên vé**.
+- **Đăng nhập lại luôn về sảnh:** nhân vật đang ở bản đồ farm khi thoát, mất mạng hay crash đều xuất hiện ở điểm spawn an toàn của Làng Chuông Gió. Gold, đồ, cấp, EXP và nhiệm vụ giữ nguyên. Đang ở sảnh thì giữ vị trí đã lưu.
+- **Nhiệm vụ** (`quests.json`, DB v6):
+  - **10 nhiệm vụ chính** đúng thứ tự chỉ thị, mở từng bước một: Gặp Trưởng Làng → luyện đánh thường → luyện 3 kỹ năng → gặp Mộc Linh → mua và dùng thuốc → tới Đồng Cỏ Gió → hạ 3 Slime → nhặt Vàng 3 lần → báo Trưởng Làng → hạ Slime Rêu.
+  - **3 nhiệm vụ phụ.**
+  - **3 nhiệm vụ hằng ngày**, làm mới lúc **00:00 giờ Việt Nam** theo đồng hồ server.
+  - Tiến độ đến từ **sự kiện server**: hạ quái, nhặt Vàng, kỹ năng trúng quái, mua hàng, dùng thuốc, dịch chuyển.
+  - Client chỉ được báo các sự kiện trong danh sách cho phép: `talk:*` và `practice:*`. Sự kiện khác trả `event_not_allowed`.
+  - Nhận thưởng một lần cho mỗi (nhiệm vụ, kỳ): EXP, Gold, vật phẩm (kiểm tra túi trước). EXP lên cấp theo đường cong **đề xuất** 100 × cấp.
+- **Thuốc khi thanh đầy:** người chơi có thể chủ động uống (cờ `force`). Vẫn không hồi vượt mức tối đa. Phím Q/R không bao giờ dùng `force`.
+- **Test:** 6 test shop/vé/đăng nhập/nhiệm vụ. Server **127/127**.
+
+### Client Unity
+- **Dược Sư Mộc Linh (NPC):**
+  - dựng trong engine, không dùng Meshy: dùng lại model chibi của nghề Pháp Sư, đội vương miện hoa sen và cánh chuồn chuồn;
+  - quầy thảo dược ghép từ khối cơ bản: kệ, chai HP đỏ, MP xanh, hũ thảo dược, cuộn vé;
+  - có bảng tên, "E · Nói chuyện", dấu nhiệm vụ "!"/"?";
+  - khi nói chuyện: quay về phía người chơi, mỉm cười (rig khuôn mặt), động tác vẫy trượng chào.
+  - ⚠ **Cần model NPC riêng và animation chào riêng** (cần duyệt credit/art).
+- **Cửa sổ shop:**
+  - tab Dược Phẩm / Vé Dịch Chuyển, dòng hàng có icon và giá;
+  - chọn số lượng −/+, 1/10/99 (tối đa 99/lần), hiện tổng tiền;
+  - **hộp xác nhận** trước khi mua;
+  - Gold và túi đồ cập nhật theo server.
+- **Vé:** mua ở shop. Trong Túi đồ bấm Dùng → hỏi xác nhận → dùng (hiệu ứng warp và màn tải). Thất bại thì vé vẫn còn.
+- **Bảng Nhiệm vụ (bên trái HUD):**
+  - tab Chính / Phụ / Hằng ngày; tiến độ thật từng mục; mô tả; phần thưởng;
+  - nút Nhận thưởng, nút Chỉ đường (nói bản đồ và NPC cần tới);
+  - cấp và thanh EXP; mũi tên thu gọn.
+- **Dấu "!"/"?"** trên Trưởng Làng, Mộc Linh, Chủ Tiệm Lụa, theo nhật ký nhiệm vụ server.
+- **Trưởng Làng** có thể nói chuyện bất kỳ lúc nào (E): bong bóng lời thoại và sự kiện `talk:elder`.
+- **Luyện tập trong làng:** bấm kỹ năng trong khu an toàn sẽ chạy animation, không gây sát thương, không tốn MP, và tính cho nhiệm vụ luyện tập.
+- Thông báo của cụm nút chuyển xuống giữa đáy màn hình, không che icon.
+
+### Kiểm thử Play Mode
+- `QuestHealerTests` (server thật, người chơi mới):
+  - Trưởng Làng chào → nhiệm vụ 1 xong, có "?" → nhận thưởng;
+  - luyện đánh và 3 kỹ năng → nhận thưởng;
+  - "!" trên Mộc Linh → nói chuyện mở shop;
+  - mua 5 thuốc qua giao diện (tổng 150, xác nhận) → Gold đúng theo server;
+  - chọn số lượng 120 thì bị giới hạn 99;
+  - mua và uống thuốc: hỏi xác nhận trước khi uống phí;
+  - mua vé → dùng từ túi đồ → tới Đồng Cỏ Gió → nhiệm vụ 6 hoàn thành, vé đã mất.
+- UI audit 5 độ phân giải: sạch, có thêm bảng nhiệm vụ.
+- **Chạy toàn bộ:** server 127/127; EditMode 4/4; **PlayMode 46 test, 44 qua, 2 bỏ qua, 0 lỗi, 0 exception.**
+- **Ảnh:** `QA/Quests/01_elder_turn_in.png` … `06_arrived_quest_done.png`, `QA/UI/town/*`.
+
+### Còn lại / giới hạn
+- **NPC Mộc Linh:** model mượn và động tác chào mượn từ hero, cần art riêng.
+- **Hệ thống Bang Hội / NPC Đội Trưởng Liên Minh:** chưa làm. Mục này thuộc Phần VI/XIV, không thuộc danh sách Giai đoạn B.
+- **"Không để nhân vật đứng bất động online":** hiện chưa có người chơi khác nhìn thấy nhau (chưa có multiplayer hiển thị), nên chưa áp dụng.
+- **Chống thoát game để né chết:** trạng thái gục ngã nằm trên server. Đăng nhập lại về sảnh rồi quay lại farm vẫn phải hồi sinh. Hồi sinh hiện miễn phí.
+- **Chờ duyệt:** giá thuốc, giá vé, thưởng nhiệm vụ, đường cong EXP.
+
+---
 ## ★★★★★★★★★★★★ GIAI ĐOẠN B — đợt 1: kỹ năng, MP, Auto Skill, nhặt thủ công, túi đồ, thuốc, trang bị (2026-11-10)
 **Trạng thái:** đã làm và kiểm thử. Commit từng phần: server `dba6a0d` + client (xem `git log`).
 **Chưa làm trong Giai đoạn B:** NPC Dược Sư Mộc Linh, vé dịch chuyển, nhiệm vụ chính/phụ/hằng ngày, logout về sảnh.

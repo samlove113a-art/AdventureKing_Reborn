@@ -245,8 +245,8 @@ namespace AdventureKing.Gameplay
             Send("GET", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory", null, true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<InventoryState>(json) : null, err));
 
-        public void UseItem(string characterId, int slot, Action<bool, UseItemResult, string> completed) =>
-            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/use", JsonUtility.ToJson(new SlotBody { slot = slot }), true, (ok, json, err) =>
+        public void UseItem(string characterId, int slot, Action<bool, UseItemResult, string> completed, bool force = false) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/use", JsonUtility.ToJson(new UseBody { slot = slot, force = force }), true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<UseItemResult>(json) : null, err));
 
         public void EquipItem(string characterId, int slot, Action<bool, InventoryState, string> completed) =>
@@ -257,8 +257,36 @@ namespace AdventureKing.Gameplay
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/unequip", JsonUtility.ToJson(new UnequipBody { equipSlot = equipSlot }), true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<InventoryState>(json) : null, err));
 
+        // ------------------------------------------------------------------ NPC shop, tickets, quests
+        public void GetShop(string shopId, Action<bool, NpcShop, string> completed) =>
+            Send("GET", "/shops/" + UnityWebRequest.EscapeURL(shopId), null, false, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<NpcShop>(json) : null, err));
+
+        public void BuyFromShop(string characterId, string shopId, string itemId, int qty, string requestId, Action<bool, BuyResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/shop/buy",
+                JsonUtility.ToJson(new BuyBody { shopId = shopId, itemId = itemId, qty = qty, requestId = requestId }), true, (ok, json, err) =>
+                    completed(ok, ok ? JsonUtility.FromJson<BuyResult>(json) : null, err));
+
+        public void UseTicket(string characterId, int slot, Action<bool, TicketResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/travel/ticket", JsonUtility.ToJson(new SlotBody { slot = slot }), true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<TicketResult>(json) : null, err));
+
+        public void GetQuests(string characterId, Action<bool, QuestLog, string> completed) =>
+            Send("GET", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/quests", null, true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<QuestLog>(json) : null, err));
+
+        public void ClaimQuest(string characterId, string questId, Action<bool, QuestClaimResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/quests/claim", JsonUtility.ToJson(new QuestBody { questId = questId }), true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<QuestClaimResult>(json) : null, err));
+
+        public void QuestEvent(string characterId, string ev, Action<bool, QuestLog, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/quests/event", "{\"event\":\"" + ev.Replace("\"", "") + "\"}", true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<QuestLog>(json) : null, err));
+
+        [Serializable] private sealed class BuyBody { public string shopId, itemId, requestId; public int qty; }
+        [Serializable] private sealed class QuestBody { public string questId; }
         [Serializable] private sealed class SkillBody { public int slot; public string spawnId; public float x, y; public int facing; }
         [Serializable] private sealed class SlotBody { public int slot; }
+        [Serializable] private sealed class UseBody { public int slot; public bool force; }
         [Serializable] private sealed class UnequipBody { public string equipSlot; }
 
         // ------------------------------------------------------------------ 7-day check-in (server decides everything)

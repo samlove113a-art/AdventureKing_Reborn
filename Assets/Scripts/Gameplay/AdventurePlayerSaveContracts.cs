@@ -169,6 +169,34 @@ namespace AdventureKing.Gameplay
     }
     [Serializable] public sealed class UseItemResult { public string itemId; public int restoredHp, restoredMp; public HeroCombatState hero; public InventoryState inventory; }
 
+    // ---------------------------------------------------------------- NPC shop + tickets
+    [Serializable] public sealed class NpcShopItem { public string itemId, name, kind, icon, desc, destMap, destName; public long priceGold; public int minLevel; }
+    [Serializable] public sealed class NpcShopTab { public string id, name; public NpcShopItem[] items = new NpcShopItem[0]; }
+    [Serializable] public sealed class NpcShop { public string id, npc; public int maxPerPurchase = 99; public NpcShopTab[] tabs = new NpcShopTab[0]; }
+    [Serializable] public sealed class BuyResult { public string itemId; public int qty; public long totalGold, gold; public bool replayed; public InventoryState inventory; }
+    [Serializable] public sealed class TicketResult { public AdventureCharacterSnapshot character; public InventoryState inventory; }
+
+    // ---------------------------------------------------------------- quests
+    [Serializable] public sealed class QuestObjectiveState { public string text; public int have, need; }
+    [Serializable]
+    public sealed class QuestState
+    {
+        public string id, type, title, desc, mapId, mapName, npc, rewardItems;
+        public QuestObjectiveState[] objectives = new QuestObjectiveState[0];
+        public long rewardExp, rewardGold;
+        public bool complete, claimed;
+        public int step;
+    }
+    [Serializable]
+    public sealed class QuestLog
+    {
+        public QuestState[] main = new QuestState[0], side = new QuestState[0], daily = new QuestState[0];
+        public int mainTotal, level;
+        public long exp, expLevelStart, expNextLevel;
+        public string dailyDay, turnInNpc;
+    }
+    [Serializable] public sealed class QuestClaimResult { public string questId; public long exp, gold; public int level; public bool leveledUp; public QuestLog log; }
+
     [Serializable]
     public sealed class FarmState
     {

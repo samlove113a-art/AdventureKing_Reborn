@@ -307,6 +307,36 @@ namespace AdventureKing.Gameplay
             });
         }
 
+        /// <summary>Uses a teleport ticket from the bag: the server removes the ticket and moves the hero in one step;
+        /// only then the warp + loading screen run. A refusal (wrong map, level, already there) changes nothing.</summary>
+        public void UseTicket(int slot, System.Action<string> failed = null)
+        {
+            AdventureServerConnection server = AdventureServerConnection.Instance;
+            if (Traveling || leaving || character == null || !server) return;
+            Traveling = true;
+            SetInput(false);
+            server.UseTicket(character.characterId, slot, (ok, r, message) =>
+            {
+                if (!ok || r == null || r.character == null || !SceneForMap.TryGetValue(r.character.lastMapId, out string scene))
+                {
+                    Traveling = false;
+                    SetInput(true);
+                    failed?.Invoke(string.IsNullOrEmpty(message) ? "Không thể dịch chuyển." : message);
+                    return;
+                }
+                character.lastMapId = r.character.lastMapId;
+                character.posX = r.character.posX;
+                character.posY = r.character.posY;
+                character.hasPosition = true;
+                character.serverRevision = r.character.serverRevision;
+                AdventurePlayerSession.ArrivedByPortal = true;
+                if (sfx && warpClip) sfx.PlayOneShot(warpClip);
+                StartCoroutine(TravelAndLoad(scene, MapDisplayName(r.character.lastMapId)));
+            });
+        }
+
+        private static string MapDisplayName(string mapId) => mapId == TownLayout.Meadow.MapId ? TownLayout.Meadow.DisplayName : TownLayout.Hub.DisplayName;
+
         private IEnumerator TravelAndLoad(string scene, string destination)
         {
             // Warp: the hero shrinks into the vortex while the screen fades.

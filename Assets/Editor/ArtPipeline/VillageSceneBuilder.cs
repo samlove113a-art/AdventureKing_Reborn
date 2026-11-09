@@ -117,6 +117,7 @@ namespace AdventureKing.ArtPipeline
             PlaceNpc(play, "NpcSmith", "Thợ Rèn", -46f, 0f);
             // The storekeeper model now runs the fashion stall at the market (Chợ Phiên), in front of the stall prop.
             PlaceNpc(play, "NpcStorekeeper", "Chủ Tiệm Lụa", -30f, 0f);
+            PlaceHealer(play, 20f); // Dược Sư Mộc Linh at her herb counter (between the Elder and the tea house)
 
             FinishWorld(scene, ScenePath, world, TownLayout.Hub.MapId, TownLayout.Hub.DisplayName, TownLayout.Hub.Spawn,
                 TownLayout.Hub.MinX, TownLayout.Hub.MaxX, 14f, AdventureMusicStage.Village);
@@ -239,6 +240,8 @@ namespace AdventureKing.ArtPipeline
                 gso.ApplyModifiedPropertiesWithoutUndo();
             }
             SetupFashionShop(hud);
+            SetupHealer(hud);
+            SetupQuestNpcs();
             var sfx = hud.AddComponent<AudioSource>();
             sfx.playOnAwake = false;
             sfx.spatialBlend = 0f;
@@ -904,6 +907,158 @@ namespace AdventureKing.ArtPipeline
             EntrySceneBuilder.Label(bg.transform, "Name", displayName, 30, new Color(1f, 0.86f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero,
                 new Vector2(290f, 50f), FontStyle.Bold);
             return npc;
+        }
+
+        /// <summary>World-space label above an NPC (name plate, prompt bubble or quest mark).</summary>
+        private static Text WorldLabel(Transform parent, string name, float y, string text, int size, Color textColor, Color? plate, Vector2 box, int order)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = new Vector3(0f, y, -0.3f);
+            var canvas = go.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.sortingOrder = order;
+            go.AddComponent<CanvasGroup>().blocksRaycasts = false;
+            var rt = (RectTransform)go.transform;
+            rt.sizeDelta = box;
+            rt.localScale = Vector3.one * (0.0062f / Mathf.Max(0.01f, parent.lossyScale.y)); // same world size as the NPC name plates
+            Transform host = go.transform;
+            if (plate.HasValue)
+            {
+                var bg = EntrySceneBuilder.Panel(go.transform, "Plate", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, plate.Value, EntrySceneBuilder.PanelSprite);
+                host = bg.transform;
+            }
+            Text t = EntrySceneBuilder.Label(host, "Text", text, size, textColor, new Vector2(0.5f, 0.5f), Vector2.zero, box - new Vector2(10f, 4f), FontStyle.Bold);
+            return t;
+        }
+
+        /// <summary>
+        /// Dược Sư Mộc Linh: built in-engine (no Meshy) on the shared chibi rig (the Mage girl model, dressed at runtime
+        /// with the lotus crown + dragonfly wings) behind a herb counter made of props: wooden counter and shelf, red HP and
+        /// blue MP bottles, green herb jars and rolled teleport-ticket scrolls. NEEDS a dedicated NPC model later.
+        /// </summary>
+        private static void PlaceHealer(Transform play, float x)
+        {
+            var root = new GameObject("NpcHealer").transform;
+            root.SetParent(play, false);
+            root.position = new Vector3(x, 0f, 0.7f);
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(HeroArtPipeline.PrefabPath(HeroClass.Mage));
+            if (!prefab) { Debug.LogWarning("[WORLD] healer base model missing"); return; }
+            var pivot = new GameObject("HealerPivot").transform; // she turns through this pivot (the model keeps its own root)
+            pivot.SetParent(root, false);
+            pivot.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            var visual = (GameObject)PrefabUtility.InstantiatePrefab(prefab, pivot);
+            visual.name = "HealerVisual";
+            visual.transform.localPosition = Vector3.zero;
+            visual.transform.localScale = Vector3.one * HeroScale;
+            foreach (var fx in visual.GetComponentsInChildren<HeroCombatPresentation>(true)) Object.DestroyImmediate(fx, true); // greetings, not fireballs
+            // herb counter (props, to her right; she stands at its end)
+            Material wood = Mat("healer_wood", new Color(0.62f, 0.4f, 0.22f)), woodDark = Mat("healer_wood_dark", new Color(0.42f, 0.26f, 0.14f));
+            Material red = Mat("healer_red", new Color(0.95f, 0.2f, 0.28f), new Color(0.25f, 0.02f, 0.04f));
+            Material blue = Mat("healer_blue", new Color(0.25f, 0.5f, 1f), new Color(0.03f, 0.08f, 0.25f));
+            Material herb = Mat("healer_herb", new Color(0.35f, 0.8f, 0.4f)), glass = Mat("healer_glass", new Color(0.85f, 0.95f, 1f));
+            Material paper = Mat("healer_paper", new Color(0.98f, 0.92f, 0.75f)), cloth = Mat("healer_cloth", new Color(0.35f, 0.65f, 0.45f));
+            var counter = new GameObject("HerbCounter").transform;
+            counter.SetParent(root, false);
+            counter.localPosition = new Vector3(1.55f, 0f, 0.35f);
+            Prim(PrimitiveType.Cube, counter, "Body", new Vector3(0f, 0.48f, 0f), new Vector3(1.9f, 0.96f, 0.72f), wood);
+            Prim(PrimitiveType.Cube, counter, "Top", new Vector3(0f, 0.99f, 0f), new Vector3(2.05f, 0.08f, 0.82f), woodDark);
+            Prim(PrimitiveType.Cube, counter, "Cloth", new Vector3(0f, 0.62f, -0.37f), new Vector3(1.6f, 0.5f, 0.02f), cloth);
+            Prim(PrimitiveType.Cube, counter, "ShelfBack", new Vector3(0f, 1.75f, 0.45f), new Vector3(1.9f, 1.5f, 0.08f), woodDark);
+            Prim(PrimitiveType.Cube, counter, "Shelf1", new Vector3(0f, 1.45f, 0.32f), new Vector3(1.9f, 0.06f, 0.28f), wood);
+            Prim(PrimitiveType.Cube, counter, "Shelf2", new Vector3(0f, 2.05f, 0.32f), new Vector3(1.9f, 0.06f, 0.28f), wood);
+            void Bottle(Vector3 at, Material liquid, float s)
+            {
+                Prim(PrimitiveType.Sphere, counter, "Bottle", at + new Vector3(0f, 0.11f * s, 0f), Vector3.one * 0.22f * s, liquid);
+                Prim(PrimitiveType.Cylinder, counter, "Neck", at + new Vector3(0f, 0.26f * s, 0f), new Vector3(0.07f, 0.06f, 0.07f) * s, glass);
+                Prim(PrimitiveType.Cylinder, counter, "Cork", at + new Vector3(0f, 0.33f * s, 0f), new Vector3(0.06f, 0.025f, 0.06f) * s, woodDark);
+            }
+            float[] xs = { -0.75f, -0.45f, -0.15f, 0.15f, 0.45f, 0.75f };
+            for (int i = 0; i < xs.Length; i++) Bottle(new Vector3(xs[i], 1.48f, 0.3f), i % 2 == 0 ? red : blue, 1f);
+            for (int i = 0; i < xs.Length; i++) Bottle(new Vector3(xs[i] + 0.1f, 2.08f, 0.3f), i % 3 == 0 ? herb : i % 3 == 1 ? blue : red, 0.85f);
+            Bottle(new Vector3(-0.6f, 1.03f, -0.1f), red, 1.3f);
+            Bottle(new Vector3(-0.25f, 1.03f, -0.05f), blue, 1.3f);
+            for (int i = 0; i < 3; i++) // rolled ticket scrolls with a red band
+            {
+                var scroll = Prim(PrimitiveType.Cylinder, counter, "TicketScroll", new Vector3(0.35f + i * 0.22f, 1.08f, -0.1f), new Vector3(0.09f, 0.16f, 0.09f), paper, new Vector3(0f, 0f, 90f));
+                Prim(PrimitiveType.Cylinder, scroll.transform, "Band", Vector3.zero, new Vector3(1.05f, 0.2f, 1.05f), red);
+            }
+            // plates: name, talk prompt, quest mark
+            WorldLabel(root, "NamePlate", 2.05f, "Dược Sư Mộc Linh", 28, new Color(0.7f, 1f, 0.75f), new Color(0.08f, 0.14f, 0.12f, 0.8f), new Vector2(330f, 54f), 40);
+            var prompt = WorldLabel(root, "TalkPrompt", 2.4f, "E · Nói chuyện", 28, Color.white, new Color(0.26f, 0.56f, 0.62f, 0.92f), new Vector2(300f, 54f), 41);
+            prompt.transform.parent.parent.gameObject.SetActive(false);
+            var mark = WorldLabel(root, "QuestMark", 2.78f, "", 64, new Color(1f, 0.85f, 0.25f), null, new Vector2(80f, 80f), 42);
+            root.gameObject.AddComponent<NpcQuestMarker>().Bind("Dược Sư Mộc Linh", mark);
+            var healer = root.gameObject.AddComponent<HealerNpc>();
+            healer.Bind(pivot, visual.transform, visual.GetComponentInChildren<Animator>(), visual.GetComponentInChildren<HeroFace>(), prompt.transform.parent.parent.gameObject, null);
+        }
+
+        private static readonly (string name, string sprite)[] ItemIconMap =
+        {
+            ("item_potion_hp", "action_potion_hp"), ("item_potion_mp", "action_potion_mp"), ("item_weapon_sword", "item_weapon_sword"), ("item_weapon_staff", "item_weapon_staff"),
+            ("item_weapon_dagger", "item_weapon_dagger"), ("item_weapon_bow", "item_weapon_bow"), ("item_armor_vest", "item_armor_vest"), ("item_charm", "item_charm"),
+            ("item_ticket", "item_ticket"),
+        };
+
+        private static void SetIcons(SerializedObject so)
+        {
+            var p = so.FindProperty("icons");
+            p.arraySize = ItemIconMap.Length;
+            for (int i = 0; i < ItemIconMap.Length; i++)
+            {
+                p.GetArrayElementAtIndex(i).FindPropertyRelative("name").stringValue = ItemIconMap[i].name;
+                p.GetArrayElementAtIndex(i).FindPropertyRelative("sprite").objectReferenceValue = SkillIconArt.Get(ItemIconMap[i].sprite);
+            }
+        }
+
+        /// <summary>Healer shop window (HUD canvas) wired to the healer NPC placed in the hub.</summary>
+        private static void SetupHealer(GameObject hud)
+        {
+            var healer = Object.FindAnyObjectByType<HealerNpc>(FindObjectsInactive.Include);
+            if (!healer) return;
+            var go = new GameObject("HealerShopWindow", typeof(RectTransform)) { layer = 5 };
+            go.transform.SetParent(hud.transform, false);
+            var ui = go.AddComponent<HealerShopUI>();
+            var so = new SerializedObject(ui);
+            so.FindProperty("panelSprite").objectReferenceValue = FrameArt.Get("shop_window");
+            so.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("item_cell");
+            so.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
+            so.FindProperty("coinSprite").objectReferenceValue = HudArt.Get("coin");
+            so.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            SetIcons(so);
+            so.ApplyModifiedPropertiesWithoutUndo();
+            var hso = new SerializedObject(healer);
+            hso.FindProperty("shop").objectReferenceValue = ui;
+            hso.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>Elder: E to talk any time (quest "Gặp / Báo cáo Trưởng Làng") + "!"/"?" marks; tailor gets a mark too.</summary>
+        private static void SetupQuestNpcs()
+        {
+            var actors = Object.FindObjectsByType<NpcActor>(FindObjectsInactive.Include);
+            NpcActor elder = actors.FirstOrDefault(a => a.name == "NpcElder");
+            if (elder)
+            {
+                var prompt = WorldLabel(elder.transform, "TalkPrompt", 1.62f, "E · Nói chuyện", 28, Color.white, new Color(0.26f, 0.56f, 0.62f, 0.92f), new Vector2(300f, 54f), 41);
+                prompt.transform.parent.parent.gameObject.SetActive(false);
+                var bubble = WorldLabel(elder.transform, "SpeechBubble", 1.95f, "", 24, new Color(0.25f, 0.15f, 0.06f), new Color(1f, 0.96f, 0.86f, 0.95f), new Vector2(560f, 110f), 43);
+                bubble.horizontalOverflow = HorizontalWrapMode.Wrap;
+                bubble.transform.parent.parent.gameObject.SetActive(false);
+                var spot = elder.gameObject.AddComponent<NpcTalkSpot>();
+                spot.Bind(elder, "talk:elder", "Trưởng Làng", prompt.transform.parent.parent.gameObject, bubble, new[]
+                {
+                    "Chào {name}! Đồng Cỏ Gió ở phía đông, qua cổng rune. Nhớ mua thuốc ở chỗ Mộc Linh trước khi đi.",
+                    "Gió hôm nay lành lắm. Hạ vài con Slime rồi về kể ta nghe nhé.",
+                });
+                var mark = WorldLabel(elder.transform, "QuestMark", 2.3f, "", 64, new Color(1f, 0.85f, 0.25f), null, new Vector2(80f, 80f), 42);
+                elder.gameObject.AddComponent<NpcQuestMarker>().Bind("Trưởng Làng", mark);
+            }
+            NpcActor tailor = actors.FirstOrDefault(a => a.name == "NpcStorekeeper");
+            if (tailor)
+            {
+                var mark = WorldLabel(tailor.transform, "QuestMark", 2.3f, "", 64, new Color(1f, 0.85f, 0.25f), null, new Vector2(80f, 80f), 42);
+                tailor.gameObject.AddComponent<NpcQuestMarker>().Bind("Chủ Tiệm Lụa", mark);
+            }
         }
 
         /// <summary>
@@ -2166,19 +2321,19 @@ namespace AdventureKing.ArtPipeline
             ipso.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("item_cell");
             ipso.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
             ipso.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
-            (string name, string sprite)[] itemIcons =
-            {
-                ("item_potion_hp", "action_potion_hp"), ("item_potion_mp", "action_potion_mp"), ("item_weapon_sword", "item_weapon_sword"), ("item_weapon_staff", "item_weapon_staff"),
-                ("item_weapon_dagger", "item_weapon_dagger"), ("item_weapon_bow", "item_weapon_bow"), ("item_armor_vest", "item_armor_vest"), ("item_charm", "item_charm"),
-            };
-            var iconProp = ipso.FindProperty("icons");
-            iconProp.arraySize = itemIcons.Length;
-            for (int i = 0; i < itemIcons.Length; i++)
-            {
-                iconProp.GetArrayElementAtIndex(i).FindPropertyRelative("name").stringValue = itemIcons[i].name;
-                iconProp.GetArrayElementAtIndex(i).FindPropertyRelative("sprite").objectReferenceValue = SkillIconArt.Get(itemIcons[i].sprite);
-            }
+            SetIcons(ipso);
             ipso.ApplyModifiedPropertiesWithoutUndo();
+
+            // quest tracker (left, under the player frame)
+            var questGo = new GameObject("QuestTracker", typeof(RectTransform)) { layer = 5 };
+            questGo.transform.SetParent(root, false);
+            var qp = questGo.AddComponent<QuestPanel>();
+            var questSo = new SerializedObject(qp);
+            questSo.FindProperty("panelSprite").objectReferenceValue = EntrySceneBuilder.PanelSprite;
+            questSo.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
+            questSo.FindProperty("arrowSprite").objectReferenceValue = HudArt.Get("icon_arrow");
+            questSo.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            questSo.ApplyModifiedPropertiesWithoutUndo();
 
             var barGo = new GameObject("ActionBar", typeof(RectTransform)) { layer = 5 };
             barGo.transform.SetParent(root, false);

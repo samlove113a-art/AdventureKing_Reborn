@@ -61,6 +61,7 @@ namespace AdventureKing.Gameplay
             while (!closed) yield return null;
             if (dialog) dialog.SetActive(false);
             if (input) input.enabled = true;
+            QuestBook.Event("talk:elder"); // main quest 1 "Gặp Trưởng Làng"
 
             // Record the step on the server (server enforces order; never repeats on re-login).
             AdventureServerConnection server = AdventureServerConnection.Instance;

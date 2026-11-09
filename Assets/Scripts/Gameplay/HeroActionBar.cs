@@ -34,18 +34,6 @@ namespace AdventureKing.Gameplay
         public static int Cost(SkillDefDto s, int level) => s == null || Config == null ? 0 : Mathf.RoundToInt(s.mpCost * (1f + Config.mpCostPerLevel * Mathf.Max(0, level - 1)));
     }
 
-    /// <summary>Pointer-down button (fires on press, like a game pad; shows a pressed squash).</summary>
-    public sealed class ActionPress : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
-    {
-        public Action Down, Up;
-        private Vector3 baseScale = Vector3.one;
-        private void Awake() => baseScale = transform.localScale;
-        public void OnPointerDown(PointerEventData e) { transform.localScale = baseScale * 0.92f; Down?.Invoke(); }
-        public void OnPointerUp(PointerEventData e) { transform.localScale = baseScale; Up?.Invoke(); }
-        public void OnPointerExit(PointerEventData e) => transform.localScale = baseScale;
-        /// <summary>Same as a tap (tests / keyboard feedback).</summary>
-        public void Press() { Down?.Invoke(); Up?.Invoke(); }
-    }
 
     /// <summary>
     /// Bottom-right combat cluster for PC and touch: big basic-attack button, the class's three skills on an arc
@@ -235,10 +223,10 @@ namespace AdventureKing.Gameplay
             BagButton = bag;
             bag.Down = () => { if (inventory) inventory.Toggle(); };
 
-            message = Label(transform, "ActionMessage", "", 26, new Color(1f, 0.9f, 0.7f), Vector2.zero, new Vector2(700f, 34f));
+            message = Label(transform, "ActionMessage", "", 26, new Color(1f, 0.9f, 0.7f), Vector2.zero, new Vector2(900f, 34f));
             var mrt = message.rectTransform;
-            mrt.anchorMin = mrt.anchorMax = new Vector2(1f, 0f);
-            mrt.anchoredPosition = new Vector2(-400f, 640f);
+            mrt.anchorMin = mrt.anchorMax = new Vector2(0.5f, 0f); // bottom centre, above the key hints (clear of the HUD icons)
+            mrt.anchoredPosition = new Vector2(0f, 160f); // above the world-status line (y 110) and the key hints
             group = gameObject.AddComponent<CanvasGroup>();
             RefreshAutoUi();
         }
@@ -292,7 +280,16 @@ namespace AdventureKing.Gameplay
             if (!world || world.Character == null) return;
             if (Input2D && !Input2D.enabled) return; // fallen / in a dialog
             FarmField farm = FarmField.Current;
-            if (!farm) { if (!fromAuto) Say("Không thể dùng kỹ năng trong khu an toàn."); return; }
+            if (!farm)
+            {
+                // safe zone: skills are practice only (animation, no damage, no MP) — the tutorial quest counts it
+                if (fromAuto) return;
+                var visual = world.Player.GetComponent<CharacterVisual3D>();
+                if (visual) visual.PlaySkill();
+                Say("Luyện tập kỹ năng (trong làng không gây sát thương — khu an toàn).");
+                QuestBook.Event("practice:skill" + slot);
+                return;
+            }
             SkillDefDto def = SkillBook.Skill(Class, slot);
             if (def == null) { if (!fromAuto) Say("Đang tải kỹ năng..."); SkillBook.Ensure(null); return; }
             float left = farm.CooldownEnds[slot - 1] - Time.time;
@@ -340,10 +337,15 @@ namespace AdventureKing.Gameplay
         }
 
         // ------------------------------------------------------------------ frame
+        private PlayerMelee2D hookedMelee;
+        private void OnSwing() { if (!FarmField.Current) QuestBook.Event("practice:attack"); }
+
         private void Update()
         {
             if (!world) world = AdventureWorldSession.Current;
             if (!world || world.Character == null || !world.Player) return;
+            var melee = world.Player.GetComponent<PlayerMelee2D>();
+            if (melee && melee != hookedMelee) { if (hookedMelee) hookedMelee.Attacked -= OnSwing; hookedMelee = melee; melee.Attacked += OnSwing; }
             PlayerInput2D inp = Input2D;
             if (group)
             {

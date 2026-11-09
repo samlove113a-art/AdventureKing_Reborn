@@ -91,7 +91,8 @@ public sealed class InventoryDto
     public int defenseBonus { get; set; }
 }
 
-public sealed class UseItemRequestDto { public int slot { get; set; } }
+/// <summary>force: drink even with a full bar (the player confirmed; nothing is restored above the maximum).</summary>
+public sealed class UseItemRequestDto { public int slot { get; set; } public bool force { get; set; } }
 public sealed class UseItemResultDto
 {
     public string itemId { get; set; } = "";
@@ -279,7 +280,7 @@ public sealed class InventoryService
             HeroCombatDto before = farm.Peek(accountId, characterId);
             if (before.dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
             bool needHp = d.hp > 0 && before.hp < before.maxHp, needMp = d.mp > 0 && before.mp < before.maxMp;
-            if (!needHp && !needMp) throw new GameError("already_full", d.hp > 0 ? "HP đã đầy." : "MP đã đầy.", 409);
+            if (!needHp && !needMp && !req.force) throw new GameError("already_full", d.hp > 0 ? "HP đã đầy." : "MP đã đầy.", 409);
             // remove exactly one, then restore; any failure rolls the removal back
             if (cell.qty > 1) Database.Exec(c, tx, "UPDATE bag_slots SET qty=qty-1 WHERE character_id=$c AND slot_index=$s AND qty=$q", ("$c", characterId), ("$s", req.slot), ("$q", cell.qty));
             else Database.Exec(c, tx, "DELETE FROM bag_slots WHERE character_id=$c AND slot_index=$s AND qty=1", ("$c", characterId), ("$s", req.slot));

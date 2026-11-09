@@ -368,6 +368,11 @@ namespace AdventureKing.ArtPipeline
                 L(p => Arc(p, new Vector2(0f, 0.35f), 0.28f, 200f, 340f, 0.03f, 0.03f), V(GoldDark, Gold)),
                 L(p => Poly(p, new Vector2(-0.3f, 0.12f), new Vector2(0.3f, 0.12f), new Vector2(0.42f, -0.45f), new Vector2(-0.42f, -0.45f)), V(GoldDark, new Color(1f, 0.9f, 0.55f)), 0.08f, Gold),
                 L(p => Circle(p, new Vector2(0f, -0.55f), 0.09f), V(new Color(0.2f, 0.6f, 1f), new Color(0.8f, 0.95f, 1f))));
+            Paint("item_ticket", p => Backdrop(p, new Color(0.05f, 0.12f, 0.3f), new Color(0.4f, 0.65f, 1f), Wind, 65),
+                L(p => Box(p, new Vector2(0f, 0f), new Vector2(0.55f, 0.32f), 0.06f), V(new Color(0.88f, 0.78f, 0.55f), new Color(1f, 0.96f, 0.82f))),
+                L(p => Union(Circle(p, new Vector2(-0.55f, 0f), 0.14f), Circle(p, new Vector2(0.55f, 0f), 0.14f)), V(new Color(0.6f, 0.4f, 0.2f), new Color(0.85f, 0.6f, 0.35f))),
+                L(p => Box(p, new Vector2(0f, 0f), new Vector2(0.55f, 0.06f)), Flat(new Color(0.85f, 0.2f, 0.25f))),
+                L(p => Arc(p, new Vector2(0.05f, 0.02f), 0.2f, 0f, 359.9f, 0.04f, 0.04f), V(new Color(0.3f, 0.6f, 1f), new Color(0.75f, 0.95f, 1f)), 0.08f, Wind, bevel: false));
             Paint("action_bag", p => Backdrop(p, new Color(0.18f, 0.1f, 0.04f), new Color(0.75f, 0.52f, 0.28f), new Color(1f, 0.9f, 0.7f), 63),
                 L(p => Union(Circle(p, new Vector2(0f, -0.18f), 0.5f), Box(p, new Vector2(0f, 0.35f), new Vector2(0.22f, 0.12f), 0.05f)), V(new Color(0.5f, 0.3f, 0.15f), new Color(0.85f, 0.6f, 0.35f))),
                 L(p => Box(p, new Vector2(0f, 0.2f), new Vector2(0.3f, 0.05f), 0.03f), V(GoldDark, Gold)),

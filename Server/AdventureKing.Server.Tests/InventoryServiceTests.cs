@@ -100,7 +100,14 @@ public sealed class InventoryServiceTests : IDisposable
         Assert.Equal(140, farm.Peek(acc, id).mp);
         Assert.Equal("already_full", Assert.Throws<GameError>(() => inv.Use(acc, id, new UseItemRequestDto { slot = mpSlot })).Code);
         Assert.Equal(9, Count(inv.Get(acc, id), "potion_mp_s"));
+        // the player may still choose to drink at a full bar (confirmed): one potion used, nothing above the maximum
+        clock += 1000;
+        UseItemResultDto forced = inv.Use(acc, id, new UseItemRequestDto { slot = mpSlot, force = true });
+        Assert.Equal(0, forced.restoredMp);
+        Assert.Equal(140, forced.hero.mp);
+        Assert.Equal(8, Count(forced.inventory, "potion_mp_s"));
         // gear is not drinkable
+        clock += 1000;
         Assert.Equal("not_usable", Assert.Throws<GameError>(() => inv.Use(acc, id, new UseItemRequestDto { slot = Slot(d, "gear_novice_staff") })).Code);
     }
 

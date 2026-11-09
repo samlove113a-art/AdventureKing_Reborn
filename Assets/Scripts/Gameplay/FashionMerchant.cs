@@ -122,6 +122,7 @@ namespace AdventureKing.Gameplay
         {
             AdventureWorldSession world = AdventureWorldSession.Current;
             if (busy || MenuOpen || shop.IsOpen || !world || world.Character == null) return;
+            QuestBook.Event("talk:tailor");
             StartCoroutine(Greet(world));
         }
 

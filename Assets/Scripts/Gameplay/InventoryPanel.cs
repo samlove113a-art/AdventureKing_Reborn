@@ -82,20 +82,28 @@ namespace AdventureKing.Gameplay
             Use(s.index, say);
         }
 
-        public void Use(int slot, Action<string> say = null)
+        private int pendingForce = -1;
+
+        public void Use(int slot, Action<string> say = null, bool force = false)
         {
             if (Busy || !world || world.Character == null) return;
             Busy = true;
             AdventureServerConnection.Instance.UseItem(world.Character.characterId, slot, (ok, r, err) =>
             {
                 Busy = false;
-                if (!ok || r == null) { Message(err); say?.Invoke(err); return; }
+                if (!ok || r == null)
+                {
+                    // a full bar: the bag window offers to drink anyway (wasteful, so only on a second, deliberate press)
+                    if (say == null && err != null && err.Contains("đầy")) { pendingForce = slot; err += " Bấm Dùng lần nữa nếu vẫn muốn uống."; }
+                    Message(err); say?.Invoke(err); return;
+                }
+                pendingForce = -1;
                 if (r.inventory != null) Apply(r.inventory);
                 ApplyHero(r.hero);
                 string done = r.restoredHp > 0 ? $"+{r.restoredHp} HP" : $"+{r.restoredMp} MP";
                 Message(done);
                 say?.Invoke(done);
-            });
+            }, force);
         }
 
         private void ApplyHero(HeroCombatState h)
@@ -107,6 +115,32 @@ namespace AdventureKing.Gameplay
             if (health && h.maxHp > 0) health.SetFromServer(h.hp, h.maxHp);
             var mana = world.Player.GetComponent<PlayerMana>();
             if (mana && h.maxMp > 0) mana.SetFromServer(h.mp, h.maxMp);
+        }
+
+        /// <summary>"Dùng": a potion is drunk; a ticket asks to confirm, then the server removes it and moves the hero.</summary>
+        public void UseSelected()
+        {
+            if (State == null || SelectedIndex < 0) return;
+            BagSlotState s = State.slots.FirstOrDefault(x => x.index == SelectedIndex);
+            if (s == null) return;
+            if (s.kind != "ticket") { Use(SelectedIndex, null, pendingForce == SelectedIndex); return; }
+            if (PendingTicket == SelectedIndex) { ConfirmTicket(); return; }
+            PendingTicket = SelectedIndex;
+            Message($"Dùng 1 {s.name}? Bấm Dùng lần nữa để xác nhận.");
+            if (useLabel) useLabel.text = "Xác nhận";
+        }
+
+        public int PendingTicket { get; private set; } = -1;
+        private Text useLabel;
+
+        /// <summary>Second press on a ticket: travel (the window closes; on failure the ticket stays in the bag).</summary>
+        public void ConfirmTicket()
+        {
+            if (PendingTicket < 0 || !world) return;
+            int slot = PendingTicket;
+            PendingTicket = -1;
+            Close();
+            world.UseTicket(slot, err => { Open(); Message(err); });
         }
 
         public void EquipSelected()
@@ -143,7 +177,7 @@ namespace AdventureKing.Gameplay
         public void Open() { if (!root) Build(); root.SetActive(true); transform.SetAsLastSibling(); Refresh(); }
         public void Close() { if (root) root.SetActive(false); }
 
-        public void Select(int slot) { SelectedIndex = slot; selectedEquip = null; Redraw(); }
+        public void Select(int slot) { SelectedIndex = slot; selectedEquip = null; PendingTicket = -1; pendingForce = -1; if (useLabel) useLabel.text = "Dùng"; Redraw(); }
         public void SelectEquip(string equipSlot) { selectedEquip = equipSlot; SelectedIndex = -1; Redraw(); }
 
         // ------------------------------------------------------------------ UI
@@ -242,8 +276,9 @@ namespace AdventureKing.Gameplay
             nameLabel.fontStyle = FontStyle.Bold;
             descLabel = Txt(c, "ItemDesc", "", 22, cream, new Vector2(0f, 0f), new Vector2(620f, 100f), new Vector2(520f, 56f), TextAnchor.UpperLeft);
             msgLabel = Txt(c, "Message", "", 22, new Color(1f, 0.75f, 0.6f), new Vector2(0f, 0f), new Vector2(620f, 52f), new Vector2(520f, 32f), TextAnchor.MiddleLeft);
-            useButton = Btn(c, "Use", "Dùng", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.25f, 0.6f, 0.4f), () => { if (SelectedIndex >= 0) Use(SelectedIndex); });
+            useButton = Btn(c, "Use", "Dùng", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.25f, 0.6f, 0.4f), UseSelected);
             equipButton = Btn(c, "Equip", "Trang bị", new Vector2(1f, 0f), new Vector2(-270f, 110f), new Vector2(180f, 64f), new Color(0.3f, 0.45f, 0.75f), EquipSelected);
+            useLabel = useButton.GetComponentInChildren<Text>();
             unequipButton = Btn(c, "Unequip", "Tháo", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.6f, 0.4f, 0.25f), () => { if (selectedEquip != null) Unequip(selectedEquip); });
             root.SetActive(false);
             Redraw();
@@ -285,7 +320,7 @@ namespace AdventureKing.Gameplay
             }
             else if (selEq != null) { nameLabel.text = selEq.item.name + " (đang mặc)"; descLabel.text = selEq.item.desc; }
             else { nameLabel.text = State == null ? "Đang tải túi đồ..." : "Chọn một vật phẩm"; descLabel.text = State == null ? "" : $"{State.slots.Length}/{State.capacity} ô đã dùng · tối đa {State.stackMax}/ô"; }
-            useButton.gameObject.SetActive(sel != null && sel.kind == "consumable");
+            useButton.gameObject.SetActive(sel != null && (sel.kind == "consumable" || sel.kind == "ticket"));
             equipButton.gameObject.SetActive(sel != null && sel.kind == "equipment" && sel.usableByClass);
             unequipButton.gameObject.SetActive(selEq != null);
         }
