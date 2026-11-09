@@ -239,6 +239,18 @@ namespace AdventureKing.ArtPipeline
                 c.a = 0.96f;
                 return c;
             });
+            // selected: bright gold rim, warm inner glow, lifted body
+            Bake("hall_card_on", 128, 128, new Vector4(30, 30, 30, 30), q =>
+            {
+                float d = RRect(q.p, q.hs - Vector2.one, 20f);
+                if (d > 0f) return Color.clear;
+                if (-d < 1.4f) return new Color(0.2f, 0.11f, 0.02f, 1f);
+                if (-d < 4.4f) return A(Metal(d, 1.4f, 3f, GoldDk, Gold, GoldHi, q.v), 1f);
+                Color c = V(new Color(0.16f, 0.17f, 0.3f), new Color(0.3f, 0.3f, 0.48f), q.v);
+                if (-d < 14f) c = Color.Lerp(new Color(1f, 0.78f, 0.36f), c, Mathf.SmoothStep(0f, 1f, (-d - 4.4f) / 9.6f) * 0.65f + 0.35f);
+                c.a = 0.98f;
+                return c;
+            });
         }
 
         private static void HudPlate()

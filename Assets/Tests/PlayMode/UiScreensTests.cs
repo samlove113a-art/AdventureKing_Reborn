@@ -140,7 +140,11 @@ namespace AdventureKing.Tests
             yield return EntryLobbyTests.WaitIdle(flow);
             Assert.AreEqual(EntryScreen.CharacterSelection, flow.CurrentScreen, flow.StatusMessage);
             flow.SelectSlot(0);
+            flow.SelectClass(HeroClass.Archer);
+            Assert.IsTrue(flow.IsCardHighlighted(HeroClass.Archer), "chosen class card shows the selected look");
             flow.SelectClass(HeroClass.Mage);
+            Assert.IsTrue(flow.IsCardHighlighted(HeroClass.Mage), "highlight follows the new choice");
+            Assert.IsFalse(flow.IsCardHighlighted(HeroClass.Archer), "only one class card is highlighted");
             EntryLobbyTests.Find<InputField>("CharacterNameInput").text = "Pháp Sư Nguyệt Quế";
             yield return new WaitForSeconds(0.8f);
             yield return UiAudit.Screen(Dir, "05_hall_create", problems);

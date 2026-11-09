@@ -1,15 +1,15 @@
-VBCSCompilerPreWarmer: watching VBCSCompiler (PID 16776)
-VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 17108)
-VBCSCompiler prewarm took 5.78 ms
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 4584)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 8260)
+VBCSCompiler prewarm took 5.79 ms
 [Licensing::Module] Trying to connect to existing licensing client channel...
 Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
-[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
 OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-11-09T05:29:32Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 2488)
+Date: 2026-11-09T05:42:19Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 3240)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
@@ -60,29 +60,29 @@ C:/AdventureKing_Reborn
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
 Logging is directed to a specific file, skipping project log.
-Player connection [16304]  Target information:
+Player connection [14420]  Target information:
 
-Player connection [16304]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 11758058 [EditorId] 11758058 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [14420]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 2981658069 [EditorId] 2981658069 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [16304] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [16304] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [14420] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [14420] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-09T05:29:33.3048994Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 2488, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-09T05:42:19.7691845Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 3240, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
-[Package Manager] Connected to IPC stream "Upm-15728" after 0.5 seconds.
+[Package Manager] Connected to IPC stream "Upm-14260" after 0.5 seconds.
 [Licensing::Module] Licensing is not yet initialized.
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              4b8da045fc4a4bf2b472a65f188150e7
-  Correlation Id:          970f92d05fa9884c49f0f41d933a650e
-  External correlation Id: 3492338496115793576
+  Session Id:              4e2d0af7cbce40c5b4eae7a573ddafbd
+  Correlation Id:          a6ba708b4c25c7beb273fd17e1a17c2f
+  External correlation Id: 6292482901810094094
   Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.14s, handshake: 0.06s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-09T05:29:33.5105801Z"
-[Licensing::Module] Connected to LicensingClient (PId: 2488, launch time: 0.00, total connection time: 0.77s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.07s, handshake: 0.07s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-09T05:42:19.9087095Z"
+[Licensing::Module] Connected to LicensingClient (PId: 3240, launch time: 0.00, total connection time: 0.71s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -90,10 +90,10 @@ Input System module state changed to: Initialized.
   Product: Unity Personal
   Type: Assigned
   Expiration: Unlimited
-[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.02
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 0.83s
-[Licensing::Module] Licensing is initialized (took 0.15s).
+[Licensing::Module] Licensing Background thread has ended after 0.78s
+[Licensing::Module] Licensing is initialized (took 0.12s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
 Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/Unity.DataStore.exe 
@@ -122,7 +122,7 @@ Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
 Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56728
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56260
 CodeReloadManager initialized
 ImportWorker Server TCP listen port: 0
 AcceleratorClientConnectionCallback - disconnected - :0
@@ -134,7 +134,7 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/E
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.007230 seconds.
+Registered in 0.017865 seconds.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
@@ -142,24 +142,24 @@ Native extension for WebGL target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Scripting: successfully reloaded assembly
-- Finished resetting the current domain, in  1.245 seconds
-Domain Reload Profiling: 2224ms
-	BeginReloadAssembly (291ms)
-		CreateAndSetChildDomain (26ms)
-	RebuildCommonClasses (11ms)
+- Finished resetting the current domain, in  1.349 seconds
+Domain Reload Profiling: 2358ms
+	BeginReloadAssembly (215ms)
+		CreateAndSetChildDomain (17ms)
+	RebuildCommonClasses (8ms)
 	RebuildNativeTypeToScriptingClass (29ms)
-	initialDomainReloadingComplete (106ms)
-	LoadAllAssembliesAndSetupDomain (539ms)
-		LoadAssemblies (263ms)
-		TypeCache.Refresh (364ms)
-			TypeCache.ScanAssembly (343ms)
+	initialDomainReloadingComplete (124ms)
+	LoadAllAssembliesAndSetupDomain (631ms)
+		LoadAssemblies (194ms)
+		TypeCache.Refresh (452ms)
+			TypeCache.ScanAssembly (431ms)
 		AnalyzeDomain (1ms)
-	FinalizeReload (1247ms)
+	FinalizeReload (1351ms)
 		SetupLoadedEditorAssemblies (0ms)
-			InitializePlatformSupportModulesInManaged (17ms)
-			BeforeProcessingInitializeOnLoad (180ms)
-			ProcessInitializeOnLoadAttributes (207ms)
-			ProcessInitializeOnLoadMethodAttributes (514ms)
+			InitializePlatformSupportModulesInManaged (21ms)
+			BeforeProcessingInitializeOnLoad (190ms)
+			ProcessInitializeOnLoadAttributes (238ms)
+			ProcessInitializeOnLoadMethodAttributes (563ms)
 [Licensing::Client] Successfully resolved entitlement details
 Application.AssetDatabase Initial Refresh Start
 [Package Manager] Restoring resolved packages state from cache
@@ -199,76 +199,14 @@ Application.AssetDatabase Initial Refresh Start
     com.unity.collections@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.collections@4920e8897b5a)
     com.unity.test-framework.performance@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework.performance@e8b39e3ef3d9)
 [Subsystems] No new subsystems found in resolved package list.
-[Package Manager] Done registering packages in 0.01 seconds
-[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+[Package Manager] Done registering packages in 0.02 seconds
 Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 0 Duration: 0s349ms
+[626/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra build success (0.30 seconds), 1 items updated, 804 evaluated
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 3s255ms
-[620/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[780/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll (+2 others)
-Assets\Scripts\Gameplay\LoginBackdrop.cs(26,23): warning CS0414: The field 'LoginBackdrop.raysImg' is assigned but its value is never used
-[785/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll, with 148 defines and 279 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-1 processor(s) skipped this assembly
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-[786/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll, with 146 defines and 313 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-1 processor(s) skipped this assembly
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-[787/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.EditMode.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.EditMode.dll, with 146 defines and 310 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-1 processor(s) skipped this assembly
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-[794/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.PlayMode.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll, with 148 defines and 276 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-1 processor(s) skipped this assembly
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-[795/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Gameplay.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll, with 148 defines and 280 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-1 processor(s) skipped this assembly
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-[798/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.pdb
-[799/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.dll
-[800/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll (+2 others)
-Assets\Editor\ArtPipeline\HeroHandRig.cs(79,29): warning CS8321: The local function 'Pieces' is declared but never used
-
-Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
-[801/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.ArtPipeline.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll, with 146 defines and 314 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-1 processor(s) skipped this assembly
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-[802/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.pdb
-[803/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.dll
-*** Tundra build success (3.22 seconds), 13 items updated, 804 evaluated
-Assets\Scripts\Gameplay\LoginBackdrop.cs(26,23): warning CS0414: The field 'LoginBackdrop.raysImg' is assigned but its value is never used
-Assets\Editor\ArtPipeline\HeroHandRig.cs(79,29): warning CS8321: The local function 'Pieces' is declared but never used
-Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
-AssetDatabase: script compilation time: 3.944037s
+AssetDatabase: script compilation time: 1.069848s
 Begin MonoManager ReloadAssembly
 'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
 'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
@@ -278,134 +216,160 @@ Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Scripting: successfully reloaded assembly
-- Finished resetting the current domain, in  1.581 seconds
-Domain Reload Profiling: 3170ms
-	BeginReloadAssembly (603ms)
-		DisableScriptedObjects (44ms)
-		CreateAndSetChildDomain (205ms)
-	RebuildCommonClasses (16ms)
-	RebuildNativeTypeToScriptingClass (32ms)
-	initialDomainReloadingComplete (83ms)
-	LoadAllAssembliesAndSetupDomain (853ms)
-		LoadAssemblies (531ms)
-		TypeCache.Refresh (189ms)
-			TypeCache.ScanAssembly (169ms)
-		AnalyzeDomain (90ms)
-			BuildScriptInfoCaches (70ms)
-			ResolveRequiredComponents (17ms)
-	FinalizeReload (1583ms)
+- Finished resetting the current domain, in  1.487 seconds
+Domain Reload Profiling: 2996ms
+	BeginReloadAssembly (557ms)
+		DisableScriptedObjects (38ms)
+		CreateAndSetChildDomain (208ms)
+	RebuildCommonClasses (22ms)
+	RebuildNativeTypeToScriptingClass (38ms)
+	initialDomainReloadingComplete (86ms)
+	LoadAllAssembliesAndSetupDomain (804ms)
+		LoadAssemblies (512ms)
+		TypeCache.Refresh (169ms)
+			TypeCache.ScanAssembly (150ms)
+		AnalyzeDomain (76ms)
+			BuildScriptInfoCaches (62ms)
+			ResolveRequiredComponents (11ms)
+	FinalizeReload (1490ms)
 		SetupLoadedEditorAssemblies (0ms)
-			LogAssemblyErrors (6ms)
-			InitializePlatformSupportModulesInManaged (17ms)
-			BeforeProcessingInitializeOnLoad (242ms)
-			ProcessInitializeOnLoadAttributes (335ms)
-			ProcessInitializeOnLoadMethodAttributes (449ms)
-			AfterProcessingInitializeOnLoad (16ms)
-			EditorAssembliesLoaded (6ms)
-		AwakeInstancesAfterBackupRestoration (55ms)
+			InitializePlatformSupportModulesInManaged (18ms)
+			BeforeProcessingInitializeOnLoad (240ms)
+			ProcessInitializeOnLoadAttributes (276ms)
+			ProcessInitializeOnLoadMethodAttributes (434ms)
+			AfterProcessingInitializeOnLoad (14ms)
+		AwakeInstancesAfterBackupRestoration (49ms)
 Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
 
-Asset Pipeline Refresh (id=cd0b901db236bf646807c7dcce3df494): Total: 8.185 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=9e91e9f10b26d9b4cbb219794a597273): Total: 4.856 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	(Values over 0.05ms)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=2178 ms
-		Asset DB Callback time: managed=272 ms, native=28 ms
-		Scripting: domain reloads=1, domain reload time=1675 ms, compile time=3946 ms, other=83 ms
-		Project Asset Count: scripts=970, non-scripts=2352
-		Asset File Changes: new=0, changed=2, moved=0, deleted=0
+		Asset DB Process Time: managed=0 ms, native=2034 ms
+		Asset DB Callback time: managed=57 ms, native=19 ms
+		Scripting: domain reloads=1, domain reload time=1578 ms, compile time=1072 ms, other=93 ms
+		Project Asset Count: scripts=970, non-scripts=2353
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
 		Scan Filter Count: 0
-	InvokePackagesCallback: 20.254ms
-	ApplyChangesToAssetFolders: 0.698ms
-	Scan: 144.072ms
-	Collect global state as custom dependencies: 35.349ms
-	OnSourceAssetsModified: 0.891ms
-	CategorizeScriptCompilationAssets: 32.382ms
-	ProcessAssetsWithTransientArtifactChanges: 87.480ms
-	CategorizeAssets: 70.002ms
-	CompileScripts: 3946.453ms
-	ImportOutOfDateAssets: 1595.964ms (1587.300ms without children)
-		UnloadImportedAssets: 3.487ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.191ms
-		ImportSchedulerStart: 3.940ms
-	PostProcessAllAssets: 274.817ms
-		VCAutoAddAssetPostprocess 1.969ms
-		XRBuildSystem.XRAssetImported 0.144ms
-		PostProcessCallbackCreateDeferredMaterials 0.071ms
-		MonoPostProcessAllAssets: 271.628ms
-			AssetPostprocessor.OnPostprocessAllAssets 144.730ms
-			StyleCatalogPostProcessor.OnPostprocessAllAssets 25.684ms
-			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 24.108ms
-			BuilderAssetPostprocessor.OnPostprocessAllAssets 15.239ms
-			SpriteSlicePostprocessor.OnPostprocessAllAssets 3.797ms
-			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 3.770ms
-			SpeedTree9Postprocessor.OnPostprocessAllAssets 3.398ms
-			AssetChangedListener.OnPostprocessAllAssets 3.000ms
-			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.815ms
-			SyncVS.PostprocessSyncProject 2.601ms
-			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.430ms
-			EditModeScopePostprocessor.OnPostprocessAllAssets 1.962ms
-			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.087ms
-			MaterialPostprocessor.OnPostprocessAllAssets 1.047ms
-			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.801ms
-			PostProcessor.OnPostprocessAllAssets 0.776ms
-			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.761ms
-			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.741ms
-			AudioMixerPostprocessor.OnPostprocessAllAssets 0.731ms
-			TextAssetPostProcessor.OnPostprocessAllAssets 0.678ms
-			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.594ms
-			AssetEvents.OnPostprocessAllAssets 0.439ms
-			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.436ms
-			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.428ms
-			AssetProcessor.OnPostprocessAllAssets 0.405ms
-			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.381ms
-			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.373ms
-			SpeedTreePostProcessor.OnPostprocessAllAssets 0.291ms
-			ConfigAssetsTracker.OnPostprocessAllAssets 0.257ms
-			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.257ms
-			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.247ms
-			ThemePostprocessor.OnPostprocessAllAssets 0.217ms
-			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.201ms
-			AudioContainerPostProcessor.OnPostprocessAllAssets 0.163ms
-	PostAssetChangesProfiler: 7.365ms
-	UnloadStreamsBegin: 2.877ms
-	PersistCurrentRevisions: 0.191ms
-	GenerateScriptTypeHashes: 2.220ms
-	GenerateScriptTypeSerializationHashes: 4.231ms
-	Untracked: 1959.926ms
+	InvokePackagesCallback: 22.229ms
+	ApplyChangesToAssetFolders: 0.610ms
+	Scan: 88.182ms
+	Collect global state as custom dependencies: 33.633ms
+	CategorizeScriptCompilationAssets: 26.150ms
+	ProcessAssetsWithTransientArtifactChanges: 86.655ms
+	CategorizeAssets: 83.729ms
+	CompileScripts: 1071.712ms
+	ImportOutOfDateAssets: 1505.082ms (1495.660ms without children)
+		ReloadNativeAssets: 0.052ms
+		UnloadImportedAssets: 3.431ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.125ms
+		ImportSchedulerStart: 4.809ms
+	PostProcessAllAssets: 57.619ms
+		MonoPostProcessAllAssets: 57.539ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 23.644ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.676ms
+			SyncVS.PostprocessSyncProject 2.536ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.488ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.291ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.159ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.777ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.446ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.428ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.350ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.271ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.238ms
+	UnloadStreamsBegin: 2.640ms
+	PersistCurrentRevisions: 0.141ms
+	GenerateScriptTypeHashes: 2.690ms
+	GenerateScriptTypeSerializationHashes: 5.104ms
+	Untracked: 1872.170ms
 
 Application.AssetDatabase Initial Refresh End
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
-Scanning for USB devices : 2.743ms
+Scanning for USB devices : 2.795ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Adventure King Reborn
 Unloading 66 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 3933 unused Assets / (10.4 MB). Loaded Objects now: 4885.
-Memory consumption went from 348.4 MB to 338.0 MB.
-Total: 21.280800 ms (FindLiveObjects: 0.802200 ms CreateObjectMapping: 0.581400 ms MarkObjects: 12.198300 ms  DeleteObjects: 7.344600 ms)
+Unloading 3933 unused Assets / (10.8 MB). Loaded Objects now: 4882.
+Memory consumption went from 350.2 MB to 339.4 MB.
+Total: 17.634000 ms (FindLiveObjects: 1.134200 ms CreateObjectMapping: 0.765200 ms MarkObjects: 8.674200 ms  DeleteObjects: 6.729600 ms)
 
 Curl error 35: Recv failure: Connection was reset
 Importing 'GUID: a95ed05a6dde0a44f9d743517fd60082 - Path: Assets/Art/UI/ui_panel.png' with importer (TextureImporter)
-Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.020 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
-Asset Pipeline Refresh (id=9ac400bd781046b4f9165da047e3306d): Total: 0.135 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.023 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
+
+Asset Pipeline Refresh (id=a470d9229b63f724c89d96df38d449f2): Total: 0.305 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=1 (actual=1, local cache=0, cache server=0)
+		Asset DB Process Time: managed=6 ms, native=121 ms
+		Asset DB Callback time: managed=174 ms, native=1 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=970, non-scripts=2353
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 4
+	ApplyChangesToAssetFolders: 0.093ms
+	Scan: 30.988ms
+	Collect global state as custom dependencies: 0.859ms
+	ProcessAssetsWithTransientArtifactChanges: 0.117ms
+	CategorizeAssets: 59.882ms
+	ImportOutOfDateAssets: 26.795ms (0.195ms without children)
+		ImportManagerImport: 25.493ms (2.006ms without children)
+			UpdateCategorizedAssets: 0.093ms
+		UnloadImportedAssets: 0.187ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.602ms
+		ImportSchedulerStart: 0.266ms
+	PostProcessAllAssets: 176.079ms
+		XRBuildSystem.XRAssetImported 0.514ms
+		MonoPostProcessAllAssets: 174.759ms
+			AssetPostprocessor.OnPostprocessAllAssets 81.634ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 24.985ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 22.417ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 16.491ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 4.828ms
+			AssetChangedListener.OnPostprocessAllAssets 2.989ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 2.826ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 2.211ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.821ms
+			MaterialPostprocessor.OnPostprocessAllAssets 1.132ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.950ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.820ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.791ms
+			AssetEvents.OnPostprocessAllAssets 0.558ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.437ms
+			PostProcessor.OnPostprocessAllAssets 0.436ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.417ms
+			AssetProcessor.OnPostprocessAllAssets 0.391ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.373ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.345ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.237ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.202ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.155ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.152ms
+	PostAssetChangesProfiler: 0.439ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.253ms
+	UnloadStreamsBegin: 0.123ms
+	PersistCurrentRevisions: 0.153ms
+	Untracked: 5.313ms
+
 ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: c76076ffd6548c4836e96289ba5cf38d, producedFiles[0].extension: , producedFiles[0].contentHash: 31edcb4c20d915faf16fa993430f4ba3
 ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: 2d72480f4227fec760398781dcfa85cf, producedFiles[0].extension: , producedFiles[0].contentHash: f14ab2b46531802ee80c28ccb8822b5e
 Importer(TextureImporter) generated inconsistent result for asset(guid:a95ed05a6dde0a44f9d743517fd60082) "Assets/Art/UI/ui_panel.png"
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
-AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:742)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:760)
 AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:56)
 AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:220)
 AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
 
-[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 742]
+[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 760]
 
 Importing 'GUID: a95ed05a6dde0a44f9d743517fd60082 - Path: Assets/Art/UI/ui_panel.png' with importer (TextureImporter)
 Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
-Asset Pipeline Refresh (id=925a02cbfa112854691ccd25919e5864): Total: 0.024 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=d53ce7bf6689bf540b0fc991cfe2524a): Total: 0.026 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: c76076ffd6548c4836e96289ba5cf38d, producedFiles[0].extension: , producedFiles[0].contentHash: 31edcb4c20d915faf16fa993430f4ba3
 ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: 2d72480f4227fec760398781dcfa85cf, producedFiles[0].extension: , producedFiles[0].contentHash: f14ab2b46531802ee80c28ccb8822b5e
 Importer(TextureImporter) generated inconsistent result for asset(guid:a95ed05a6dde0a44f9d743517fd60082) "Assets/Art/UI/ui_panel.png"
@@ -414,32 +378,32 @@ UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
 UnityEditor.AssetDatabase:ImportAsset (string)
 UnityEditor.AssetImporter:SaveAndReimport ()
-AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:748)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:766)
 AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:56)
 AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:220)
 AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
 
-[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 748]
+[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 766]
 
 Importing 'GUID: a8c53e28846725349a567e4452955eaa - Path: Assets/Art/UI/ui_pill.png' with importer (TextureImporter)
 Imported 'GUID: a8c53e28846725349a567e4452955eaa' -> (Import Result ID: '6e324eeb9bf2ecfc1f13f3cb2a9200f8') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc8abdefac17bd5ed8c245858ea11af DependenciesID=a1a3784a24f0ecb690083fa668622c98 StaticDependenciesID=0d52825a4c7ae9949b742631091bb9f7 
-Asset Pipeline Refresh (id=b509ccf1bd2eea246b1dc0a85f7d0a5f): Total: 0.020 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=bb964866fa37b5d4498d9ec310b4e51a): Total: 0.024 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: 6e324eeb9bf2ecfc1f13f3cb2a9200f8, producedFiles[0].extension: , producedFiles[0].contentHash: 69ce02932a1b0727530639a2ab270257
 ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: aa659222456c67463407f934f6a93aa8, producedFiles[0].extension: , producedFiles[0].contentHash: b1b82a9ef003c83545902599911a4f05
 Importer(TextureImporter) generated inconsistent result for asset(guid:a8c53e28846725349a567e4452955eaa) "Assets/Art/UI/ui_pill.png"
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
-AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:742)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:760)
 AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:57)
 AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:220)
 AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
 
-[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 742]
+[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 760]
 
 Importing 'GUID: a8c53e28846725349a567e4452955eaa - Path: Assets/Art/UI/ui_pill.png' with importer (TextureImporter)
 Imported 'GUID: a8c53e28846725349a567e4452955eaa' -> (Import Result ID: '6e324eeb9bf2ecfc1f13f3cb2a9200f8') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc8abdefac17bd5ed8c245858ea11af DependenciesID=a1a3784a24f0ecb690083fa668622c98 StaticDependenciesID=0d52825a4c7ae9949b742631091bb9f7 
-Asset Pipeline Refresh (id=f574adb309f090346982123e80d9f378): Total: 0.019 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=f5afa31d3fbb1f5479b06c4f385d8d45): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: 6e324eeb9bf2ecfc1f13f3cb2a9200f8, producedFiles[0].extension: , producedFiles[0].contentHash: 69ce02932a1b0727530639a2ab270257
 ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: aa659222456c67463407f934f6a93aa8, producedFiles[0].extension: , producedFiles[0].contentHash: b1b82a9ef003c83545902599911a4f05
 Importer(TextureImporter) generated inconsistent result for asset(guid:a8c53e28846725349a567e4452955eaa) "Assets/Art/UI/ui_pill.png"
@@ -448,29 +412,29 @@ UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
 UnityEditor.AssetDatabase:ImportAsset (string)
 UnityEditor.AssetImporter:SaveAndReimport ()
-AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:748)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:766)
 AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:57)
 AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:220)
 AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
 
-[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 748]
+[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 766]
 
 Importing 'GUID: e20b2cda29bfe6741810831bc292661c - Path: Assets/Art/UI/ui_enamel.png' with importer (TextureImporter)
-Imported 'GUID: e20b2cda29bfe6741810831bc292661c' -> (Import Result ID: 'ef60faccf2ccdab4ecd47fab6daae535') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=08d2d136a936447ecd8e6f96463df8c1 DependenciesID=65f251aadf51eac00f294feed78eb237 StaticDependenciesID=b7c50589b97ec5e4ae9fe3a76b33e68a 
-Asset Pipeline Refresh (id=1ab5ed5401a836e4590adfa372841b98): Total: 0.020 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Imported 'GUID: e20b2cda29bfe6741810831bc292661c' -> (Import Result ID: 'ef60faccf2ccdab4ecd47fab6daae535') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=08d2d136a936447ecd8e6f96463df8c1 DependenciesID=65f251aadf51eac00f294feed78eb237 StaticDependenciesID=b7c50589b97ec5e4ae9fe3a76b33e68a 
+Asset Pipeline Refresh (id=09ce6acf13436484fa47aacfc33bdf85): Total: 0.024 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Importing 'GUID: e20b2cda29bfe6741810831bc292661c - Path: Assets/Art/UI/ui_enamel.png' with importer (TextureImporter)
 Imported 'GUID: e20b2cda29bfe6741810831bc292661c' -> (Import Result ID: 'ef60faccf2ccdab4ecd47fab6daae535') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=08d2d136a936447ecd8e6f96463df8c1 DependenciesID=65f251aadf51eac00f294feed78eb237 StaticDependenciesID=b7c50589b97ec5e4ae9fe3a76b33e68a 
-Asset Pipeline Refresh (id=3b0091dd97296b34191da5c08d4cb141): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=c7c1f8bcde5b88e4b9ae9aa8ee8b28f5): Total: 0.026 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Importing 'GUID: c99feed878db6c84695ec57228effd8e - Path: Assets/Art/UI/ui_gilded_rim.png' with importer (TextureImporter)
 Imported 'GUID: c99feed878db6c84695ec57228effd8e' -> (Import Result ID: 'd4acd6880c30b755d0e485508b00fea7') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7577d96dc4c637f105367453935e5aca DependenciesID=3ff89271924067f7db12284deed62ff8 StaticDependenciesID=4b1cbb8daea46a8df55dafd0840ecfe7 
-Asset Pipeline Refresh (id=304b638f209855e4aa9acb519be53614): Total: 0.021 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0e868829411139d429c4ce65c6ef7356): Total: 0.020 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Importing 'GUID: c99feed878db6c84695ec57228effd8e - Path: Assets/Art/UI/ui_gilded_rim.png' with importer (TextureImporter)
-Imported 'GUID: c99feed878db6c84695ec57228effd8e' -> (Import Result ID: 'd4acd6880c30b755d0e485508b00fea7') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7577d96dc4c637f105367453935e5aca DependenciesID=3ff89271924067f7db12284deed62ff8 StaticDependenciesID=4b1cbb8daea46a8df55dafd0840ecfe7 
-Asset Pipeline Refresh (id=273c5888b0a26c54581859c1e2557266): Total: 0.021 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Imported 'GUID: c99feed878db6c84695ec57228effd8e' -> (Import Result ID: 'd4acd6880c30b755d0e485508b00fea7') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7577d96dc4c637f105367453935e5aca DependenciesID=3ff89271924067f7db12284deed62ff8 StaticDependenciesID=4b1cbb8daea46a8df55dafd0840ecfe7 
+Asset Pipeline Refresh (id=c2e4ab6d95166834dbc37f3dc0fa4442): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 8 unused Assets / (33.4 KB). Loaded Objects now: 4903.
-Memory consumption went from 332.7 MB to 332.7 MB.
-Total: 10.882600 ms (FindLiveObjects: 0.601000 ms CreateObjectMapping: 0.177900 ms MarkObjects: 9.725700 ms  DeleteObjects: 0.052300 ms)
+Unloading 8 unused Assets / (33.2 KB). Loaded Objects now: 4903.
+Memory consumption went from 347.6 MB to 347.6 MB.
+Total: 9.603800 ms (FindLiveObjects: 0.577400 ms CreateObjectMapping: 0.166500 ms MarkObjects: 8.518600 ms  DeleteObjects: 0.042000 ms)
 
 [UI] AuthCard: drawn border L52 B52 R52 T52, content (604.00, 764.00)
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -508,7 +472,7 @@ UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,st
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 AdventureKing.ArtPipeline.EntrySceneBuilder:FramedContent (UnityEngine.GameObject,single,single) (at Assets/Editor/ArtPipeline/EntryLayoutKit.cs:115)
-AdventureKing.ArtPipeline.EntrySceneBuilder:BuildSelection (UnityEngine.Transform,UnityEngine.RenderTexture,UnityEngine.Camera,UnityEngine.Transform,AdventureKing.Gameplay.AdventureEntryFlow,AdventureKing.Gameplay.HeroSelectionPreview3D&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.InputField&,UnityEngine.UI.Text[]&,UnityEngine.UI.Text&,UnityEngine.UI.Text&) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:595)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildSelection (UnityEngine.Transform,UnityEngine.RenderTexture,UnityEngine.Camera,UnityEngine.Transform,AdventureKing.Gameplay.AdventureEntryFlow,AdventureKing.Gameplay.HeroSelectionPreview3D&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.InputField&,UnityEngine.UI.Text[]&,UnityEngine.UI.Text&,UnityEngine.UI.Text&) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:598)
 AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:270)
 AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
 
@@ -522,7 +486,7 @@ UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,st
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 AdventureKing.ArtPipeline.EntrySceneBuilder:FramedContent (UnityEngine.GameObject,single,single) (at Assets/Editor/ArtPipeline/EntryLayoutKit.cs:115)
-AdventureKing.ArtPipeline.EntrySceneBuilder:BuildSelection (UnityEngine.Transform,UnityEngine.RenderTexture,UnityEngine.Camera,UnityEngine.Transform,AdventureKing.Gameplay.AdventureEntryFlow,AdventureKing.Gameplay.HeroSelectionPreview3D&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.InputField&,UnityEngine.UI.Text[]&,UnityEngine.UI.Text&,UnityEngine.UI.Text&) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:657)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildSelection (UnityEngine.Transform,UnityEngine.RenderTexture,UnityEngine.Camera,UnityEngine.Transform,AdventureKing.Gameplay.AdventureEntryFlow,AdventureKing.Gameplay.HeroSelectionPreview3D&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.InputField&,UnityEngine.UI.Text[]&,UnityEngine.UI.Text&,UnityEngine.UI.Text&) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:660)
 AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:270)
 AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
 
@@ -538,10 +502,10 @@ Importing 'GUID: be28d5cc038480748b241eab8dd68639 - Path: Assets/Art/UI/stage_st
 Imported 'GUID: be28d5cc038480748b241eab8dd68639' -> (Import Result ID: '20f0fbd9ffe797923545757e8c99597b') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=fe3763e48b502d5f5cfdbe3319589179 DependenciesID=11129aa6bab26eda70e47e4d83c0fe9d StaticDependenciesID=ff603f1439d5d31255f51381571c14e6 
 Importing 'GUID: 1f2be64d092f2ac4b9e90f1a135c644b - Path: Assets/Art/UI/stage_stone.mat' with importer (NativeFormatImporter)
 Imported 'GUID: 1f2be64d092f2ac4b9e90f1a135c644b' -> (Import Result ID: '1e5a6036649b2702ae447dca62f24cb6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3e58565796e3b25c6e49c39cc6d8545d DependenciesID=5df15ccc4109729bdfb6aec11be8dddf StaticDependenciesID=c43b24ed8184e97209bf67152b45cd9b 
-Asset Pipeline Refresh (id=37f8bf2ea51748a4fb2b6e45ddb901f9): Total: 0.031 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0825edb22d84c0043b4523258335670b): Total: 0.033 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Importing 'GUID: 84d49f2667b118c4f84344bc628a97a9 - Path: Assets/Scenes/AK_Entry.unity' with importer (DefaultImporter)
-Imported 'GUID: 84d49f2667b118c4f84344bc628a97a9' -> (Import Result ID: 'ed551fba75c2483c4f9bb237bdb624ad') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c88c7b413ceb075c2c811a3eca705768 DependenciesID=e1850dce1769bada9f3ccec601b87027 StaticDependenciesID=d76000acf33669b84721ae7c1355a34d 
-Asset Pipeline Refresh (id=dcd85b784a98f564dac0f54774228e5d): Total: 0.051 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Imported 'GUID: 84d49f2667b118c4f84344bc628a97a9' -> (Import Result ID: '683c67bb1ae0f4a10b7d9d980b89cd3a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c88c7b413ceb075c2c811a3eca705768 DependenciesID=c251ef1b1187da0ff932144e173a59a8 StaticDependenciesID=1d06e57ecaf3052563bc65fe048a8714 
+Asset Pipeline Refresh (id=3d4c927bb384d464f98edd48ad54eb67): Total: 0.051 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 [ENTRY] Scene built: Assets/Scenes/AK_Entry.unity
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -554,10 +518,10 @@ AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/E
 
 (Filename: Assets/Editor/ArtPipeline/EntrySceneBuilder.cs Line: 301)
 
-MonoPathRemapper: Attempts to remap: 8646; Successful remaps: 0
+MonoPathRemapper: Attempts to remap: 8734; Successful remaps: 0
 Serialized file version minimum: 22, current 23
 Worker ready: AssetImportWorkerHW0 0
-Killing ADB server in 2.0997751 seconds.
+Killing ADB server in 2.1031983 seconds.
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -575,4 +539,4 @@ VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794202194182,"processId":15728,"allocatedMemory":15181879,"memoryLabels":[{"Default":200679},{"Permanent":15516},{"NewDelete":77575},{"Thread":4202008},{"Manager":31709},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":839496},{"Material":132},{"GfxDevice":58008},{"Animation":952},{"Audio":984},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":16576},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1258384},{"BaseObject":52912},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":13323},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":474152},{"StaticString":3808},{"Utility":2673718},{"Curl":2559},{"PoolAlloc":2264},{"AI":80},{"TypeTree":23229},{"ScriptManager":12656},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":7296},{"WebRequest":5035},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":592},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":115725},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4482676},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40441},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3594},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794202957647,"processId":14260,"allocatedMemory":15172694,"memoryLabels":[{"Default":200679},{"Permanent":15516},{"NewDelete":77783},{"Thread":4202008},{"Manager":31709},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":839496},{"Material":132},{"GfxDevice":58008},{"Animation":952},{"Audio":984},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":16576},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1258384},{"BaseObject":52912},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":13323},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":468965},{"StaticString":3808},{"Utility":2673718},{"Curl":2676},{"PoolAlloc":2264},{"AI":80},{"TypeTree":23229},{"ScriptManager":12656},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":7296},{"WebRequest":712},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":592},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":115725},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4482676},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40441},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3594},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

@@ -62,6 +62,26 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Text[] slotLabels = new Text[4];
         [SerializeField] private Text existingCharacterDetails;
         [SerializeField] private HeroSelectionPreview3D heroPreview;
+        // Selection highlight: class cards (HeroClass order) and slot buttons swap to the gold-rimmed "on" skin.
+        [SerializeField] private Image[] classCards = new Image[0];
+        [SerializeField] private Image[] slotCards = new Image[0];
+        [SerializeField] private Sprite cardSprite, cardOnSprite;
+
+        private void MarkSelected(Image[] cards, int index)
+        {
+            if (cards == null || !cardSprite || !cardOnSprite) return;
+            for (int i = 0; i < cards.Length; i++)
+            {
+                if (!cards[i]) continue;
+                bool on = i == index;
+                cards[i].sprite = on ? cardOnSprite : cardSprite;
+                cards[i].rectTransform.localScale = on ? new Vector3(1.04f, 1.04f, 1f) : Vector3.one;
+            }
+        }
+
+        /// <summary>True when that class card currently shows the selected look (for tests).</summary>
+        public bool IsCardHighlighted(HeroClass c) =>
+            classCards != null && (int)c < classCards.Length && classCards[(int)c] && classCards[(int)c].sprite == cardOnSprite && cardOnSprite;
 
         [Header("Gameplay")]
         [SerializeField] private string gameplaySceneName = "MainGameScene";
@@ -199,6 +219,7 @@ namespace AdventureKing.Gameplay
         public void SelectClass(HeroClass heroClass)
         {
             selectedClass = heroClass;
+            MarkSelected(classCards, (int)heroClass);
             if (heroPreview) heroPreview.ShowClass(heroClass);
             HeroClassStats stats = HeroClassCatalog.Get(heroClass);
             if (heroName) heroName.text = stats.displayName;
@@ -263,6 +284,7 @@ namespace AdventureKing.Gameplay
                 return;
 
             selectedSlotIndex = slotIndex;
+            MarkSelected(slotCards, slotIndex);
             AdventureCharacterSnapshot existing = FindSlot(slotIndex);
             if (existing != null)
             {

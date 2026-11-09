@@ -563,11 +563,14 @@ namespace AdventureKing.ArtPipeline
                 ("Sát Thủ", "Song đao • Tốc độ", HeroClass.Assassin, new Color(1f, 0.32f, 0.42f)),
                 ("Cung Thủ", "Cung tên • Cơ động", HeroClass.Archer, new Color(0.45f, 0.9f, 0.5f)),
             };
+            var cardImgs = new Image[4];
+            var slotImgs = new Image[4];
             for (int i = 0; i < classes.Length; i++)
             {
                 var (n, role, c, tint) = classes[i];
                 Button b = Btn(cardList, "Card_" + c, "", Vector2.zero, new Vector2(270, 112), new Color(0.13f, 0.17f, 0.26f, 0.95f), Cream);
                 Skin(b.gameObject, "hall_card");
+                cardImgs[(int)c] = b.GetComponent<Image>();
                 Size(b, 112f);
                 var bar = Img(b.transform, "Accent", new Vector2(0f, 0.5f), new Vector2(10, 84), tint, pillSprite);
                 bar.rectTransform.anchoredPosition = new Vector2(26, 0);
@@ -663,6 +666,7 @@ namespace AdventureKing.ArtPipeline
             {
                 Button s = Btn(slotRow, "Slot" + i, "", Vector2.zero, new Vector2(190, 84), new Color(0.13f, 0.17f, 0.26f, 1f), Cream);
                 Skin(s.gameObject, "hall_card");
+                slotImgs[i] = s.GetComponent<Image>();
                 Size(s, 84f, 180f, 1f, 120f);
                 slots[i] = FillLabel(s.transform, "Label", "Ô " + (i + 1), 20, Cream, FontStyle.Normal, 16f, 6f, 14);
                 switch (i)
@@ -686,6 +690,20 @@ namespace AdventureKing.ArtPipeline
             UnityEventTools.AddPersistentListener(enter.onClick, flow.EnterSelectedCharacter);
             Button back = Btn(root.transform, "BackToLogin", "Đăng xuất", new Vector2(-(Edge + 100), -70), new Vector2(200, 64), new Color(0.2f, 0.26f, 0.38f, 0.9f), Muted, new Vector2(1f, 1f));
             UnityEventTools.AddPersistentListener(back.onClick, flow.BackToAuthentication);
+
+            // Selection highlight (gold-rimmed "on" card for the chosen class and slot).
+            var hso = new SerializedObject(flow);
+            void Arr(string prop, Image[] imgs)
+            {
+                var a = hso.FindProperty(prop);
+                a.arraySize = imgs.Length;
+                for (int i = 0; i < imgs.Length; i++) a.GetArrayElementAtIndex(i).objectReferenceValue = imgs[i];
+            }
+            Arr("classCards", cardImgs);
+            Arr("slotCards", slotImgs);
+            hso.FindProperty("cardSprite").objectReferenceValue = FrameArt.Get("hall_card");
+            hso.FindProperty("cardOnSprite").objectReferenceValue = FrameArt.Get("hall_card_on");
+            hso.ApplyModifiedPropertiesWithoutUndo();
 
             // Wire the preview component.
             var pso = new SerializedObject(preview);
