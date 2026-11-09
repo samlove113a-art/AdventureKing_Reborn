@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,6 +40,8 @@ namespace AdventureKing.Gameplay
     {
         public HeroClass heroClass;
         public OutfitPiece[] pieces = new OutfitPiece[0];
+        [Tooltip("Shop icon: this item worn by this class's hero, framed on the item (rendered by OutfitIcons).")]
+        public Sprite icon;
     }
 
     [Serializable]

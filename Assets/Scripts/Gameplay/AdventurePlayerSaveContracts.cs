@@ -83,6 +83,7 @@ namespace AdventureKing.Gameplay
         public long price;
         public int[] classes = new int[0];
         public bool owned, equipped, usableByCharacter;
+        public string rarity = "common"; // display only (common / rare / epic / legendary)
         public bool IsSet => kind == "cosmetic_set";
         public bool ForDiamonds => currency == "diamonds";
     }

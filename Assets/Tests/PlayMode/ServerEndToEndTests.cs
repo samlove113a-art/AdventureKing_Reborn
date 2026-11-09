@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -173,7 +173,8 @@ namespace AdventureKing.Tests
             Assert.IsTrue(world.HeroModel, "hero model spawned");
             StringAssert.StartsWith("Archer_Visual", world.HeroModel.name);
             Assert.GreaterOrEqual(world.HeroModel.GetComponentsInChildren<SkinnedMeshRenderer>().Length, 2, "body + bow");
-            StringAssert.Contains("Cung Thủ Gió", Ui<Text>("CharacterName").text);
+            yield return null; // HUD player frame fills in on its first update
+            StringAssert.Contains("Cung Thủ Gió", Ui<Text>("HeroName").text, "player frame shows the server character name");
             var input = Object.FindAnyObjectByType<PlayerInput2D>();
             var motor = input.GetComponent<PlayerMotor2D>();
             Vector2 spawn = motor.transform.position;

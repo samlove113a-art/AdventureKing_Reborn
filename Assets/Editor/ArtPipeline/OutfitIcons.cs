@@ -39,47 +39,70 @@ namespace AdventureKing.ArtPipeline
             RenderSettings.ambientLight = new Color(0.62f, 0.64f, 0.7f);
             try
             {
+                var data = camGo.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+                data.renderPostProcessing = false; // keep alpha
                 foreach (CosmeticArt art in lib.items)
-                {
-                    ClassFit fit = art.For(HeroClass.Swordsman) ?? art.fits.FirstOrDefault();
-                    if (fit == null) continue;
-                    var root = new GameObject("IconRoot");
-                    foreach (OutfitPiece p in fit.pieces.Where(p => p.mesh))
+                    foreach (ClassFit fit in art.fits)
                     {
-                        var go = new GameObject("p") { layer = IconLayer };
-                        go.transform.SetParent(root.transform, false);
-                        go.AddComponent<MeshFilter>().sharedMesh = p.mesh;
-                        go.AddComponent<MeshRenderer>().sharedMaterial = p.material;
+                        // the item worn by THIS class's hero, framed on the item
+                        var inst = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(HeroArtPipeline.PrefabPath(fit.heroClass)));
+                        bool fromBack = art.slot == "back";
+                        inst.transform.rotation = Quaternion.Euler(0f, fromBack ? 25f : 200f, 0f);
+                        var outfit = inst.GetComponent<HeroOutfit>() ?? inst.AddComponent<HeroOutfit>();
+                        var body = inst.GetComponentsInChildren<SkinnedMeshRenderer>(true).First(s => !s.name.StartsWith("Weapon_"));
+                        outfit.Bind(fit.heroClass, body);
+                        outfit.Apply(art.slot == "set" ? new OutfitLoadout().WithSet(art.itemId) : new OutfitLoadout().With(art.slot, art.itemId));
+                        Animator anim = inst.GetComponentInChildren<Animator>();
+                        var idle = anim.runtimeAnimatorController.animationClips.FirstOrDefault(c => c.name == "Idle");
+                        anim.runtimeAnimatorController = null;
+                        if (idle) idle.SampleAnimation(anim.gameObject, 0.2f);
+                        foreach (Transform t in inst.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = IconLayer;
+                        // bounds of the item's pieces in their posed shape (+ the whole hero for full sets / back items)
+                        Bounds? bb = null;
+                        void Add(SkinnedMeshRenderer s)
+                        {
+                            var m = new Mesh();
+                            s.BakeMesh(m, true);
+                            Matrix4x4 w = s.transform.localToWorldMatrix;
+                            foreach (Vector3 v in m.vertices)
+                            {
+                                Vector3 p = w.MultiplyPoint3x4(v);
+                                if (bb == null) bb = new Bounds(p, Vector3.zero); else { Bounds x = bb.Value; x.Encapsulate(p); bb = x; }
+                            }
+                            Object.DestroyImmediate(m);
+                        }
+                        foreach (GameObject p in outfit.Pieces) { if (!p) continue; var s = p.GetComponent<SkinnedMeshRenderer>(); if (s) Add(s); } // (no "is": editor fake-null)
+                        if (art.slot is "set" or "back" or "top" or "bottom") Add(body);
+                        if (bb == null) { Object.DestroyImmediate(inst); continue; }
+                        Bounds b = bb.Value;
+                        Vector3 dir = Quaternion.Euler(-12f, 0f, 0f) * Vector3.back; // camera on the -z side, slightly above
+                        float radius = Mathf.Max(b.extents.x, b.extents.y, b.extents.z) * 1.12f + 0.02f;
+                        float dist = radius / Mathf.Sin(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+                        camGo.transform.position = b.center + dir * dist;
+                        camGo.transform.LookAt(b.center);
+                        cam.nearClipPlane = Mathf.Max(0.01f, dist - radius * 3f);
+                        cam.farClipPlane = dist + radius * 3f;
+                        cam.Render();
+                        var prev = RenderTexture.active;
+                        RenderTexture.active = rt;
+                        var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+                        tex.ReadPixels(new Rect(0, 0, size, size), 0, 0);
+                        tex.Apply();
+                        RenderTexture.active = prev;
+                        string path = $"{OutfitArtPipeline.Dir}/Icons/{art.itemId}_{fit.heroClass}.png";
+                        File.WriteAllBytes(path, tex.EncodeToPNG());
+                        Object.DestroyImmediate(tex);
+                        Object.DestroyImmediate(inst);
+                        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+                        var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+                        ti.textureType = TextureImporterType.Sprite;
+                        ti.spriteImportMode = SpriteImportMode.Single;
+                        ti.alphaIsTransparency = true;
+                        ti.mipmapEnabled = false;
+                        ti.SaveAndReimport();
+                        fit.icon = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                        if (fit.heroClass == HeroClass.Swordsman || !art.icon) art.icon = fit.icon;
                     }
-                    var rs = root.GetComponentsInChildren<Renderer>();
-                    Bounds b = rs[0].bounds;
-                    foreach (Renderer r in rs) b.Encapsulate(r.bounds);
-                    bool fromBack = art.slot == "back";
-                    Vector3 dir = new Vector3(0.55f, 0.35f, fromBack ? -1f : 1f).normalized;
-                    float dist = b.extents.magnitude / Mathf.Sin(cam.fieldOfView * 0.5f * Mathf.Deg2Rad) * 1.02f;
-                    camGo.transform.position = b.center + dir * dist;
-                    camGo.transform.LookAt(b.center);
-                    cam.nearClipPlane = dist * 0.05f;
-                    cam.farClipPlane = dist * 3f;
-                    cam.Render();
-                    var prev = RenderTexture.active;
-                    RenderTexture.active = rt;
-                    var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-                    tex.ReadPixels(new Rect(0, 0, size, size), 0, 0);
-                    tex.Apply();
-                    RenderTexture.active = prev;
-                    string path = $"{OutfitArtPipeline.Dir}/Icons/{art.itemId}.png";
-                    File.WriteAllBytes(path, tex.EncodeToPNG());
-                    Object.DestroyImmediate(tex);
-                    Object.DestroyImmediate(root);
-                    AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
-                    var ti = (TextureImporter)AssetImporter.GetAtPath(path);
-                    ti.textureType = TextureImporterType.Sprite;
-                    ti.alphaIsTransparency = true;
-                    ti.mipmapEnabled = false;
-                    ti.SaveAndReimport();
-                    art.icon = AssetDatabase.LoadAssetAtPath<Sprite>(path);
-                }
             }
             finally
             {

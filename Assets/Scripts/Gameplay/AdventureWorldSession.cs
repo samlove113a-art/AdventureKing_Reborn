@@ -147,6 +147,15 @@ namespace AdventureKing.Gameplay
             // Wear the outfit the server has on record (restored after relog / scene change / server restart).
             Outfit = DressHero(HeroModel, character.heroClass);
             Outfit.Apply(character.outfit);
+            // class-based pools for the HUD (HP from the class table; MP is a balance proposal until skills land)
+            if (player)
+            {
+                Health2D hp = player.GetComponent<Health2D>();
+                if (hp) hp.SetMax(HeroClassCatalog.Get(character.heroClass).startingHealth);
+                PlayerMana mp = player.GetComponent<PlayerMana>();
+                if (!mp) mp = player.gameObject.AddComponent<PlayerMana>();
+                mp.Configure(PlayerMana.MaxFor(character.heroClass), 2f);
+            }
         }
 
         public HeroOutfit Outfit { get; private set; }

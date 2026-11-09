@@ -204,6 +204,14 @@ namespace AdventureKing.Gameplay
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/wardrobe/equip", JsonUtility.ToJson(outfit ?? new OutfitLoadout()), true,
                 (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<WardrobeSnapshot>(json) : null, err));
 
+        /// <summary>VIP level from verified payments only (server decides; thresholds may be unconfigured).</summary>
+        public void GetVip(Action<bool, int, bool, string> completed) =>
+            Send("GET", "/vip", null, true, (ok, json, err) =>
+            {
+                VipBody v = ok ? JsonUtility.FromJson<VipBody>(json) : null;
+                completed(ok && v != null, v?.level ?? 0, v?.configured ?? false, err);
+            });
+
         private bool lastWasConnectionError;
 
         public void SignOut()
@@ -260,6 +268,7 @@ namespace AdventureKing.Gameplay
         [Serializable] private sealed class SessionBody { public string token; public string accountId; public long expiresMs; }
         [Serializable] private sealed class CreateBody { public string characterName; public int heroClass; public int slotIndex; }
         [Serializable] private sealed class LocationBody { public string mapId; public float x; public float y; }
+        [Serializable] private sealed class VipBody { public int level; public long paidVnd; public bool configured; }
         [Serializable] private sealed class PurchaseBody { public string itemId; public string requestId; public bool equip; }
         [Serializable] private sealed class ErrorBody { public string code; public string message; }
     }

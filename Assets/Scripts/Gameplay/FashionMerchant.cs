@@ -23,6 +23,9 @@ namespace AdventureKing.Gameplay
         public string LastLine => line ? line.text : "";
         public string DisplayName => displayName;
         public Button TalkButton => talkButton;
+        public static FashionMerchant Active { get; private set; }
+        private void OnEnable() => Active = this;
+        private void OnDestroy() { if (Active == this) Active = null; }
 
         private GameObject menu;
         private Text speaker, line;
@@ -61,13 +64,17 @@ namespace AdventureKing.Gameplay
             menu = shop.Panel(canvas, "MerchantMenu", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 200f), new Vector2(1240f, 330f),
                 new Color(0.08f, 0.1f, 0.18f, 0.96f), null);
             var img = menu.GetComponent<Image>();
+            // same parchment scroll + ribbon as every NPC conversation
+            bool scroll = shop.Skin(img, "parchment");
             Sprite frame = shop.FrameSprite;
-            if (frame) { img.sprite = frame; img.type = Image.Type.Sliced; img.color = Color.white; img.pixelsPerUnitMultiplier = 3.2f; }
-            var banner = shop.Panel(menu.transform, "SpeakerBanner", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(200f, 6f), new Vector2(300f, 56f),
+            if (!scroll && frame) { img.sprite = frame; img.type = Image.Type.Sliced; img.color = Color.white; img.pixelsPerUnitMultiplier = 3.2f; }
+            var banner = shop.Panel(menu.transform, "SpeakerBanner", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(230f, 6f), new Vector2(380f, 72f),
                 new Color(0.42f, 0.24f, 0.4f, 1f), null);
-            shop.Rim(banner.transform);
-            speaker = shop.Label(banner.transform, "MerchantSpeaker", displayName, 28, gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(280f, 50f), true);
-            line = shop.Label(menu.transform, "MerchantLine", "", 26, cream, new Vector2(0.5f, 0.5f), new Vector2(-10f, 40f), new Vector2(940f, 130f), false);
+            if (!shop.Skin(banner.GetComponent<Image>(), "ribbon", 0.8f)) shop.Rim(banner.transform);
+            speaker = shop.Label(banner.transform, "MerchantSpeaker", displayName, 28, scroll ? cream : gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(256f, 50f), true);
+            speaker.gameObject.AddComponent<FitOneLine>().Configure(28, 16);
+            line = shop.Label(menu.transform, "MerchantLine", "", 26, scroll ? new Color(0.24f, 0.14f, 0.05f) : cream, new Vector2(0.5f, 0.5f), new Vector2(-10f, 40f), new Vector2(940f, 130f), false);
+            if (scroll) line.GetComponent<Shadow>().effectColor = new Color(1f, 0.95f, 0.8f, 0.4f);
             line.alignment = TextAnchor.UpperLeft;
             line.supportRichText = true;
             line.resizeTextForBestFit = true;

@@ -95,9 +95,21 @@ namespace AdventureKing.Tests
             return Rect.MinMaxRect(minX, minY, maxX, maxY);
         }
 
+        /// <summary>
+        /// Painted ornament depth (sprite px from the edge; left, bottom, right, top) of the purpose-made panel skins
+        /// (FrameArt). Text may not cross it. Titles in a skin's own title band are fine (popup_card: band = top 58 px).
+        /// </summary>
+        private static readonly Dictionary<string, Vector4> SkinOrnament = new Dictionary<string, Vector4>
+        {
+            { "auth_card", new Vector4(32, 32, 32, 32) }, { "hall_panel", new Vector4(20, 20, 20, 20) },
+            { "popup_card", new Vector4(8, 8, 8, 6) }, { "settings_card", new Vector4(22, 22, 22, 22) },
+            { "parchment", new Vector4(20, 20, 20, 20) }, { "shop_window", new Vector4(30, 30, 30, 30) },
+            { "minimap_frame", new Vector4(12, 12, 12, 12) }, { "hud_plate", new Vector4(6, 6, 40, 7) },
+        };
+
         private static bool IsFrame(Image img) =>
             img && img.sprite && img.type == Image.Type.Sliced && img.sprite.border.sqrMagnitude > 1f &&
-            (img.sprite.name.StartsWith("frame_") || img.sprite.name.Contains("frame"));
+            (img.sprite.name.StartsWith("frame_") || img.sprite.name.Contains("frame") || SkinOrnament.ContainsKey(img.sprite.name));
 
         /// <summary>Inner (content) rect of a 9-sliced frame: its rect minus the border band Unity really draws
         /// (measured from the generated 9-slice mesh, so it is exact for any multiplier / size).</summary>
@@ -115,6 +127,13 @@ namespace AdventureKing.Tests
             Rect lr = img.rectTransform.rect;
             float scale = r.width / Mathf.Max(0.0001f, lr.width); // canvas units per local unit
             float l = (xs[1] - lr.xMin) * scale, b = (ys[1] - lr.yMin) * scale, ri = (lr.xMax - xs[xs.Count - 2]) * scale, t = (lr.yMax - ys[ys.Count - 2]) * scale;
+            if (SkinOrnament.TryGetValue(img.sprite.name, out Vector4 orn))
+            {
+                // drawn border band in canvas units / sprite border px = how big one sprite pixel is drawn
+                Vector4 sb = img.sprite.border;
+                float kx = sb.x > 0f ? l / sb.x : 0f, ky = sb.w > 0f ? t / sb.w : 0f;
+                l = orn.x * kx; ri = orn.z * kx; b = orn.y * ky; t = orn.w * ky;
+            }
             return Rect.MinMaxRect(r.xMin + l, r.yMin + b, r.xMax - ri, r.yMax - t);
         }
         private static int Order(Transform t, Dictionary<Transform, int> order) => order.TryGetValue(t, out int o) ? o : -1;
@@ -220,6 +239,7 @@ namespace AdventureKing.Tests
                     if (!s.isActiveAndEnabled || !(s.targetGraphic is Graphic tg) || !Visible(tg)) continue;
                     Rect r = InCanvas((RectTransform)s.transform, ct);
                     if (UnderModal(Order(s.transform, order))) continue; // inactive behind an open dialog/shop (intended)
+                    if (s.GetComponentInParent<RectMask2D>() is RectMask2D sclip && !InCanvas((RectTransform)sclip.transform, ct).Contains(r.center)) continue; // scrolled out of its view (clipped)
                     rep.Buttons++;
                     string p = PathOf(s.transform);
                     if (Mathf.Min(r.width, r.height) * px < minButtonPx && !(s is Scrollbar))

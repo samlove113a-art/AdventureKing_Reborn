@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,30 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Font font;
         [SerializeField] private Font boldFont;
         [SerializeField] private Sprite panelSprite, enamelSprite, rimSprite, frameSprite, pillSprite;
+        /// <summary>Purpose-made shop skins (FrameArt: shop_window, shop_tab, chip, item_cell, purse_*, btn_*...), looked up by name.</summary>
+        [SerializeField] private Sprite[] skins = new Sprite[0];
+
+        private Sprite S(string n)
+        {
+            foreach (Sprite s in skins) if (s && s.name == n) return s;
+            return null;
+        }
+
+        /// <summary>Puts a skin on an image (white tint so the painted colours show). False when that skin is not assigned.</summary>
+        internal bool Skin(Image img, string n, float scale = 1f)
+        {
+            Sprite s = S(n);
+            if (!s || !img) return false;
+            img.sprite = s; img.type = Image.Type.Sliced; img.color = Color.white; img.pixelsPerUnitMultiplier = 1f / scale;
+            return true;
+        }
         [SerializeField, Range(0, 31)] private int previewLayer = 30;
+        [Header("Shop art")]
+        [SerializeField] private Sprite coinIcon, diamondIcon;
+        [Tooltip("Đứng, Chạy, Nhảy, Đánh")]
+        [SerializeField] private Sprite[] poseIcons = new Sprite[4];
+        [Tooltip("Baked dawn backdrop layers (sky, hills, mid, near) shown behind the fitting-room hero.")]
+        [SerializeField] private Texture2D[] backdropLayers = new Texture2D[0];
 
         public enum Tab { Gold, Premium, Wardrobe }
 
@@ -50,6 +73,7 @@ namespace AdventureKing.Gameplay
 
         // ---------------------------------------------------------------- built UI
         private GameObject root, confirm;
+        private Text walletGold, walletDiamonds, rarityLabel;
         private Text title, wallet, status, detailName, detailDesc, detailPrice, confirmText, emptyText, classToggleText;
         private RawImage previewImage;
         private RectTransform grid;
@@ -72,8 +96,8 @@ namespace AdventureKing.Gameplay
 
         public static readonly (string slot, string label)[] SlotChips =
         {
-            ("", "Tất cả"), ("head", "Mũ"), ("top", "Áo"), ("bottom", "Quần/Váy"), ("gloves", "Găng"),
-            ("shoes", "Giày"), ("accessory", "Phụ kiện"), ("back", "Choàng/Cánh"),
+            ("", "Tất cả"), ("hair", "Tóc"), ("head", "Mũ"), ("top", "Áo"), ("bottom", "Quần/Váy"), ("gloves", "Găng"),
+            ("shoes", "Giày"), ("accessory", "Phụ kiện"), ("back", "Choàng/Cánh"), ("weapon", "Vũ khí"), ("set", "Bộ nguyên set"),
         };
 
         public static string SlotName(string slot) => slot switch
@@ -101,6 +125,7 @@ namespace AdventureKing.Gameplay
             AllClasses = false;
             Selected = null;
             root.SetActive(true);
+            SetHud(false);
             title.text = "Tiệm Thời Trang Chuông Gió";
             SpawnPreview(world);
             TryOn = (world.Character.outfit ?? new OutfitLoadout()).Clone();
@@ -130,12 +155,23 @@ namespace AdventureKing.Gameplay
             // Unsaved try-ons are dropped: the real hero keeps the server-confirmed outfit.
             root.SetActive(false);
             confirm.SetActive(false);
+            SetHud(true);
             if (PreviewModel) Destroy(PreviewModel);
             PreviewModel = null;
             PreviewOutfit = null;
             if (previewCam) previewCam.enabled = false;
             setPlayerInput?.Invoke(true);
             Closed?.Invoke();
+        }
+
+        /// <summary>The town HUD (player frame, shortcuts, touch controls) is hidden behind the shop, not shown through it.</summary>
+        private void SetHud(bool on)
+        {
+            foreach (PlayerHud h in FindObjectsByType<PlayerHud>(FindObjectsInactive.Include))
+            {
+                var c = h.GetComponent<Canvas>();
+                if (c) c.enabled = on;
+            }
         }
 
         private void Update()
@@ -164,7 +200,7 @@ namespace AdventureKing.Gameplay
                     case Tab.Premium: if (!i.IsSet) return false; break;
                     case Tab.Wardrobe: if (!i.owned) return false; break;
                 }
-                if (CurrentTab != Tab.Premium && SlotFilter.Length > 0 && i.slot != SlotFilter) return false;
+                if (SlotFilter == "set" ? !i.IsSet : SlotFilter.Length > 0 && i.slot != SlotFilter) return false;
                 if (!AllClasses && !i.usableByCharacter) return false;
                 return true;
             });
@@ -172,14 +208,15 @@ namespace AdventureKing.Gameplay
 
         private void Refresh()
         {
-            foreach (var kv in tabs) Tint(kv.Value, kv.Key == CurrentTab ? (kv.Key == Tab.Premium ? Plum : Teal) : Muted);
+            foreach (var kv in tabs)
+                if (!SkinToggle(kv.Value, "shop_tab", kv.Key == CurrentTab))
+                    Tint(kv.Value, kv.Key == CurrentTab ? (kv.Key == Tab.Premium ? Plum : Teal) : new Color(0.17f, 0.2f, 0.32f));
             foreach (var kv in chips)
-            {
-                kv.Value.gameObject.SetActive(CurrentTab != Tab.Premium);
-                Tint(kv.Value, kv.Key == SlotFilter ? Gold * 0.85f : new Color(0.2f, 0.24f, 0.34f));
-            }
-            classToggleText.text = AllClasses ? "Nghề: Tất cả" : "Nghề: " + HeroClassCatalog.Get(heroClass).displayName;
-            wallet.text = Wardrobe == null ? "" : $"<color=#FFD873>Vàng {Money(Wardrobe.gold)}</color>    <color=#9FE6FF>Kim Cương {Money(Wardrobe.diamonds)}</color>";
+                if (!SkinToggle(kv.Value, "chip", kv.Key == SlotFilter))
+                    Tint(kv.Value, kv.Key == SlotFilter ? new Color(0.86f, 0.66f, 0.28f) : new Color(0.16f, 0.2f, 0.32f));
+            classToggleText.text = AllClasses ? "Mọi nghề" : HeroClassCatalog.Get(heroClass).displayName;
+            if (walletGold) walletGold.text = Wardrobe == null ? "…" : Money(Wardrobe.gold);
+            if (walletDiamonds) walletDiamonds.text = Wardrobe == null ? "…" : Money(Wardrobe.diamonds);
 
             foreach (Transform c in grid) Destroy(c.gameObject);
             cards.Clear();
@@ -187,36 +224,87 @@ namespace AdventureKing.Gameplay
             CosmeticLibrary lib = CosmeticLibrary.Load();
             foreach (WardrobeItem it in list) cards[it.id] = Card(it, lib.Get(it.id));
             emptyText.gameObject.SetActive(Wardrobe != null && list.Count == 0);
-            emptyText.text = CurrentTab == Tab.Wardrobe ? "Tủ đồ còn trống — hãy ghé gian Thời Trang nhé!"
-                : CurrentTab == Tab.Premium ? "Chưa có skin đặc biệt nào đạt chuẩn để mở bán." : "Không có món nào trong mục này.";
+            emptyText.text = CurrentTab == Tab.Wardrobe && SlotFilter.Length == 0 ? "Tủ đồ còn trống — hãy ghé gian Thời Trang nhé!"
+                : SlotFilter is "hair" or "weapon" ? "Kiểu tóc và ngoại hình vũ khí đang được thiết kế — chưa có món nào đạt chuẩn để mở bán."
+                : CurrentTab == Tab.Premium ? "Chưa có skin đặc biệt nào trong mục này." : "Chưa có món nào trong mục này.";
             if (Selected != null && !list.Any(i => i.id == Selected)) Selected = null;
             if (Selected == null && list.Count > 0 && CurrentTab != Tab.Wardrobe) Select(list[0].id, false);
+            else Highlight();
             ShowDetail();
             RefreshButtons();
         }
 
+        public static string RarityName(string r) => r switch { "rare" => "Hiếm", "epic" => "Sử thi", "legendary" => "Huyền thoại", _ => "Thường" };
+        public static Color RarityColor(string r) => r switch
+        {
+            "rare" => new Color(0.36f, 0.66f, 1f), "epic" => new Color(0.74f, 0.46f, 1f), "legendary" => new Color(1f, 0.74f, 0.3f), _ => new Color(0.66f, 0.72f, 0.8f),
+        };
+
+        /// <summary>This item as worn by THIS class's hero (per-class render), falling back to the generic icon.</summary>
+        private Sprite IconFor(string id)
+        {
+            CosmeticArt art = CosmeticLibrary.Load()?.Get(id);
+            return art?.For(heroClass)?.icon ? art.For(heroClass).icon : art?.icon;
+        }
+
         private Button Card(WardrobeItem it, CosmeticArt art)
         {
+            Color rc = RarityColor(it.rarity);
             var go = new GameObject("Card_" + it.id, typeof(RectTransform));
             go.layer = 5;
             go.transform.SetParent(grid, false);
             var img = go.AddComponent<Image>();
             img.sprite = panelSprite; img.type = Image.Type.Sliced;
-            img.color = it.IsSet ? new Color(0.24f, 0.18f, 0.36f) : new Color(0.15f, 0.2f, 0.3f);
+            CardLook(img, it, false);
             var b = go.AddComponent<Button>();
             b.onClick.AddListener(() => Select(it.id, true));
-            Rim(go.transform, 0.75f);
+            var cb = b.colors; cb.highlightedColor = new Color(1.1f, 1.1f, 1.1f, 1f); cb.pressedColor = new Color(0.85f, 0.85f, 0.85f, 1f); b.colors = cb;
+            // icon well with a soft rarity glow
+            var well = Panel(go.transform, "Well", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -88f), new Vector2(164f, 152f),
+                new Color(rc.r * 0.35f, rc.g * 0.35f, rc.b * 0.45f, 0.9f), panelSprite);
+            well.GetComponent<Image>().raycastTarget = false;
             var icon = new GameObject("Icon", typeof(RectTransform)).AddComponent<Image>();
-            icon.transform.SetParent(go.transform, false);
-            Place(icon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -78f), new Vector2(128f, 128f));
-            icon.sprite = art?.icon; icon.preserveAspect = true; icon.raycastTarget = false;
-            Label(go.transform, "Name", it.name, 20, Cream, new Vector2(0.5f, 0f), new Vector2(0f, 62f), new Vector2(178f, 48f), true).resizeTextForBestFit = true;
-            string price = it.owned ? (it.equipped ? "Đang mặc" : "Đã sở hữu") : (it.ForDiamonds ? $"{Money(it.price)} KC" : $"{Money(it.price)} Vàng");
+            icon.transform.SetParent(well.transform, false);
+            UiKit.Stretch(icon.rectTransform, 6f, 6f, 6f, 6f);
+            icon.sprite = IconFor(it.id); icon.preserveAspect = true; icon.raycastTarget = false;
+            var strip = Panel(go.transform, "Rarity", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -6f), new Vector2(150f, 6f), rc, pillSprite);
+            strip.GetComponent<Image>().raycastTarget = false;
+            Text name = Label(go.transform, "Name", it.name, 20, Cream, new Vector2(0.5f, 0f), new Vector2(0f, 70f), new Vector2(180f, 50f), true);
+            name.resizeTextForBestFit = true;
+            name.verticalOverflow = VerticalWrapMode.Truncate;
+            string price = it.owned ? (it.equipped ? "Đang mặc" : "Đã sở hữu") : Money(it.price);
             Color pc = it.owned ? new Color(0.6f, 1f, 0.7f) : it.ForDiamonds ? new Color(0.62f, 0.9f, 1f) : Gold;
-            Label(go.transform, "Price", price, 19, pc, new Vector2(0.5f, 0f), new Vector2(0f, 24f), new Vector2(178f, 30f), true);
+            Text pt = Label(go.transform, "Price", price, 20, pc, new Vector2(0.5f, 0f), new Vector2(it.owned ? 0f : 14f, 26f), new Vector2(it.owned ? 180f : 140f, 30f), true);
+            pt.gameObject.AddComponent<FitOneLine>().Configure(20, 14);
+            if (!it.owned)
+            {
+                var ci = new GameObject("Currency", typeof(RectTransform)).AddComponent<Image>();
+                ci.transform.SetParent(go.transform, false);
+                Place(ci.rectTransform, new Vector2(0.5f, 0f), new Vector2(-pt.preferredWidth * 0.5f - 6f, 26f), new Vector2(26f, 26f));
+                ci.sprite = it.ForDiamonds ? diamondIcon : coinIcon; ci.raycastTarget = false; ci.preserveAspect = true;
+            }
             if (!it.usableByCharacter)
-                Label(go.transform, "Class", "Nghề khác", 16, new Color(1f, 0.6f, 0.55f), new Vector2(0.5f, 1f), new Vector2(0f, -14f), new Vector2(170f, 24f), true);
+            {
+                Text cls = Label(go.transform, "Class", "Nghề khác", 16, new Color(1f, 0.62f, 0.58f), new Vector2(0.5f, 1f), new Vector2(0f, -150f), new Vector2(150f, 24f), true);
+                cls.gameObject.AddComponent<FitOneLine>().Configure(16, 12);
+            }
             return b;
+        }
+
+        private Color CardColor(WardrobeItem it, bool selected) =>
+            selected ? new Color(0.3f, 0.36f, 0.56f) : it != null && it.IsSet ? new Color(0.2f, 0.15f, 0.32f) : new Color(0.13f, 0.17f, 0.28f);
+
+        /// <summary>Card tile: lavender cell, orchid for full sets, gold rim + glow when selected.</summary>
+        private void CardLook(Image img, WardrobeItem it, bool selected)
+        {
+            if (!Skin(img, selected ? "item_cell_on" : it != null && it.IsSet ? "item_cell_set" : "item_cell"))
+                img.color = CardColor(it, selected);
+        }
+
+        private void Highlight()
+        {
+            foreach (var kv in cards)
+                if (kv.Value) CardLook(kv.Value.GetComponent<Image>(), Wardrobe?.Find(kv.Key), kv.Key == Selected);
         }
 
         public void SetTab(Tab t) { CurrentTab = t; Selected = null; Refresh(); }
@@ -229,9 +317,7 @@ namespace AdventureKing.Gameplay
             Selected = id;
             WardrobeItem it = Wardrobe?.Find(id);
             if (tryIt && it != null && it.usableByCharacter && !IsTried(it)) ToggleTry();
-            foreach (var kv in cards)
-                if (kv.Value) kv.Value.GetComponent<Image>().color = kv.Key == id ? new Color(0.32f, 0.42f, 0.55f) :
-                    (Wardrobe?.Find(kv.Key)?.IsSet == true ? new Color(0.24f, 0.18f, 0.36f) : new Color(0.15f, 0.2f, 0.3f));
+            Highlight();
             ShowDetail();
             RefreshButtons();
         }
@@ -243,14 +329,17 @@ namespace AdventureKing.Gameplay
         {
             WardrobeItem it = Selected != null ? Wardrobe?.Find(Selected) : null;
             detailIcon.enabled = it != null;
+            rarityLabel.transform.parent.gameObject.SetActive(it != null);
             if (it == null)
             {
                 detailName.text = Wardrobe == null ? "" : "Chọn một món để xem và mặc thử";
                 detailDesc.text = detailPrice.text = "";
                 return;
             }
-            detailIcon.sprite = CosmeticLibrary.Load()?.Get(it.id)?.icon;
+            detailIcon.sprite = IconFor(it.id);
             detailName.text = it.name;
+            rarityLabel.text = RarityName(it.rarity);
+            rarityLabel.transform.parent.GetComponent<Image>().color = RarityColor(it.rarity) * 0.75f;
             string classes = it.classes.Length >= 4 ? "Mọi nghề" : string.Join(", ", it.classes.Select(c => HeroClassCatalog.Get((HeroClass)c).displayName));
             detailDesc.text = $"<color=#C9D6E8>{SlotName(it.slot)} · {classes}</color>\n{it.description}";
             detailPrice.text = it.owned ? (IsWorn(it) ? "<color=#9CFFB4>Đang mặc</color>" : "<color=#9CFFB4>Đã sở hữu</color>")
@@ -527,179 +616,316 @@ namespace AdventureKing.Gameplay
                 es.AddComponent<StandaloneInputModule>();
 #endif
             }
+            Color navy = new Color(0.08f, 0.1f, 0.2f, 0.97f), panelNavy = new Color(0.1f, 0.13f, 0.25f, 0.95f);
 
-            root = Panel(canvasGo.transform, "Shop", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.02f, 0.03f, 0.07f, 0.72f), null);
-            Stretch(root.GetComponent<RectTransform>());
-            var win = Panel(root.transform, "Window", new Vector2(0.025f, 0.035f), new Vector2(0.975f, 0.965f), Vector2.zero, Vector2.zero, Ink, frameSprite ? frameSprite : panelSprite);
-            var wr = win.GetComponent<RectTransform>();
-            wr.offsetMin = wr.offsetMax = Vector2.zero;
-            if (frameSprite) { var wi = win.GetComponent<Image>(); wi.type = Image.Type.Sliced; wi.pixelsPerUnitMultiplier = 2.6f; }
+            root = Panel(canvasGo.transform, "Shop", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.02f, 0.03f, 0.08f, 0.8f), null);
+            UiKit.Stretch(root.GetComponent<RectTransform>());
+            // window: deep navy-violet with a slim gilded rim (no thick black frame)
+            var win = Panel(root.transform, "Window", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, navy, panelSprite);
+            UiKit.Stretch(win.GetComponent<RectTransform>(), 100f, 40f, 100f, 36f);
+            bool velvet = Skin(win.GetComponent<Image>(), "shop_window"); // violet velvet + gold fleur corners
+            if (!velvet) Rim(win.transform, 0.95f);
 
-            // title banner + wallet + close
-            var banner = Panel(win.transform, "Banner", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -8f), new Vector2(560f, 64f), new Color(0.22f, 0.36f, 0.42f), panelSprite);
-            Rim(banner.transform);
-            title = Label(banner.transform, "Title", "", 30, Gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(540f, 60f), true);
-            wallet = Label(win.transform, "Wallet", "", 26, Cream, new Vector2(1f, 1f), new Vector2(-420f, -64f), new Vector2(560f, 40f), true); // ends left of the close button
-            wallet.alignment = TextAnchor.MiddleRight;
-            wallet.supportRichText = true;
-            var close = Btn(win.transform, "Close", "✕", new Vector2(1f, 1f), new Vector2(-62f, -60f), new Vector2(64f, 64f), Rose);
+            // ---- header: title, balances, close
+            var header = Panel(win.transform, "Header", new Vector2(0f, 1f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero, new Color(0.17f, 0.15f, 0.34f, 0.95f), panelSprite);
+            var hr = header.GetComponent<RectTransform>();
+            hr.pivot = new Vector2(0.5f, 1f);
+            hr.offsetMin = new Vector2(34f, -100f); hr.offsetMax = new Vector2(-34f, -30f);
+            if (velvet) header.GetComponent<Image>().color = new Color(0.3f, 0.2f, 0.5f, 0.35f); // soft band on the velvet, no second frame
+            else Rim(header.transform, 0.7f);
+            title = Label(header.transform, "Title", "", 34, Gold, new Vector2(0f, 0.5f), new Vector2(330f, 0f), new Vector2(600f, 60f), true);
+            title.alignment = TextAnchor.MiddleLeft;
+            title.gameObject.AddComponent<FitOneLine>().Configure(34, 22);
+            var to = title.gameObject.AddComponent<Outline>(); to.effectColor = new Color(0.25f, 0.12f, 0.03f, 0.9f);
+            Text Pill(string name, Sprite icon, float x)
+            {
+                var p = Panel(header.transform, name, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(x, 0f), new Vector2(230f, 56f), new Color(0.05f, 0.06f, 0.14f, 0.9f), pillSprite);
+                p.GetComponent<Image>().raycastTarget = false;
+                Skin(p.GetComponent<Image>(), name == "Gold" ? "purse_gold" : "purse_gem", 0.85f); // bronze coin purse vs crystal purse
+                var ic = new GameObject("Icon", typeof(RectTransform)).AddComponent<Image>();
+                ic.transform.SetParent(p.transform, false);
+                Place(ic.rectTransform, new Vector2(0f, 0.5f), new Vector2(30f, 0f), new Vector2(44f, 44f));
+                ic.sprite = icon; ic.preserveAspect = true; ic.raycastTarget = false;
+                Text t = Label(p.transform, "Amount", "", 24, Cream, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, true);
+                UiKit.Stretch(t.rectTransform, 60f, 2f, 18f, 2f);
+                t.alignment = TextAnchor.MiddleLeft;
+                t.gameObject.AddComponent<FitOneLine>().Configure(24, 15);
+                return t;
+            }
+            walletDiamonds = Pill("Diamonds", diamondIcon, -230f);
+            walletGold = Pill("Gold", coinIcon, -480f);
+            var close = Btn(header.transform, "Close", "✕", new Vector2(1f, 0.5f), new Vector2(-62f, 0f), new Vector2(64f, 64f), Rose);
             close.onClick.AddListener(Close);
+            wallet = walletGold;
 
-            // ---- left: fitting room
-            var left = Panel(win.transform, "FittingRoom", new Vector2(0f, 0f), new Vector2(0.34f, 1f), Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0f), null);
-            var lr = left.GetComponent<RectTransform>();
-            lr.offsetMin = new Vector2(70f, 60f); lr.offsetMax = new Vector2(-10f, -100f);
-            var stageBg = Panel(left.transform, "StageBg", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.16f, 0.22f, 0.32f), panelSprite);
-            var sr = stageBg.GetComponent<RectTransform>();
-            sr.offsetMin = new Vector2(0f, 96f); sr.offsetMax = Vector2.zero;
-            Rim(stageBg.transform, 0.8f);
-            previewRT = new RenderTexture(640, 820, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4, name = "FittingRoomRT" };
+            // ---- left: fitting room stage (fantasy backdrop behind the hero)
+            var stageBg = Panel(win.transform, "FittingRoom", new Vector2(0f, 0f), new Vector2(0.36f, 1f), Vector2.zero, Vector2.zero, panelNavy, panelSprite);
+            UiKit.Inset(stageBg.GetComponent<RectTransform>(), 38f, 38f, 8f, 112f); // keep the 0..0.36 column, clear of the window ornament
+            stageBg.AddComponent<RectMask2D>();
+            foreach (Texture2D layer in backdropLayers)
+            {
+                if (!layer) continue;
+                var l = new GameObject("Backdrop_" + layer.name, typeof(RectTransform)).AddComponent<RawImage>();
+                l.gameObject.layer = 5;
+                l.transform.SetParent(stageBg.transform, false);
+                l.texture = layer;
+                l.raycastTarget = false;
+                l.color = new Color(0.86f, 0.86f, 0.92f, 1f);
+                var fit = l.gameObject.AddComponent<AspectRatioFitter>();
+                fit.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+                fit.aspectRatio = layer.width / (float)layer.height;
+            }
+            previewRT = new RenderTexture(720, 900, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4, name = "FittingRoomRT" };
             previewImage = new GameObject("Preview", typeof(RectTransform)).AddComponent<RawImage>();
             previewImage.transform.SetParent(stageBg.transform, false);
-            Stretch(previewImage.rectTransform, 8f);
+            UiKit.Stretch(previewImage.rectTransform, 0f, 110f, 0f, 0f);
             previewImage.texture = previewRT;
             previewImage.gameObject.AddComponent<DragRotate>().shop = this;
             var fitter = previewImage.gameObject.AddComponent<AspectRatioFitter>();
             fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-            fitter.aspectRatio = 640f / 820f;
-            Label(stageBg.transform, "Hint", "Kéo để xoay · Phòng thử đồ", 18, new Color(0.85f, 0.9f, 1f, 0.8f), new Vector2(0.5f, 0f), new Vector2(0f, 22f), new Vector2(420f, 28f), false);
+            fitter.aspectRatio = 720f / 900f;
+            if (S("stage_bezel"))
+            {
+                // slim lavender bezel drawn over the stage (no heavy gold frame)
+                var bezel = Panel(stageBg.transform, "StageBezel", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, Color.white, null);
+                UiKit.Stretch(bezel.GetComponent<RectTransform>());
+                var bi = bezel.GetComponent<Image>();
+                bi.raycastTarget = false;
+                Skin(bi, "stage_bezel");
+            }
+            else Rim(stageBg.transform, 0.9f);
+            Text hint = Label(stageBg.transform, "Hint", "Kéo để xoay", 18, new Color(1f, 1f, 1f, 0.85f), new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(300f, 28f), true);
+            hint.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.7f);
+            // pose bar: round icon buttons with captions
+            var poseBar = Panel(stageBg.transform, "PoseBar", new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, Vector2.zero, new Color(0.05f, 0.06f, 0.14f, 0.82f), null);
+            var pbr = poseBar.GetComponent<RectTransform>();
+            pbr.pivot = new Vector2(0.5f, 0f);
+            pbr.offsetMin = new Vector2(0f, 0f); pbr.offsetMax = new Vector2(0f, 110f);
+            var pbl = poseBar.AddComponent<HorizontalLayoutGroup>();
+            pbl.childAlignment = TextAnchor.MiddleCenter; pbl.spacing = 18f;
+            pbl.childControlWidth = pbl.childControlHeight = false;
             string[] poses = { "Idle", "Run", "Jump", "Attack" };
             string[] poseNames = { "Đứng", "Chạy", "Nhảy", "Đánh" };
             for (int i = 0; i < poses.Length; i++)
             {
                 string p = poses[i];
-                var b = Btn(left.transform, "Pose_" + p, poseNames[i], new Vector2((i + 0.5f) / poses.Length, 0f), new Vector2(0f, 40f), new Vector2(118f, 66f), new Color(0.25f, 0.33f, 0.46f));
+                var cell = new GameObject("Pose_" + p, typeof(RectTransform));
+                cell.layer = 5;
+                cell.transform.SetParent(poseBar.transform, false);
+                ((RectTransform)cell.transform).sizeDelta = new Vector2(96f, 100f);
+                var hit = cell.AddComponent<Image>();
+                hit.color = new Color(1f, 1f, 1f, 0f);
+                var ic = new GameObject("Icon", typeof(RectTransform)).AddComponent<Image>();
+                ic.transform.SetParent(cell.transform, false);
+                Place(ic.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -38f), new Vector2(68f, 68f));
+                ic.sprite = i < poseIcons.Length ? poseIcons[i] : null; ic.preserveAspect = true;
+                var b = cell.AddComponent<Button>();
+                b.targetGraphic = ic;
                 b.onClick.AddListener(() => PlayPose(p));
+                Text cap = Label(cell.transform, "Caption", poseNames[i], 18, Cream, new Vector2(0.5f, 0f), new Vector2(0f, 14f), new Vector2(96f, 26f), true);
+                cap.gameObject.AddComponent<FitOneLine>().Configure(18, 12);
             }
 
-            // stage: far below the world, own layer, own key light
+            // stage: far below the world, own layer, own key light, transparent clear (backdrop shows through)
             stage = new GameObject("FittingRoomStage").transform;
             stage.SetParent(transform, false);
             stage.position = new Vector3(0f, -400f, 0f);
             var camGo = new GameObject("FittingRoomCamera");
             camGo.transform.SetParent(transform, false);
-            camGo.transform.position = stage.position + new Vector3(0f, 0.6f, -3.7f);
+            camGo.transform.position = stage.position + new Vector3(0f, 0.6f, -3.05f);
             camGo.transform.rotation = Quaternion.Euler(4f, 0f, 0f);
             previewCam = camGo.AddComponent<Camera>();
             previewCam.cullingMask = 1 << previewLayer;
             previewCam.clearFlags = CameraClearFlags.SolidColor;
-            previewCam.backgroundColor = new Color(0.16f, 0.22f, 0.32f, 1f);
-            previewCam.fieldOfView = 22f;
+            previewCam.backgroundColor = new Color(0f, 0f, 0f, 0f);
+            previewCam.fieldOfView = 24f;
             previewCam.targetTexture = previewRT;
             previewCam.enabled = false;
+            var camData = camGo.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+            camData.renderPostProcessing = false; // keep the alpha channel
             var key = new GameObject("FittingRoomLight").AddComponent<Light>();
             key.transform.SetParent(transform, false);
             key.type = LightType.Directional;
-            key.intensity = 1.15f;
-            key.color = new Color(1f, 0.96f, 0.9f);
+            key.intensity = 1.1f;
+            key.color = new Color(1f, 0.93f, 0.85f);
             key.cullingMask = 1 << previewLayer;
-            key.transform.rotation = Quaternion.Euler(35f, 25f, 0f);
-            var floor = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Destroy(floor.GetComponent<Collider>());
-            floor.name = "FittingRoomFloor";
-            floor.layer = previewLayer;
-            floor.transform.SetParent(transform, false);
-            floor.transform.position = stage.position + new Vector3(0f, -0.03f, 0f);
-            floor.transform.localScale = new Vector3(0.95f, 0.03f, 0.95f);
+            key.transform.rotation = Quaternion.Euler(32f, 25f, 0f);
+            // stone dais with a gold inlay ring (toon)
             Shader toon = Shader.Find("AdventureKing/Toon");
-            if (toon)
+            void Dais(string name, float y, float scale, float h, Color c)
             {
-                var fm = new Material(toon);
-                fm.SetColor("_BaseColor", new Color(0.36f, 0.32f, 0.5f));
-                fm.SetFloat("_OutlineWidth", 0f);
-                floor.GetComponent<Renderer>().sharedMaterial = fm;
+                var d = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                Destroy(d.GetComponent<Collider>());
+                d.name = name;
+                d.layer = previewLayer;
+                d.transform.SetParent(transform, false);
+                d.transform.position = stage.position + new Vector3(0f, y, 0f);
+                d.transform.localScale = new Vector3(scale, h, scale);
+                if (toon)
+                {
+                    var m = new Material(toon);
+                    m.SetColor("_BaseColor", c);
+                    m.SetFloat("_OutlineWidth", 0.004f);
+                    d.GetComponent<Renderer>().sharedMaterial = m;
+                }
             }
+            Dais("DaisBase", -0.09f, 1.25f, 0.05f, new Color(0.36f, 0.38f, 0.48f));
+            Dais("DaisRing", -0.04f, 1.05f, 0.012f, new Color(0.95f, 0.76f, 0.38f));
+            Dais("DaisTop", -0.035f, 0.98f, 0.012f, new Color(0.5f, 0.52f, 0.62f));
 
-            // ---- right: tabs, filters, grid, details
-            var right = Panel(win.transform, "Catalogue", new Vector2(0.34f, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero, new Color(0, 0, 0, 0), null);
-            var rr = right.GetComponent<RectTransform>();
-            rr.offsetMin = new Vector2(10f, 60f); rr.offsetMax = new Vector2(-70f, -100f);
-            (Tab t, string label)[] tabDefs = { (Tab.Gold, "Thời Trang · Vàng"), (Tab.Premium, "Skin Đặc Biệt · KC"), (Tab.Wardrobe, "Tủ Đồ Của Tôi") };
-            for (int i = 0; i < tabDefs.Length; i++)
+            // ---- right: catalogue
+            var right = new GameObject("Catalogue", typeof(RectTransform));
+            right.layer = 5;
+            right.transform.SetParent(win.transform, false);
+            var rr = (RectTransform)right.transform;
+            rr.anchorMin = new Vector2(0.36f, 0f); rr.anchorMax = Vector2.one;
+            rr.offsetMin = new Vector2(16f, 38f); rr.offsetMax = new Vector2(-38f, -112f);
+            UiKit.VStack(rr, 10f);
+            RectTransform tabRow = UiKit.HRow(rr, "Tabs", 64f, 12f, TextAnchor.MiddleLeft);
+            (Tab t, string label)[] tabDefs = { (Tab.Gold, "Thời Trang · Vàng"), (Tab.Premium, "Skin Đặc Biệt · Kim Cương"), (Tab.Wardrobe, "Tủ Đồ Của Tôi") };
+            foreach (var (t, label) in tabDefs)
             {
-                Tab t = tabDefs[i].t;
-                var b = Btn(right.transform, "Tab_" + t, tabDefs[i].label, new Vector2(0f, 1f), new Vector2(150f + i * 290f, -30f), new Vector2(280f, 60f), Muted);
-                b.onClick.AddListener(() => SetTab(t));
+                Tab tt = t;
+                var b = Btn(tabRow, "Tab_" + t, label, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(300f, 64f), Muted);
+                UiKit.Size(b, 64f, 300f, 1f, 180f);
+                b.onClick.AddListener(() => SetTab(tt));
                 tabs[t] = b;
             }
-            var classBtn = Btn(right.transform, "ClassFilter", "", new Vector2(1f, 1f), new Vector2(-130f, -30f), new Vector2(250f, 56f), new Color(0.3f, 0.3f, 0.4f));
-            classToggleText = classBtn.GetComponentInChildren<Text>();
-            classBtn.onClick.AddListener(ToggleAllClasses);
-            for (int i = 0; i < SlotChips.Length; i++)
+            // filter chips: horizontally scrollable row (+ class filter at the end)
+            var chipView = new GameObject("Filters", typeof(RectTransform));
+            chipView.layer = 5;
+            chipView.transform.SetParent(rr, false);
+            UiKit.Size(chipView.transform, 62f); // >= 40 px touch target at 720p
+            chipView.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.001f);
+            chipView.AddComponent<RectMask2D>();
+            var chipContent = UiKit.HRow(chipView.transform, "Chips", 62f, 8f, TextAnchor.MiddleLeft);
+            chipContent.anchorMin = new Vector2(0f, 0f); chipContent.anchorMax = new Vector2(0f, 1f);
+            chipContent.pivot = new Vector2(0f, 0.5f);
+            chipContent.sizeDelta = Vector2.zero; // height = the 54-unit view (a new RectTransform's default 100 delta made the pills 154 tall and clipped them)
+            chipContent.anchoredPosition = Vector2.zero;
+            chipContent.gameObject.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var chipScroll = chipView.AddComponent<ScrollRect>();
+            chipScroll.content = chipContent; chipScroll.vertical = false; chipScroll.movementType = ScrollRect.MovementType.Clamped;
+            foreach (var (slot, label) in SlotChips)
             {
-                string slot = SlotChips[i].slot;
-                var b = Btn(right.transform, "Chip_" + (slot.Length == 0 ? "all" : slot), SlotChips[i].label, new Vector2(0f, 1f),
-                    new Vector2(70f + i * 133f, -100f), new Vector2(126f, 46f), new Color(0.2f, 0.24f, 0.34f), 19);
-                b.onClick.AddListener(() => SetSlotFilter(slot));
+                string s = slot;
+                var b = Btn(chipContent, "Chip_" + (slot.Length == 0 ? "all" : slot), label, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(132f, 62f), new Color(0.16f, 0.2f, 0.32f), 20);
+                UiKit.Size(b, 62f, Mathf.Max(112f, label.Length * 13f + 44f));
+                b.onClick.AddListener(() => SetSlotFilter(s));
                 chips[slot] = b;
             }
+            var classBtn = Btn(chipContent, "ClassFilter", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(170f, 62f), new Color(0.3f, 0.27f, 0.46f), 20);
+            UiKit.Size(classBtn, 62f, 170f);
+            classToggleText = classBtn.GetComponentInChildren<Text>();
+            classBtn.onClick.AddListener(ToggleAllClasses);
 
-            // grid (scrollable)
-            var view = Panel(right.transform, "Grid", new Vector2(0f, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero, new Color(0.04f, 0.06f, 0.12f, 0.55f), panelSprite);
-            var vr = view.GetComponent<RectTransform>();
-            vr.offsetMin = new Vector2(0f, 250f); vr.offsetMax = new Vector2(0f, -132f);
+            // grid (scrollable, takes the remaining height)
+            var view = Panel(rr, "Grid", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, new Color(0.04f, 0.05f, 0.12f, 0.6f), panelSprite);
+            UiKit.Size(view.transform, 300f, -1f, -1f, -1f, 1f);
             view.AddComponent<RectMask2D>();
             var content = new GameObject("Content", typeof(RectTransform));
+            content.layer = 5;
             content.transform.SetParent(view.transform, false);
             grid = (RectTransform)content.transform;
             grid.anchorMin = new Vector2(0f, 1f); grid.anchorMax = new Vector2(1f, 1f); grid.pivot = new Vector2(0.5f, 1f);
             grid.offsetMin = grid.offsetMax = Vector2.zero;
             var gl = content.AddComponent<GridLayoutGroup>();
-            gl.cellSize = new Vector2(190f, 230f);
+            gl.cellSize = new Vector2(200f, 262f);
             gl.spacing = new Vector2(14f, 14f);
             gl.padding = new RectOffset(14, 14, 14, 14);
             gl.childAlignment = TextAnchor.UpperCenter;
             content.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             var scroll = view.AddComponent<ScrollRect>();
-            scroll.content = grid;
-            scroll.horizontal = false;
-            scroll.movementType = ScrollRect.MovementType.Clamped;
-            scroll.scrollSensitivity = 30f;
-            emptyText = Label(view.transform, "Empty", "", 24, new Color(0.8f, 0.85f, 0.95f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(700f, 80f), false);
+            scroll.content = grid; scroll.horizontal = false; scroll.movementType = ScrollRect.MovementType.Clamped; scroll.scrollSensitivity = 30f;
+            emptyText = Label(view.transform, "Empty", "", 24, new Color(0.82f, 0.86f, 0.96f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 120f), false);
 
-            // details
-            var det = Panel(right.transform, "Detail", new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, Vector2.zero, new Color(0.1f, 0.13f, 0.22f), panelSprite);
-            var dr = det.GetComponent<RectTransform>();
-            dr.pivot = new Vector2(0.5f, 0f);
-            dr.sizeDelta = new Vector2(0f, 236f);
-            dr.anchoredPosition = Vector2.zero;
-            Rim(det.transform, 0.8f);
+            // details: icon | name, rarity, description | price + actions
+            var det = Panel(rr, "Detail", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, new Color(0.12f, 0.14f, 0.28f, 0.95f), panelSprite);
+            UiKit.Size(det.transform, 214f);
+            if (!Skin(det.GetComponent<Image>(), "item_cell", 1.2f)) Rim(det.transform, 0.7f);
+            var iconWell = Panel(det.transform, "IconWell", new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(104f, 0f), new Vector2(172f, 172f), new Color(0.06f, 0.07f, 0.16f, 0.9f), panelSprite);
+            iconWell.GetComponent<Image>().raycastTarget = false;
             detailIcon = new GameObject("Icon", typeof(RectTransform)).AddComponent<Image>();
-            detailIcon.transform.SetParent(det.transform, false);
-            Place(detailIcon.rectTransform, new Vector2(0f, 0.5f), new Vector2(100f, 0f), new Vector2(150f, 150f));
-            detailIcon.preserveAspect = true;
-            detailName = Label(det.transform, "Name", "", 28, Gold, new Vector2(0f, 1f), new Vector2(430f, -40f), new Vector2(480f, 44f), true);
+            detailIcon.transform.SetParent(iconWell.transform, false);
+            UiKit.Stretch(detailIcon.rectTransform, 8f, 8f, 8f, 8f);
+            detailIcon.preserveAspect = true; detailIcon.raycastTarget = false;
+            var info = new GameObject("Info", typeof(RectTransform));
+            info.layer = 5;
+            info.transform.SetParent(det.transform, false);
+            var ir = (RectTransform)info.transform;
+            ir.anchorMin = new Vector2(0f, 0f); ir.anchorMax = new Vector2(1f, 1f);
+            ir.offsetMin = new Vector2(204f, 18f); ir.offsetMax = new Vector2(-470f, -18f);
+            UiKit.VStack(ir, 4f, TextAnchor.UpperLeft);
+            RectTransform nameRow = UiKit.HRow(ir, "NameRow", 44f, 10f, TextAnchor.MiddleLeft);
+            detailName = Label(nameRow, "Name", "", 28, Gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(300f, 44f), true);
             detailName.alignment = TextAnchor.MiddleLeft;
-            detailDesc = Label(det.transform, "Desc", "", 20, Cream, new Vector2(0f, 1f), new Vector2(430f, -100f), new Vector2(480f, 80f), false); // stays above the button row
+            detailName.gameObject.AddComponent<FitOneLine>().Configure(28, 18);
+            UiKit.Size(detailName, 44f, 300f, 1f, 160f);
+            var badge = Panel(nameRow, "RarityBadge", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(130f, 34f), Color.gray, pillSprite);
+            UiKit.Size(badge.transform, 34f, 130f, 0f, 110f);
+            rarityLabel = Label(badge.transform, "Rarity", "", 18, Color.white, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, true);
+            UiKit.Stretch(rarityLabel.rectTransform, 10f, 2f, 10f, 2f);
+            rarityLabel.gameObject.AddComponent<FitOneLine>().Configure(18, 12);
+            detailDesc = Label(ir, "Desc", "", 20, Cream, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(300f, 120f), false);
             detailDesc.alignment = TextAnchor.UpperLeft;
             detailDesc.supportRichText = true;
             detailDesc.resizeTextForBestFit = true; detailDesc.resizeTextMinSize = 15; detailDesc.resizeTextMaxSize = 20;
             detailDesc.verticalOverflow = VerticalWrapMode.Truncate;
-            detailPrice = Label(det.transform, "Price", "", 28, Gold, new Vector2(1f, 1f), new Vector2(-200f, -40f), new Vector2(360f, 44f), true);
+            UiKit.Size(detailDesc, 120f);
+            var act = new GameObject("Actions", typeof(RectTransform));
+            act.layer = 5;
+            act.transform.SetParent(det.transform, false);
+            var ar = (RectTransform)act.transform;
+            ar.anchorMin = new Vector2(1f, 0f); ar.anchorMax = new Vector2(1f, 1f); ar.pivot = new Vector2(1f, 0.5f);
+            ar.sizeDelta = new Vector2(450f, 0f); ar.anchoredPosition = new Vector2(-18f, 0f);
+            UiKit.VStack(ar, 10f, TextAnchor.MiddleRight);
+            detailPrice = Label(ar, "Price", "", 30, Gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(440f, 44f), true);
+            detailPrice.alignment = TextAnchor.MiddleRight;
             detailPrice.supportRichText = true;
-            tryBtn = Btn(det.transform, "TryOn", "Mặc thử", new Vector2(1f, 0f), new Vector2(-560f, 56f), new Vector2(170f, 70f), new Color(0.3f, 0.42f, 0.58f));
+            UiKit.Size(detailPrice, 44f);
+            RectTransform btnRow = UiKit.HRow(ar, "Buttons", 66f, 10f, TextAnchor.MiddleRight);
+            tryBtn = Btn(btnRow, "TryOn", "Mặc thử", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(140f, 66f), new Color(0.3f, 0.42f, 0.62f));
+            UiKit.Size(tryBtn, 66f, 140f);
             tryBtnText = tryBtn.GetComponentInChildren<Text>();
             tryBtn.onClick.AddListener(ToggleTry);
-            buyBtn = Btn(det.transform, "Buy", "Mua", new Vector2(1f, 0f), new Vector2(-375f, 56f), new Vector2(170f, 70f), new Color(0.78f, 0.55f, 0.18f));
+            buyBtn = Btn(btnRow, "Buy", "Mua", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(140f, 66f), new Color(0.84f, 0.58f, 0.18f));
+            UiKit.Size(buyBtn, 66f, 140f);
             buyBtn.onClick.AddListener(AskBuy);
-            wearBtn = Btn(det.transform, "Wear", "Mặc", new Vector2(1f, 0f), new Vector2(-375f, 56f), new Vector2(170f, 70f), Teal);
+            wearBtn = Btn(btnRow, "Wear", "Trang bị", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(140f, 66f), Teal);
+            UiKit.Size(wearBtn, 66f, 140f);
             wearBtnText = wearBtn.GetComponentInChildren<Text>();
             wearBtn.onClick.AddListener(ToggleWear);
-            saveBtn = Btn(det.transform, "SaveLook", "Lưu bộ phối", new Vector2(1f, 0f), new Vector2(-150f, 56f), new Vector2(230f, 70f), new Color(0.32f, 0.52f, 0.36f));
+            saveBtn = Btn(btnRow, "SaveLook", "Lưu bộ phối", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(140f, 66f), new Color(0.3f, 0.52f, 0.36f));
+            UiKit.Size(saveBtn, 66f, 140f);
             saveBtn.onClick.AddListener(SaveTryOn);
-            status = Label(win.transform, "Status", "", 22, new Color(1f, 0.93f, 0.7f), new Vector2(0.5f, 0f), new Vector2(0f, 30f), new Vector2(1500f, 34f), false);
+            status = Label(rr, "Status", "", 21, new Color(1f, 0.93f, 0.7f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(800f, 30f), false);
+            status.resizeTextForBestFit = true; status.resizeTextMinSize = 14; status.resizeTextMaxSize = 21;
+            status.verticalOverflow = VerticalWrapMode.Truncate;
+            UiKit.Size(status, 30f);
 
-            // purchase confirmation
-            confirm = Panel(root.transform, "Confirm", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.5f), null);
-            Stretch(confirm.GetComponent<RectTransform>());
-            var card = Panel(confirm.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 340f), Ink, frameSprite ? frameSprite : panelSprite);
-            if (frameSprite) { var ci = card.GetComponent<Image>(); ci.type = Image.Type.Sliced; ci.pixelsPerUnitMultiplier = 2.8f; }
-            Label(card.transform, "Title", "Xác nhận mua", 30, Gold, new Vector2(0.5f, 1f), new Vector2(0f, -48f), new Vector2(600f, 48f), true);
-            confirmText = Label(card.transform, "Text", "", 28, Cream, new Vector2(0.5f, 0.5f), new Vector2(0f, 14f), new Vector2(620f, 100f), false);
+            // purchase confirmation (framed card, measured content area)
+            confirm = Panel(root.transform, "Confirm", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.55f), null);
+            UiKit.Stretch(confirm.GetComponent<RectTransform>());
+            var card = Panel(confirm.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(780f, 400f), Ink, frameSprite ? frameSprite : panelSprite);
+            var ci2 = card.GetComponent<Image>();
+            bool crest = Skin(ci2, "popup_card");
+            if (!crest && frameSprite) { ci2.type = Image.Type.Sliced; ci2.color = Color.white; ci2.pixelsPerUnitMultiplier = 2.6f; }
+            Canvas.ForceUpdateCanvases();
+            RectTransform cc = UiKit.Content(ci2, crest ? 0f : 14f);
+            if (crest) UiKit.Inset(cc, 36f, 24f, 36f, 7f); // title sits in the card's crest band (top 58)
+            UiKit.VStack(cc, crest ? 14f : 10f, crest ? TextAnchor.UpperCenter : TextAnchor.MiddleCenter);
+            Text ct = Label(cc, "Title", "Xác nhận mua", 32, Gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(600f, 44f), true);
+            UiKit.Size(ct, 44f);
+            confirmText = Label(cc, "Text", "", 28, Cream, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(600f, 96f), false);
             confirmText.supportRichText = true;
-            confirmYes = Btn(card.transform, "Yes", "Mua", new Vector2(0.5f, 0f), new Vector2(-140f, 56f), new Vector2(230f, 66f), new Color(0.78f, 0.55f, 0.18f));
+            confirmText.resizeTextForBestFit = true; confirmText.resizeTextMinSize = 18; confirmText.resizeTextMaxSize = 28;
+            UiKit.Size(confirmText, 96f);
+            RectTransform crow = UiKit.HRow(cc, "Buttons", 66f, 20f, TextAnchor.MiddleCenter);
+            confirmYes = Btn(crow, "Yes", "Mua", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(240f, 66f), new Color(0.84f, 0.58f, 0.18f));
+            UiKit.Size(confirmYes, 66f, 240f);
             confirmYes.onClick.AddListener(ConfirmYes);
-            var no = Btn(card.transform, "No", "Huỷ", new Vector2(0.5f, 0f), new Vector2(140f, 56f), new Vector2(230f, 66f), Muted);
+            var no = Btn(crow, "No", "Huỷ", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(240f, 66f), Muted);
+            UiKit.Size(no, 66f, 240f);
             no.onClick.AddListener(() => confirm.SetActive(false));
             confirm.SetActive(false);
             root.SetActive(false);
@@ -790,11 +1016,17 @@ namespace AdventureKing.Gameplay
             cb.disabledColor = new Color(0.55f, 0.55f, 0.6f, 0.6f);
             cb.fadeDuration = 0.08f;
             b.colors = cb;
-            Rim(go.transform);
+            string skin = UiKit.SkinFor(bg);
+            bool skinned = Skin(img, skin);
+            if (!skinned) Rim(go.transform);
             if (!string.IsNullOrEmpty(label) || name == "ClassFilter")
             {
-                var t = Label(go.transform, "Text", label, fontSize > 0 ? fontSize : size.y > 60 ? 25 : 21, Color.white, new Vector2(0.5f, 0.5f), Vector2.zero, size - new Vector2(16f, 4f), true);
-                t.resizeTextForBestFit = true;
+                int fs = fontSize > 0 ? fontSize : size.y > 60 ? 25 : 21;
+                Color fg = skinned ? UiKit.InkFor(skin) : Color.white;
+                var t = Label(go.transform, "Text", label, fs, fg, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, true);
+                if (skinned && fg.grayscale < 0.4f) t.GetComponent<Shadow>().effectColor = new Color(1f, 0.96f, 0.8f, 0.4f);
+                UiKit.Stretch(t.rectTransform, Mathf.Clamp(size.y * 0.22f, 8f, 16f), 2f, Mathf.Clamp(size.y * 0.22f, 8f, 16f), 2f); // follows the button size
+                t.gameObject.AddComponent<FitOneLine>().Configure(fs, 13);
             }
             return b;
         }
@@ -802,6 +1034,20 @@ namespace AdventureKing.Gameplay
         private static void Tint(Button b, Color c)
         {
             if (b) b.GetComponent<Image>().color = c;
+        }
+
+        /// <summary>On/off skin pair (e.g. shop_tab / shop_tab_on): lit gold when active, with dark ink on it.</summary>
+        private bool SkinToggle(Button b, string baseName, bool on)
+        {
+            if (!b || !Skin(b.GetComponent<Image>(), on ? baseName + "_on" : baseName)) return false;
+            Text t = b.GetComponentInChildren<Text>();
+            if (t)
+            {
+                t.color = on ? new Color(0.26f, 0.14f, 0.03f) : new Color(0.9f, 0.88f, 1f);
+                var sh = t.GetComponent<Shadow>();
+                if (sh) sh.effectColor = on ? new Color(1f, 0.96f, 0.8f, 0.4f) : new Color(0f, 0f, 0f, 0.55f);
+            }
+            return true;
         }
     }
 }

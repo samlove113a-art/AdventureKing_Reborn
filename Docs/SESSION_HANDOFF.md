@@ -6,7 +6,57 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
-## ★★★★ Cập nhật mới nhất — Lệnh tổng hợp 2026-11-09: Đợt 1 (UI + nền đăng nhập)
+## ★★★★★ Cập nhật mới nhất — 2026-11-09 chiều: hệ thống khung UI riêng từng nhóm + HUD + shop
+**Trạng thái:** đã test, đã commit (xem `git log`), **chưa push** (chủ dự án push bằng GitHub Desktop). **Meshy: 0 credit** (vẫn 931). Không mua tài nguyên, không bật thanh toán.
+
+### Đã làm (code + kiểm thử thật)
+- **Bỏ khung vàng lặp lại.** File mới `Assets/Editor/ArtPipeline/FrameArt.cs` vẽ thủ tục (không ảnh ngoài), xuất 9-slice vào `Assets/Art/UI/Skin/`. Mỗi nhóm có một khung riêng:
+  - **Đăng nhập** `auth_card`: kính đêm, viền chỉ vàng đôi, góc lá.
+  - **Nút đá quý**: vàng (chính), ngọc bích (Đăng ký/xác nhận), xanh hoàng gia, đá xám, đỏ (Lưu & Thoát / đóng), trắng (Google), xanh dương (Facebook), ghost (link).
+  - **Ô nhập** `field`; **sảnh chọn nhân vật** `hall_panel` (tím, ke góc bạc) + `hall_card`.
+  - **HUD**: `hud_plate` (đuôi vát, mép vàng), `bar_track` + `bar_hp` (đỏ bóng) + `bar_mp` (xanh bóng).
+  - **Ví**: `purse_gold` (đồng/coin) và `purse_gem` (pha lê, khác hẳn nhau).
+  - `minimap_frame` (viền đồng, đinh tán); **hội thoại NPC** `parchment` (giấy da, chữ mực nâu) + `ribbon` (tên người nói / tên map).
+  - `popup_card` (dải tiêu đề), `settings_card` (thép xước, đinh bạc).
+  - **Shop**: `shop_window` (nhung tím, hoa góc), `shop_tab(_on)`, `chip(_on)`, `item_cell` (`_on` = viền vàng khi chọn, `_set` = viền tím cho bộ set), `stage_bezel`.
+- **Nút trong builder và shop tự chọn đúng loại đá quý theo vai trò** (`UiKit.SkinFor`), sửa ở nguồn sinh UI (`EntrySceneBuilder`, `VillageSceneBuilder`, `FashionShopUI`, `FashionMerchant`).
+- **HUD trái là một khối:**
+  - avatar, tấm kính gồm tên, Lv, HP, MP;
+  - ví Vàng và Kim Cương gắn ngay dưới;
+  - số liệu thật (Character / Health2D / PlayerMana).
+- **Lỗi thật đã sửa trong shop:** hàng chip lọc cao 154 thay vì 54, do RectTransform giữ sizeDelta mặc định, nên các chip bị cắt thành hình chữ nhật. Chip nay cao 62 (đủ 40 px ở 720p).
+- **UiAudit nay kiểm tra cả các khung mới:** độ dày hoa văn của từng khung nằm trong `SkinOrnament`. Trước đây khung không tên "frame" bị bỏ qua.
+- **Khi suite chỉ tìm thấy 4 test PlayMode:** nguyên nhân là `Library/ScriptMapper` hỏng sau một lần chạy bị ngắt. Cách khắc phục: xóa `Library/ScriptAssemblies` và `Library/ScriptMapper` (Unity tự tạo lại).
+
+### Kiểm thử
+- **Server:** 83/83.
+- **EditMode:** 4/4.
+- **PlayMode:** 40 test (38 qua, 2 bỏ qua có chủ đích), 0 exception, gồm:
+  - ServerEndToEnd (đăng nhập → vào map → lưu → khởi động lại server → giữ tiến độ);
+  - FashionShop;
+  - UiScreens và UiTownScreens.
+- **UI audit:** 0 lỗi ở 1920×1080, 1366×768, 19.5:9, 16:9 và 4:3 (có safe area).
+  - Màn đăng nhập (`QA/UI/entry/`): splash, đăng nhập, đăng ký, lỗi đăng ký, sảnh tạo nhân vật.
+  - Màn trong thị trấn (`QA/UI/town/`): hội thoại Trưởng Làng, HUD, cài đặt, popup phím tắt, menu thương nhân, shop, xác nhận mua, tủ đồ, xác nhận cổng.
+- Đã xem ảnh bằng mắt: login, sảnh, HUD, hội thoại, cài đặt, shop (PC + điện thoại).
+
+### Còn lại / hạn chế (thật)
+- **Avatar:** chọn ảnh từ album, cắt ảnh, lưu server và kiểm duyệt đều **chưa làm**. Hiện dùng chân dung 3D theo nghề.
+- **MP** là giá trị đề xuất; chưa có kỹ năng tiêu MP.
+- Các phím tắt (sự kiện, thư…) **chưa có backend**: chúng báo thật "chưa được mở", không giả. Quà Nạp Đầu khóa.
+- Thẻ nghề đang chọn ở sảnh chưa nổi bật. Biển tên NPC trong thế giới có thể đè lên icon HUD khi NPC đứng dưới góc phải.
+- Chưa có: đổi sáng/tối theo giờ VN, joystick/nút skill/auto skill đẹp cho mobile, skin mới, kinh tế, quái/rơi vàng server, pet, xã hội.
+- Chưa test trên thiết bị Android thật; chưa đo FPS trên điện thoại.
+
+### Bước tiếp theo (theo lệnh tổng hợp)
+- **Đợt 2:** sảnh, parallax, đổi sáng/tối theo giờ VN, minimap.
+- **Đợt 3:** hoàn thiện UX shop.
+- **Đợt 4:** skin khác biệt và giá Vàng/KC; giá cần chủ dự án duyệt.
+- **Đợt 5:** quái, rơi vàng do server quản lý.
+- **Đợt 6:** pet, chống macro, xã hội.
+
+---
+## ★★★★ Lệnh tổng hợp 2026-11-09: Đợt 1 (UI + nền đăng nhập)
 **Trạng thái:** Đợt 1 xong, đã test, đã commit (xem `git log`). Đợt 2 (HUD) và Đợt 3 (Shop) đang làm. **Meshy: 0 credit** (931).
 
 **Nguyên nhân gốc lỗi chữ đè hoa văn:** `Assets/Art/UI/Fantasy/frame_panel.png` được import ở chế độ sprite *Multiple* nên sprite Unity dùng (`frame_panel_0`) có viền 9-slice = 0 → mọi khung (đăng nhập, sảnh, hội thoại NPC, xác nhận cổng, shop) bị vẽ như MỘT ảnh kéo giãn: hoa văn phình theo kích thước panel và đè lên chữ. Sửa trong mã sinh (`EntrySceneBuilder.FantasySprite` → Single).

@@ -151,6 +151,35 @@ namespace AdventureKing.ArtPipeline
             img.pixelsPerUnitMultiplier = thickness; // higher = thinner frame band
         }
 
+        /// <summary>Applies one of the purpose-made 9-slice skins (FrameArt) to a panel/button image. Returns false if the skin is missing.</summary>
+        internal static bool Skin(GameObject go, string skin, float scale = 1f)
+        {
+            Sprite s = FrameArt.Get(skin);
+            if (!s) return false;
+            var img = go.GetComponent<Image>();
+            img.sprite = s;
+            img.type = Image.Type.Sliced;
+            img.color = Color.white;
+            img.pixelsPerUnitMultiplier = 1f / scale; // scale > 1 = thicker frame band
+            var rim = go.transform.Find("GildedRim");
+            if (rim) Object.DestroyImmediate(rim.gameObject);
+            return true;
+        }
+
+        /// <summary>Re-skins a button made by <see cref="Btn"/> and sets its label colour.</summary>
+        internal static Button Style(Button b, string skin, Color fg, float scale = 1f)
+        {
+            Skin(b.gameObject, skin, scale);
+            foreach (Text t in b.GetComponentsInChildren<Text>(true))
+            {
+                t.color = fg;
+                var sh = t.GetComponent<Shadow>();
+                // dark text on light gems reads best without a drop shadow
+                if (sh) sh.effectColor = fg.grayscale < 0.4f ? new Color(1f, 1f, 1f, 0.25f) : new Color(0f, 0f, 0f, 0.55f);
+            }
+            return b;
+        }
+
         /// <summary>Gilded rim overlay on top of an element (buttons, fields, small panels).</summary>
         internal static void Rim(Transform parent, float alpha = 1f)
         {
@@ -443,8 +472,8 @@ namespace AdventureKing.ArtPipeline
             aso.FindProperty("narrowX").floatValue = 0.5f;
             aso.FindProperty("wideAspect").floatValue = 1.55f;
             aso.ApplyModifiedPropertiesWithoutUndo();
-            Frame(card, 2.6f);
-            RectTransform content = FramedContent(card, 18f, topBand: 70f);
+            if (!Skin(card, "auth_card")) Frame(card, 2.6f);
+            RectTransform content = FramedContent(card, 6f, topBand: 52f);
             VStack(content, 12f, TextAnchor.MiddleCenter);
 
             Text title = BlockLabel(content, "Title", "Đăng nhập", 44, Gold, 58f, FontStyle.Bold);
@@ -468,6 +497,7 @@ namespace AdventureKing.ArtPipeline
             Button login = Btn(row1, "LoginButton", "Đăng nhập", Vector2.zero, new Vector2(270, 72), Gold, new Color(0.15f, 0.1f, 0.05f));
             Size(login, 72f, 270f, 1f);
             Button register = Btn(row1, "RegisterButton", "Đăng ký", Vector2.zero, new Vector2(270, 72), new Color(0.3f, 0.4f, 0.6f), Cream);
+            Style(register, "btn_jade", Cream);
             Size(register, 72f, 270f, 1f);
             BlockLabel(content, "Or", "hoặc", 20, Muted, 26f);
             RectTransform row2 = HRow(content, "SocialRow", 64f, 16f);
@@ -475,8 +505,8 @@ namespace AdventureKing.ArtPipeline
             Size(google, 64f, 270f, 1f);
             Button facebook = Btn(row2, "FacebookButton", "Facebook", Vector2.zero, new Vector2(270, 64), new Color(0.23f, 0.38f, 0.7f), Color.white);
             Size(facebook, 64f, 270f, 1f);
-            var toggleRow = Btn(content, "ToggleRegister", "Chưa có tài khoản? Tạo mới", Vector2.zero, new Vector2(560, 46), new Color(0, 0, 0, 0), new Color(0.85f, 0.9f, 1f));
-            Size(toggleRow, 46f);
+            var toggleRow = Btn(content, "ToggleRegister", "Chưa có tài khoản? Tạo mới", Vector2.zero, new Vector2(560, 62), new Color(0, 0, 0, 0), new Color(0.85f, 0.9f, 1f));
+            Size(toggleRow, 62f); // ghost button: still a full-size touch target (>= 40 px on a 720p phone)
             Text toggleLabel = toggleRow.GetComponentInChildren<Text>();
             toggleLabel.fontStyle = FontStyle.Normal;
             status = BlockLabel(content, "AuthStatus", "", 22, new Color(1f, 0.66f, 0.58f), 56f);
@@ -523,8 +553,8 @@ namespace AdventureKing.ArtPipeline
 
             // ---- class cards (left)
             GameObject cards = Panel(root.transform, "ClassCards", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(Edge + 175, 95), new Vector2(350, 600), InkSoft, panelSprite);
-            Frame(cards, 3.2f);
-            RectTransform cardList = FramedContent(cards, 6f, topBand: 46f);
+            if (!Skin(cards, "hall_panel")) Frame(cards, 3.2f);
+            RectTransform cardList = FramedContent(cards, 0f, topBand: 40f);
             VStack(cardList, 10f, TextAnchor.MiddleCenter);
             (string name, string role, HeroClass c, Color tint)[] classes =
             {
@@ -537,6 +567,7 @@ namespace AdventureKing.ArtPipeline
             {
                 var (n, role, c, tint) = classes[i];
                 Button b = Btn(cardList, "Card_" + c, "", Vector2.zero, new Vector2(270, 112), new Color(0.13f, 0.17f, 0.26f, 0.95f), Cream);
+                Skin(b.gameObject, "hall_card");
                 Size(b, 112f);
                 var bar = Img(b.transform, "Accent", new Vector2(0f, 0.5f), new Vector2(10, 84), tint, pillSprite);
                 bar.rectTransform.anchoredPosition = new Vector2(26, 0);
@@ -560,8 +591,8 @@ namespace AdventureKing.ArtPipeline
 
             // ---- class details + preview actions (right)
             GameObject info = Panel(root.transform, "ClassInfo", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-(Edge + 225), 95), new Vector2(450, 600), InkSoft, panelSprite);
-            Frame(info, 3.0f);
-            RectTransform infoC = FramedContent(info, 10f, topBand: 46f);
+            if (!Skin(info, "hall_panel")) Frame(info, 3.0f);
+            RectTransform infoC = FramedContent(info, 0f, topBand: 40f);
             VStack(infoC, 6f, TextAnchor.UpperCenter);
             heroName = BlockLabel(infoC, "HeroName", "", 40, Gold, 52f, FontStyle.Bold);
             heroDesc = BlockLabel(infoC, "HeroDescription", "", 22, Cream, 96f, FontStyle.Normal, TextAnchor.UpperCenter);
@@ -580,7 +611,13 @@ namespace AdventureKing.ArtPipeline
                 track.layer = 5;
                 track.transform.SetParent(row, false);
                 Size(track.transform, 34f, 200f, 1f, 160f);
-                if (frameBar)
+                if (FrameArt.Get("bar_track"))
+                {
+                    var fr = Img(track.transform, "StatFrame" + i, new Vector2(0.5f, 0.5f), Vector2.zero, Color.white, FrameArt.Get("bar_track"));
+                    fr.rectTransform.anchorMin = new Vector2(0f, 0.5f); fr.rectTransform.anchorMax = new Vector2(1f, 0.5f);
+                    fr.rectTransform.offsetMin = new Vector2(10f, -11f); fr.rectTransform.offsetMax = new Vector2(-10f, 11f);
+                }
+                else if (frameBar)
                 {
                     // gilded bar frame (Meshy art) around the groove; the fill grows inside it
                     var fr = Img(track.transform, "StatFrame" + i, new Vector2(0.5f, 0.5f), Vector2.zero, Color.white, frameBar);
@@ -616,8 +653,8 @@ namespace AdventureKing.ArtPipeline
             br.pivot = new Vector2(0.5f, 0f);
             br.offsetMin = new Vector2(Edge, 24f);
             br.offsetMax = new Vector2(-Edge, 24f + 232f);
-            Frame(bottom, 3.4f);
-            RectTransform barC = FramedContent(bottom, 8f, topBand: 46f);
+            if (!Skin(bottom, "hall_panel")) Frame(bottom, 3.4f);
+            RectTransform barC = FramedContent(bottom, 0f, topBand: 40f);
             VStack(barC, 8f, TextAnchor.MiddleCenter);
             existing = BlockLabel(barC, "ExistingDetails", "", 20, Muted, 28f);
             RectTransform slotRow = HRow(barC, "SlotRow", 84f, 12f);
@@ -625,6 +662,7 @@ namespace AdventureKing.ArtPipeline
             for (int i = 0; i < 4; i++)
             {
                 Button s = Btn(slotRow, "Slot" + i, "", Vector2.zero, new Vector2(190, 84), new Color(0.13f, 0.17f, 0.26f, 1f), Cream);
+                Skin(s.gameObject, "hall_card");
                 Size(s, 84f, 180f, 1f, 120f);
                 slots[i] = FillLabel(s.transform, "Label", "Ô " + (i + 1), 20, Cream, FontStyle.Normal, 16f, 6f, 14);
                 switch (i)
@@ -796,7 +834,8 @@ namespace AdventureKing.ArtPipeline
             cb.selectedColor = new Color(1.08f, 1.08f, 1.08f, 1f);
             cb.fadeDuration = 0.08f;
             b.colors = cb;
-            if (bg.a > 0.05f) Rim(go.transform);
+            // purpose-made gem skin chosen from the role colour the caller passes (no shared gold rim on everything)
+            if (!Skin(go, SkinFor(bg)) && bg.a > 0.05f) Rim(go.transform);
             if (!string.IsNullOrEmpty(label))
             {
                 // inset from the gilded rim; shrinks to fit (Vietnamese diacritics included) instead of spilling
@@ -804,9 +843,14 @@ namespace AdventureKing.ArtPipeline
                 Text t = FillLabel(go.transform, "Text", label, max, fg, FontStyle.Bold, Mathf.Clamp(size.y * 0.24f, 10f, 20f), 4f, 15);
                 t.raycastTarget = false;
                 t.gameObject.AddComponent<FitOneLine>().Configure(max, 14); // one line, shrinks to fit
+                var tsh = t.GetComponent<Shadow>();
+                if (tsh && fg.grayscale < 0.4f) { tsh.effectColor = new Color(1f, 0.97f, 0.85f, 0.35f); tsh.effectDistance = new Vector2(0f, -1.2f); } // embossed dark text on light gems
             }
             return b;
         }
+
+        /// <summary>Gem skin for a role colour: gold = primary, green = confirm, red = danger, white/blue = Google/Facebook...</summary>
+        internal static string SkinFor(Color bg) => UiKit.SkinFor(bg);
 
         private static InputField Field(Transform parent, string name, string placeholder, Vector2 pos, bool password,
             Vector2? size = null, Vector2? anchor = null)
@@ -821,7 +865,7 @@ namespace AdventureKing.ArtPipeline
             r.sizeDelta = sz;
             var img = go.AddComponent<Image>();
             img.sprite = enamelSprite ? enamelSprite : pillSprite; img.type = Image.Type.Sliced; img.color = new Color(0.05f, 0.06f, 0.11f, 0.82f);
-            Rim(go.transform, 0.85f);
+            if (!Skin(go, "field")) Rim(go.transform, 0.85f);
             // text sits clear of the rounded gilded rim (inset ~ half the height), large and upright for readability
             float inset = Mathf.Clamp(sz.y * 0.6f, 30f, 48f);
             int fontSize = Mathf.RoundToInt(Mathf.Clamp(sz.y * 0.38f, 22f, 30f));

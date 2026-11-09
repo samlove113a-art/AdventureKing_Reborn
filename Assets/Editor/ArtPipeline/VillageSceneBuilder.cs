@@ -922,7 +922,24 @@ namespace AdventureKing.ArtPipeline
             so.FindProperty("rimSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_gilded_rim.png");
             so.FindProperty("pillSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_pill.png");
             so.FindProperty("frameSprite").objectReferenceValue = EntrySceneBuilder.FramePanelSprite;
+            // purpose-made skins for the shop (looked up by name at runtime)
+            string[] shopSkins = { "shop_window", "shop_tab", "shop_tab_on", "chip", "chip_on", "item_cell", "item_cell_on", "item_cell_set", "stage_bezel",
+                "popup_card", "purse_gold", "purse_gem", "parchment", "ribbon",
+                "btn_gold", "btn_jade", "btn_royal", "btn_slate", "btn_crimson", "btn_white", "btn_azure", "btn_ghost" };
+            var sk = so.FindProperty("skins");
+            sk.arraySize = shopSkins.Length;
+            for (int i = 0; i < shopSkins.Length; i++) sk.GetArrayElementAtIndex(i).objectReferenceValue = FrameArt.Get(shopSkins[i]);
             so.FindProperty("previewLayer").intValue = 30;
+            so.FindProperty("coinIcon").objectReferenceValue = HudArt.Get("coin");
+            so.FindProperty("diamondIcon").objectReferenceValue = HudArt.Get("diamond");
+            var pi = so.FindProperty("poseIcons");
+            string[] poses = { "idle", "run", "jump", "attack" };
+            pi.arraySize = poses.Length;
+            for (int i = 0; i < poses.Length; i++) pi.GetArrayElementAtIndex(i).objectReferenceValue = HudArt.Get("icon_pose_" + poses[i]);
+            var bl = so.FindProperty("backdropLayers");
+            string[] layers = { "sky", "hills", "mid", "near" };
+            bl.arraySize = layers.Length;
+            for (int i = 0; i < layers.Length; i++) bl.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Texture2D>($"{LoginBackdropBaker.Dir}/{layers[i]}.png");
             so.ApplyModifiedPropertiesWithoutUndo();
 
             // "E · Nói chuyện" bubble above the name plate (world space; shown only while the hero is in range)
@@ -1429,45 +1446,296 @@ namespace AdventureKing.ArtPipeline
             var canvasGo = new GameObject("HUD", typeof(RectTransform)) { layer = 5 };
             var canvas = canvasGo.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 60; // above world-space name plates (40/41) in every render mode
             var scaler = canvasGo.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = 0.6f;
             canvasGo.AddComponent<GraphicRaycaster>();
+            HudArt.BuildAll();
+            HudArt.RenderPortraits();
 
-            Color ink = new Color(0.08f, 0.1f, 0.16f, 0.78f), cream = new Color(1f, 0.97f, 0.9f), gold = new Color(1f, 0.82f, 0.45f);
-            // Everything interactive lives inside the safe area (notches / rounded corners on phones).
+            Color ink = new Color(0.07f, 0.09f, 0.17f, 0.82f), cream = new Color(1f, 0.97f, 0.9f), gold = new Color(1f, 0.84f, 0.48f);
+            // Everything lives inside the safe area (notches / rounded corners), plus a fixed margin from its edges.
             var safe = new GameObject("SafeArea", typeof(RectTransform)) { layer = 5 };
             safe.transform.SetParent(canvasGo.transform, false);
             var srt = (RectTransform)safe.transform;
             srt.anchorMin = Vector2.zero; srt.anchorMax = Vector2.one; srt.offsetMin = srt.offsetMax = Vector2.zero;
             safe.AddComponent<SafeAreaFitter>();
             Transform root = safe.transform;
+            const float M = 90f; // margin from the safe-area edges (covers simulated notches too)
 
-            var plate = EntrySceneBuilder.Panel(root, "CharacterPlate", new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(250f, -56f), new Vector2(460f, 72f), ink, EntrySceneBuilder.PanelSprite);
-            nameLabel = EntrySceneBuilder.Label(plate.transform, "CharacterName", "", 26, cream, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(430f, 60f), FontStyle.Bold);
-            var mapPlate = EntrySceneBuilder.Panel(root, "MapPlate", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
-                new Vector2(0f, -48f), new Vector2(380f, 56f), ink, EntrySceneBuilder.PanelSprite);
-            EntrySceneBuilder.Label(mapPlate.transform, "MapName", mapName, 26, gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(360f, 50f), FontStyle.Bold);
-            exit = EntrySceneBuilder.Btn(root, "ExitButton", "Lưu & Thoát", new Vector2(-130f, -56f), new Vector2(220f, 60f),
-                new Color(0.62f, 0.26f, 0.24f), Color.white, new Vector2(1f, 1f));
-            Button gfx = EntrySceneBuilder.Btn(root, "GraphicsButton", "Đồ họa: Cao", new Vector2(-370f, -56f), new Vector2(230f, 60f),
-                new Color(0.2f, 0.26f, 0.38f), Color.white, new Vector2(1f, 1f));
+            // ---------------------------------------------------------------- player frame (top-left)
+            var frame = new GameObject("PlayerFrame", typeof(RectTransform)) { layer = 5 };
+            frame.transform.SetParent(root, false);
+            var fr = (RectTransform)frame.transform;
+            fr.anchorMin = fr.anchorMax = fr.pivot = new Vector2(0f, 1f);
+            fr.anchoredPosition = new Vector2(M, -30f);
+            fr.sizeDelta = new Vector2(780f, 150f);
+            // avatar: round mask + portrait + gilded ring
+            var maskGo = new GameObject("Avatar", typeof(RectTransform)) { layer = 5 };
+            maskGo.transform.SetParent(frame.transform, false);
+            var mr = (RectTransform)maskGo.transform;
+            mr.anchorMin = mr.anchorMax = mr.pivot = new Vector2(0f, 0.5f);
+            mr.anchoredPosition = Vector2.zero;
+            mr.sizeDelta = new Vector2(146f, 146f);
+            var maskImg = maskGo.AddComponent<Image>();
+            maskImg.sprite = HudArt.Get("avatar_mask");
+            maskImg.color = new Color(0.16f, 0.2f, 0.34f, 1f);
+            maskGo.AddComponent<Mask>().showMaskGraphic = true;
+            var portrait = new GameObject("Portrait", typeof(RectTransform)) { layer = 5 };
+            portrait.transform.SetParent(maskGo.transform, false);
+            var pr = (RectTransform)portrait.transform;
+            pr.anchorMin = Vector2.zero; pr.anchorMax = Vector2.one; pr.offsetMin = pr.offsetMax = Vector2.zero;
+            var portraitImg = portrait.AddComponent<Image>();
+            portraitImg.preserveAspect = true;
+            portraitImg.raycastTarget = false;
+            var ring = EntrySceneBuilder.Img(frame.transform, "AvatarRing", new Vector2(0f, 0.5f), new Vector2(166f, 166f), Color.white, HudArt.Get("avatar_ring"));
+            ring.type = Image.Type.Simple;
+            ring.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            ring.rectTransform.anchoredPosition = new Vector2(73f, 0f);
+            // info plate: name + level, HP, MP
+            // One block: [avatar] [navy glass plate: name/Lv, HP, MP] with the wallet strip hanging under the plate.
+            var info = EntrySceneBuilder.Panel(frame.transform, "InfoPlate", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(128f + 230f, -62f), new Vector2(460f, 118f), ink, EntrySceneBuilder.PanelSprite);
+            info.GetComponent<Image>().raycastTarget = false;
+            if (!EntrySceneBuilder.Skin(info, "hud_plate")) EntrySceneBuilder.Rim(info.transform, 0.8f);
+            info.transform.SetAsFirstSibling(); // under the avatar ring
+            var infoC = new GameObject("Content", typeof(RectTransform)) { layer = 5 };
+            infoC.transform.SetParent(info.transform, false);
+            var ic = (RectTransform)infoC.transform;
+            ic.anchorMin = Vector2.zero; ic.anchorMax = Vector2.one; ic.offsetMin = new Vector2(44f, 12f); ic.offsetMax = new Vector2(-62f, -12f);
+            EntrySceneBuilder.VStack(ic, 6f, TextAnchor.MiddleLeft);
+            RectTransform nameRow = EntrySceneBuilder.HRow(ic, "NameRow", 36f, 10f, TextAnchor.MiddleLeft);
+            Text heroName = EntrySceneBuilder.BlockLabel(nameRow, "HeroName", "", 26, cream, 36f, FontStyle.Bold, TextAnchor.MiddleLeft);
+            EntrySceneBuilder.Size(heroName, 36f, 240f, 1f, 140f);
+            Text level = EntrySceneBuilder.BlockLabel(nameRow, "Level", "", 22, gold, 36f, FontStyle.Bold, TextAnchor.MiddleRight);
+            EntrySceneBuilder.Size(level, 36f, 90f, 0f, 80f);
+            Image Bar(string name, Color fill, out Text value)
+            {
+                var track = EntrySceneBuilder.Panel(ic, name, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(300f, 28f), new Color(0.02f, 0.03f, 0.07f, 0.85f), EntrySceneBuilder.PanelSprite);
+                track.GetComponent<Image>().raycastTarget = false;
+                EntrySceneBuilder.Skin(track, "bar_track");
+                EntrySceneBuilder.Size(track.transform, 28f);
+                var f = EntrySceneBuilder.Panel(track.transform, "Fill", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, fill, null);
+                var fi = f.GetComponent<Image>();
+                Sprite baked = FrameArt.Get(name == "HpBar" ? "bar_hp" : "bar_mp"); // glossy ruby / sapphire capsule
+                fi.sprite = baked ? baked : AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_pill.png");
+                if (baked) fi.color = Color.white;
+                fi.type = Image.Type.Filled;
+                fi.fillMethod = Image.FillMethod.Horizontal;
+                fi.fillAmount = 1f;
+                fi.raycastTarget = false;
+                var fRt = (RectTransform)f.transform;
+                fRt.offsetMin = new Vector2(3f, 3f); fRt.offsetMax = new Vector2(-3f, -3f);
+                value = EntrySceneBuilder.FillLabel(track.transform, "Value", "", 17, Color.white, FontStyle.Bold, 10f, 1f, 13);
+                value.raycastTarget = false;
+                var vo = value.gameObject.AddComponent<Outline>(); // readable over both the fill and the empty groove
+                vo.effectColor = new Color(0f, 0f, 0f, 0.6f);
+                vo.effectDistance = new Vector2(1f, -1f);
+                return fi;
+            }
+            Image hp = Bar("HpBar", new Color(0.86f, 0.22f, 0.24f), out Text hpText);
+            Image mp = Bar("MpBar", new Color(0.24f, 0.5f, 0.95f), out Text mpText);
+            // wallet strip attached under the plate: bronze coin purse + crystal diamond purse (different on purpose)
+            var purse = new GameObject("Purse", typeof(RectTransform)) { layer = 5 };
+            purse.transform.SetParent(frame.transform, false);
+            purse.transform.SetSiblingIndex(1);
+            var pu = (RectTransform)purse.transform;
+            pu.anchorMin = pu.anchorMax = pu.pivot = new Vector2(0f, 1f);
+            pu.anchoredPosition = new Vector2(150f, -122f);
+            pu.sizeDelta = new Vector2(420f, 48f);
+            var puh = purse.AddComponent<HorizontalLayoutGroup>();
+            puh.spacing = 10f; puh.childAlignment = TextAnchor.MiddleLeft;
+            puh.childControlWidth = puh.childControlHeight = true; puh.childForceExpandWidth = puh.childForceExpandHeight = false;
+            Text Pill(string name, string icon, string skin, Color amount)
+            {
+                var p = EntrySceneBuilder.Panel(pu, name, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(200f, 46f), ink, AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_pill.png"));
+                p.GetComponent<Image>().raycastTarget = false;
+                EntrySceneBuilder.Skin(p, skin, 0.72f);
+                EntrySceneBuilder.Size(p.transform, 46f, 200f, 0f, 170f);
+                var ico = EntrySceneBuilder.Img(p.transform, "Icon", new Vector2(0f, 0.5f), new Vector2(44f, 44f), Color.white, HudArt.Get(icon));
+                ico.type = Image.Type.Simple;
+                ico.rectTransform.anchoredPosition = new Vector2(22f, 0f);
+                var t = EntrySceneBuilder.FillLabel(p.transform, "Amount", "", 22, amount, FontStyle.Bold, 0f, 2f, 14);
+                t.rectTransform.offsetMin = new Vector2(52f, 2f);
+                t.rectTransform.offsetMax = new Vector2(-20f, -2f);
+                t.alignment = TextAnchor.MiddleLeft;
+                return t;
+            }
+            Text goldText = Pill("Gold", "coin", "purse_gold", new Color(1f, 0.88f, 0.58f));
+            Text diamondText = Pill("Diamonds", "diamond", "purse_gem", new Color(0.8f, 0.95f, 1f));
+
+            // ---------------------------------------------------------------- top-right: settings, minimap, shortcuts
+            var right = new GameObject("TopRight", typeof(RectTransform)) { layer = 5 };
+            right.transform.SetParent(root, false);
+            var rr = (RectTransform)right.transform;
+            rr.anchorMin = rr.anchorMax = rr.pivot = new Vector2(1f, 1f);
+            rr.anchoredPosition = new Vector2(-M, -24f);
+            rr.sizeDelta = new Vector2(500f, 440f);
+            var mini = EntrySceneBuilder.Panel(right.transform, "Minimap", new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-190f, -84f), new Vector2(380f, 168f), new Color(0.06f, 0.09f, 0.16f, 0.78f), EntrySceneBuilder.PanelSprite);
+            mini.GetComponent<Image>().raycastTarget = false;
+            if (!EntrySceneBuilder.Skin(mini, "minimap_frame")) EntrySceneBuilder.Rim(mini.transform, 0.95f);
+            var area = new GameObject("Area", typeof(RectTransform)) { layer = 5 };
+            area.transform.SetParent(mini.transform, false);
+            var ar = (RectTransform)area.transform;
+            ar.anchorMin = Vector2.zero; ar.anchorMax = Vector2.one; ar.offsetMin = new Vector2(22f, 18f); ar.offsetMax = new Vector2(-22f, -18f);
+            var mm = mini.AddComponent<HudMinimap>();
+            var mmso = new SerializedObject(mm);
+            mmso.FindProperty("area").objectReferenceValue = ar;
+            mmso.FindProperty("dot").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_circle.png");
+            mmso.ApplyModifiedPropertiesWithoutUndo();
+            Button gear = IconButton(right.transform, "SettingsButton", "icon_settings", "", new Vector2(1f, 1f), new Vector2(-380f - 52f, -50f), 78f);
+
+            // popup used by every shortcut
+            var popupGo = EntrySceneBuilder.Panel(canvasGo.transform, "HudPopup", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.45f), null);
+            var popupCard = EntrySceneBuilder.Panel(popupGo.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 390f), ink, EntrySceneBuilder.PanelSprite);
+            if (!EntrySceneBuilder.Skin(popupCard, "popup_card")) EntrySceneBuilder.Frame(popupCard, 2.8f);
+            RectTransform pc = EntrySceneBuilder.FramedContent(popupCard, 0f, topBand: 0f);
+            pc.offsetMin = new Vector2(36f, 24f); pc.offsetMax = new Vector2(-36f, -7f); // title sits in the card's crest band (top 58)
+            EntrySceneBuilder.VStack(pc, 14f, TextAnchor.UpperCenter);
+            Text popTitle = EntrySceneBuilder.BlockLabel(pc, "PopupTitle", "", 32, gold, 44f, FontStyle.Bold);
+            Text popMsg = EntrySceneBuilder.BlockLabel(pc, "PopupMessage", "", 24, cream, 120f);
+            RectTransform popRow = EntrySceneBuilder.HRow(pc, "PopupButtons", 64f, 12f);
+            Button popClose = EntrySceneBuilder.Btn(popRow, "PopupClose", "Đóng", Vector2.zero, new Vector2(220f, 64f), new Color(0.26f, 0.56f, 0.62f), Color.white);
+            EntrySceneBuilder.Size(popClose, 64f, 220f);
+            var popup = popupGo.AddComponent<HudPopup>();
+            var poso = new SerializedObject(popup);
+            poso.FindProperty("titleText").objectReferenceValue = popTitle;
+            poso.FindProperty("messageText").objectReferenceValue = popMsg;
+            poso.ApplyModifiedPropertiesWithoutUndo();
+            UnityEventTools.AddPersistentListener(popClose.onClick, popup.Hide);
+            popupGo.SetActive(false);
+
+            // shortcuts: honest about what is not built yet (no fake notification dots)
+            var grid = new GameObject("Shortcuts", typeof(RectTransform)) { layer = 5 };
+            grid.transform.SetParent(right.transform, false);
+            var gr = (RectTransform)grid.transform;
+            gr.anchorMin = gr.anchorMax = gr.pivot = new Vector2(1f, 1f);
+            gr.anchoredPosition = new Vector2(0f, -180f);
+            gr.sizeDelta = new Vector2(500f, 250f);
+            var gl = grid.AddComponent<GridLayoutGroup>();
+            gl.cellSize = new Vector2(92f, 112f);
+            gl.spacing = new Vector2(10f, 8f);
+            gl.childAlignment = TextAnchor.UpperRight;
+            gl.startCorner = GridLayoutGroup.Corner.UpperLeft;
+            gl.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            gl.constraintCount = 5;
+            const string soon = " chưa được mở: phần máy chủ của tính năng này đang được phát triển. Khi hoàn thành, phần thưởng thật sẽ hiển thị tại đây.";
+            (string icon, string label, string title, string msg, bool vip)[] shortcuts =
+            {
+                ("icon_event", "Sự kiện", "Sự Kiện", "Sự kiện" + soon, false),
+                ("icon_checkin", "Điểm danh", "Điểm Danh 7 Ngày", "Điểm danh 7 ngày" + soon, false),
+                ("icon_firsttopup", "Nạp đầu", "Quà Nạp Đầu", "Thanh toán thật chưa được kích hoạt (chờ chủ dự án phê duyệt), nên Quà Nạp Đầu đang khóa. Không có giao dịch nào được thực hiện.", false),
+                ("icon_welfare", "Phúc lợi", "Phúc Lợi", "Phúc lợi" + soon, false),
+                ("icon_mail", "Thư", "Hộp Thư", "Hộp thư" + soon, false),
+                ("icon_giftcode", "Giftcode", "Giftcode", "Nhập giftcode" + soon, false),
+                ("icon_vip", "VIP", "VIP", "", true),
+                ("icon_ranking", "BXH", "Bảng Xếp Hạng", "Bảng xếp hạng" + soon, false),
+                ("icon_more", "Thêm", "Thêm", "Các tính năng khác (bang hội, bạn bè, thú cưng…) sẽ xuất hiện tại đây khi được hoàn thành.", false),
+            };
+            var secondaryIcons = new System.Collections.Generic.List<GameObject>();
+            HudFeatureButton moreInfo = null;
+            Button moreButton = null;
+            foreach (var (icon, label, title, msg, vip) in shortcuts)
+            {
+                Button b = IconButton(grid.transform, "Shortcut_" + icon.Replace("icon_", ""), icon, label, new Vector2(0.5f, 0.5f), Vector2.zero, 82f);
+                var fb = b.gameObject.AddComponent<HudFeatureButton>();
+                var fso = new SerializedObject(fb);
+                fso.FindProperty("title").stringValue = title;
+                fso.FindProperty("message").stringValue = msg;
+                fso.FindProperty("queryVip").boolValue = vip;
+                fso.FindProperty("popup").objectReferenceValue = popup;
+                fso.ApplyModifiedPropertiesWithoutUndo();
+                if (icon == "icon_more") { moreInfo = fb; moreButton = b; continue; }
+                UnityEventTools.AddPersistentListener(b.onClick, fb.Open);
+                if (icon is "icon_welfare" or "icon_giftcode" or "icon_ranking" or "icon_vip") secondaryIcons.Add(b.gameObject); // phones: behind "Thêm"
+            }
+            var bar = grid.AddComponent<HudShortcutBar>();
+            var bso2 = new SerializedObject(bar);
+            var sec = bso2.FindProperty("secondary");
+            sec.arraySize = secondaryIcons.Count;
+            for (int i = 0; i < secondaryIcons.Count; i++) sec.GetArrayElementAtIndex(i).objectReferenceValue = secondaryIcons[i];
+            bso2.FindProperty("moreInfo").objectReferenceValue = moreInfo;
+            bso2.ApplyModifiedPropertiesWithoutUndo();
+            UnityEventTools.AddPersistentListener(moreButton.onClick, bar.More);
+
+            // system / settings menu (graphics, sound, save & exit)
+            var menuGo = EntrySceneBuilder.Panel(canvasGo.transform, "SystemMenu", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.45f), null);
+            var menuCard = EntrySceneBuilder.Panel(menuGo.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(620f, 560f), ink, EntrySceneBuilder.PanelSprite);
+            if (!EntrySceneBuilder.Skin(menuCard, "settings_card")) EntrySceneBuilder.Frame(menuCard, 2.8f);
+            RectTransform mc = EntrySceneBuilder.FramedContent(menuCard, 0f, topBand: 0f);
+            EntrySceneBuilder.VStack(mc, 14f, TextAnchor.MiddleCenter);
+            EntrySceneBuilder.BlockLabel(mc, "MenuTitle", "Cài Đặt", 34, gold, 46f, FontStyle.Bold);
+            Button gfx = EntrySceneBuilder.Btn(mc, "GraphicsButton", "Đồ họa: Cao", Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
+            EntrySceneBuilder.Size(gfx, 66f);
             var quality = gfx.gameObject.AddComponent<GraphicsQualityOption>();
             var qso = new SerializedObject(quality);
             qso.FindProperty("label").objectReferenceValue = gfx.GetComponentInChildren<Text>();
             qso.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(gfx.onClick, quality.Cycle);
+            Button sound = EntrySceneBuilder.Btn(mc, "SoundButton", "Âm thanh: Bật", Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
+            EntrySceneBuilder.Size(sound, 66f);
+            exit = EntrySceneBuilder.Btn(mc, "ExitButton", "Lưu & Thoát", Vector2.zero, new Vector2(400f, 66f), new Color(0.62f, 0.26f, 0.24f), Color.white);
+            EntrySceneBuilder.Size(exit, 66f);
+            Button menuClose = EntrySceneBuilder.Btn(mc, "MenuClose", "Đóng", Vector2.zero, new Vector2(400f, 62f), new Color(0.36f, 0.36f, 0.42f), Color.white);
+            EntrySceneBuilder.Size(menuClose, 62f);
+            var sys = canvasGo.AddComponent<HudSystemMenu>();
+            var sso = new SerializedObject(sys);
+            sso.FindProperty("panel").objectReferenceValue = menuGo;
+            sso.FindProperty("soundLabel").objectReferenceValue = sound.GetComponentInChildren<Text>();
+            sso.ApplyModifiedPropertiesWithoutUndo();
+            UnityEventTools.AddPersistentListener(gear.onClick, sys.Toggle);
+            UnityEventTools.AddPersistentListener(sound.onClick, sys.ToggleSound);
+            UnityEventTools.AddPersistentListener(menuClose.onClick, sys.Close);
+            UnityEventTools.AddPersistentListener(exit.onClick, sys.Close);
+            menuGo.SetActive(false);
 
+            // ---------------------------------------------------------------- map banner (on arrival, fades out)
+            var banner = EntrySceneBuilder.Panel(root, "MapBanner", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -250f), new Vector2(700f, 110f), Color.white,
+                AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/Fantasy/frame_bar.png"));
+            var bimg = banner.GetComponent<Image>();
+            bimg.raycastTarget = false;
+            bimg.pixelsPerUnitMultiplier = 1.4f;
+            EntrySceneBuilder.Skin(banner, "ribbon", 1.15f); // teal banner with forked ends (not the shared gold bar)
+            var bannerGroup = banner.AddComponent<CanvasGroup>();
+            bannerGroup.blocksRaycasts = false;
+            Text bannerText = EntrySceneBuilder.FillLabel(banner.transform, "MapName", mapName, 40, gold, FontStyle.Bold, 110f, 14f, 24);
+            var bo = bannerText.gameObject.AddComponent<Outline>();
+            bo.effectColor = new Color(0.2f, 0.1f, 0.03f, 0.9f);
+            bo.effectDistance = new Vector2(1.5f, -1.5f);
+
+            // ---------------------------------------------------------------- bottom: keyboard hint + status
             var hint = EntrySceneBuilder.Panel(root, "ControlsHint", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
-                new Vector2(0f, 44f), new Vector2(1180f, 48f), new Color(0.08f, 0.1f, 0.16f, 0.55f), EntrySceneBuilder.PanelSprite);
-            EntrySceneBuilder.Label(hint.transform, "Hint", "A / D di chuyển   ·   Space nhảy   ·   W / S leo thang, dây   ·   W tại cổng: dịch chuyển   ·   J tấn công",
-                22, cream, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1160f, 44f));
+                new Vector2(0f, 40f), new Vector2(1120f, 46f), new Color(0.07f, 0.09f, 0.17f, 0.6f), AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_pill.png"));
+            hint.GetComponent<Image>().raycastTarget = false;
+            EntrySceneBuilder.FillLabel(hint.transform, "Hint", "A / D di chuyển  ·  Space nhảy  ·  W / S leo  ·  W tại cổng: dịch chuyển  ·  J tấn công  ·  E nói chuyện",
+                20, cream, FontStyle.Normal, 30f, 4f, 14);
             hint.AddComponent<TouchControlsVisibility>().hideOnTouch = true; // keyboard hints are meaningless on a phone
-            status = EntrySceneBuilder.Label(root, "WorldStatus", "", 24, new Color(1f, 0.7f, 0.6f), new Vector2(0.5f, 0f), new Vector2(0f, 110f), new Vector2(1200f, 40f));
+            status = EntrySceneBuilder.Label(root, "WorldStatus", "", 24, new Color(1f, 0.74f, 0.64f), new Vector2(0.5f, 0f), new Vector2(0f, 110f), new Vector2(1200f, 40f));
 
-            // ---- touch controls (phones / tablets): D-pad left, jump + attack right
+            var hud = canvasGo.AddComponent<PlayerHud>();
+            var hso = new SerializedObject(hud);
+            hso.FindProperty("avatar").objectReferenceValue = portraitImg;
+            var ps = hso.FindProperty("portraits");
+            string[] classes = { "Swordsman", "Mage", "Assassin", "Archer" };
+            ps.arraySize = classes.Length;
+            for (int i = 0; i < classes.Length; i++) ps.GetArrayElementAtIndex(i).objectReferenceValue = HudArt.Get("portrait_" + classes[i]);
+            hso.FindProperty("nameLabel").objectReferenceValue = heroName;
+            hso.FindProperty("levelLabel").objectReferenceValue = level;
+            hso.FindProperty("hpFill").objectReferenceValue = hp;
+            hso.FindProperty("hpText").objectReferenceValue = hpText;
+            hso.FindProperty("mpFill").objectReferenceValue = mp;
+            hso.FindProperty("mpText").objectReferenceValue = mpText;
+            hso.FindProperty("goldText").objectReferenceValue = goldText;
+            hso.FindProperty("diamondText").objectReferenceValue = diamondText;
+            hso.FindProperty("keyboardHint").objectReferenceValue = hint;
+            hso.FindProperty("mapBanner").objectReferenceValue = bannerGroup;
+            hso.FindProperty("mapBannerText").objectReferenceValue = bannerText;
+            hso.FindProperty("mapDisplayName").stringValue = mapName;
+            hso.ApplyModifiedPropertiesWithoutUndo();
+            nameLabel = null; // the player frame shows name / level itself
+
+            // ---- touch controls (phones / tablets): joystick left, attack / jump / interact right
             var touch = new GameObject("TouchControls", typeof(RectTransform)) { layer = 5 };
             touch.transform.SetParent(root, false);
             var trt = (RectTransform)touch.transform;
@@ -1479,14 +1747,6 @@ namespace AdventureKing.ArtPipeline
                 Button b = EntrySceneBuilder.Btn(touch.transform, name, label, pos, new Vector2(size, size), pad, padText, anchor);
                 GameObject go = b.gameObject;
                 Object.DestroyImmediate(b); // press/release handled by TouchButton2D (hold semantics)
-                Text lbl = go.GetComponentInChildren<Text>();
-                if (lbl)
-                {
-                    lbl.resizeTextForBestFit = true; // labels shrink to fit round buttons, never overflow
-                    lbl.resizeTextMinSize = 16;
-                    lbl.resizeTextMaxSize = Mathf.RoundToInt(size * 0.2f);
-                    ((RectTransform)lbl.transform).sizeDelta = new Vector2(size * 0.78f, size * 0.5f);
-                }
                 var tb = go.AddComponent<TouchButton2D>();
                 var tso = new SerializedObject(tb);
                 tso.FindProperty("target").objectReferenceValue = playerInput;
@@ -1494,11 +1754,12 @@ namespace AdventureKing.ArtPipeline
                 tso.ApplyModifiedPropertiesWithoutUndo();
             }
             BuildJoystick(touch.transform, playerInput);
-            // Right thumb: big attack, jump just inside it, interact above. All ≥ 60 units clear of the screen edge.
             TouchBtn("TouchAttack", "Đánh", new Vector2(1f, 0f), new Vector2(-180f, 180f), 200f, PlayerInput2D.TouchAction.Attack);
             TouchBtn("TouchJump", "Nhảy", new Vector2(1f, 0f), new Vector2(-400f, 130f), 160f, PlayerInput2D.TouchAction.Jump);
             TouchBtn("TouchInteract", "Tương tác", new Vector2(1f, 0f), new Vector2(-180f, 400f), 130f, PlayerInput2D.TouchAction.Interact);
 
+            popupGo.transform.SetAsLastSibling();
+            menuGo.transform.SetAsLastSibling();
             var fadeGo = EntrySceneBuilder.Panel(canvasGo.transform, "ScreenFade", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
                 new Color(0.03f, 0.04f, 0.08f, 1f), null);
             fade = fadeGo.AddComponent<CanvasGroup>();
@@ -1506,6 +1767,39 @@ namespace AdventureKing.ArtPipeline
             fade.blocksRaycasts = false;
             fade.interactable = false;
             return canvasGo;
+        }
+
+        /// <summary>Round medallion icon button (procedural HUD art) with an optional caption underneath.</summary>
+        private static Button IconButton(Transform parent, string name, string icon, string caption, Vector2 anchor, Vector2 pos, float size)
+        {
+            var go = new GameObject(name, typeof(RectTransform)) { layer = 5 };
+            go.transform.SetParent(parent, false);
+            var r = (RectTransform)go.transform;
+            r.anchorMin = r.anchorMax = anchor;
+            r.anchoredPosition = pos;
+            r.sizeDelta = new Vector2(size + 10f, size + (string.IsNullOrEmpty(caption) ? 0f : 30f));
+            var hit = go.AddComponent<Image>();
+            hit.color = new Color(1f, 1f, 1f, 0f); // whole cell is the touch target
+            var img = EntrySceneBuilder.Img(go.transform, "Icon", new Vector2(0.5f, 1f), new Vector2(size, size), Color.white, HudArt.Get(icon));
+            img.type = Image.Type.Simple;
+            img.rectTransform.pivot = new Vector2(0.5f, 1f);
+            img.rectTransform.anchoredPosition = Vector2.zero;
+            var b = go.AddComponent<Button>();
+            b.targetGraphic = img;
+            var cb = b.colors;
+            cb.highlightedColor = new Color(1.12f, 1.12f, 1.12f, 1f);
+            cb.pressedColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+            b.colors = cb;
+            if (!string.IsNullOrEmpty(caption))
+            {
+                Text t = EntrySceneBuilder.Label(go.transform, "Caption", caption, 18, new Color(1f, 0.97f, 0.9f), new Vector2(0.5f, 0f), new Vector2(0f, 14f), new Vector2(size + 10f, 28f), FontStyle.Bold);
+                t.raycastTarget = false;
+                t.gameObject.AddComponent<FitOneLine>().Configure(18, 12);
+                var o = t.gameObject.AddComponent<Outline>();
+                o.effectColor = new Color(0f, 0f, 0f, 0.7f);
+                o.effectDistance = new Vector2(1.2f, -1.2f);
+            }
+            return b;
         }
 
         /// <summary>Round joystick, bottom-left: gilded ring, dark glass base, bright knob (one finger, multi-touch safe).</summary>
@@ -1547,32 +1841,33 @@ namespace AdventureKing.ArtPipeline
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        /// <summary>NPC dialog: framed panel along the bottom (never over the hero), speaker banner, message, continue.</summary>
+        /// <summary>NPC dialog: framed panel along the bottom (never over the hero), speaker banner on the frame edge,
+        /// message inside the measured content area, continue button in its own row below the text.</summary>
         private static void BuildNpcDialog(Transform hud, out GameObject dialog, out Text speaker, out Text line, out Button cont)
         {
             Color cream = new Color(1f, 0.97f, 0.9f), gold = new Color(1f, 0.84f, 0.5f);
-            // 1240 x 290: the gilded frame band is ~97 units wide on screen, so text lives in the inner
-            // 990 x 140 box (≥ 28 units clear of the band) and the button row sits below it, never under the text.
-            dialog = EntrySceneBuilder.Panel(hud, "NpcDialog", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 180f),
-                new Vector2(1240f, 320f), new Color(0.08f, 0.1f, 0.18f, 0.95f), EntrySceneBuilder.PanelSprite);
-            EntrySceneBuilder.Frame(dialog, 3.2f);
-            var banner = EntrySceneBuilder.Panel(dialog.transform, "SpeakerBanner", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(190f, 6f),
-                new Vector2(280f, 56f), new Color(0.22f, 0.36f, 0.42f, 1f), EntrySceneBuilder.PanelSprite);
-            EntrySceneBuilder.Rim(banner.transform);
-            speaker = EntrySceneBuilder.Label(banner.transform, "Speaker", "", 28, gold, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(260f, 50f), FontStyle.Bold);
-            // Measured on the 1280x720 capture: the frame's inner dark area starts ~100 units in from the left/right
-            // edges and ~40 from the top/bottom. Text box keeps ≥ 40 more inside that, above the button row.
-            line = EntrySceneBuilder.Label(dialog.transform, "Line", "", 26, cream, new Vector2(0.5f, 0.5f), new Vector2(-10f, 30f), new Vector2(940f, 160f));
-            line.alignment = TextAnchor.UpperLeft;
+            dialog = EntrySceneBuilder.Panel(hud, "NpcDialog", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 190f),
+                new Vector2(1240f, 330f), new Color(0.08f, 0.1f, 0.18f, 0.95f), EntrySceneBuilder.PanelSprite);
+            // NPC talk = a warm parchment scroll with dark ink (its own look, not the shared gold frame)
+            bool scroll = EntrySceneBuilder.Skin(dialog, "parchment");
+            if (!scroll) EntrySceneBuilder.Frame(dialog, 3.2f);
+            RectTransform c = EntrySceneBuilder.FramedContent(dialog, scroll ? 0f : 14f, topBand: scroll ? 0f : 50f);
+            EntrySceneBuilder.VStack(c, 8f, TextAnchor.UpperCenter, new RectOffset(8, 8, 18, 0));
+            // speaker ribbon sits ON the top edge of the scroll
+            var banner = EntrySceneBuilder.Panel(dialog.transform, "SpeakerBanner", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(230f, 6f),
+                new Vector2(380f, 72f), new Color(0.22f, 0.36f, 0.42f, 1f), EntrySceneBuilder.PanelSprite);
+            if (!EntrySceneBuilder.Skin(banner, "ribbon", 0.8f)) EntrySceneBuilder.Rim(banner.transform);
+            speaker = EntrySceneBuilder.FillLabel(banner.transform, "Speaker", "", 28, scroll ? cream : gold, FontStyle.Bold, 62f, 14f, 16);
+            Color ink = new Color(0.24f, 0.14f, 0.05f);
+            line = EntrySceneBuilder.BlockLabel(c, "Line", "", 26, scroll ? ink : cream, 120f, FontStyle.Normal, TextAnchor.UpperLeft);
+            var lsh = line.GetComponent<Shadow>();
+            if (scroll && lsh) lsh.effectColor = new Color(1f, 0.95f, 0.8f, 0.4f);
             line.supportRichText = true;
             line.lineSpacing = 1.1f;
-            line.horizontalOverflow = HorizontalWrapMode.Wrap;
-            line.verticalOverflow = VerticalWrapMode.Truncate;
-            line.resizeTextForBestFit = true; // long lines shrink inside the box instead of spilling over the frame
-            line.resizeTextMinSize = 20;
-            line.resizeTextMaxSize = 26;
-            cont = EntrySceneBuilder.Btn(dialog.transform, "Continue", "Cảm ơn ông!", new Vector2(-220f, 86f), new Vector2(230f, 62f),
-                new Color(0.26f, 0.56f, 0.62f), Color.white, new Vector2(1f, 0f));
+            line.resizeTextMinSize = 19;
+            RectTransform row = EntrySceneBuilder.HRow(c, "Buttons", 62f, 12f, TextAnchor.MiddleRight);
+            cont = EntrySceneBuilder.Btn(row, "Continue", "Cảm ơn ông!", Vector2.zero, new Vector2(240f, 62f), new Color(0.26f, 0.56f, 0.62f), Color.white);
+            EntrySceneBuilder.Size(cont, 62f, 240f);
             dialog.SetActive(false);
         }
 
@@ -1583,31 +1878,41 @@ namespace AdventureKing.ArtPipeline
             // ---- confirmation dialog
             confirm = EntrySceneBuilder.Panel(hud, "PortalConfirm", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.45f), null);
             var card = EntrySceneBuilder.Panel(confirm.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero,
-                new Vector2(780f, 340f), ink, EntrySceneBuilder.PanelSprite);
-            EntrySceneBuilder.Frame(card, 2.8f);
-            EntrySceneBuilder.Label(card.transform, "Title", "Cổng Dịch Chuyển", 30, gold, new Vector2(0.5f, 1f), new Vector2(0f, -44f), new Vector2(680f, 50f), FontStyle.Bold);
-            confirmText = EntrySceneBuilder.Label(card.transform, "Question", "", 30, cream, new Vector2(0.5f, 0.5f), new Vector2(0f, 14f), new Vector2(660f, 100f));
+                new Vector2(800f, 400f), ink, EntrySceneBuilder.PanelSprite);
+            if (!EntrySceneBuilder.Skin(card, "popup_card")) EntrySceneBuilder.Frame(card, 2.8f);
+            RectTransform c = EntrySceneBuilder.FramedContent(card, 0f, topBand: 0f);
+            c.offsetMin = new Vector2(36f, 24f); c.offsetMax = new Vector2(-36f, -7f); // title in the crest band
+            EntrySceneBuilder.VStack(c, 14f, TextAnchor.UpperCenter);
+            EntrySceneBuilder.BlockLabel(c, "Title", "Cổng Dịch Chuyển", 32, gold, 44f, FontStyle.Bold);
+            confirmText = EntrySceneBuilder.BlockLabel(c, "Question", "", 28, cream, 92f);
             confirmText.supportRichText = true;
-            yes = EntrySceneBuilder.Btn(card.transform, "Confirm", "Dịch chuyển", new Vector2(-150f, 50f), new Vector2(250f, 64f),
-                new Color(0.26f, 0.56f, 0.62f), Color.white, new Vector2(0.5f, 0f));
-            no = EntrySceneBuilder.Btn(card.transform, "Cancel", "Ở lại", new Vector2(150f, 50f), new Vector2(250f, 64f),
-                new Color(0.36f, 0.36f, 0.42f), Color.white, new Vector2(0.5f, 0f));
+            RectTransform row = EntrySceneBuilder.HRow(c, "Buttons", 66f, 20f);
+            yes = EntrySceneBuilder.Btn(row, "Confirm", "Dịch chuyển", Vector2.zero, new Vector2(260f, 66f), new Color(0.26f, 0.56f, 0.62f), Color.white);
+            EntrySceneBuilder.Size(yes, 66f, 260f);
+            no = EntrySceneBuilder.Btn(row, "Cancel", "Ở lại", Vector2.zero, new Vector2(260f, 66f), new Color(0.36f, 0.36f, 0.42f), Color.white);
+            EntrySceneBuilder.Size(no, 66f, 260f);
             confirm.SetActive(false);
 
-            // ---- loading screen (shown over the fade while the destination scene streams in)
+            // ---- loading screen: the crisp baked dawn layers (never a stretched low-res painting)
             loading = EntrySceneBuilder.Panel(hud, "Loading", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.03f, 0.04f, 0.08f, 1f), null);
-            var backdrop = AssetDatabase.LoadAssetAtPath<Texture2D>(WorldDir + "/Town/backdrop_far.png");
-            if (backdrop)
+            foreach (string n in new[] { "sky", "hills", "mid", "near" })
             {
-                var raw = new GameObject("Art", typeof(RectTransform)).AddComponent<RawImage>();
+                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>($"{LoginBackdropBaker.Dir}/{n}.png");
+                if (!tex) continue;
+                var raw = new GameObject("Art_" + n, typeof(RectTransform)).AddComponent<RawImage>();
+                raw.gameObject.layer = 5;
                 raw.transform.SetParent(loading.transform, false);
-                var rr = (RectTransform)raw.transform;
-                rr.anchorMin = Vector2.zero; rr.anchorMax = Vector2.one; rr.offsetMin = rr.offsetMax = Vector2.zero;
-                raw.texture = backdrop;
-                raw.color = new Color(0.55f, 0.6f, 0.7f, 1f);
+                raw.texture = tex;
+                raw.color = new Color(0.62f, 0.64f, 0.72f, 1f); // dimmed so the title reads
                 raw.raycastTarget = false;
+                var fit = raw.gameObject.AddComponent<AspectRatioFitter>();
+                fit.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+                fit.aspectRatio = tex.width / (float)tex.height;
             }
             title = EntrySceneBuilder.Label(loading.transform, "Destination", "", 56, gold, new Vector2(0.5f, 0.5f), new Vector2(0f, 60f), new Vector2(1200f, 90f), FontStyle.Bold);
+            var to = title.gameObject.AddComponent<Outline>();
+            to.effectColor = new Color(0.2f, 0.1f, 0.03f, 0.9f);
+            to.effectDistance = new Vector2(2f, -2f);
             var track = EntrySceneBuilder.Panel(loading.transform, "BarTrack", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -30f),
                 new Vector2(820f, 26f), new Color(0f, 0f, 0f, 0.55f), EntrySceneBuilder.PanelSprite);
             var fill = EntrySceneBuilder.Panel(track.transform, "Fill", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.45f, 0.95f, 1f), null);
@@ -1617,6 +1922,8 @@ namespace AdventureKing.ArtPipeline
             bar.fillMethod = Image.FillMethod.Horizontal;
             bar.fillAmount = 0f;
             tip = EntrySceneBuilder.Label(loading.transform, "Tip", "", 26, cream, new Vector2(0.5f, 0.5f), new Vector2(0f, -100f), new Vector2(1300f, 60f));
+            var tipo = tip.gameObject.AddComponent<Outline>();
+            tipo.effectColor = new Color(0f, 0f, 0f, 0.8f);
             loading.SetActive(false);
             loading.transform.SetAsLastSibling();
         }

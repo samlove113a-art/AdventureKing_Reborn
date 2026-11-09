@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using AdventureKing.Server.Data;
 using AdventureKing.Server.Security;
 using Microsoft.Data.Sqlite;
@@ -35,6 +35,8 @@ public sealed class CatalogItem
     public int[] classes { get; set; } = Array.Empty<int>();
     public bool listed { get; set; }
     public string[] pieces { get; set; } = Array.Empty<string>();
+    /// <summary>common / rare / epic / legendary — display only, never affects stats.</summary>
+    public string rarity { get; set; } = "common";
 }
 
 public sealed class CosmeticCatalog
@@ -61,6 +63,7 @@ public sealed class CosmeticCatalog
             if (Array.IndexOf(ItemKinds.All, i.kind) < 0) throw new InvalidDataException(i.id + ": unknown kind " + i.kind);
             if (i.currency is not ("gold" or "diamonds")) throw new InvalidDataException(i.id + ": currency must be gold or diamonds");
             if (i.price <= 0) throw new InvalidDataException(i.id + ": price must be positive");
+            if (i.rarity is not ("common" or "rare" or "epic" or "legendary")) throw new InvalidDataException(i.id + ": rarity");
             if (i.classes.Length == 0 || i.classes.Any(c => c is < 0 or > 3)) throw new InvalidDataException(i.id + ": classes");
             if (i.kind == ItemKinds.Cosmetic && !OutfitSlots.IsPiece(i.slot)) throw new InvalidDataException(i.id + ": slot " + i.slot);
             if (i.kind == ItemKinds.CosmeticSet && (i.slot != OutfitSlots.Set || i.pieces.Length == 0)) throw new InvalidDataException(i.id + ": set needs slot 'set' and pieces");
@@ -95,6 +98,7 @@ public sealed class ShopItemDto
     public bool owned { get; set; }
     public bool equipped { get; set; }
     public bool usableByCharacter { get; set; }
+    public string rarity { get; set; } = "common";
 }
 
 public sealed class WardrobeDto
@@ -290,7 +294,7 @@ public sealed class CosmeticShop
             {
                 id = i.id, name = i.name, description = i.description, slot = i.slot, kind = i.kind, currency = i.currency,
                 price = i.price, classes = i.classes, owned = owned.Contains(i.id), equipped = worn.Contains(i.id),
-                usableByCharacter = Array.IndexOf(i.classes, ch.HeroClass) >= 0,
+                usableByCharacter = Array.IndexOf(i.classes, ch.HeroClass) >= 0, rarity = i.rarity,
             }).ToArray(),
         };
     }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace AdventureKing.Gameplay
@@ -46,6 +46,13 @@ namespace AdventureKing.Gameplay
         }
 
         public void RestoreFull() => CurrentHealth = maxHealth;
+
+        /// <summary>Sets the maximum (e.g. from the hero class) and refills.</summary>
+        public void SetMax(int value)
+        {
+            maxHealth = Mathf.Max(1, value);
+            CurrentHealth = maxHealth;
+        }
         private void OnValidate() => maxHealth = Mathf.Max(1, maxHealth);
     }
 }
