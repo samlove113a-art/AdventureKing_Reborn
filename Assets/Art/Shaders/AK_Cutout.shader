@@ -35,6 +35,9 @@ Shader "AdventureKing/Cutout"
                 half _Cutoff;
                 half _FogAmount;
             CBUFFER_END
+            // Day/night (DayNightCycle): global, outside the material. _AKNight = 0 by default -> no change anywhere.
+            half _AKNight;
+            half4 _AKNightTint;
             struct A { float4 pos : POSITION; float2 uv : TEXCOORD0; };
             struct V { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; float fog : TEXCOORD1; };
             V vert(A i)
@@ -52,6 +55,7 @@ Shader "AdventureKing/Cutout"
                 c.a = (c.a - _Cutoff) / max(fwidth(c.a), 1e-4) + 0.5;
                 clip(c.a);
                 c.rgb = lerp(c.rgb, _HazeColor.rgb, _Haze);
+                c.rgb *= lerp(half3(1, 1, 1), _AKNightTint.rgb, saturate(_AKNight)); // moonlit paintings at night
                 c.rgb = lerp(c.rgb, MixFog(c.rgb, i.fog), _FogAmount); // the far backdrop opts out
                 return half4(c.rgb, saturate(c.a));
             }

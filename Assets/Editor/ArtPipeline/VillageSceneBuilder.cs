@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AdventureKing.Gameplay;
@@ -893,6 +893,8 @@ namespace AdventureKing.ArtPipeline
             var canvas = canvasGo.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             canvas.sortingOrder = 40;
+            canvasGo.AddComponent<CanvasGroup>().blocksRaycasts = false;
+            canvasGo.AddComponent<NamePlateFade>(); // fades under the HUD corner clusters
             var rt = (RectTransform)canvasGo.transform;
             rt.sizeDelta = new Vector2(300f, 54f);
             rt.localScale = Vector3.one * (0.0062f / HeroScale);
@@ -1178,6 +1180,122 @@ namespace AdventureKing.ArtPipeline
             var q = Prim(PrimitiveType.Quad, world, "Backdrop_Painting", new Vector3(0f, 9f, 72f), new Vector3(118f, 66f, 1f), m, shadows: false);
             q.GetComponent<MeshRenderer>().receiveShadows = false;
             q.AddComponent<ParallaxLayer>().Bind(cam, 0.9f, 0.6f);
+
+            // drifting cloud layer between the painting and the town (depth + life; darkens at night via AK_Cutout)
+            Material cloudMat = CloudMat();
+            var rngC = new System.Random(7);
+            for (int i = 0; i < 6; i++)
+            {
+                float w = 9f + (float)rngC.NextDouble() * 7f;
+                var cloud = Prim(PrimitiveType.Quad, world, "Cloud_" + i,
+                    new Vector3(-50f + i * 19f + (float)rngC.NextDouble() * 6f, 10.5f + (float)rngC.NextDouble() * 4f, 58f - i % 2 * 4f),
+                    new Vector3(w, w * 0.42f, 1f), cloudMat, shadows: false);
+                cloud.GetComponent<MeshRenderer>().receiveShadows = false;
+                var pl = cloud.AddComponent<ParallaxLayer>();
+                pl.Bind(cam, 0.78f, 0.55f);
+                pl.SetDrift(0.18f + (float)rngC.NextDouble() * 0.15f, 120f);
+            }
+
+            // night sky: stars + moon (additive, faded in by DayNightCycle), drifting with the painting
+            var sky = Prim(PrimitiveType.Quad, world, "NightSky", new Vector3(0f, 9f, 71.5f), new Vector3(118f, 66f, 1f), NightSkyMat(), shadows: false);
+            sky.GetComponent<MeshRenderer>().receiveShadows = false;
+            sky.AddComponent<ParallaxLayer>().Bind(cam, 0.9f, 0.6f);
+            var r = sky.GetComponent<MeshRenderer>();
+            r.enabled = false;
+            var cycle = world.gameObject.AddComponent<DayNightCycle>();
+            cycle.Bind(Object.FindAnyObjectByType<Light>(), cam.GetComponent<Camera>(), r);
+        }
+
+        /// <summary>Soft toon cloud (procedural: overlapping puffs, flat-shaded underside, light rim) on the cutout shader.</summary>
+        private static Material CloudMat()
+        {
+            const string texPath = WorldDir + "/Town/cloud_puff.png";
+            const int W = 512, H = 216;
+            var t = new Texture2D(W, H, TextureFormat.RGBA32, false);
+            (Vector2 c, float r)[] puffs =
+            {
+                (new Vector2(120, 80), 62), (new Vector2(205, 110), 84), (new Vector2(300, 100), 74), (new Vector2(380, 78), 56), (new Vector2(250, 70), 70),
+            };
+            for (int y = 0; y < H; y++)
+                for (int x = 0; x < W; x++)
+                {
+                    float best = 1e9f, lit = 0f;
+                    foreach (var (c, r) in puffs)
+                    {
+                        float d = (new Vector2(x, y) - c).magnitude - r;
+                        if (d < best) { best = d; lit = (y - c.y) / r; }
+                    }
+                    if (y < 52) best = Mathf.Max(best, 52 - y); // flat cloud base
+                    float a = Mathf.Clamp01(-best / 2.5f);
+                    Color col = lit > 0.15f ? new Color(1f, 1f, 1f) : Color.Lerp(new Color(0.8f, 0.86f, 0.96f), Color.white, Mathf.Clamp01((lit + 0.6f) / 0.75f));
+                    col.a = a * 0.92f;
+                    t.SetPixel(x, y, col);
+                }
+            t.Apply();
+            File.WriteAllBytes(texPath, t.EncodeToPNG());
+            Object.DestroyImmediate(t);
+            AssetDatabase.ImportAsset(texPath, ImportAssetOptions.ForceSynchronousImport);
+            return CutoutMat(texPath, 0.12f, fogAmount: 0f, cutoff: 0.05f);
+        }
+
+        /// <summary>Original night sky (procedural): stars in the upper sky, thinning towards the horizon, and a moon with a halo.</summary>
+        private static Material NightSkyMat()
+        {
+            const string texPath = WorldDir + "/Town/night_sky.png";
+            const int W = 1024, H = 576;
+            var t = new Texture2D(W, H, TextureFormat.RGBA32, false);
+            var px = new Color[W * H];
+            var rng = new System.Random(20261109);
+            Vector2 moon = new Vector2(W * 0.74f, H * 0.8f);
+            for (int y = 0; y < H; y++)
+                for (int x = 0; x < W; x++)
+                {
+                    float v = y / (float)H;
+                    float d = (new Vector2(x, y) - moon).magnitude;
+                    float halo = Mathf.Clamp01(1f - d / 120f);
+                    Color c = new Color(0.55f, 0.65f, 1f) * (halo * halo * 0.35f);
+                    if (d < 30f) c = Color.Lerp(new Color(1f, 0.97f, 0.85f), new Color(0.9f, 0.88f, 0.8f), Mathf.Clamp01((x - moon.x + y - moon.y) / 40f + 0.5f)) * Mathf.Clamp01(30.5f - d);
+                    c.a = 1f;
+                    px[y * W + x] = c * Mathf.SmoothStep(0f, 1f, (v - 0.42f) / 0.25f);
+                }
+            for (int i = 0; i < 520; i++)
+            {
+                int x = rng.Next(W), y = rng.Next(H);
+                float v = y / (float)H;
+                if (v < 0.45f || (new Vector2(x, y) - moon).magnitude < 60f) continue;
+                float b = (float)rng.NextDouble();
+                float fade = Mathf.SmoothStep(0f, 1f, (v - 0.45f) / 0.2f);
+                int size = b > 0.93f ? 2 : 1;
+                for (int dy = -size; dy <= size; dy++)
+                    for (int dx = -size; dx <= size; dx++)
+                    {
+                        int xx = x + dx, yy = y + dy;
+                        if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+                        float f = Mathf.Clamp01(1f - (Mathf.Abs(dx) + Mathf.Abs(dy)) / (size + 0.8f));
+                        px[yy * W + xx] += new Color(0.85f, 0.9f, 1f) * (f * (0.4f + 0.6f * b) * fade);
+                    }
+            }
+            t.SetPixels(px);
+            t.Apply();
+            File.WriteAllBytes(texPath, t.EncodeToPNG());
+            Object.DestroyImmediate(t);
+            AssetDatabase.ImportAsset(texPath, ImportAssetOptions.ForceSynchronousImport);
+            var ti = (TextureImporter)AssetImporter.GetAtPath(texPath);
+            ti.mipmapEnabled = false;
+            ti.wrapMode = TextureWrapMode.Clamp;
+            ti.SaveAndReimport();
+
+            string path = $"{MatDir}/night_sky_add.mat";
+            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (!m) { m = new Material(Shader.Find("AdventureKing/VFX")); AssetDatabase.CreateAsset(m, path); }
+            m.shader = Shader.Find("AdventureKing/VFX");
+            m.SetTexture("_MainTex", AssetDatabase.LoadAssetAtPath<Texture2D>(texPath));
+            m.SetColor("_TintColor", Color.white);
+            m.SetFloat("_Intensity", 1.2f);
+            m.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.One);
+            m.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.One);
+            EditorUtility.SetDirty(m);
+            return m;
         }
 
         // ================================================================== portal (original rune-crystal gate)
@@ -1578,11 +1696,35 @@ namespace AdventureKing.ArtPipeline
             var area = new GameObject("Area", typeof(RectTransform)) { layer = 5 };
             area.transform.SetParent(mini.transform, false);
             var ar = (RectTransform)area.transform;
-            ar.anchorMin = Vector2.zero; ar.anchorMax = Vector2.one; ar.offsetMin = new Vector2(22f, 18f); ar.offsetMax = new Vector2(-22f, -18f);
+            ar.anchorMin = Vector2.zero; ar.anchorMax = Vector2.one; ar.offsetMin = new Vector2(24f, 16f); ar.offsetMax = new Vector2(-24f, -50f);
+            // title strip: map name (left) · sun/moon + Vietnam time (right)
+            var strip = EntrySceneBuilder.Panel(mini.transform, "TitleStrip", new Vector2(0f, 1f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.35f), null);
+            var sr = (RectTransform)strip.transform;
+            sr.pivot = new Vector2(0.5f, 1f);
+            sr.offsetMin = new Vector2(14f, -46f); sr.offsetMax = new Vector2(-14f, -12f);
+            strip.GetComponent<Image>().raycastTarget = false;
+            Text mapTitle = EntrySceneBuilder.FillLabel(strip.transform, "MapTitle", mapName, 20, gold, FontStyle.Bold, 10f, 1f, 13);
+            mapTitle.alignment = TextAnchor.MiddleLeft;
+            mapTitle.rectTransform.offsetMax = new Vector2(-122f, -1f);
+            Text clock = EntrySceneBuilder.FillLabel(strip.transform, "Clock", "12:00", 20, cream, FontStyle.Bold, 0f, 1f, 13);
+            clock.alignment = TextAnchor.MiddleRight;
+            clock.rectTransform.offsetMin = new Vector2(250f, 1f); clock.rectTransform.offsetMax = new Vector2(-10f, -1f);
+            var phase = EntrySceneBuilder.Img(strip.transform, "Phase", new Vector2(1f, 0.5f), new Vector2(28f, 28f), Color.white, HudArt.Get("icon_sun"));
+            phase.type = Image.Type.Simple;
+            phase.preserveAspect = true;
+            phase.rectTransform.anchoredPosition = new Vector2(-92f, 0f);
             var mm = mini.AddComponent<HudMinimap>();
             var mmso = new SerializedObject(mm);
             mmso.FindProperty("area").objectReferenceValue = ar;
             mmso.FindProperty("dot").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_circle.png");
+            mmso.FindProperty("portalIcon").objectReferenceValue = HudArt.Get("mini_portal");
+            mmso.FindProperty("npcIcon").objectReferenceValue = HudArt.Get("mini_npc");
+            mmso.FindProperty("playerIcon").objectReferenceValue = HudArt.Get("mini_player");
+            mmso.FindProperty("sunIcon").objectReferenceValue = HudArt.Get("icon_sun");
+            mmso.FindProperty("moonIcon").objectReferenceValue = HudArt.Get("icon_moon");
+            mmso.FindProperty("mapTitle").objectReferenceValue = mapTitle;
+            mmso.FindProperty("clock").objectReferenceValue = clock;
+            mmso.FindProperty("phaseIcon").objectReferenceValue = phase;
             mmso.ApplyModifiedPropertiesWithoutUndo();
             Button gear = IconButton(right.transform, "SettingsButton", "icon_settings", "", new Vector2(1f, 1f), new Vector2(-380f - 52f, -50f), 78f);
 
@@ -1661,7 +1803,7 @@ namespace AdventureKing.ArtPipeline
 
             // system / settings menu (graphics, sound, save & exit)
             var menuGo = EntrySceneBuilder.Panel(canvasGo.transform, "SystemMenu", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.45f), null);
-            var menuCard = EntrySceneBuilder.Panel(menuGo.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(620f, 560f), ink, EntrySceneBuilder.PanelSprite);
+            var menuCard = EntrySceneBuilder.Panel(menuGo.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(620f, 640f), ink, EntrySceneBuilder.PanelSprite);
             if (!EntrySceneBuilder.Skin(menuCard, "settings_card")) EntrySceneBuilder.Frame(menuCard, 2.8f);
             RectTransform mc = EntrySceneBuilder.FramedContent(menuCard, 0f, topBand: 0f);
             EntrySceneBuilder.VStack(mc, 14f, TextAnchor.MiddleCenter);
@@ -1675,6 +1817,8 @@ namespace AdventureKing.ArtPipeline
             UnityEventTools.AddPersistentListener(gfx.onClick, quality.Cycle);
             Button sound = EntrySceneBuilder.Btn(mc, "SoundButton", "Âm thanh: Bật", Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
             EntrySceneBuilder.Size(sound, 66f);
+            Button timeBtn = EntrySceneBuilder.Btn(mc, "TimeButton", DayNightCycle.ModeLabel, Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
+            EntrySceneBuilder.Size(timeBtn, 66f);
             exit = EntrySceneBuilder.Btn(mc, "ExitButton", "Lưu & Thoát", Vector2.zero, new Vector2(400f, 66f), new Color(0.62f, 0.26f, 0.24f), Color.white);
             EntrySceneBuilder.Size(exit, 66f);
             Button menuClose = EntrySceneBuilder.Btn(mc, "MenuClose", "Đóng", Vector2.zero, new Vector2(400f, 62f), new Color(0.36f, 0.36f, 0.42f), Color.white);
@@ -1683,7 +1827,9 @@ namespace AdventureKing.ArtPipeline
             var sso = new SerializedObject(sys);
             sso.FindProperty("panel").objectReferenceValue = menuGo;
             sso.FindProperty("soundLabel").objectReferenceValue = sound.GetComponentInChildren<Text>();
+            sso.FindProperty("timeLabel").objectReferenceValue = timeBtn.GetComponentInChildren<Text>();
             sso.ApplyModifiedPropertiesWithoutUndo();
+            UnityEventTools.AddPersistentListener(timeBtn.onClick, sys.CycleTimeOfDay);
             UnityEventTools.AddPersistentListener(gear.onClick, sys.Toggle);
             UnityEventTools.AddPersistentListener(sound.onClick, sys.ToggleSound);
             UnityEventTools.AddPersistentListener(menuClose.onClick, sys.Close);

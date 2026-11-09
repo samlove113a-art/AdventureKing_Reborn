@@ -10,7 +10,15 @@ namespace AdventureKing.Gameplay
     {
         [SerializeField] private GameObject panel;
         [SerializeField] private Text soundLabel;
+        [SerializeField] private Text timeLabel;
         public bool IsOpen => panel && panel.activeSelf;
+
+        /// <summary>Day/night: Theo giờ VN -> Luôn ngày -> Luôn đêm (display preference only).</summary>
+        public void CycleTimeOfDay()
+        {
+            DayNightCycle.CycleMode();
+            Refresh();
+        }
 
         public void Toggle()
         {
@@ -38,6 +46,7 @@ namespace AdventureKing.Gameplay
         {
             var a = AdventureAudioDirector.Instance;
             if (soundLabel) soundLabel.text = a && a.Muted ? "Âm thanh: Tắt" : "Âm thanh: Bật";
+            if (timeLabel) timeLabel.text = DayNightCycle.ModeLabel;
         }
     }
 }

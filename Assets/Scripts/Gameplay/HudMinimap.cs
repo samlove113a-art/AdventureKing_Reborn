@@ -13,7 +13,12 @@ namespace AdventureKing.Gameplay
     {
         [SerializeField] private RectTransform area;
         [SerializeField] private Sprite dot;
+        [SerializeField] private Sprite portalIcon, npcIcon, playerIcon, sunIcon, moonIcon;
+        [SerializeField] private Text mapTitle, clock;
+        [SerializeField] private Image phaseIcon;
         private RectTransform player;
+        private Image playerImg;
+        private int shownMinute = -1;
         private float minX, maxX, minY = -2f, maxY = 14f;
 
         private IEnumerator Start()
@@ -31,9 +36,24 @@ namespace AdventureKing.Gameplay
             Bar(minX, maxX, 0f, 3f, new Color(0.55f, 0.82f, 0.45f, 0.95f));
             foreach (TownLayout.Deck d in decks) Bar(d.XMin, d.XMax, d.Top, 2f, new Color(0.86f, 0.66f, 0.4f, 0.95f));
             foreach (TownLayout.Climb c in climbs) VBar(c.X, c.Bottom, c.VisualTop, c.Rope ? new Color(0.85f, 0.75f, 0.5f) : new Color(0.75f, 0.55f, 0.3f));
-            foreach (TownLayout.PortalSpot p in portals) Marker(p.X, 1.4f, 14f, new Color(0.5f, 0.95f, 1f));
-            foreach (NpcActor n in FindObjectsByType<NpcActor>(FindObjectsInactive.Exclude)) Marker(n.transform.position.x, n.transform.position.y + 0.8f, 10f, new Color(1f, 0.84f, 0.4f));
-            player = Marker(world.Player.transform.position.x, world.Player.transform.position.y, 13f, new Color(1f, 0.35f, 0.35f));
+            if (mapTitle) mapTitle.text = hub ? TownLayout.Hub.DisplayName : TownLayout.Meadow.DisplayName;
+            foreach (TownLayout.PortalSpot p in portals) Marker(p.X, 1.6f, 24f, portalIcon, new Color(0.5f, 0.95f, 1f));
+            foreach (NpcActor n in FindObjectsByType<NpcActor>(FindObjectsInactive.Exclude)) Marker(n.transform.position.x, n.transform.position.y + 1.2f, 20f, npcIcon, new Color(1f, 0.84f, 0.4f));
+            player = Marker(world.Player.transform.position.x, world.Player.transform.position.y + 0.9f, 22f, playerIcon, new Color(1f, 0.35f, 0.35f));
+            playerImg = player.GetComponent<Image>();
+            player.SetAsLastSibling();
+        }
+
+        /// <summary>Vietnam time (HH:mm) with a sun or moon, matching the world's day/night.</summary>
+        private void UpdateClock()
+        {
+            float h = DayNightCycle.VietnamHour;
+            int minute = Mathf.FloorToInt(h * 60f) % 1440;
+            float night = DayNightCycle.Current ? DayNightCycle.Current.Night : DayNightCycle.TargetNight;
+            if (phaseIcon) { Sprite s = night > 0.5f ? moonIcon : sunIcon; if (s && phaseIcon.sprite != s) phaseIcon.sprite = s; }
+            if (minute == shownMinute || !clock) return;
+            shownMinute = minute;
+            clock.text = $"{minute / 60:00}:{minute % 60:00}";
         }
 
         private Vector2 Map(float x, float y)
@@ -71,12 +91,23 @@ namespace AdventureKing.Gameplay
             Rect("Climb", (a + b) * 0.5f, new Vector2(2f, Mathf.Max(2f, b.y - a.y)), c);
         }
 
-        private RectTransform Marker(float x, float y, float size, Color c) => Rect("Marker", Map(x, y), new Vector2(size, size), c, dot).rectTransform;
+        /// <summary>Symbol marker (falls back to a tinted dot when the icon is missing).</summary>
+        private RectTransform Marker(float x, float y, float size, Sprite icon, Color fallback)
+        {
+            Image img = icon ? Rect("Marker", Map(x, y), new Vector2(size, size), Color.white, icon) : Rect("Marker", Map(x, y), new Vector2(size * 0.55f, size * 0.55f), fallback, dot);
+            img.preserveAspect = true;
+            return img.rectTransform;
+        }
 
         private void LateUpdate()
         {
+            UpdateClock();
             AdventureWorldSession world = AdventureWorldSession.Current;
-            if (player && world && world.Player) player.anchoredPosition = Map(world.Player.transform.position.x, world.Player.transform.position.y);
+            if (player && world && world.Player)
+            {
+                player.anchoredPosition = Map(world.Player.transform.position.x, world.Player.transform.position.y + 0.9f);
+                if (playerImg) playerImg.color = new Color(1f, 1f, 1f, 0.75f + 0.25f * Mathf.Sin(Time.unscaledTime * 5f)); // gentle pulse
+            }
         }
     }
 }

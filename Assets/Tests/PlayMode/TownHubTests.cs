@@ -34,6 +34,9 @@ namespace AdventureKing.Tests
         [UnityTearDown]
         public IEnumerator TearDown()
         {
+            // never leak the night check into later tests, even when an assertion failed mid-way
+            DayNightCycle.ModeOverride = DayNightMode.Day;
+            DayNightCycle.HourOverride = 12f;
             if (input) ReleaseAll();
             if (recorder)
             {
@@ -163,24 +166,32 @@ namespace AdventureKing.Tests
             var glows = Object.FindObjectsByType<LanternGlow>(FindObjectsInactive.Exclude);
             Assert.GreaterOrEqual(glows.Length, 4, "lanterns with glow in town");
             float day = glows.Average(g => g.Strength);
-            Light sun = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude).FirstOrDefault(l => l.type == LightType.Directional);
-            float sunI = sun ? sun.intensity : 0f;
-            Color sunC = sun ? sun.color : Color.white, amb = RenderSettings.ambientLight;
-            var ambMode = RenderSettings.ambientMode;
-            WorldLighting.Night = 1f;
-            if (sun) { sun.intensity = sunI * 0.28f; sun.color = new Color(0.55f, 0.62f, 0.95f); }
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.16f, 0.19f, 0.32f);
+            DayNightCycle cycle = DayNightCycle.Current;
+            Assert.IsNotNull(cycle, "world map has the day/night cycle");
+            // the world sun (the fashion shop adds its own directional key light for the fitting room)
+            Light sun = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude).FirstOrDefault(l => l.type == LightType.Directional && l.name == "Sun");
+            Assert.IsNotNull(sun, "world sun");
+            float sunDay = sun.intensity;
+            // real cycle: 21:00 Vietnam time on "Theo giờ VN"
+            DayNightCycle.ModeOverride = DayNightMode.Auto;
+            DayNightCycle.HourOverride = 21f;
+            cycle.SnapToTarget();
             yield return null;
             yield return null;
+            Assert.AreEqual(1f, cycle.Night, 0.001f, "21:00 VN is night");
             float night = glows.Average(g => g.Strength);
             Assert.Greater(night, day * 3f, $"lanterns brighten at night (day {day:0.00}, night {night:0.00})");
+            if (sun) Assert.Less(sun.intensity, sunDay * 0.5f, "sun dims to moonlight");
+            Assert.AreEqual(1f, Shader.GetGlobalFloat("_AKNight"), 0.001f, "painted scenery darkens");
             yield return Shot(name);
-            WorldLighting.Night = 0f;
-            if (sun) { sun.intensity = sunI; sun.color = sunC; }
-            RenderSettings.ambientMode = ambMode;
-            RenderSettings.ambientLight = amb;
+            // dusk is a blend, noon is day
+            Assert.That(DayNightCycle.NightAt(18.1f), Is.InRange(0.2f, 0.8f), "dusk blends");
+            Assert.AreEqual(0f, DayNightCycle.NightAt(12f), "noon is day");
+            DayNightCycle.ModeOverride = DayNightMode.Day;
+            DayNightCycle.HourOverride = 12f;
+            cycle.SnapToTarget();
             yield return null;
+            if (sun) Assert.AreEqual(sunDay, sun.intensity, 0.01f, "day restored");
         }
 
         private static IEnumerator Shot(string name, int w = 1280, int h = 720)

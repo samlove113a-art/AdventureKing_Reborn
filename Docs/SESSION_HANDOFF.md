@@ -6,7 +6,34 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
-## ★★★★★ Cập nhật mới nhất — 2026-11-09 chiều: hệ thống khung UI riêng từng nhóm + HUD + shop
+## ★★★★★★ Đợt 2 (2026-11-09 tối): ngày/đêm theo giờ VN, chiều sâu sảnh, minimap
+**Trạng thái:** đã test, đã commit, **chưa push**.
+
+**Đã làm:**
+- **Ngày/đêm theo giờ Việt Nam** (`DayNightCycle.cs`, UTC+7 lấy từ đồng hồ thiết bị; chỉ để hiển thị):
+  - Hoàng hôn 17:30–18:45, bình minh 05:00–06:15, chuyển mượt.
+  - Điều khiển: mặt trời → ánh trăng, ambient SH, sương mù, màu trời, các tranh cutout (biến global `_AKNight` trong `AK_Cutout.shader`, mặc định 0 nên không ảnh hưởng cảnh khác), lớp sao + trăng (vẽ thủ tục), đèn lồng.
+  - Cài đặt có nút "Thời gian: Theo giờ VN / Luôn ngày / Luôn đêm" (lưu cục bộ, chỉ là tuỳ chọn hiển thị).
+- **Chiều sâu sảnh:** thêm 6 đám mây toon vẽ thủ tục, trôi chậm theo gió, parallax giữa tranh nền và thị trấn, tối đi vào ban đêm. Cổng dịch chuyển giữ nguyên (đã rõ, to).
+- **Minimap:** dải tên map, giờ VN kèm biểu tượng mặt trời/trăng, ký hiệu cổng (xoáy), NPC (bong bóng "!"), người chơi (hình thoi đỏ nhấp nháy) thay cho chấm tròn.
+- **Biển tên NPC** mờ đi khi nằm dưới cụm HUD góc (`NamePlateFade`).
+- **Test ổn định:** `DeterministicClock` ghim mọi PlayMode test ở 12:00, ban ngày, nên ảnh/kiểm thử không phụ thuộc giờ thật.
+  - TownHubTests kiểm tra thật: 21:00 = đêm, mặt trời dịu, tranh tối, đèn sáng gấp 3 lần trở lên; hoàng hôn là trạng thái pha trộn; trở về ngày.
+  - Teardown luôn trả về ban ngày, kể cả khi test lỗi giữa chừng.
+
+**Kiểm thử:**
+- Server 83/83, EditMode 4/4, PlayMode 38 qua + 2 bỏ qua, 0 exception.
+- UI audit 0 lỗi (login và thị trấn, 5 độ phân giải).
+- Đã xem ảnh: đêm (`QA/HubTest/01c_spawn_night_lanterns.png`), mây (`03_wind_lookout.png`), cài đặt và minimap.
+
+**Còn lại:**
+- Mây có đáy phẳng (theo phong cách toon), có thể tinh chỉnh thêm.
+- Sao/trăng chỉ thấy khi khung hình có trời.
+- Chưa có thời tiết (mưa…), theo đúng yêu cầu "chưa cần".
+- Joystick, nút skill và auto skill cho mobile chưa làm lại.
+
+---
+## ★★★★★ 2026-11-09 chiều: hệ thống khung UI riêng từng nhóm + HUD + shop
 **Trạng thái:** đã test, đã commit (xem `git log`), **chưa push** (chủ dự án push bằng GitHub Desktop). **Meshy: 0 credit** (vẫn 931). Không mua tài nguyên, không bật thanh toán.
 
 ### Đã làm (code + kiểm thử thật)

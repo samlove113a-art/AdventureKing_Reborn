@@ -256,6 +256,23 @@ namespace AdventureKing.ArtPipeline
                 (p => Poly(p - new Vector2(0f, 0.9f), Star(4, 0.16f, 0.06f, 45f)), _ => new Color(0.4f, 0.95f, 0.9f)));
             // circular mask for the avatar
             Paint("avatar_mask", false, (p => Circle(p, Vector2.zero, 0.86f), _ => Color.white));
+            // minimap symbols (dark outline so they read on the map)
+            Color ink = new Color(0.04f, 0.06f, 0.12f);
+            Paint("mini_portal", false,
+                (p => Circle(p, Vector2.zero, 0.92f), _ => ink),
+                (p => Mathf.Max(Circle(p, Vector2.zero, 0.8f), -Circle(p, Vector2.zero, 0.42f)), Grad(new Color(0.2f, 0.6f, 1f), new Color(0.6f, 1f, 1f))),
+                (p => Circle(p, new Vector2(0.12f, 0.1f), 0.26f), _ => new Color(0.85f, 1f, 1f)));
+            Paint("mini_npc", false,
+                (p => Mathf.Min(Circle(p, new Vector2(0f, 0.12f), 0.8f), Poly(p, new[] { new Vector2(-0.3f, -0.5f), new Vector2(0.1f, -0.5f), new Vector2(-0.35f, -0.95f) })), _ => ink),
+                (p => Mathf.Min(Circle(p, new Vector2(0f, 0.12f), 0.68f), Poly(p, new[] { new Vector2(-0.24f, -0.4f), new Vector2(0.06f, -0.4f), new Vector2(-0.28f, -0.8f) })), gold),
+                (p => Mathf.Min(Box(p, new Vector2(0f, 0.28f), new Vector2(0.09f, 0.26f), 0.06f), Circle(p, new Vector2(0f, -0.18f), 0.1f)), _ => ink));
+            Paint("mini_player", false,
+                (p => Poly(p, new[] { new Vector2(0f, -0.95f), new Vector2(0.72f, 0.3f), new Vector2(0f, 0.95f), new Vector2(-0.72f, 0.3f) }), _ => White),
+                (p => Poly(p, new[] { new Vector2(0f, -0.75f), new Vector2(0.55f, 0.28f), new Vector2(0f, 0.76f), new Vector2(-0.55f, 0.28f) }), Grad(new Color(0.85f, 0.12f, 0.15f), new Color(1f, 0.5f, 0.45f))));
+            Paint("icon_sun", false,
+                (p => Mathf.Min(Circle(p, Vector2.zero, 0.5f), Poly(p, Star(10, 0.95f, 0.5f))), Grad(new Color(1f, 0.6f, 0.15f), new Color(1f, 0.92f, 0.45f))));
+            Paint("icon_moon", false,
+                (p => Mathf.Max(Circle(p, Vector2.zero, 0.85f), -Circle(p, new Vector2(0.42f, 0.3f), 0.7f)), Grad(new Color(0.75f, 0.8f, 1f), new Color(1f, 0.98f, 0.85f))));
         }
     }
 }
