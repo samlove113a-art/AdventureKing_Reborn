@@ -106,6 +106,50 @@ namespace AdventureKing.Gameplay
         public WardrobeItem Find(string id) => Array.Find(items, i => i.id == id);
     }
 
+    // ------------------------------------------------------------------ farm (server-authoritative monsters + Gold drops)
+    [Serializable]
+    public sealed class FarmMonsterState
+    {
+        public string id, type, name;
+        public float x, y;
+        public int hp, maxHp;
+        public bool alive;
+        public long respawnInMs;
+    }
+
+    [Serializable]
+    public sealed class FarmDropState
+    {
+        public string id;
+        public float x, y;
+        public long amount, expiresInMs;
+    }
+
+    [Serializable]
+    public sealed class FarmState
+    {
+        public string mapId;
+        public FarmMonsterState[] monsters = new FarmMonsterState[0];
+        public FarmDropState[] drops = new FarmDropState[0];
+    }
+
+    [Serializable]
+    public sealed class FarmAttackResult
+    {
+        public FarmMonsterState monster;
+        public int damage;
+        public bool killed;
+        public FarmDropState drop;
+        public bool HasDrop => killed && drop != null && !string.IsNullOrEmpty(drop.id);
+    }
+
+    [Serializable]
+    public sealed class FarmPickupResult
+    {
+        public string dropId;
+        public long amount, gold;
+    }
+
     [Serializable]
     public sealed class LearnedSkill
     {

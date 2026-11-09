@@ -204,6 +204,23 @@ namespace AdventureKing.Gameplay
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/wardrobe/equip", JsonUtility.ToJson(outfit ?? new OutfitLoadout()), true,
                 (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<WardrobeSnapshot>(json) : null, err));
 
+        // ------------------------------------------------------------------ farm (the server owns HP, kills, Gold)
+        public void GetFarm(string characterId, Action<bool, FarmState, string> completed) =>
+            Send("GET", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm", null, true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<FarmState>(json) : null, err));
+
+        /// <summary>"I swing at this monster from here." No damage is sent: the server applies its class table.</summary>
+        public void FarmAttack(string characterId, string spawnId, Vector2 position, Action<bool, FarmAttackResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm/attack",
+                JsonUtility.ToJson(new AttackBody { spawnId = spawnId, x = position.x, y = position.y }), true, (ok, json, err) =>
+                    completed(ok, ok ? JsonUtility.FromJson<FarmAttackResult>(json) : null, err));
+
+        /// <summary>"I pick up this drop from here." The server checks owner + reach and credits the wallet once.</summary>
+        public void FarmPickup(string characterId, string dropId, Vector2 position, Action<bool, FarmPickupResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm/pickup",
+                JsonUtility.ToJson(new PickupBody { dropId = dropId, x = position.x, y = position.y }), true, (ok, json, err) =>
+                    completed(ok, ok ? JsonUtility.FromJson<FarmPickupResult>(json) : null, err));
+
         /// <summary>VIP level from verified payments only (server decides; thresholds may be unconfigured).</summary>
         public void GetVip(Action<bool, int, bool, string> completed) =>
             Send("GET", "/vip", null, true, (ok, json, err) =>
@@ -271,5 +288,7 @@ namespace AdventureKing.Gameplay
         [Serializable] private sealed class VipBody { public int level; public long paidVnd; public bool configured; }
         [Serializable] private sealed class PurchaseBody { public string itemId; public string requestId; public bool equip; }
         [Serializable] private sealed class ErrorBody { public string code; public string message; }
+        [Serializable] private sealed class AttackBody { public string spawnId; public float x; public float y; }
+        [Serializable] private sealed class PickupBody { public string dropId; public float x; public float y; }
     }
 }

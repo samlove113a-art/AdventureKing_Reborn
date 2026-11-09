@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace AdventureKing.Tests
         public IEnumerator SetUp()
         {
             TestRunnerGuard.Protect();
-            server = new TestServer(5213);
+            server = new TestServer(5213, starterGold: 5000); // fixture: the audit buys an item (production starter Gold is 800)
             yield return server.Start();
             Directory.CreateDirectory(Dir);
         }

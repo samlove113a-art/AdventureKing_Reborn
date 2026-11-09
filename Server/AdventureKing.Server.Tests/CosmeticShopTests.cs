@@ -205,21 +205,21 @@ public class CosmeticHttpTests : IDisposable
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", (await reg.Content.ReadFromJsonAsync<Session>())!.token);
         CharacterDto ch = (await (await http.PostAsJsonAsync("/api/v1/characters", new { characterName = "Mua Sắm", heroClass = 2, slotIndex = 0 }))
             .Content.ReadFromJsonAsync<CharacterDto>())!;
-        Assert.True(ch.gold > 0);
+        Assert.Equal(800, ch.gold); // approved production starter Gold
 
         var wardrobe = await http.GetFromJsonAsync<WardrobeDto>($"/api/v1/characters/{ch.characterId}/wardrobe");
-        Assert.Contains(wardrobe!.items, i => i.id == "shoes_cloud_boots" && i.price == 900 && i.currency == "gold");
+        Assert.Contains(wardrobe!.items, i => i.id == "acc_silver_bell" && i.price == 600 && i.currency == "gold");
 
         var buy = await http.PostAsJsonAsync($"/api/v1/characters/{ch.characterId}/wardrobe/purchase",
-            new { itemId = "shoes_cloud_boots", requestId = Guid.NewGuid().ToString("N"), equip = true });
+            new { itemId = "acc_silver_bell", requestId = Guid.NewGuid().ToString("N"), equip = true });
         Assert.Equal(HttpStatusCode.OK, buy.StatusCode);
-        Assert.Equal(ch.gold - 900, (await buy.Content.ReadFromJsonAsync<WardrobeDto>())!.gold);
+        Assert.Equal(ch.gold - 600, (await buy.Content.ReadFromJsonAsync<WardrobeDto>())!.gold);
 
         var forged = await http.PostAsJsonAsync($"/api/v1/characters/{ch.characterId}/wardrobe/equip",
             new { set = "", slots = new[] { new { slot = "back", itemId = "back_dragonfly_wings" } } });
         Assert.Equal(HttpStatusCode.Conflict, forged.StatusCode);
 
         CharacterDto entered = (await (await http.PostAsync($"/api/v1/characters/{ch.characterId}/enter", null)).Content.ReadFromJsonAsync<CharacterDto>())!;
-        Assert.Equal("shoes_cloud_boots", Assert.Single(entered.outfit.slots).itemId);
+        Assert.Equal("acc_silver_bell", Assert.Single(entered.outfit.slots).itemId);
     }
 }

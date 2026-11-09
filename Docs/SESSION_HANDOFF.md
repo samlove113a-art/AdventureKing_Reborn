@@ -6,6 +6,57 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★★ Đợt 5 (2026-11-09 đêm): quái + vàng rơi do server quản lý; bảng giá & Vàng khởi đầu đã duyệt
+**Trạng thái:** đã test, đã commit, **chưa push**. Meshy vẫn 931.
+
+**Chủ dự án đã duyệt (2026-11-09):**
+- Bảng giá Vàng/KC trong `config/cosmetics.json` (ghi chú đổi thành APPROVED).
+- Vàng khởi đầu **800**: đã áp dụng trong `appsettings.json` và mặc định `Program.cs`.
+- Test `ApprovedEconomyTests` ghim các giá trị này.
+- Test PlayMode cần mua nhiều món (`ShopFashionTests`, `UiTownScreensTests`) truyền rõ fixture 5.000 qua `TestServer(port, starterGold)`. Test HTTP mua chuông 600 thay vì giày 900 (800 không đủ mua giày, đúng hành vi).
+
+**Server (authoritative) — `Domain/FarmService.cs`, `config/monsters.json`, endpoint `/characters/{id}/farm`, `/farm/attack`, `/farm/pickup`:**
+- **Quái:** 8 slime ở Đồng Cỏ Gió: Slime Bông 60 HP, 5–11 Vàng; Slime Rêu 90 HP, 7–13 Vàng.
+  - Server giữ HP, cái chết và **hồi sinh sau đúng 60 giây** theo đồng hồ server.
+  - Sát thương lấy từ bảng nghề trên server; client không gửi sát thương.
+- **Kiểm tra mỗi đòn đánh:**
+  - nhân vật thuộc phiên đăng nhập và đang ở đúng bản đồ;
+  - vị trí báo về đi được bằng tốc độ chạy (≤ 12 m/s + 2,5 m sai số);
+  - mục tiêu trong tầm đánh của nghề;
+  - đúng nhịp tấn công của nghề.
+- **Vàng rơi:**
+  - server tung số vàng, tạo túi vàng thuộc **riêng** người hạ quái, tồn tại 120 giây;
+  - nhặt phải đứng gần (≤ 1,8 m);
+  - mỗi túi chỉ trả **đúng một lần** (cờ đã nhặt + khoá idempotency `loot:{dropId}` trong ledger), kể cả khi 8 yêu cầu đến cùng lúc.
+- Không giới hạn theo ngày, không giảm thưởng.
+- Sảnh không có quái, config chặn đặt quái ở sảnh; không có đường gây sát thương người chơi khác (không PK).
+
+**Client:**
+- `FarmField`: hiển thị quái từ server, đòn chém → yêu cầu đánh, tự nhặt túi vàng khi đứng lên, HUD hiện số dư server xác nhận, hỏi lại server mỗi 1,5 giây để thấy hồi sinh/hết hạn.
+- `FarmMonsterView`: slime chibi dựng trong engine, nảy/nhảy, thanh máu, chớp khi trúng đòn, xẹp khi chết, bật ra khi hồi sinh.
+- `GoldDropView`: chồng xu vàng bật ra, xoay, nhấp nháy trước khi hết hạn, bay vào nhân vật khi nhặt.
+- Chữ nổi: "-18", "+N Vàng".
+
+**Kiểm thử:**
+- Server **100/100**, gồm 7 test farm:
+  - hạ quái → 4 đòn với 60 HP;
+  - hồi sinh đúng 60 giây (59 giây vẫn chết);
+  - nhặt đúng một lần;
+  - nhặt đồng thời;
+  - giả vị trí / ngoài tầm / đánh quá nhanh bị từ chối;
+  - sảnh không có quái.
+- PlayMode **42** (40 qua + 2 bỏ qua), 0 exception, gồm `FarmTests` end-to-end trên server thật: vào đồng cỏ → chém bằng phím tấn công → server báo chết → túi vàng → đi lên nhặt → ví server +N đúng một lần, HUD 800→800+N → slime tự hồi sinh sau 60 giây.
+- Ảnh trong `QA/Farm/`.
+
+**Còn lại / hạn chế:**
+- Di chuyển vẫn do client (vật lý platformer). Server chỉ kiểm tra tốc độ hợp lý, nên cheat dịch chuyển ngắn trong giới hạn tốc độ vẫn có thể.
+- Quái chưa đánh người chơi (slime hiền), HP người chơi chưa do server quản lý.
+- Trạng thái quái và túi vàng nằm trong bộ nhớ server: restart server thì quái hồi đầy, túi chưa nhặt mất. Vàng đã nhặt nằm an toàn trong DB.
+- Chưa có kênh / nhiều server.
+- Tên quái trên thanh máu chưa hiện (chỉ có thanh máu).
+- Chưa đo thu nhập thật theo giờ trong game.
+
+---
 ## ★★★★★★★★ Đợt 4 (2026-11-09 đêm): skin vui nhộn khác dáng thật, giá đề xuất — dựng trong engine, 0 credit Meshy
 **Trạng thái:** đã test, đã commit, **chưa push**. Chủ dự án chọn "chỉ dựng trong engine". **Meshy vẫn 931.**
 

@@ -146,6 +146,7 @@ namespace AdventureKing.ArtPipeline
             Lantern(art, "lantern_post", -42.5f, 2f, 3.6f, false);
             Signboard(art, -33f, 2.6f, "Đồng Cỏ Gió\n←\nVề\nThị Trấn");
             foreach (var p in TownLayout.Meadow.Portals) Portal(play, p);
+            FarmSetup(play); // server-authoritative monsters + Gold drops (the hub has none: safe zone)
 
             FinishWorld(scene, MeadowScenePath, world, TownLayout.Meadow.MapId, TownLayout.Meadow.DisplayName, TownLayout.Meadow.Spawn,
                 TownLayout.Meadow.MinX, TownLayout.Meadow.MaxX, 11f, AdventureMusicStage.Exploration);
@@ -1204,6 +1205,92 @@ namespace AdventureKing.ArtPipeline
             r.enabled = false;
             var cycle = world.gameObject.AddComponent<DayNightCycle>();
             cycle.Bind(Object.FindAnyObjectByType<Light>(), cam.GetComponent<Camera>(), r);
+        }
+
+        // ================================================================== farm (Đợt 5)
+        private static Material FarmMat(string name, Color c, Color emission)
+        {
+            string path = $"{MatDir}/farm_{name}.mat";
+            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (!m) { m = new Material(Shader.Find(HeroArtPipeline.ToonShader)); AssetDatabase.CreateAsset(m, path); }
+            m.shader = Shader.Find(HeroArtPipeline.ToonShader);
+            m.SetColor("_BaseColor", c);
+            m.SetColor("_EmissionColor", emission);
+            m.SetFloat("_OutlineWidth", 0.006f);
+            EditorUtility.SetDirty(m);
+            return m;
+        }
+
+        private static GameObject Blob(Transform parent, string name, PrimitiveType type, Vector3 pos, Vector3 scale, Material m, Vector3 euler = default)
+        {
+            var go = GameObject.CreatePrimitive(type);
+            Object.DestroyImmediate(go.GetComponent<Collider>());
+            go.name = name;
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = pos;
+            go.transform.localScale = scale;
+            go.transform.localEulerAngles = euler;
+            var r = go.GetComponent<MeshRenderer>();
+            r.sharedMaterial = m;
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+            return go;
+        }
+
+        /// <summary>Original chibi slime built from toon primitives: squishy body, big eyes with glints, blush, a topper.</summary>
+        private static FarmMonsterView Slime(Transform parent, string name, Color body, Color topper, bool leaf)
+        {
+            var root = new GameObject(name);
+            root.transform.SetParent(parent, false);
+            var pivot = new GameObject("Body").transform;
+            pivot.SetParent(root.transform, false);
+            Material bodyMat = FarmMat(name + "_body", body, Color.black);
+            Material ink = FarmMat("ink", new Color(0.08f, 0.07f, 0.1f), Color.black);
+            Material white = FarmMat("white", Color.white, new Color(0.3f, 0.3f, 0.3f));
+            Material blush = FarmMat("blush", new Color(1f, 0.55f, 0.62f), Color.black);
+            var rs = new List<Renderer>();
+            rs.Add(Blob(pivot, "Jelly", PrimitiveType.Sphere, new Vector3(0f, 0.42f, 0f), new Vector3(1.1f, 0.84f, 1f), bodyMat).GetComponent<Renderer>());
+            foreach (float sx in new[] { -1f, 1f })
+            {
+                rs.Add(Blob(pivot, "Eye", PrimitiveType.Sphere, new Vector3(0.2f * sx, 0.52f, -0.42f), new Vector3(0.15f, 0.2f, 0.1f), ink).GetComponent<Renderer>());
+                Blob(pivot, "Glint", PrimitiveType.Sphere, new Vector3(0.2f * sx + 0.035f, 0.57f, -0.48f), Vector3.one * 0.055f, white);
+                Blob(pivot, "Blush", PrimitiveType.Sphere, new Vector3(0.36f * sx, 0.4f, -0.36f), new Vector3(0.14f, 0.07f, 0.04f), blush);
+            }
+            Material top = FarmMat(name + "_top", topper, Color.black);
+            if (leaf) Blob(pivot, "Leaf", PrimitiveType.Sphere, new Vector3(0.08f, 0.9f, 0f), new Vector3(0.12f, 0.32f, 0.05f), top, new Vector3(0f, 0f, -30f));
+            else Blob(pivot, "Tuft", PrimitiveType.Sphere, new Vector3(0f, 0.86f, 0f), new Vector3(0.22f, 0.2f, 0.22f), top);
+            var view = root.AddComponent<FarmMonsterView>();
+            view.Bind(pivot, rs.ToArray());
+            root.transform.localScale = Vector3.one * 1.15f;
+            return view;
+        }
+
+        private static GoldDropView CoinPile(Transform parent)
+        {
+            var root = new GameObject("GoldDropTemplate");
+            root.transform.SetParent(parent, false);
+            Material gold = FarmMat("coin", new Color(1f, 0.78f, 0.25f), new Color(0.25f, 0.16f, 0.02f));
+            Blob(root.transform, "Coin0", PrimitiveType.Cylinder, Vector3.zero, new Vector3(0.36f, 0.025f, 0.36f), gold, new Vector3(90f, 0f, 0f));
+            Blob(root.transform, "Coin1", PrimitiveType.Cylinder, new Vector3(0.16f, -0.08f, 0.05f), new Vector3(0.3f, 0.022f, 0.3f), gold, new Vector3(80f, 20f, 0f));
+            Blob(root.transform, "Coin2", PrimitiveType.Cylinder, new Vector3(-0.14f, -0.1f, 0.03f), new Vector3(0.28f, 0.02f, 0.28f), gold, new Vector3(100f, -15f, 0f));
+            Blob(root.transform, "Coin3", PrimitiveType.Cylinder, new Vector3(0.02f, 0.14f, -0.02f), new Vector3(0.26f, 0.02f, 0.26f), gold, new Vector3(70f, 40f, 0f));
+            root.transform.localScale = Vector3.one * 1.7f; // must read at gameplay distance
+            return root.AddComponent<GoldDropView>();
+        }
+
+        private static void FarmSetup(Transform play)
+        {
+            var farmGo = new GameObject("FarmField");
+            farmGo.transform.SetParent(play, false);
+            var farm = farmGo.AddComponent<FarmField>();
+            var templates = new GameObject("Templates").transform;
+            templates.SetParent(farmGo.transform, false);
+            var so = new SerializedObject(farm);
+            so.FindProperty("puffTemplate").objectReferenceValue = Slime(templates, "SlimeBong", new Color(1f, 0.84f, 0.88f), Color.white, false);
+            so.FindProperty("mossTemplate").objectReferenceValue = Slime(templates, "SlimeReu", new Color(0.5f, 0.8f, 0.42f), new Color(0.25f, 0.6f, 0.25f), true);
+            so.FindProperty("coinTemplate").objectReferenceValue = CoinPile(templates);
+            so.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            so.ApplyModifiedPropertiesWithoutUndo();
+            foreach (Transform t in templates) t.gameObject.SetActive(false);
         }
 
         /// <summary>Soft toon cloud (procedural: overlapping puffs, flat-shaded underside, light rim) on the cutout shader.</summary>

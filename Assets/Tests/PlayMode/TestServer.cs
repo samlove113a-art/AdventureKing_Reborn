@@ -17,10 +17,13 @@ namespace AdventureKing.Tests
         private readonly int port;
         private readonly string dbDir;
         private Process process;
+        private readonly long? starterGold;
 
-        public TestServer(int port)
+        /// <param name="starterGold">Test fixture override of the server's starter Gold (null = the real config value).</param>
+        public TestServer(int port, long? starterGold = null)
         {
             this.port = port;
+            this.starterGold = starterGold;
             dbDir = Path.Combine(Path.GetTempPath(), "ak_srv_" + System.Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dbDir);
         }
@@ -33,7 +36,8 @@ namespace AdventureKing.Tests
         public IEnumerator Start()
         {
             if (!File.Exists(Dll)) Assert.Ignore("Server not built: run `dotnet build Server/AdventureKing.Server` first.");
-            var psi = new ProcessStartInfo("dotnet", $"\"{Dll}\" --urls http://127.0.0.1:{port} --AdventureKing:DatabasePath=\"{Path.Combine(dbDir, "test.db")}\"")
+            var psi = new ProcessStartInfo("dotnet", $"\"{Dll}\" --urls http://127.0.0.1:{port} --AdventureKing:DatabasePath=\"{Path.Combine(dbDir, "test.db")}\"" +
+                (starterGold.HasValue ? $" --AdventureKing:StarterGold={starterGold.Value}" : ""))
             {
                 WorkingDirectory = Path.GetDirectoryName(Dll), UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardOutput = true, RedirectStandardError = true,

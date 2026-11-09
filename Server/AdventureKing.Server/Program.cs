@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using AdventureKing.Server.Data;
 using AdventureKing.Server.Domain;
 using AdventureKing.Server.Security;
@@ -41,11 +41,13 @@ long[] vip = cfg.GetSection("VipThresholdsVnd").Get<long[]>() ?? Array.Empty<lon
 builder.Services.AddSingleton(_ => new Database(dbPath));
 builder.Services.AddSingleton(_ => new NameRules(Path.Combine(contentRoot, "config", "name_blocklist.txt")));
 builder.Services.AddSingleton(sp => new AccountService(sp.GetRequiredService<Database>()));
-long starterGold = cfg.GetValue<long?>("StarterGold") ?? 5000; // PROPOSAL pending owner approval
+long starterGold = cfg.GetValue<long?>("StarterGold") ?? 800; // approved by the owner 2026-11-09
 string cosmeticsPath = Path.Combine(contentRoot, cfg["CosmeticCatalogPath"] ?? "config/cosmetics.json");
 builder.Services.AddSingleton(sp => new CharacterService(sp.GetRequiredService<Database>(), sp.GetRequiredService<NameRules>(), starterGold));
 builder.Services.AddSingleton(sp => new CosmeticShop(sp.GetRequiredService<Database>(), CosmeticCatalog.Load(cosmeticsPath)));
 builder.Services.AddSingleton(sp => new DiamondStore(sp.GetRequiredService<Database>(), vip));
+string monstersPath = Path.Combine(contentRoot, cfg["MonsterConfigPath"] ?? "config/monsters.json");
+builder.Services.AddSingleton(sp => new FarmService(sp.GetRequiredService<Database>(), FarmConfig.Load(monstersPath)));
 builder.Services.AddKeyedSingleton("login", new AttemptLimiter(10, TimeSpan.FromMinutes(5)));
 builder.Services.AddKeyedSingleton("register", new AttemptLimiter(5, TimeSpan.FromHours(1)));
 
@@ -130,6 +132,14 @@ api.MapPost("/characters/{id}/wardrobe/purchase", (string id, PurchaseRequestDto
     shop.Purchase(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/wardrobe/equip", (string id, OutfitDto body, HttpContext ctx, AccountService accounts, CosmeticShop shop) =>
     shop.Equip(accounts.Authenticate(Bearer(ctx)), id, body));
+
+// ---------------------------------------------------------------- farm: monsters, Gold drops (server-authoritative)
+api.MapGet("/characters/{id}/farm", (string id, HttpContext ctx, AccountService accounts, FarmService farm) =>
+    farm.State(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/farm/attack", (string id, AttackRequestDto body, HttpContext ctx, AccountService accounts, FarmService farm) =>
+    farm.Attack(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/farm/pickup", (string id, PickupRequestDto body, HttpContext ctx, AccountService accounts, FarmService farm) =>
+    farm.Pickup(accounts.Authenticate(Bearer(ctx)), id, body));
 
 // ---------------------------------------------------------------- diamond store (catalog only; payments disabled)
 api.MapGet("/store/catalog", (HttpContext ctx, AccountService accounts, DiamondStore store) =>
