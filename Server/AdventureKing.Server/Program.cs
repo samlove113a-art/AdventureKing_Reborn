@@ -47,7 +47,10 @@ builder.Services.AddSingleton(sp => new CharacterService(sp.GetRequiredService<D
 builder.Services.AddSingleton(sp => new CosmeticShop(sp.GetRequiredService<Database>(), CosmeticCatalog.Load(cosmeticsPath)));
 builder.Services.AddSingleton(sp => new DiamondStore(sp.GetRequiredService<Database>(), vip));
 string monstersPath = Path.Combine(contentRoot, cfg["MonsterConfigPath"] ?? "config/monsters.json");
-builder.Services.AddSingleton(sp => new FarmService(sp.GetRequiredService<Database>(), FarmConfig.Load(monstersPath)));
+string skillsPath = Path.Combine(contentRoot, cfg["SkillConfigPath"] ?? "config/skills.json");
+builder.Services.AddSingleton(sp => new FarmService(sp.GetRequiredService<Database>(), FarmConfig.Load(monstersPath), skills: SkillConfig.Load(skillsPath)));
+string itemsPath = Path.Combine(contentRoot, cfg["ItemConfigPath"] ?? "config/items.json");
+builder.Services.AddSingleton(sp => new InventoryService(sp.GetRequiredService<Database>(), ItemConfig.Load(itemsPath), sp.GetRequiredService<FarmService>()));
 // Production config = the owner's DRAFT (enabled=false) until rewards are approved; tests point this at welfare.dev.json.
 string welfarePath = Path.Combine(contentRoot, cfg["WelfareConfigPath"] ?? "config/welfare.json");
 builder.Services.AddSingleton(sp => new CheckinService(sp.GetRequiredService<Database>(), WelfareConfig.Load(welfarePath), sp.GetRequiredService<CosmeticShop>().Catalog));
@@ -55,6 +58,7 @@ builder.Services.AddKeyedSingleton("login", new AttemptLimiter(10, TimeSpan.From
 builder.Services.AddKeyedSingleton("register", new AttemptLimiter(5, TimeSpan.FromHours(1)));
 
 var app = builder.Build();
+app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses into farm combat from the start
 
 app.Use(async (ctx, next) =>
 {
@@ -147,6 +151,19 @@ api.MapPost("/characters/{id}/farm/presence", (string id, PresenceRequestDto bod
     farm.Presence(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/farm/revive", (string id, HttpContext ctx, AccountService accounts, FarmService farm) =>
     farm.Revive(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/farm/skill", (string id, SkillRequestDto body, HttpContext ctx, AccountService accounts, FarmService farm) =>
+    farm.Skill(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapGet("/skills", (FarmService farm) => farm.Skills); // public: names, cooldowns, MP costs (display only; the server decides)
+
+// ---------------------------------------------------------------- inventory (server-owned bag + basic equipment)
+api.MapGet("/characters/{id}/inventory", (string id, HttpContext ctx, AccountService accounts, InventoryService inv, FarmService _) =>
+    inv.Get(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/inventory/use", (string id, UseItemRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
+    inv.Use(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/inventory/equip", (string id, EquipRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
+    inv.Equip(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/inventory/unequip", (string id, UnequipRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
+    inv.Unequip(accounts.Authenticate(Bearer(ctx)), id, body));
 
 // ---------------------------------------------------------------- 7-day check-in (server clock, VN calendar day)
 api.MapGet("/characters/{id}/checkin", (string id, HttpContext ctx, AccountService accounts, CheckinService checkin) =>

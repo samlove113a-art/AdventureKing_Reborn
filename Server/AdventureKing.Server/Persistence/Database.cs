@@ -93,6 +93,14 @@ public sealed class Database
             Exec(c, tx, Schema.V4);
             Exec(c, tx, "PRAGMA user_version=4;");
             tx.Commit();
+            version = 4;
+        }
+        if (version < 5)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V5);
+            Exec(c, tx, "PRAGMA user_version=5;");
+            tx.Commit();
         }
     }
 
@@ -125,7 +133,31 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 4;
+    public const int Current = 5;
+
+    // V5: character bag (stackable items, max 99 per slot) + equipped gear + one-time grants (starter kit).
+    // (character_id, slot_index) is the bag cell; an item lives in exactly one row, so it cannot exist twice.
+    public const string V5 = """
+    CREATE TABLE bag_slots (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        slot_index   INTEGER NOT NULL CHECK (slot_index >= 0),
+        item_id      TEXT NOT NULL,
+        qty          INTEGER NOT NULL CHECK (qty BETWEEN 1 AND 99),
+        PRIMARY KEY (character_id, slot_index)
+    );
+    CREATE TABLE equipped (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        equip_slot   TEXT NOT NULL,
+        item_id      TEXT NOT NULL,
+        PRIMARY KEY (character_id, equip_slot)
+    );
+    CREATE TABLE item_grants (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        grant_key    TEXT NOT NULL,
+        granted_ms   INTEGER NOT NULL,
+        PRIMARY KEY (character_id, grant_key)
+    );
+    """;
 
     // V4: 7-day check-in (account scope). One receipt per (account, cycle, day): the primary key makes a second claim
     // of the same day impossible even under concurrent requests; last_vn_day enforces one claim per VN calendar day.

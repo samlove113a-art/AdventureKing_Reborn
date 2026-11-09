@@ -75,11 +75,85 @@ public sealed class DropDto
     public long expiresInMs { get; set; }
 }
 
+// ---------------------------------------------------------------- skills (config/skills.json)
+public sealed class SkillDef
+{
+    public int slot { get; set; }
+    public string id { get; set; } = "";
+    public string name { get; set; } = "";
+    public float cooldownSeconds { get; set; }
+    public int mpCost { get; set; }
+    public float damageMultiplier { get; set; } = 1f;
+    public string shape { get; set; } = "target"; // target | self | line
+    public float range { get; set; }
+    public float radius { get; set; }
+    public int maxTargets { get; set; } = 1;
+}
+
+public sealed class ClassSkills
+{
+    public int heroClass { get; set; }
+    public string name { get; set; } = "";
+    public int maxMp { get; set; }
+    public float mpRegenPerSecond { get; set; }
+    public SkillDef[] skills { get; set; } = Array.Empty<SkillDef>();
+}
+
+public sealed class SkillConfig
+{
+    public int version { get; set; }
+    public float globalCooldownSeconds { get; set; } = 0.45f;
+    public float mpCostPerLevel { get; set; }
+    public float maxMpPerLevel { get; set; }
+    public ClassSkills[] classes { get; set; } = Array.Empty<ClassSkills>();
+
+    public static SkillConfig Load(string path)
+    {
+        var cfg = JsonSerializer.Deserialize<SkillConfig>(File.ReadAllText(path)) ?? throw new InvalidDataException("empty skill config");
+        cfg.Validate();
+        return cfg;
+    }
+
+    public void Validate()
+    {
+        foreach (ClassSkills c in classes)
+        {
+            if (c.maxMp <= 0 || c.mpRegenPerSecond < 0) throw new InvalidDataException(c.name + ": bad MP");
+            if (c.skills.Length != 3 || c.skills.Select(s => s.slot).OrderBy(s => s).SequenceEqual(new[] { 1, 2, 3 }) == false)
+                throw new InvalidDataException(c.name + ": exactly skills 1, 2, 3");
+            foreach (SkillDef s in c.skills)
+                if (s.cooldownSeconds <= 0 || s.mpCost < 0 || s.damageMultiplier <= 0 || s.maxTargets < 1 || s.shape is not ("target" or "self" or "line"))
+                    throw new InvalidDataException(s.id + ": bad skill");
+        }
+    }
+
+    public ClassSkills? For(int heroClass) => classes.FirstOrDefault(c => c.heroClass == heroClass);
+    public int MaxMp(ClassSkills c, int level) => (int)MathF.Round(c.maxMp * (1f + maxMpPerLevel * Math.Max(0, level - 1)));
+    public int Cost(SkillDef s, int level) => (int)MathF.Round(s.mpCost * (1f + mpCostPerLevel * Math.Max(0, level - 1)));
+}
+
+public sealed class SkillRequestDto { public int slot { get; set; } public string? spawnId { get; set; } public float x { get; set; } public float y { get; set; } public int facing { get; set; } = 1; }
+public sealed class SkillHitDto { public MonsterDto monster { get; set; } = new(); public int damage { get; set; } public bool killed { get; set; } public DropDto? drop { get; set; } }
+public sealed class SkillResultDto
+{
+    public int slot { get; set; }
+    public string skillId { get; set; } = "";
+    public string name { get; set; } = "";
+    public int mpSpent { get; set; }
+    public float cx { get; set; }
+    public float cy { get; set; }
+    public SkillHitDto[] hits { get; set; } = Array.Empty<SkillHitDto>();
+    public HeroCombatDto hero { get; set; } = new();
+}
+
 /// <summary>The hero's server-side combat state on a farm map (HP is decided here, never by the client).</summary>
 public sealed class HeroCombatDto
 {
     public int hp { get; set; }
     public int maxHp { get; set; }
+    public int mp { get; set; }
+    public int maxMp { get; set; }
+    public long[] cooldownMs { get; set; } = new long[3]; // remaining for skills 1..3
     public bool dead { get; set; }
     public int damageTaken { get; set; }           // since the previous answer (for hit feedback)
     public string[] hitBy { get; set; } = Array.Empty<string>(); // spawn ids that struck since the previous answer
@@ -153,14 +227,19 @@ public sealed class FarmService
     {
         public int Hp, Max, Defense; public bool Dead; public long LastDamageMs, LastRegenMs; public float RegenCarry;
         public int Pending; public List<string> HitBy = new();
+        public int Mp, MaxMp; public float MpRegen, MpCarry; public long LastMpMs;
+        public readonly long[] Ready = new long[3]; public long GlobalReady;
     }
+
+    public SkillConfig Skills { get; }
     private readonly Dictionary<string, Hero> heroes = new();
     private sealed class Drop { public string Id = "", MapId = "", Owner = "", Account = "", Type = ""; public float X, Y; public long Amount, ExpiresMs; public bool Picked; }
 
-    public FarmService(Database db, FarmConfig config, Func<long>? clock = null, Random? random = null)
+    public FarmService(Database db, FarmConfig config, Func<long>? clock = null, Random? random = null, SkillConfig? skills = null)
     {
         this.db = db;
         Config = config;
+        Skills = skills ?? new SkillConfig();
         now = clock ?? Database.NowMs;
         rng = random ?? new Random();
         foreach (SpawnPoint s in config.spawns) live[s.id] = new Live { Hp = TypeOf(s).maxHp };
@@ -168,14 +247,18 @@ public sealed class FarmService
 
     private MonsterType TypeOf(SpawnPoint s) => Config.types.First(t => t.id == s.type);
 
-    private (int heroClass, string mapId) Character(string accountId, string characterId)
+    private (int heroClass, string mapId, int level) Character(string accountId, string characterId)
     {
         using var c = db.Open();
-        using var cmd = Database.Command(c, null, "SELECT hero_class, map_id FROM characters WHERE id=$c AND account_id=$a", ("$c", characterId), ("$a", accountId));
+        using var cmd = Database.Command(c, null, "SELECT hero_class, map_id, level FROM characters WHERE id=$c AND account_id=$a", ("$c", characterId), ("$a", accountId));
         using var r = cmd.ExecuteReader();
         if (!r.Read()) throw new GameError("character_not_found", "Không tìm thấy nhân vật.", 404);
-        return (r.GetInt32(0), r.GetString(1));
+        return (r.GetInt32(0), r.GetString(1), r.GetInt32(2));
     }
+
+    /// <summary>Equipment stat bonus (attack, defence) of a character; wired to the inventory service.</summary>
+    public Func<string, (int attack, int defense)>? EquipmentBonus { get; set; }
+    private (int attack, int defense) Bonus(string characterId) => EquipmentBonus?.Invoke(characterId) ?? (0, 0);
 
     /// <summary>Revives a dead monster whose respawn time has passed (server clock).</summary>
     private void Tick(SpawnPoint s, long t)
@@ -211,14 +294,30 @@ public sealed class FarmService
         presence[key] = (x, y, t);
     }
 
-    private Hero HeroOf(string characterId, int heroClass, long t)
+    private Hero HeroOf(string characterId, int heroClass, int level, long t)
     {
         if (!heroes.TryGetValue(characterId, out Hero? h))
         {
             var st = ClassStats[Math.Clamp(heroClass, 0, ClassStats.Length - 1)];
-            heroes[characterId] = h = new Hero { Hp = st.maxHp, Max = st.maxHp, Defense = st.defense, LastDamageMs = t - RegenDelayMs, LastRegenMs = t };
+            heroes[characterId] = h = new Hero { Hp = st.maxHp, Max = st.maxHp, Defense = st.defense, LastDamageMs = t - RegenDelayMs, LastRegenMs = t, LastMpMs = t };
+            ClassSkills? cs = Skills.For(heroClass);
+            if (cs != null) { h.MaxMp = h.Mp = Skills.MaxMp(cs, level); h.MpRegen = cs.mpRegenPerSecond; }
         }
         return h;
+    }
+
+    /// <summary>MP regenerates continuously (in and out of combat) on the server clock.</summary>
+    private static void RegenMp(Hero h, long t)
+    {
+        if (!h.Dead && h.Mp < h.MaxMp)
+        {
+            h.MpCarry += Math.Max(0, t - h.LastMpMs) / 1000f * h.MpRegen;
+            int add = (int)h.MpCarry;
+            h.MpCarry -= add;
+            h.Mp = Math.Min(h.MaxMp, h.Mp + add);
+        }
+        else h.MpCarry = 0f;
+        h.LastMpMs = t;
     }
 
     /// <summary>
@@ -229,6 +328,8 @@ public sealed class FarmService
     private void Evaluate(string characterId, string mapId, Hero h, long t)
     {
         bool known = presence.TryGetValue(characterId + "|" + mapId, out var p);
+        int defenseBonus = Bonus(characterId).defense;
+        RegenMp(h, t);
         foreach (SpawnPoint s in Config.spawns.Where(s => s.mapId == mapId))
         {
             Live m = live[s.id];
@@ -241,7 +342,7 @@ public sealed class FarmService
             if (!inReach) { m.NextHitMs = Math.Max(m.NextHitMs, t + step / 2); continue; } // must close in again (wind-up)
             while (m.NextHitMs <= t && !h.Dead)
             {
-                int dmg = Math.Max(1, ty.attack - h.Defense / 2);
+                int dmg = Math.Max(1, ty.attack - (h.Defense + defenseBonus) / 2);
                 h.Hp -= dmg;
                 h.Pending += dmg;
                 h.HitBy.Add(s.id);
@@ -263,9 +364,13 @@ public sealed class FarmService
         h.LastRegenMs = t;
     }
 
-    private static HeroCombatDto Drain(Hero h)
+    private static HeroCombatDto Drain(Hero h, long t)
     {
-        var dto = new HeroCombatDto { hp = h.Hp, maxHp = h.Max, dead = h.Dead, damageTaken = h.Pending, hitBy = h.HitBy.ToArray() };
+        var dto = new HeroCombatDto
+        {
+            hp = h.Hp, maxHp = h.Max, mp = h.Mp, maxMp = h.MaxMp, dead = h.Dead, damageTaken = h.Pending, hitBy = h.HitBy.ToArray(),
+            cooldownMs = h.Ready.Select(r => Math.Max(0, r - t)).ToArray(),
+        };
         h.Pending = 0;
         h.HitBy.Clear();
         return dto;
@@ -274,66 +379,67 @@ public sealed class FarmService
     /// <summary>Position heartbeat (~2/s while on a farm map): moves the hero (speed-checked) and resolves monster hits.</summary>
     public HeroCombatDto Presence(string accountId, string characterId, PresenceRequestDto? req)
     {
-        var (heroClass, mapId) = Character(accountId, characterId);
+        var (heroClass, mapId, level) = Character(accountId, characterId);
         long t = now();
         lock (gate)
         {
-            Hero h = HeroOf(characterId, heroClass, t);
+            Hero h = HeroOf(characterId, heroClass, level, t);
             if (!h.Dead) Move(characterId, mapId, req?.x ?? float.NaN, req?.y ?? float.NaN, t);
             Evaluate(characterId, mapId, h, t);
-            return Drain(h);
+            return Drain(h, t);
         }
     }
 
     /// <summary>Gets a fallen hero back up at the map's respawn point with full HP (no Gold or item loss).</summary>
     public HeroCombatDto Revive(string accountId, string characterId)
     {
-        var (heroClass, mapId) = Character(accountId, characterId);
+        var (heroClass, mapId, level) = Character(accountId, characterId);
         long t = now();
         lock (gate)
         {
-            Hero h = HeroOf(characterId, heroClass, t);
+            Hero h = HeroOf(characterId, heroClass, level, t);
             if (!h.Dead) throw new GameError("not_dead", "Nhân vật chưa gục ngã.", 409);
             h.Dead = false;
             h.Hp = h.Max;
+            h.Mp = h.MaxMp;
             h.LastDamageMs = t - RegenDelayMs;
             var spot = RespawnPoints.TryGetValue(mapId, out var r) ? r : (0f, 1f);
             presence[characterId + "|" + mapId] = (spot.Item1, spot.Item2, t);
-            return Drain(h);
+            return Drain(h, t);
         }
     }
 
     public FarmStateDto State(string accountId, string characterId)
     {
-        var (heroClass, mapId) = Character(accountId, characterId);
+        var (heroClass, mapId, level) = Character(accountId, characterId);
         long t = now();
         lock (gate)
         {
             foreach (var d in drops.Values.Where(d => d.ExpiresMs <= t || d.Picked).ToList()) drops.Remove(d.Id);
             var spawns = Config.spawns.Where(s => s.mapId == mapId).ToArray();
             foreach (SpawnPoint s in spawns) Tick(s, t);
-            Hero h = HeroOf(characterId, heroClass, t);
+            Hero h = HeroOf(characterId, heroClass, level, t);
             Evaluate(characterId, mapId, h, t);
             return new FarmStateDto
             {
                 mapId = mapId,
                 monsters = spawns.Select(s => Dto(s, t)).ToArray(),
                 drops = drops.Values.Where(d => d.Owner == characterId && d.MapId == mapId).Select(d => Dto(d, t)).ToArray(),
-                hero = Drain(h),
+                hero = Drain(h, t),
             };
         }
     }
 
     public AttackResultDto Attack(string accountId, string characterId, AttackRequestDto? req)
     {
-        var (heroClass, mapId) = Character(accountId, characterId);
+        var (heroClass, mapId, level) = Character(accountId, characterId);
         SpawnPoint s = Config.spawns.FirstOrDefault(p => p.id == req?.spawnId) ?? throw new GameError("monster_unknown", "Quái vật không tồn tại.", 404);
         if (s.mapId != mapId) throw new GameError("wrong_map", "Quái vật không ở bản đồ của bạn.", 409);
         var stats = ClassStats[Math.Clamp(heroClass, 0, ClassStats.Length - 1)];
         long t = now();
         lock (gate)
         {
-            Hero h = HeroOf(characterId, heroClass, t);
+            Hero h = HeroOf(characterId, heroClass, level, t);
             if (h.Dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
             Move(characterId, mapId, req!.x, req.y, t);
             Evaluate(characterId, mapId, h, t);
@@ -346,47 +452,157 @@ public sealed class FarmService
             Live m = live[s.id];
             if (m.Hp <= 0) throw new GameError("monster_dead", "Quái vật đã bị hạ, chờ hồi sinh.", 409);
             lastSwing[characterId] = t;
-            m.Hp -= stats.damage;
-            var result = new AttackResultDto { damage = stats.damage };
-            if (m.Hp <= 0)
+            int dmg = stats.damage + Bonus(characterId).attack;
+            SkillHitDto hit = Damage(s, dmg, accountId, characterId, mapId, t);
+            return new AttackResultDto { damage = dmg, killed = hit.killed, drop = hit.drop, monster = hit.monster, hero = Drain(h, t) };
+        }
+    }
+
+    /// <summary>Applies server damage to a live monster: on death it rolls the Gold drop (owned by the killer, picked up
+    /// once) and starts the respawn timer; otherwise the monster aggroes on the attacker.</summary>
+    private SkillHitDto Damage(SpawnPoint s, int dmg, string accountId, string characterId, string mapId, long t)
+    {
+        Live m = live[s.id];
+        m.Hp -= dmg;
+        var hit = new SkillHitDto { damage = dmg };
+        if (m.Hp <= 0)
+        {
+            MonsterType ty = TypeOf(s);
+            m.Hp = 0;
+            m.RespawnAtMs = t + ty.respawnSeconds * 1000L;
+            var d = new Drop
             {
-                MonsterType ty = TypeOf(s);
-                m.Hp = 0;
-                m.RespawnAtMs = t + ty.respawnSeconds * 1000L;
-                var d = new Drop
-                {
-                    Id = Crypto.NewId("drop"), MapId = mapId, Owner = characterId, Account = accountId, Type = ty.id,
-                    X = s.x, Y = s.y, Amount = rng.Next(ty.goldMin, ty.goldMax + 1), ExpiresMs = t + Config.dropLifetimeSeconds * 1000L,
-                };
-                drops[d.Id] = d;
-                result.killed = true;
-                result.drop = Dto(d, t);
-                m.Aggro = null;
-            }
-            else if (m.Aggro != characterId)
+                Id = Crypto.NewId("drop"), MapId = mapId, Owner = characterId, Account = accountId, Type = ty.id,
+                X = s.x, Y = s.y, Amount = rng.Next(ty.goldMin, ty.goldMax + 1), ExpiresMs = t + Config.dropLifetimeSeconds * 1000L,
+            };
+            drops[d.Id] = d;
+            hit.killed = true;
+            hit.drop = Dto(d, t);
+            m.Aggro = null;
+        }
+        else if (m.Aggro != characterId)
+        {
+            m.Aggro = characterId; // it fights back: first strike after one wind-up
+            m.NextHitMs = t + (long)(TypeOf(s).attackSeconds * 1000f);
+        }
+        hit.monster = Dto(s, t);
+        return hit;
+    }
+
+    /// <summary>
+    /// Casts skill 1/2/3. The server checks: the skill exists for this class, the hero is alive and on a farm map, the
+    /// reported position is plausible, the skill's own cooldown and the global cooldown have passed, and there is
+    /// enough MP (cost scales with level). Only then MP is spent and the cooldown starts. Damage = class base damage
+    /// (+ equipment) x the skill multiplier, applied to live monsters inside the skill's shape:
+    ///  - "target": a chosen monster within range, plus others within radius of it;
+    ///  - "self": monsters within radius of the hero;
+    ///  - "line": monsters in front of the hero (facing) within range, nearest first.
+    /// A cast that would hit nothing is refused without spending MP (no wasted MP, no free cooldown spam).
+    /// </summary>
+    public SkillResultDto Skill(string accountId, string characterId, SkillRequestDto? req)
+    {
+        var (heroClass, mapId, level) = Character(accountId, characterId);
+        if (req == null) throw new GameError("bad_request", "Thiếu dữ liệu kỹ năng.");
+        ClassSkills cs = Skills.For(heroClass) ?? throw new GameError("skill_unknown", "Nghề này chưa có kỹ năng.", 404);
+        SkillDef sk = cs.skills.FirstOrDefault(k => k.slot == req.slot) ?? throw new GameError("skill_unknown", "Kỹ năng không tồn tại.", 404);
+        if (!Config.spawns.Any(sp => sp.mapId == mapId)) throw new GameError("safe_zone", "Không thể dùng kỹ năng trong khu an toàn.", 409);
+        var stats = ClassStats[Math.Clamp(heroClass, 0, ClassStats.Length - 1)];
+        long t = now();
+        lock (gate)
+        {
+            Hero h = HeroOf(characterId, heroClass, level, t);
+            if (h.Dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
+            Move(characterId, mapId, req.x, req.y, t);
+            Evaluate(characterId, mapId, h, t);
+            if (h.Dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
+            int i = sk.slot - 1;
+            if (t < h.Ready[i]) throw new GameError("skill_cooldown", $"{sk.name} đang hồi chiêu ({(h.Ready[i] - t + 999) / 1000} giây).", 429);
+            if (t < h.GlobalReady) throw new GameError("too_fast", "Thi triển quá nhanh.", 429);
+            int cost = Skills.Cost(sk, level);
+            if (h.Mp < cost) throw new GameError("not_enough_mp", $"Không đủ MP ({h.Mp}/{cost}).", 409);
+
+            var alive = Config.spawns.Where(sp => sp.mapId == mapId).Where(sp => { Tick(sp, t); return live[sp.id].Hp > 0; }).ToList();
+            bool InY(SpawnPoint sp, float y) => MathF.Abs(sp.y - y) <= 2.5f;
+            List<SpawnPoint> targets;
+            float cx = req.x, cy = req.y;
+            switch (sk.shape)
             {
-                m.Aggro = characterId; // it fights back: first strike after one wind-up
-                m.NextHitMs = t + (long)(TypeOf(s).attackSeconds * 1000f);
+                case "self":
+                    targets = alive.Where(sp => InY(sp, req.y) && MathF.Abs(sp.x - req.x) <= sk.radius + MonsterHalfWidth)
+                        .OrderBy(sp => MathF.Abs(sp.x - req.x)).Take(sk.maxTargets).ToList();
+                    break;
+                case "line":
+                    int dir = req.facing >= 0 ? 1 : -1;
+                    targets = alive.Where(sp => InY(sp, req.y) && (sp.x - req.x) * dir >= -MonsterHalfWidth && MathF.Abs(sp.x - req.x) <= sk.range + MonsterHalfWidth)
+                        .OrderBy(sp => MathF.Abs(sp.x - req.x)).Take(sk.maxTargets).ToList();
+                    cx = req.x + dir * sk.range * 0.5f;
+                    break;
+                default: // target
+                    SpawnPoint? main = alive.FirstOrDefault(sp => sp.id == req.spawnId)
+                        ?? alive.Where(sp => InY(sp, req.y) && MathF.Abs(sp.x - req.x) <= sk.range + MonsterHalfWidth).OrderBy(sp => MathF.Abs(sp.x - req.x)).FirstOrDefault();
+                    if (main == null || MathF.Abs(main.x - req.x) > sk.range + MonsterHalfWidth || !InY(main, req.y)) { targets = new(); break; }
+                    cx = main.x; cy = main.y;
+                    targets = alive.Where(sp => sp == main || (InY(sp, main.y) && MathF.Abs(sp.x - main.x) <= sk.radius + MonsterHalfWidth))
+                        .OrderBy(sp => sp == main ? -1f : MathF.Abs(sp.x - main.x)).Take(sk.maxTargets).ToList();
+                    break;
             }
-            result.monster = Dto(s, t);
-            result.hero = Drain(h);
-            return result;
+            if (targets.Count == 0) throw new GameError("no_target", "Không có mục tiêu trong tầm kỹ năng.", 409);
+
+            h.Mp -= cost;
+            h.Ready[i] = t + (long)(sk.cooldownSeconds * 1000f);
+            h.GlobalReady = t + (long)(Skills.globalCooldownSeconds * 1000f);
+            int dmg = (int)MathF.Round((stats.damage + Bonus(characterId).attack) * sk.damageMultiplier);
+            var hits = targets.Select(sp => Damage(sp, dmg, accountId, characterId, mapId, t)).ToArray();
+            return new SkillResultDto { slot = sk.slot, skillId = sk.id, name = sk.name, mpSpent = cost, cx = cx, cy = cy, hits = hits, hero = Drain(h, t) };
+        }
+    }
+
+    /// <summary>Restores HP/MP from a consumed potion (the inventory service removes the item in the same request).
+    /// Never above the maximum; refused for a fallen hero. Returns the amounts actually restored.</summary>
+    public (int hp, int mp, HeroCombatDto hero) Restore(string accountId, string characterId, int hp, int mp)
+    {
+        var (heroClass, mapId, level) = Character(accountId, characterId);
+        long t = now();
+        lock (gate)
+        {
+            Hero h = HeroOf(characterId, heroClass, level, t);
+            Evaluate(characterId, mapId, h, t);
+            if (h.Dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
+            int addHp = Math.Max(0, Math.Min(hp, h.Max - h.Hp)), addMp = Math.Max(0, Math.Min(mp, h.MaxMp - h.Mp));
+            h.Hp += addHp;
+            h.Mp += addMp;
+            return (addHp, addMp, Drain(h, t));
+        }
+    }
+
+    /// <summary>Current HP/MP (for checks before consuming a potion).</summary>
+    public HeroCombatDto Peek(string accountId, string characterId)
+    {
+        var (heroClass, mapId, level) = Character(accountId, characterId);
+        long t = now();
+        lock (gate)
+        {
+            Hero h = HeroOf(characterId, heroClass, level, t);
+            Evaluate(characterId, mapId, h, t);
+            var d = Drain(h, t);
+            h.Pending += d.damageTaken; h.HitBy.AddRange(d.hitBy); // peek must not swallow hit feedback
+            return d;
         }
     }
 
     public PickupResultDto Pickup(string accountId, string characterId, PickupRequestDto? req)
     {
-        var (heroClass, mapId) = Character(accountId, characterId);
+        var (heroClass, mapId, level) = Character(accountId, characterId);
         long t = now();
         Drop d;
         HeroCombatDto heroDto;
         lock (gate)
         {
-            Hero h = HeroOf(characterId, heroClass, t);
+            Hero h = HeroOf(characterId, heroClass, level, t);
             if (h.Dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
             Move(characterId, mapId, req?.x ?? float.NaN, req?.y ?? float.NaN, t);
             Evaluate(characterId, mapId, h, t);
-            heroDto = Drain(h);
+            heroDto = Drain(h, t);
             if (req?.dropId == null || !drops.TryGetValue(req.dropId, out d!) || d.Picked || d.ExpiresMs <= t)
                 throw new GameError("drop_gone", "Vàng này không còn trên mặt đất.", 409);
             if (d.Owner != characterId || d.MapId != mapId) throw new GameError("not_your_drop", "Đây không phải vàng của bạn.", 403);

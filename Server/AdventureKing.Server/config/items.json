@@ -1,0 +1,31 @@
+{
+  "_note": "Item catalog (server-owned). Potion strengths, starter kit contents and gear stats are a BALANCE PROPOSAL pending owner approval. Prices are listed for the future Dược Sư Mộc Linh shop and are PROPOSALS (not sold anywhere yet).",
+  "version": 1,
+  "bagSlots": 40,
+  "stackMax": 99,
+  "potionCooldownSeconds": 1.0,
+  "items": [
+    { "id": "potion_hp_s", "name": "Thuốc HP nhỏ", "kind": "consumable", "icon": "item_potion_hp", "hp": 60, "mp": 0, "priceGold": 30, "desc": "Hồi 60 HP." },
+    { "id": "potion_hp_m", "name": "Thuốc HP vừa", "kind": "consumable", "icon": "item_potion_hp", "hp": 150, "mp": 0, "priceGold": 90, "desc": "Hồi 150 HP." },
+    { "id": "potion_hp_l", "name": "Thuốc HP lớn", "kind": "consumable", "icon": "item_potion_hp", "hp": 400, "mp": 0, "priceGold": 260, "desc": "Hồi 400 HP." },
+    { "id": "potion_mp_s", "name": "Thuốc MP nhỏ", "kind": "consumable", "icon": "item_potion_mp", "hp": 0, "mp": 40, "priceGold": 30, "desc": "Hồi 40 MP." },
+    { "id": "potion_mp_m", "name": "Thuốc MP vừa", "kind": "consumable", "icon": "item_potion_mp", "hp": 0, "mp": 100, "priceGold": 90, "desc": "Hồi 100 MP." },
+    { "id": "potion_mp_l", "name": "Thuốc MP lớn", "kind": "consumable", "icon": "item_potion_mp", "hp": 0, "mp": 260, "priceGold": 260, "desc": "Hồi 260 MP." },
+    { "id": "gear_novice_blade", "name": "Kiếm Tập Sự", "kind": "equipment", "icon": "item_weapon_sword", "equipSlot": "weapon", "classes": [0], "attack": 4, "defense": 0, "desc": "Vũ khí đầu tiên của Kiếm Sĩ. +4 tấn công." },
+    { "id": "gear_novice_staff", "name": "Trượng Tập Sự", "kind": "equipment", "icon": "item_weapon_staff", "equipSlot": "weapon", "classes": [1], "attack": 6, "defense": 0, "desc": "Vũ khí đầu tiên của Pháp Sư. +6 tấn công." },
+    { "id": "gear_novice_daggers", "name": "Song Đao Tập Sự", "kind": "equipment", "icon": "item_weapon_dagger", "equipSlot": "weapon", "classes": [2], "attack": 3, "defense": 0, "desc": "Vũ khí đầu tiên của Sát Thủ. +3 tấn công." },
+    { "id": "gear_novice_bow", "name": "Cung Tập Sự", "kind": "equipment", "icon": "item_weapon_bow", "equipSlot": "weapon", "classes": [3], "attack": 4, "defense": 0, "desc": "Vũ khí đầu tiên của Cung Thủ. +4 tấn công." },
+    { "id": "gear_cloth_vest", "name": "Áo Vải Lữ Khách", "kind": "equipment", "icon": "item_armor_vest", "equipSlot": "armor", "classes": [0, 1, 2, 3], "attack": 0, "defense": 4, "desc": "Áo vải bền chắc. +4 phòng thủ." },
+    { "id": "gear_wind_charm", "name": "Bùa Chuông Gió", "kind": "equipment", "icon": "item_charm", "equipSlot": "accessory", "classes": [0, 1, 2, 3], "attack": 1, "defense": 1, "desc": "Bùa may mắn của làng. +1 tấn công, +1 phòng thủ." }
+  ],
+  "starterKit": [
+    { "itemId": "potion_hp_s", "qty": 10 },
+    { "itemId": "potion_mp_s", "qty": 10 },
+    { "itemId": "gear_novice_blade", "qty": 1, "heroClass": 0 },
+    { "itemId": "gear_novice_staff", "qty": 1, "heroClass": 1 },
+    { "itemId": "gear_novice_daggers", "qty": 1, "heroClass": 2 },
+    { "itemId": "gear_novice_bow", "qty": 1, "heroClass": 3 },
+    { "itemId": "gear_cloth_vest", "qty": 1 },
+    { "itemId": "gear_wind_charm", "qty": 1 }
+  ]
+}
