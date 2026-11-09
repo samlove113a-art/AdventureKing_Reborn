@@ -145,8 +145,14 @@ namespace AdventureKing.Tests
             Assert.IsTrue(drop.Landed, "coins landed and bounced");
             yield return Shot("03_gold_on_ground");
 
-            // ---- walk onto the coins: the server credits the wallet, the HUD shows it
+            // ---- walk onto the coins: NO automatic pickup (Pets will do that later); press ↓/S (manual pickup)
             yield return WalkTo(drop.Ground.x + 0.6f);
+            yield return new WaitForSeconds(1f);
+            Assert.AreEqual(0, farm.GoldPickedUp, "standing on the coins does not pick them up by itself");
+            Assert.IsNotNull(farm.DropInReach(), "the coins are in reach");
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Pickup, true);
+            yield return null;
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Pickup, false);
             until = Time.time + 5f;
             while (farm.GoldPickedUp == 0 && Time.time < until) yield return null;
             Assert.AreEqual(amount, farm.GoldPickedUp, "picked up; last error: " + farm.LastError);

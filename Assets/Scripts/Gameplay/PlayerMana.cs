@@ -16,10 +16,24 @@ namespace AdventureKing.Gameplay
         public float Max => max;
         public float Current { get; private set; }
 
+        /// <summary>Level-1 pool, mirroring server config/skills.json (the server's value always wins on farm maps).</summary>
         public static float MaxFor(HeroClass c) => c switch
         {
-            HeroClass.Mage => 120f, HeroClass.Archer => 70f, HeroClass.Assassin => 60f, _ => 45f,
+            HeroClass.Mage => 140f, HeroClass.Archer => 100f, HeroClass.Assassin => 90f, _ => 80f,
         };
+        public static float RegenFor(HeroClass c) => c switch
+        {
+            HeroClass.Mage => 3f, HeroClass.Archer => 2.4f, HeroClass.Assassin => 2.2f, _ => 2f,
+        };
+
+        /// <summary>Server-authoritative MP (farm maps): shows exactly what the server decided; local regen only
+        /// animates the bar between two server answers.</summary>
+        public void SetFromServer(int mp, int maxMp)
+        {
+            if (maxMp <= 0) return;
+            max = maxMp;
+            Current = Mathf.Clamp(mp, 0, maxMp);
+        }
 
         public void Configure(float maxMana, float regen) { max = Mathf.Max(1f, maxMana); regenPerSecond = Mathf.Max(0f, regen); Current = max; }
         private void Awake() => Current = max;

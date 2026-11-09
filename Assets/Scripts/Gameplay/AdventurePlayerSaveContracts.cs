@@ -130,9 +130,44 @@ namespace AdventureKing.Gameplay
     public sealed class HeroCombatState
     {
         public int hp, maxHp, damageTaken;
+        public int mp, maxMp;
+        public long[] cooldownMs = new long[3]; // skills 1..3, remaining (server clock)
         public bool dead;
         public string[] hitBy = new string[0];
     }
+
+    // ---------------------------------------------------------------- skills (server-decided)
+    [Serializable] public sealed class SkillDefDto { public int slot; public string id, name, shape; public float cooldownSeconds, range, radius, damageMultiplier; public int mpCost, maxTargets; }
+    [Serializable] public sealed class ClassSkillsDto { public int heroClass; public string name; public int maxMp; public float mpRegenPerSecond; public SkillDefDto[] skills = new SkillDefDto[0]; }
+    [Serializable] public sealed class SkillConfigDto { public float globalCooldownSeconds, mpCostPerLevel, maxMpPerLevel; public ClassSkillsDto[] classes = new ClassSkillsDto[0]; }
+    [Serializable] public sealed class SkillHitState { public FarmMonsterState monster; public int damage; public bool killed; public FarmDropState drop; public bool HasDrop => killed && drop != null && !string.IsNullOrEmpty(drop.id); }
+    [Serializable]
+    public sealed class SkillCastResult
+    {
+        public int slot, mpSpent;
+        public string skillId, name;
+        public float cx, cy;
+        public SkillHitState[] hits = new SkillHitState[0];
+        public HeroCombatState hero;
+    }
+
+    // ---------------------------------------------------------------- inventory (server-owned bag)
+    [Serializable]
+    public sealed class BagSlotState
+    {
+        public int index, qty, attack, defense;
+        public string itemId, name, kind, icon, desc, equipSlot;
+        public bool usableByClass = true;
+    }
+    [Serializable] public sealed class EquippedState { public string equipSlot; public BagSlotState item; }
+    [Serializable]
+    public sealed class InventoryState
+    {
+        public int capacity, stackMax, attackBonus, defenseBonus;
+        public BagSlotState[] slots = new BagSlotState[0];
+        public EquippedState[] equipped = new EquippedState[0];
+    }
+    [Serializable] public sealed class UseItemResult { public string itemId; public int restoredHp, restoredMp; public HeroCombatState hero; public InventoryState inventory; }
 
     [Serializable]
     public sealed class FarmState

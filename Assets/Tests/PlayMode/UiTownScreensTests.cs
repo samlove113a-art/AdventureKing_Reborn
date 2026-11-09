@@ -139,6 +139,18 @@ namespace AdventureKing.Tests
             yield return UiAudit.Screen(Dir, "02e_checkin_claimed", problems);
             checkin.Close();
 
+            // ---- bag window (server inventory: starter kit) audited at every resolution
+            var bag = Object.FindAnyObjectByType<InventoryPanel>();
+            Assert.IsNotNull(bag, "bag window");
+            bag.Open();
+            until = Time.time + 5f;
+            while ((bag.State == null || bag.Busy) && Time.time < until) yield return null;
+            Assert.IsNotNull(bag.State, "bag from the server");
+            bag.Select(bag.State.slots[0].index);
+            yield return null;
+            yield return UiAudit.Screen(Dir, "02g_bag", problems);
+            bag.Close();
+
             // ---- real name above the hero's head (no fake VIP frame)
             var plate = Object.FindAnyObjectByType<PlayerNameplate>();
             Assert.IsNotNull(plate, "player nameplate");

@@ -6,6 +6,99 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★★★★★ GIAI ĐOẠN B — đợt 1: kỹ năng, MP, Auto Skill, nhặt thủ công, túi đồ, thuốc, trang bị (2026-11-10)
+**Trạng thái:** đã làm và kiểm thử. Commit từng phần: server `dba6a0d` + client (xem `git log`).
+**Chưa làm trong Giai đoạn B:** NPC Dược Sư Mộc Linh, vé dịch chuyển, nhiệm vụ chính/phụ/hằng ngày, logout về sảnh.
+Không tiêu Meshy, không mua gì, không đổi giá.
+
+### Server (ASP.NET Core 8) — server quyết định mọi thứ
+- **12 kỹ năng** (`config/skills.json`):
+  - đúng tên theo chỉ thị;
+  - hồi chiêu 5/15/20 giây, MP gốc 10/25/45, chi phí MP tăng 3 %/cấp;
+  - hồi chiêu chung 0,45 giây.
+- **MP do server giữ:** Kiếm Sĩ 80, Pháp Sư 140, Sát Thủ 90, Cung Thủ 100. MP tối đa tăng 5 %/cấp, hồi liên tục theo đồng hồ server.
+- **Hệ số sát thương, vùng ảnh hưởng (target/self/line) và số mục tiêu tối đa là ĐỀ XUẤT CÂN BẰNG chờ duyệt.**
+- `POST /characters/{id}/farm/skill` từ chối khi:
+  - đang hồi chiêu, hoặc bấm nhanh hơn hồi chiêu chung;
+  - không đủ MP;
+  - không có mục tiêu trong tầm (không mất MP, không mất hồi chiêu);
+  - ở khu an toàn (sảnh);
+  - nhân vật đã gục;
+  - kỹ năng không tồn tại.
+- Quái chết do kỹ năng rơi Vàng như đánh thường (nhặt một lần, có ledger).
+- **Túi đồ** (DB v5):
+  - 40 ô, mỗi ô tối đa 99 vật phẩm cộng dồn;
+  - thêm vào mà không đủ chỗ thì từ chối toàn bộ (`bag_full`, không mất gì); có hàm `Fits` để shop kiểm tra trước khi trừ Gold sau này;
+  - mỗi thao tác là một transaction SQLite, vật phẩm chỉ nằm ở đúng một dòng nên không nhân bản được.
+- **Quà tân thủ** cấp đúng một lần: 10 thuốc HP nhỏ, 10 MP nhỏ, vũ khí đúng nghề, áo vải, bùa. Đây là **ĐỀ XUẤT**.
+- **Thuốc:**
+  - trừ đúng 1 và hồi trong cùng giao dịch;
+  - không hồi vượt mức tối đa;
+  - đầy thanh hoặc đã gục thì từ chối, không trừ thuốc;
+  - chống spam: 1 giây/lần.
+- **Trang bị** (vũ khí / áo / phụ kiện):
+  - đổi chỗ qua túi;
+  - kiểm tra đúng nghề;
+  - Tháo khi túi đầy thì từ chối;
+  - **bonus tấn công/phòng thủ được combat server dùng thật** (Kiếm Sĩ 18 → 22 khi cầm Kiếm Tập Sự).
+- **Test:** 8 test kỹ năng + 4 test túi đồ. Server **121/121**.
+
+### Client Unity
+- **Cụm chiến đấu góc phải** (`HeroActionBar`, cả PC và cảm ứng):
+  - nút Đánh lớn, 3 kỹ năng xếp vòng cung (kỹ năng 3 khung vàng nổi bật hơn);
+  - Auto, Nhặt, thuốc HP/MP (số lượng thật từ túi đồ), Túi đồ.
+- **Phím:** J đánh · 1/2/3 kỹ năng · ↓/S nhặt (không nhặt khi đang leo thang) · Q thuốc HP · R thuốc MP · I túi đồ. Có nhãn phím trên PC.
+- **UI động, không in sẵn vào ảnh:**
+  - vòng hồi chiêu và số giây;
+  - nút xanh xám + "MP" khi thiếu MP;
+  - nhún khi bấm;
+  - vòng sáng khi Auto bật.
+- Bấm khi chưa dùng được thì có thông báo lý do (hồi chiêu, thiếu MP, khu an toàn).
+- **Auto Skill:**
+  - bật/tắt;
+  - thứ tự ưu tiên đổi được (3›2›1, 1›2›3, 2›3›1, 3›1›2);
+  - chỉ thi triển khi có quái trong tầm, đủ MP và hết hồi chiêu;
+  - **không tự di chuyển, không tự tìm quái, không nhặt Vàng.**
+- **Bỏ tự nhặt Vàng:** đứng lên đồng Vàng không còn tự nhặt; phải bấm ↓/S hoặc nút Nhặt. Nhặt tự động sẽ là việc của **Pet** (Giai đoạn C, chưa làm).
+- **Túi đồ** (`InventoryPanel`): 40 ô có số lượng, 3 ô trang bị và tổng bonus, chi tiết vật phẩm, nút Dùng / Trang bị / Tháo, tất cả gọi server.
+- **Thanh HP/MP:** HUD lấy MP từ server trên map farm. Kỹ năng gây hiệu ứng vòng sáng theo màu nghề và số sát thương bay lên.
+- Cụm nút tự ẩn khi nói chuyện NPC, dịch chuyển hoặc gục ngã.
+
+### Mỹ thuật (CẦN HOÀN THIỆN MỸ THUẬT THƯƠNG MẠI)
+- `SkillIconArt.cs` tự vẽ bằng code (không dịch vụ trả phí, không Meshy):
+  - 12 icon kỹ năng; icon Đánh, Auto, Nhặt, thuốc HP/MP, Túi đồ;
+  - 6 icon vật phẩm;
+  - khung vàng thường và khung kỹ năng 3.
+- Thư mục: `Assets/Art/UI/Skills/`.
+- Màu theo nghề, có chiều sâu và hiệu ứng sáng, nhưng **chưa đạt mức vẽ tay thương mại.** Icon Thiên Thạch còn yếu nhất.
+- PNG mẫu của chủ dự án trong `Assets/Art/UI/SkillButtons/ExtractedConcept/` **vẫn chưa dùng** (có số in sẵn), giữ nguyên, chưa commit.
+
+### Kiểm thử Play Mode
+- `SkillCombatTests` (server thật, Pháp Sư):
+  - sảnh từ chối kỹ năng;
+  - Thiên Thạch hạ slime, trừ MP, hồi chiêu hiện 20 giây;
+  - bấm lại khi đang hồi chiêu và khi thiếu MP: không gửi, có thông báo;
+  - thuốc MP: 10 → 9, MP tăng;
+  - Auto tự đánh khi có quái và đứng yên khi không có; nhân vật không bị di chuyển;
+  - túi đồ: trang bị trượng, tấn công +6, vật phẩm được chuyển (không nhân bản).
+- `FarmTests`: đứng trên Vàng không tự nhặt; bấm nhặt thì server cộng một lần.
+- UI audit 5 độ phân giải: thêm màn Túi đồ. Audit giờ còn ghi rõ phần tử nào che chữ.
+- **Ảnh:** `QA/Skills/01_meteor_cooldown.png`, `02_auto_on.png`, `03_bag_selected.png`, `04_bag_equipped.png`, `QA/UI/town/02g_bag_*.png`.
+
+### Kết quả chạy
+- Server **121/121**; EditMode **4/4**.
+- Lần chạy toàn bộ PlayMode: 45 test, 42 qua, 2 bỏ qua, 1 lỗi (`SkillCombatTests`). Lỗi do test bị race: heartbeat của server trả MP thật về trước khi kịp bấm.
+- Đã sửa test và chạy lại `SkillCombatTests`, `UiTownScreensTests`, `FarmTests`: 4/4 qua, 0 exception.
+
+### Cần chủ dự án quyết định
+- Hệ số sát thương / vùng / số mục tiêu của 12 kỹ năng.
+- MP tối đa và tốc độ hồi MP.
+- Sức hồi của thuốc.
+- Quà tân thủ.
+- Chỉ số trang bị tập sự.
+- Giá thuốc (để sau cho Dược Sư).
+
+---
 ## ★★★★★★★★★★★ Chỉ thị tổng "Kinh tế 200 map" — GIAI ĐOẠN A: sửa lỗi thực tế (2026-11-10)
 **Trạng thái:** đã làm + kiểm thử Giai đoạn A. **Chưa bắt đầu Giai đoạn B** (skill/MP/Auto Skill, túi đồ, Dược Sư, vé, nhiệm vụ, logout về sảnh) và các giai đoạn sau. Meshy vẫn 931 (không gọi). Không mua tài nguyên, không bật thanh toán, không đổi giá/kinh tế (giá shop + 5.000 Gold vẫn là ĐỀ XUẤT).
 

@@ -8,8 +8,9 @@ namespace AdventureKing.Gameplay
 {
     /// <summary>
     /// Farm map client: shows the server's monsters and the hero's Gold drops, turns the hero's swings into
-    /// "attack spawn X from here" requests (no damage or Gold ever comes from the client), auto-picks up the hero's
-    /// own drops when standing on them, and updates the HUD Gold from the server's confirmed balance.
+    /// "attack spawn X from here" and "cast skill N" requests (no damage, MP or Gold ever comes from the client),
+    /// picks up the hero's own drops only when the player presses ↓/S or "Nhặt" (no automatic pickup by the hero;
+    /// automatic collection is the Pet's job later), and updates the HUD from the server's confirmed values.
     /// Polls the server every 1.5 s so respawns (server timer, 60 s) and expiries appear on their own.
     /// </summary>
     public sealed class FarmField : MonoBehaviour
@@ -96,10 +97,20 @@ namespace AdventureKing.Gameplay
         }
 
         /// <summary>Server HP -> hero (HUD bar, hurt face/animation follow Health2D), monster lunges, death screen.</summary>
-        private void ApplyHero(HeroCombatState h)
+        /// <summary>Last server answer about the hero (HP, MP, skill cooldowns).</summary>
+        public HeroCombatState LastHero { get; private set; }
+        /// <summary>Time.time at which skills 1..3 are ready again, mirrored from the server's remaining cooldowns.</summary>
+        public readonly float[] CooldownEnds = new float[3];
+
+        internal void ApplyHero(HeroCombatState h)
         {
             if (h == null || h.maxHp <= 0) return;
+            LastHero = h;
             if (heroHealth) heroHealth.SetFromServer(h.hp, h.maxHp);
+            var mana = world.Player.GetComponent<PlayerMana>();
+            if (mana && h.maxMp > 0) mana.SetFromServer(h.mp, h.maxMp);
+            if (h.cooldownMs != null)
+                for (int i = 0; i < 3 && i < h.cooldownMs.Length; i++) CooldownEnds[i] = Time.time + h.cooldownMs[i] / 1000f;
             if (h.hitBy != null)
                 foreach (string id in h.hitBy)
                     if (monsters.TryGetValue(id, out FarmMonsterView m) && m) { m.Chase = world.Player.transform; m.Strike(); HeroHits++; }
@@ -281,33 +292,159 @@ namespace AdventureKing.Gameplay
             if (world == null || world.Character == null || !world.Player) return;
             if (Time.time >= nextPoll) Poll();
             if (loaded && Time.time >= nextBeat) Heartbeat();
-            if (HeroDead) return;
+            // (no automatic pickup by the hero: Gold is collected with ↓/S or the "Nhặt" button — or later by a Pet)
+        }
+
+        /// <summary>A collectable drop of mine near the hero (what "Nhặt" would pick up), or null.</summary>
+        public GoldDropView DropInReach()
+        {
             Vector2 hero = HeroPos;
-            foreach (GoldDropView g in drops.Values.ToList())
+            return drops.Values.Where(g => g && !g.Pending && !g.Expired && g.Landed)
+                .Where(g => { Vector2 rest = g.Ground + new Vector2(0.6f, 0f); return Mathf.Abs(hero.x - rest.x) <= pickupRadius + 0.4f && Mathf.Abs(hero.y - rest.y) <= 2f; })
+                .OrderBy(g => Mathf.Abs(g.Ground.x + 0.6f - hero.x)).FirstOrDefault();
+        }
+
+        /// <summary>Manual pickup (↓/S or the "Nhặt" button): asks the server for the nearest of my drops in reach.
+        /// Returns false when nothing is close enough (the press does nothing).</summary>
+        public bool TryPickup()
+        {
+            if (!loaded || HeroDead || !Net) return false;
+            var motor = world.Player.GetComponent<PlayerMotor2D>();
+            if (motor && (motor.IsClimbing || motor.Ladder)) return false; // ↓ on a ladder means climb, not pick up
+            GoldDropView drop = DropInReach();
+            if (!drop) return false;
+            drop.Pending = true;
+            Net.FarmPickup(CharId, drop.DropId, HeroPos, (ok, r, err) =>
             {
-                if (!g || g.Pending) continue;
-                if (g.Expired) continue;
-                Vector2 rest = g.Ground + new Vector2(0.6f, 0f);
-                if (Mathf.Abs(hero.x - rest.x) > pickupRadius || Mathf.Abs(hero.y - rest.y) > 2f) continue;
-                g.Pending = true;
-                GoldDropView drop = g;
-                Net.FarmPickup(CharId, drop.DropId, hero, (ok, r, err) =>
+                if (!ok || r == null)
                 {
-                    if (!ok || r == null)
+                    LastError = err;
+                    if (drop) drop.Pending = false;
+                    return;
+                }
+                drops.Remove(drop.DropId);
+                world.Character.gold = r.gold; // HUD shows the server-confirmed balance
+                GoldPickedUp += r.amount;
+                if (drop) drop.Collect(world.Player.transform);
+                PlayChime();
+                Popup(Vector2.zero, "+" + r.amount + " Vàng", new Color(1f, 0.86f, 0.3f), 44, world.Player.transform); // big, rides above the hero
+                ApplyHero(r.hero);
+            });
+            return true;
+        }
+
+        // ------------------------------------------------------------------ skills (the server decides everything)
+        public int SkillsCast { get; private set; }
+        public string LastSkillError { get; private set; }
+        private bool skillBusy;
+
+        /// <summary>A monster the skill could hit from here (client-side guess; the server re-checks with its own rules).</summary>
+        public FarmMonsterView SkillTarget(SkillDefDto s)
+        {
+            if (s == null || !world || !world.Player) return null;
+            var motor = world.Player.GetComponent<PlayerMotor2D>();
+            int facing = motor ? motor.Facing : 1;
+            Vector2 hero = HeroPos;
+            if (s.shape == "self")
+                return monsters.Values.Where(m => m && m.Alive && Mathf.Abs(m.Home.y - hero.y) < 2.2f && Mathf.Abs(m.Position.x - hero.x) <= s.radius + 0.6f)
+                    .OrderBy(m => Mathf.Abs(m.Position.x - hero.x)).FirstOrDefault();
+            return TargetFor(hero, facing, s.range);
+        }
+
+        public bool CanCastNow(int slot, SkillDefDto s, int mpCost)
+        {
+            if (!loaded || HeroDead || skillBusy || s == null || Time.time < CooldownEnds[slot - 1]) return false;
+            var mana = world.Player.GetComponent<PlayerMana>();
+            return mana && mana.Current >= mpCost && SkillTarget(s);
+        }
+
+        /// <summary>Casts skill 1/2/3 at the best target: the server validates cooldown, MP, range; the hero plays the
+        /// class skill animation, the hit area flashes, damage numbers rise, drops fall. Errors come back as text.</summary>
+        public void CastSkill(int slot, SkillDefDto s, System.Action<bool, string> done = null)
+        {
+            if (!loaded || HeroDead || !Net) { done?.Invoke(false, HeroDead ? "Nhân vật đã gục ngã." : "Đang tải bản đồ."); return; }
+            if (skillBusy) { done?.Invoke(false, "Đang thi triển."); return; }
+            FarmMonsterView target = SkillTarget(s);
+            if (!target) { Toast("Không có mục tiêu trong tầm"); done?.Invoke(false, "Không có mục tiêu trong tầm."); return; }
+            var motor = world.Player.GetComponent<PlayerMotor2D>();
+            skillBusy = true;
+            Net.FarmSkill(CharId, slot, target.SpawnId, HeroPos, motor ? motor.Facing : 1, (ok, r, err) =>
+            {
+                skillBusy = false;
+                if (!ok || r == null) { LastSkillError = err; Toast(err); done?.Invoke(false, err); return; }
+                SkillsCast++;
+                var visual = world.Player.GetComponent<CharacterVisual3D>();
+                if (visual) visual.PlaySkill();
+                SkillFlash(new Vector2(r.cx, r.cy), s.shape == "line" ? Mathf.Max(1.2f, s.range * 0.5f) : Mathf.Max(1f, s.radius), slot);
+                foreach (SkillHitState h in r.hits)
+                {
+                    if (h.monster == null || !monsters.TryGetValue(h.monster.id, out FarmMonsterView m) || !m) continue;
+                    m.ShowHit();
+                    m.Apply(h.monster);
+                    if (h.monster.alive) m.Chase = world.Player.transform;
+                    Popup(m.Position + Vector2.up * 1.6f, "-" + h.damage, slot == 3 ? new Color(1f, 0.55f, 0.3f) : new Color(1f, 0.85f, 0.5f), slot == 3 ? 40 : 34);
+                    if (h.HasDrop) { Kills++; SpawnDrop(h.drop, m.Position); }
+                }
+                ApplyHero(r.hero);
+                done?.Invoke(true, r.name);
+            });
+        }
+
+        /// <summary>Short message above the hero (e.g. "Không đủ MP").</summary>
+        public void Toast(string text)
+        {
+            if (string.IsNullOrEmpty(text) || !world || !world.Player) return;
+            Popup(Vector2.zero, text, new Color(0.75f, 0.88f, 1f), 26, world.Player.transform);
+        }
+
+        private static Sprite ringSprite;
+
+        /// <summary>Expanding ring + soft flash where the skill landed (class colour; skill 3 bigger and warmer).</summary>
+        private void SkillFlash(Vector2 at, float radius, int slot)
+        {
+            if (!ringSprite)
+            {
+                const int n = 128;
+                var tex = new Texture2D(n, n, TextureFormat.RGBA32, false);
+                var px = new Color[n * n];
+                for (int y = 0; y < n; y++)
+                    for (int x = 0; x < n; x++)
                     {
-                        LastError = err;
-                        drop.Pending = false;
-                        return;
+                        float r = new Vector2(x - n / 2f + 0.5f, y - n / 2f + 0.5f).magnitude / (n / 2f);
+                        float ring = Mathf.Exp(-Mathf.Pow((r - 0.85f) / 0.08f, 2f)), fill = Mathf.Clamp01(1f - r) * 0.35f;
+                        px[y * n + x] = new Color(1f, 1f, 1f, Mathf.Clamp01(ring + fill) * (r < 1f ? 1f : 0f));
                     }
-                    drops.Remove(drop.DropId);
-                    world.Character.gold = r.gold; // HUD shows the server-confirmed balance
-                    GoldPickedUp += r.amount;
-                    if (drop) drop.Collect(world.Player.transform);
-                    PlayChime();
-                    Popup(Vector2.zero, "+" + r.amount + " Vàng", new Color(1f, 0.86f, 0.3f), 44, world.Player.transform); // big, rides above the hero
-                    ApplyHero(r.hero);
-                });
+                tex.SetPixels(px); tex.Apply();
+                ringSprite = Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), n / 2f);
             }
+            HeroClass c = world.Character.heroClass;
+            Color col = c switch
+            {
+                HeroClass.Swordsman => new Color(0.5f, 1f, 0.95f), HeroClass.Mage => new Color(1f, 0.6f, 0.25f),
+                HeroClass.Assassin => new Color(0.75f, 0.5f, 1f), _ => new Color(0.6f, 1f, 0.5f),
+            };
+            if (slot == 3) col = Color.Lerp(col, new Color(1f, 0.85f, 0.4f), 0.5f);
+            var go = new GameObject("SkillFlash");
+            go.transform.SetParent(transform, false);
+            go.transform.position = new Vector3(at.x, at.y + 0.6f, -0.4f);
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = ringSprite;
+            sr.color = col;
+            sr.sortingOrder = 40;
+            StartCoroutine(Flash(go, sr, radius));
+        }
+
+        private static IEnumerator Flash(GameObject go, SpriteRenderer sr, float radius)
+        {
+            Color c0 = sr.color;
+            for (float k = 0f; k < 1f; k += Time.deltaTime / 0.45f)
+            {
+                if (!go) yield break;
+                go.transform.localScale = Vector3.one * Mathf.Lerp(0.3f, radius, Mathf.Sqrt(k));
+                sr.color = new Color(c0.r, c0.g, c0.b, 1f - k);
+                yield return null;
+            }
+            if (go) Destroy(go);
         }
 
         /// <summary>Floating text (damage / Gold) that rises and fades.</summary>

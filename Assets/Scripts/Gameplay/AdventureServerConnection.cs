@@ -231,6 +231,36 @@ namespace AdventureKing.Gameplay
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm/revive", "{}", true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<HeroCombatState>(json) : null, err));
 
+        /// <summary>"Cast skill N here, facing this way (at this monster)". Damage, MP, cooldown are the server's.</summary>
+        public void FarmSkill(string characterId, int slot, string spawnId, Vector2 position, int facing, Action<bool, SkillCastResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm/skill",
+                JsonUtility.ToJson(new SkillBody { slot = slot, spawnId = spawnId, x = position.x, y = position.y, facing = facing }), true, (ok, json, err) =>
+                    completed(ok, ok ? JsonUtility.FromJson<SkillCastResult>(json) : null, err));
+
+        public void GetSkills(Action<bool, SkillConfigDto, string> completed) =>
+            Send("GET", "/skills", null, false, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<SkillConfigDto>(json) : null, err));
+
+        // ------------------------------------------------------------------ inventory (server-owned bag + gear)
+        public void GetInventory(string characterId, Action<bool, InventoryState, string> completed) =>
+            Send("GET", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory", null, true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<InventoryState>(json) : null, err));
+
+        public void UseItem(string characterId, int slot, Action<bool, UseItemResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/use", JsonUtility.ToJson(new SlotBody { slot = slot }), true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<UseItemResult>(json) : null, err));
+
+        public void EquipItem(string characterId, int slot, Action<bool, InventoryState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/equip", JsonUtility.ToJson(new SlotBody { slot = slot }), true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<InventoryState>(json) : null, err));
+
+        public void UnequipItem(string characterId, string equipSlot, Action<bool, InventoryState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/unequip", JsonUtility.ToJson(new UnequipBody { equipSlot = equipSlot }), true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<InventoryState>(json) : null, err));
+
+        [Serializable] private sealed class SkillBody { public int slot; public string spawnId; public float x, y; public int facing; }
+        [Serializable] private sealed class SlotBody { public int slot; }
+        [Serializable] private sealed class UnequipBody { public string equipSlot; }
+
         // ------------------------------------------------------------------ 7-day check-in (server decides everything)
         public void GetCheckin(string characterId, Action<bool, CheckinStatus, string> completed) =>
             Send("GET", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/checkin", null, true, (ok, json, err) =>

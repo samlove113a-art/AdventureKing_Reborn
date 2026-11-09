@@ -2107,7 +2107,7 @@ namespace AdventureKing.ArtPipeline
             var hint = EntrySceneBuilder.Panel(root, "ControlsHint", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
                 new Vector2(0f, 40f), new Vector2(1120f, 46f), new Color(0.07f, 0.09f, 0.17f, 0.6f), AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_pill.png"));
             hint.GetComponent<Image>().raycastTarget = false;
-            EntrySceneBuilder.FillLabel(hint.transform, "Hint", "A / D di chuyển  ·  Space nhảy  ·  W / S leo  ·  W tại cổng: dịch chuyển  ·  J tấn công  ·  E nói chuyện",
+            EntrySceneBuilder.FillLabel(hint.transform, "Hint", "A/D đi · Space nhảy · W/S leo · J đánh · 1/2/3 kỹ năng · S nhặt · Q/R thuốc · I túi đồ · E nói chuyện",
                 20, cream, FontStyle.Normal, 30f, 4f, 14);
             hint.AddComponent<TouchControlsVisibility>().hideOnTouch = true; // keyboard hints are meaningless on a phone
             status = EntrySceneBuilder.Label(root, "WorldStatus", "", 24, new Color(1f, 0.74f, 0.64f), new Vector2(0.5f, 0f), new Vector2(0f, 110f), new Vector2(1200f, 40f));
@@ -2153,9 +2153,53 @@ namespace AdventureKing.ArtPipeline
                 tso.ApplyModifiedPropertiesWithoutUndo();
             }
             BuildJoystick(touch.transform, playerInput);
-            TouchBtn("TouchAttack", "Đánh", new Vector2(1f, 0f), new Vector2(-180f, 180f), 200f, PlayerInput2D.TouchAction.Attack);
-            TouchBtn("TouchJump", "Nhảy", new Vector2(1f, 0f), new Vector2(-400f, 130f), 160f, PlayerInput2D.TouchAction.Jump);
-            TouchBtn("TouchInteract", "Tương tác", new Vector2(1f, 0f), new Vector2(-180f, 400f), 130f, PlayerInput2D.TouchAction.Interact);
+            // (attack lives in the combat cluster below, on PC and touch alike)
+            TouchBtn("TouchJump", "Nhảy", new Vector2(1f, 0f), new Vector2(-830f, 130f), 150f, PlayerInput2D.TouchAction.Jump);
+            TouchBtn("TouchInteract", "Tương tác", new Vector2(1f, 0f), new Vector2(-830f, 310f), 120f, PlayerInput2D.TouchAction.Interact);
+
+            // ---- combat cluster (PC + touch): attack, 3 class skills, Auto, pickup, potions, bag  + the bag window
+            var invGo = new GameObject("InventoryWindow", typeof(RectTransform)) { layer = 5 };
+            invGo.transform.SetParent(canvasGo.transform, false);
+            var invPanel = invGo.AddComponent<InventoryPanel>();
+            var ipso = new SerializedObject(invPanel);
+            ipso.FindProperty("panelSprite").objectReferenceValue = FrameArt.Get("shop_window");
+            ipso.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("item_cell");
+            ipso.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
+            ipso.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            (string name, string sprite)[] itemIcons =
+            {
+                ("item_potion_hp", "action_potion_hp"), ("item_potion_mp", "action_potion_mp"), ("item_weapon_sword", "item_weapon_sword"), ("item_weapon_staff", "item_weapon_staff"),
+                ("item_weapon_dagger", "item_weapon_dagger"), ("item_weapon_bow", "item_weapon_bow"), ("item_armor_vest", "item_armor_vest"), ("item_charm", "item_charm"),
+            };
+            var iconProp = ipso.FindProperty("icons");
+            iconProp.arraySize = itemIcons.Length;
+            for (int i = 0; i < itemIcons.Length; i++)
+            {
+                iconProp.GetArrayElementAtIndex(i).FindPropertyRelative("name").stringValue = itemIcons[i].name;
+                iconProp.GetArrayElementAtIndex(i).FindPropertyRelative("sprite").objectReferenceValue = SkillIconArt.Get(itemIcons[i].sprite);
+            }
+            ipso.ApplyModifiedPropertiesWithoutUndo();
+
+            var barGo = new GameObject("ActionBar", typeof(RectTransform)) { layer = 5 };
+            barGo.transform.SetParent(root, false);
+            var actionBar = barGo.AddComponent<HeroActionBar>();
+            var abso = new SerializedObject(actionBar);
+            var si = abso.FindProperty("skillIcons");
+            si.arraySize = 12;
+            for (int c = 0; c < 4; c++)
+                for (int s = 0; s < 3; s++)
+                    si.GetArrayElementAtIndex(c * 3 + s).objectReferenceValue = SkillIconArt.Get(SkillIconArt.SkillIcons[c, s]);
+            abso.FindProperty("attackIcon").objectReferenceValue = SkillIconArt.Get("action_attack");
+            abso.FindProperty("autoIcon").objectReferenceValue = SkillIconArt.Get("action_auto");
+            abso.FindProperty("pickupIcon").objectReferenceValue = SkillIconArt.Get("action_pickup");
+            abso.FindProperty("hpIcon").objectReferenceValue = SkillIconArt.Get("action_potion_hp");
+            abso.FindProperty("mpIcon").objectReferenceValue = SkillIconArt.Get("action_potion_mp");
+            abso.FindProperty("bagIcon").objectReferenceValue = SkillIconArt.Get("action_bag");
+            abso.FindProperty("frame").objectReferenceValue = SkillIconArt.Get("frame_skill");
+            abso.FindProperty("frameUltimate").objectReferenceValue = SkillIconArt.Get("frame_skill_ultimate");
+            abso.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            abso.FindProperty("inventory").objectReferenceValue = invPanel;
+            abso.ApplyModifiedPropertiesWithoutUndo();
 
             popupGo.transform.SetAsLastSibling();
             menuGo.transform.SetAsLastSibling();

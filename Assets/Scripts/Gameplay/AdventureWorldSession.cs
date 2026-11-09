@@ -155,7 +155,7 @@ namespace AdventureKing.Gameplay
                 if (hp) hp.SetMax(HeroClassCatalog.Get(character.heroClass).startingHealth);
                 PlayerMana mp = player.GetComponent<PlayerMana>();
                 if (!mp) mp = player.gameObject.AddComponent<PlayerMana>();
-                mp.Configure(PlayerMana.MaxFor(character.heroClass), 2f);
+                mp.Configure(PlayerMana.MaxFor(character.heroClass), PlayerMana.RegenFor(character.heroClass));
             }
         }
 

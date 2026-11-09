@@ -8,7 +8,17 @@ namespace AdventureKing.Gameplay
     [DisallowMultipleComponent]
     public sealed class PlayerInput2D : MonoBehaviour
     {
-        public enum TouchAction { Left, Right, Up, Down, Jump, Attack, Interact }
+        // (appended values only: scenes serialize these as ints)
+        public enum TouchAction { Left, Right, Up, Down, Jump, Attack, Interact, Skill1, Skill2, Skill3, Pickup, PotionHp, PotionMp, Inventory }
+        private readonly bool[] skillQueued = new bool[3];
+        private bool pickupQueued, potionHpQueued, potionMpQueued, inventoryQueued;
+
+        /// <summary>PC keys: 1/2/3 skills, ↓ or S pickup (only acted on when not climbing), Q HP potion, R MP potion, I bag.</summary>
+        public bool ConsumeSkill(int slot) { if (slot < 1 || slot > 3) return false; bool v = skillQueued[slot - 1]; skillQueued[slot - 1] = false; return v; }
+        public bool ConsumePickup() { bool v = pickupQueued; pickupQueued = false; return v; }
+        public bool ConsumePotionHp() { bool v = potionHpQueued; potionHpQueued = false; return v; }
+        public bool ConsumePotionMp() { bool v = potionMpQueued; potionMpQueued = false; return v; }
+        public bool ConsumeInventory() { bool v = inventoryQueued; inventoryQueued = false; return v; }
         private bool left, right, up, down, touchJump;
         private bool jumpQueued, attackQueued, interactQueued;
         private bool keyboardJumpHeld;
@@ -50,6 +60,13 @@ namespace AdventureKing.Gameplay
                 case TouchAction.Interact:
                     if (held) QueueInteract();
                     break;
+                case TouchAction.Skill1: if (held) skillQueued[0] = true; break;
+                case TouchAction.Skill2: if (held) skillQueued[1] = true; break;
+                case TouchAction.Skill3: if (held) skillQueued[2] = true; break;
+                case TouchAction.Pickup: if (held) pickupQueued = true; break;
+                case TouchAction.PotionHp: if (held) potionHpQueued = true; break;
+                case TouchAction.PotionMp: if (held) potionMpQueued = true; break;
+                case TouchAction.Inventory: if (held) inventoryQueued = true; break;
             }
         }
 
@@ -69,6 +86,13 @@ namespace AdventureKing.Gameplay
                 holdJump = k.spaceKey.isPressed;
                 pressAttack = k.jKey.wasPressedThisFrame;
                 pressInteract = k.eKey.wasPressedThisFrame;
+                if (k.digit1Key.wasPressedThisFrame || k.numpad1Key.wasPressedThisFrame) skillQueued[0] = true;
+                if (k.digit2Key.wasPressedThisFrame || k.numpad2Key.wasPressedThisFrame) skillQueued[1] = true;
+                if (k.digit3Key.wasPressedThisFrame || k.numpad3Key.wasPressedThisFrame) skillQueued[2] = true;
+                if (k.downArrowKey.wasPressedThisFrame || k.sKey.wasPressedThisFrame) pickupQueued = true;
+                if (k.qKey.wasPressedThisFrame) potionHpQueued = true;
+                if (k.rKey.wasPressedThisFrame) potionMpQueued = true;
+                if (k.iKey.wasPressedThisFrame) inventoryQueued = true;
             }
             Gamepad pad = Gamepad.current;
             if (pad != null)
@@ -119,6 +143,8 @@ namespace AdventureKing.Gameplay
             left = right = up = down = touchJump = keyboardJumpHeld = false;
             stickX = stickY = 0f;
             jumpQueued = attackQueued = interactQueued = false;
+            skillQueued[0] = skillQueued[1] = skillQueued[2] = false;
+            pickupQueued = potionHpQueued = potionMpQueued = inventoryQueued = false;
             Horizontal = Vertical = 0f;
         }
     }

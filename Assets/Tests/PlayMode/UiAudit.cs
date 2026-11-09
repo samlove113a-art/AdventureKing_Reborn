@@ -191,7 +191,9 @@ namespace AdventureKing.Tests
                     if (t.GetComponentInParent<RectMask2D>() is RectMask2D clip && !InCanvas((RectTransform)clip.transform, ct).Overlaps(g.Value)) continue; // scrolled out of view
                     if (Hidden(t.transform, Order(t.transform, order), g.Value))
                     {
-                        rep.Problems.Add($"HIDDEN TEXT: {PathOf(t.transform)} is covered by a panel drawn on top");
+                        int to = Order(t.transform, order);
+                        var by = opaque.FirstOrDefault(x => x.o > to && !x.t.IsChildOf(t.transform) && x.r.Contains(g.Value.min) && x.r.Contains(g.Value.max));
+                        rep.Problems.Add($"HIDDEN TEXT: {PathOf(t.transform)} is covered by a panel drawn on top ({(by.t ? PathOf(by.t) : "?")})");
                         continue;
                     }
                     rep.Texts++;
