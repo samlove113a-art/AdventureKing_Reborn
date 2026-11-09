@@ -10,6 +10,10 @@ public sealed class MonsterType
     public string id { get; set; } = "";
     public string name { get; set; } = "";
     public int maxHp { get; set; }
+    public int attack { get; set; } = 6;            // damage per hit before the hero's defence
+    public float attackSeconds { get; set; } = 1.6f; // time between two hits
+    public float reach { get; set; } = 1.3f;          // metres from the monster's (leashed) position
+    public float leash { get; set; } = 3.5f;          // how far it chases from its spawn point
     public int goldMin { get; set; }
     public int goldMax { get; set; }
     public int respawnSeconds { get; set; } = 60;
@@ -71,11 +75,22 @@ public sealed class DropDto
     public long expiresInMs { get; set; }
 }
 
+/// <summary>The hero's server-side combat state on a farm map (HP is decided here, never by the client).</summary>
+public sealed class HeroCombatDto
+{
+    public int hp { get; set; }
+    public int maxHp { get; set; }
+    public bool dead { get; set; }
+    public int damageTaken { get; set; }           // since the previous answer (for hit feedback)
+    public string[] hitBy { get; set; } = Array.Empty<string>(); // spawn ids that struck since the previous answer
+}
+
 public sealed class FarmStateDto
 {
     public string mapId { get; set; } = "";
     public MonsterDto[] monsters { get; set; } = Array.Empty<MonsterDto>();
     public DropDto[] drops { get; set; } = Array.Empty<DropDto>();
+    public HeroCombatDto hero { get; set; } = new();
 }
 
 public sealed class AttackRequestDto { public string? spawnId { get; set; } public float x { get; set; } public float y { get; set; } }
@@ -85,9 +100,11 @@ public sealed class AttackResultDto
     public int damage { get; set; }
     public bool killed { get; set; }
     public DropDto? drop { get; set; }
+    public HeroCombatDto hero { get; set; } = new();
 }
 public sealed class PickupRequestDto { public string? dropId { get; set; } public float x { get; set; } public float y { get; set; } }
-public sealed class PickupResultDto { public string dropId { get; set; } = ""; public long amount { get; set; } public long gold { get; set; } }
+public sealed class PickupResultDto { public string dropId { get; set; } = ""; public long amount { get; set; } public long gold { get; set; } public HeroCombatDto hero { get; set; } = new(); }
+public sealed class PresenceRequestDto { public float x { get; set; } public float y { get; set; } }
 
 /// <summary>
 /// Server-authoritative monster farm. The server owns monster HP, deaths, the 60 s respawn timer, Gold rolls and the
@@ -100,14 +117,21 @@ public sealed class PickupResultDto { public string dropId { get; set; } = ""; p
 /// </summary>
 public sealed class FarmService
 {
-    // Mirrors the client's HeroClassCatalog (damage, seconds between swings, reach in metres). Server copy wins.
-    private static readonly (int damage, float interval, float range)[] ClassStats =
+    // Mirrors the client's HeroClassCatalog (damage, seconds between swings, reach in metres, max HP, defence). Server copy wins.
+    private static readonly (int damage, float interval, float range, int maxHp, int defense)[] ClassStats =
     {
-        (18, 0.85f, 1.6f), // Kiếm Sĩ
-        (34, 1.6f, 6f),    // Pháp Sư
-        (13, 0.4f, 1.8f),  // Sát Thủ
-        (22, 0.9f, 7f),    // Cung Thủ
+        (18, 0.85f, 1.6f, 140, 12), // Kiếm Sĩ
+        (34, 1.6f, 6f, 75, 3),      // Pháp Sư
+        (13, 0.4f, 1.8f, 90, 5),    // Sát Thủ
+        (22, 0.9f, 7f, 100, 6),     // Cung Thủ
     };
+    /// <summary>Where a fallen hero gets back up on each farm map (the map's portal arrival point).</summary>
+    public static readonly IReadOnlyDictionary<string, (float x, float y)> RespawnPoints = new Dictionary<string, (float, float)>
+    {
+        ["meadow_breeze"] = (-36f, 1f),
+    };
+    public const long RegenDelayMs = 6000;      // out of combat this long -> regenerate
+    public const float RegenPerSecond = 0.03f;  // of max HP
     public const float MaxSpeed = 12f;        // m/s (run 6-7 m/s, dash/fall headroom)
     public const float PositionSlack = 2.5f;  // m, network jitter
     public const float MonsterHalfWidth = 0.8f;
@@ -124,7 +148,13 @@ public sealed class FarmService
 
     public FarmConfig Config { get; }
 
-    private sealed class Live { public int Hp; public long RespawnAtMs; }
+    private sealed class Live { public int Hp; public long RespawnAtMs; public string? Aggro; public long NextHitMs; }
+    private sealed class Hero
+    {
+        public int Hp, Max, Defense; public bool Dead; public long LastDamageMs, LastRegenMs; public float RegenCarry;
+        public int Pending; public List<string> HitBy = new();
+    }
+    private readonly Dictionary<string, Hero> heroes = new();
     private sealed class Drop { public string Id = "", MapId = "", Owner = "", Account = "", Type = ""; public float X, Y; public long Amount, ExpiresMs; public bool Picked; }
 
     public FarmService(Database db, FarmConfig config, Func<long>? clock = null, Random? random = null)
@@ -181,20 +211,115 @@ public sealed class FarmService
         presence[key] = (x, y, t);
     }
 
+    private Hero HeroOf(string characterId, int heroClass, long t)
+    {
+        if (!heroes.TryGetValue(characterId, out Hero? h))
+        {
+            var st = ClassStats[Math.Clamp(heroClass, 0, ClassStats.Length - 1)];
+            heroes[characterId] = h = new Hero { Hp = st.maxHp, Max = st.maxHp, Defense = st.defense, LastDamageMs = t - RegenDelayMs, LastRegenMs = t };
+        }
+        return h;
+    }
+
+    /// <summary>
+    /// Applies what happened since the last request: monsters aggroed on this hero strike on their own timer while
+    /// the hero's last reported position is within reach of where the monster can be (spawn ± leash). Going quiet
+    /// does not dodge hits (the last known position counts). Out of combat the hero regenerates. All server-side.
+    /// </summary>
+    private void Evaluate(string characterId, string mapId, Hero h, long t)
+    {
+        bool known = presence.TryGetValue(characterId + "|" + mapId, out var p);
+        foreach (SpawnPoint s in Config.spawns.Where(s => s.mapId == mapId))
+        {
+            Live m = live[s.id];
+            if (m.Aggro != characterId) continue;
+            MonsterType ty = TypeOf(s);
+            if (m.Hp <= 0 || h.Dead || !known || MathF.Abs(p.x - s.x) > ty.leash + 8f) { m.Aggro = null; continue; } // lost interest
+            float monsterX = Math.Clamp(p.x, s.x - ty.leash, s.x + ty.leash);
+            bool inReach = MathF.Abs(p.x - monsterX) <= ty.reach && MathF.Abs(p.y - s.y) <= 2f;
+            long step = (long)(ty.attackSeconds * 1000f);
+            if (!inReach) { m.NextHitMs = Math.Max(m.NextHitMs, t + step / 2); continue; } // must close in again (wind-up)
+            while (m.NextHitMs <= t && !h.Dead)
+            {
+                int dmg = Math.Max(1, ty.attack - h.Defense / 2);
+                h.Hp -= dmg;
+                h.Pending += dmg;
+                h.HitBy.Add(s.id);
+                h.LastDamageMs = m.NextHitMs;
+                m.NextHitMs += step;
+                if (h.Hp <= 0) { h.Hp = 0; h.Dead = true; }
+            }
+        }
+        if (h.Dead) foreach (Live m in live.Values) if (m.Aggro == characterId) m.Aggro = null;
+        // regeneration out of combat
+        if (!h.Dead && h.Hp < h.Max && t - h.LastDamageMs >= RegenDelayMs)
+        {
+            float secs = (t - Math.Max(h.LastRegenMs, h.LastDamageMs + RegenDelayMs)) / 1000f;
+            h.RegenCarry += Math.Max(0f, secs) * RegenPerSecond * h.Max;
+            int add = (int)h.RegenCarry;
+            h.RegenCarry -= add;
+            h.Hp = Math.Min(h.Max, h.Hp + add);
+        }
+        h.LastRegenMs = t;
+    }
+
+    private static HeroCombatDto Drain(Hero h)
+    {
+        var dto = new HeroCombatDto { hp = h.Hp, maxHp = h.Max, dead = h.Dead, damageTaken = h.Pending, hitBy = h.HitBy.ToArray() };
+        h.Pending = 0;
+        h.HitBy.Clear();
+        return dto;
+    }
+
+    /// <summary>Position heartbeat (~2/s while on a farm map): moves the hero (speed-checked) and resolves monster hits.</summary>
+    public HeroCombatDto Presence(string accountId, string characterId, PresenceRequestDto? req)
+    {
+        var (heroClass, mapId) = Character(accountId, characterId);
+        long t = now();
+        lock (gate)
+        {
+            Hero h = HeroOf(characterId, heroClass, t);
+            if (!h.Dead) Move(characterId, mapId, req?.x ?? float.NaN, req?.y ?? float.NaN, t);
+            Evaluate(characterId, mapId, h, t);
+            return Drain(h);
+        }
+    }
+
+    /// <summary>Gets a fallen hero back up at the map's respawn point with full HP (no Gold or item loss).</summary>
+    public HeroCombatDto Revive(string accountId, string characterId)
+    {
+        var (heroClass, mapId) = Character(accountId, characterId);
+        long t = now();
+        lock (gate)
+        {
+            Hero h = HeroOf(characterId, heroClass, t);
+            if (!h.Dead) throw new GameError("not_dead", "Nhân vật chưa gục ngã.", 409);
+            h.Dead = false;
+            h.Hp = h.Max;
+            h.LastDamageMs = t - RegenDelayMs;
+            var spot = RespawnPoints.TryGetValue(mapId, out var r) ? r : (0f, 1f);
+            presence[characterId + "|" + mapId] = (spot.Item1, spot.Item2, t);
+            return Drain(h);
+        }
+    }
+
     public FarmStateDto State(string accountId, string characterId)
     {
-        var (_, mapId) = Character(accountId, characterId);
+        var (heroClass, mapId) = Character(accountId, characterId);
         long t = now();
         lock (gate)
         {
             foreach (var d in drops.Values.Where(d => d.ExpiresMs <= t || d.Picked).ToList()) drops.Remove(d.Id);
             var spawns = Config.spawns.Where(s => s.mapId == mapId).ToArray();
             foreach (SpawnPoint s in spawns) Tick(s, t);
+            Hero h = HeroOf(characterId, heroClass, t);
+            Evaluate(characterId, mapId, h, t);
             return new FarmStateDto
             {
                 mapId = mapId,
                 monsters = spawns.Select(s => Dto(s, t)).ToArray(),
                 drops = drops.Values.Where(d => d.Owner == characterId && d.MapId == mapId).Select(d => Dto(d, t)).ToArray(),
+                hero = Drain(h),
             };
         }
     }
@@ -208,7 +333,11 @@ public sealed class FarmService
         long t = now();
         lock (gate)
         {
+            Hero h = HeroOf(characterId, heroClass, t);
+            if (h.Dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
             Move(characterId, mapId, req!.x, req.y, t);
+            Evaluate(characterId, mapId, h, t);
+            if (h.Dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
             if (MathF.Abs(req.x - s.x) > stats.range + MonsterHalfWidth || MathF.Abs(req.y - s.y) > 2.5f)
                 throw new GameError("out_of_range", "Mục tiêu ở ngoài tầm đánh.", 409);
             if (lastSwing.TryGetValue(characterId, out long last) && t - last < (long)(stats.interval * 1000f * 0.8f))
@@ -232,20 +361,32 @@ public sealed class FarmService
                 drops[d.Id] = d;
                 result.killed = true;
                 result.drop = Dto(d, t);
+                m.Aggro = null;
+            }
+            else if (m.Aggro != characterId)
+            {
+                m.Aggro = characterId; // it fights back: first strike after one wind-up
+                m.NextHitMs = t + (long)(TypeOf(s).attackSeconds * 1000f);
             }
             result.monster = Dto(s, t);
+            result.hero = Drain(h);
             return result;
         }
     }
 
     public PickupResultDto Pickup(string accountId, string characterId, PickupRequestDto? req)
     {
-        var (_, mapId) = Character(accountId, characterId);
+        var (heroClass, mapId) = Character(accountId, characterId);
         long t = now();
         Drop d;
+        HeroCombatDto heroDto;
         lock (gate)
         {
+            Hero h = HeroOf(characterId, heroClass, t);
+            if (h.Dead) throw new GameError("hero_dead", "Nhân vật đã gục ngã, hãy hồi sinh.", 409);
             Move(characterId, mapId, req?.x ?? float.NaN, req?.y ?? float.NaN, t);
+            Evaluate(characterId, mapId, h, t);
+            heroDto = Drain(h);
             if (req?.dropId == null || !drops.TryGetValue(req.dropId, out d!) || d.Picked || d.ExpiresMs <= t)
                 throw new GameError("drop_gone", "Vàng này không còn trên mặt đất.", 409);
             if (d.Owner != characterId || d.MapId != mapId) throw new GameError("not_your_drop", "Đây không phải vàng của bạn.", 403);
@@ -258,7 +399,7 @@ public sealed class FarmService
             {
                 LedgerResult r = Wallet.Gold(c, tx, accountId, characterId, d.Amount, "loot:" + d.Type, "loot:" + d.Id);
                 if (r.Applied) AccountService.Audit(c, tx, accountId, "loot", $"{characterId} {d.Id} +{d.Amount}gold");
-                return new PickupResultDto { dropId = d.Id, amount = r.Applied ? d.Amount : 0, gold = r.Balance };
+                return new PickupResultDto { dropId = d.Id, amount = r.Applied ? d.Amount : 0, gold = r.Balance, hero = heroDto };
             });
         }
         catch

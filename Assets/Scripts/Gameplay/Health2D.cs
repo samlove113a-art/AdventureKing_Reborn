@@ -53,6 +53,16 @@ namespace AdventureKing.Gameplay
             maxHealth = Mathf.Max(1, value);
             CurrentHealth = maxHealth;
         }
+        /// <summary>Server-authoritative HP (farm maps): shows exactly what the server decided, firing the usual events.</summary>
+        public void SetFromServer(int hp, int max)
+        {
+            maxHealth = Mathf.Max(1, max);
+            int prior = CurrentHealth;
+            CurrentHealth = Mathf.Clamp(hp, 0, maxHealth);
+            if (CurrentHealth < prior) Damaged?.Invoke(this, prior - CurrentHealth);
+            if (CurrentHealth <= 0 && prior > 0) Died?.Invoke(this);
+        }
+
         private void OnValidate() => maxHealth = Mathf.Max(1, maxHealth);
     }
 }

@@ -221,6 +221,26 @@ namespace AdventureKing.Gameplay
                 JsonUtility.ToJson(new PickupBody { dropId = dropId, x = position.x, y = position.y }), true, (ok, json, err) =>
                     completed(ok, ok ? JsonUtility.FromJson<FarmPickupResult>(json) : null, err));
 
+        /// <summary>Position heartbeat on a farm map; the answer is the hero's server-side HP (monster hits resolved).</summary>
+        public void FarmPresence(string characterId, Vector2 position, Action<bool, HeroCombatState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm/presence",
+                JsonUtility.ToJson(new LocationBody { mapId = "", x = position.x, y = position.y }), true, (ok, json, err) =>
+                    completed(ok, ok ? JsonUtility.FromJson<HeroCombatState>(json) : null, err));
+
+        public void FarmRevive(string characterId, Action<bool, HeroCombatState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm/revive", "{}", true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<HeroCombatState>(json) : null, err));
+
+        // ------------------------------------------------------------------ 7-day check-in (server decides everything)
+        public void GetCheckin(string characterId, Action<bool, CheckinStatus, string> completed) =>
+            Send("GET", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/checkin", null, true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<CheckinStatus>(json) : null, err));
+
+        public void ClaimCheckin(string characterId, string choiceItemId, Action<bool, CheckinStatus, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/checkin/claim",
+                JsonUtility.ToJson(new ClaimBody { choiceItemId = choiceItemId }), true, (ok, json, err) =>
+                    completed(ok, ok ? JsonUtility.FromJson<CheckinStatus>(json) : null, err));
+
         /// <summary>VIP level from verified payments only (server decides; thresholds may be unconfigured).</summary>
         public void GetVip(Action<bool, int, bool, string> completed) =>
             Send("GET", "/vip", null, true, (ok, json, err) =>
@@ -290,5 +310,6 @@ namespace AdventureKing.Gameplay
         [Serializable] private sealed class ErrorBody { public string code; public string message; }
         [Serializable] private sealed class AttackBody { public string spawnId; public float x; public float y; }
         [Serializable] private sealed class PickupBody { public string dropId; public float x; public float y; }
+        [Serializable] private sealed class ClaimBody { public string choiceItemId; }
     }
 }

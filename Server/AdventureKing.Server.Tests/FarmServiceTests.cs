@@ -33,7 +33,61 @@ public sealed class FarmServiceTests : IDisposable
 
     /// <summary>Walks the reported position over in small steps (as the real client does while running).</summary>
     private void WalkTo(float from, float to) { for (float x = from; Math.Abs(x - to) > 0.01f; x += Math.Clamp(to - x, -5f, 5f)) { clock += 500; farm.State(acc, sword.characterId); Report(x); } Report(to); }
-    private void Report(float x) { try { farm.Attack(acc, sword.characterId, new AttackRequestDto { spawnId = "meadow_s1", x = x, y = 0 }); } catch (GameError) { } }
+    private void Report(float x) { try { farm.Presence(acc, sword.characterId, new PresenceRequestDto { x = x, y = 0 }); } catch (GameError) { } }
+    private HeroCombatDto Beat(float x, long ms) { clock += ms; return farm.Presence(acc, sword.characterId, new PresenceRequestDto { x = x, y = 0 }); }
+
+    [Fact]
+    public void Hit_monster_fights_back_on_the_server_timer()
+    {
+        WalkTo(-36f, -21f);
+        AttackResultDto r = Swing("meadow_s1", -21f);        // aggro: Slime Bông 9 atk vs Kiếm Sĩ def 12 -> 3 per hit
+        Assert.Equal(140, r.hero.hp);
+        HeroCombatDto h = Beat(-21f, 1600);                   // one wind-up later: first strike
+        Assert.Equal(137, h.hp);
+        Assert.Equal(3, h.damageTaken);
+        Assert.Contains("meadow_s1", h.hitBy);
+        Assert.Equal(131, Beat(-21f, 3200).hp);               // two more strikes
+        // going quiet does not dodge: 16 s without any request = 10 strikes at the last known position
+        clock += 16_000;
+        Assert.Equal(101, farm.State(acc, sword.characterId).hero.hp);
+    }
+
+    [Fact]
+    public void Monster_cannot_hit_outside_its_leash_and_hero_regenerates()
+    {
+        WalkTo(-36f, -21f);
+        Swing("meadow_s1", -21f);
+        Assert.Equal(137, Beat(-21f, 1600).hp);
+        // run 9 m away: beyond spawn (-22) + leash 3.5 + reach 1.3 -> no more hits
+        Beat(-26f, 600); Beat(-30f, 600);
+        Assert.Equal(137, Beat(-30f, 4000).hp);
+        // out of combat > 6 s: regenerates 3 %/s of 140
+        Assert.Equal(140, Beat(-30f, 10_000).hp);
+    }
+
+    [Fact]
+    public void Fallen_hero_cannot_act_until_revived_at_the_map_point()
+    {
+        string a = accounts.Register("farmer09", "farmer-pass-09").AccountId;
+        var mage = chars.Create(a, "Pháp Sư Yếu", 1, 0);       // 75 HP, def 3 -> 8 per hit
+        chars.Travel(a, mage.characterId, "hub_east_meadow", 66f, 0f);
+        for (float x = -36f; x < -21f; x += 4f) { clock += 500; farm.Presence(a, mage.characterId, new PresenceRequestDto { x = x, y = 0 }); }
+        clock += 500;
+        farm.Presence(a, mage.characterId, new PresenceRequestDto { x = -21f, y = 0 });
+        clock += 2000;
+        farm.Attack(a, mage.characterId, new AttackRequestDto { spawnId = "meadow_s1", x = -21f, y = 0 }); // 34 dmg, slime survives, aggro
+        clock += 20_000;
+        HeroCombatDto down = farm.State(a, mage.characterId).hero;
+        Assert.True(down.dead);
+        Assert.Equal(0, down.hp);
+        Assert.Equal("hero_dead", Assert.Throws<GameError>(() => farm.Attack(a, mage.characterId, new AttackRequestDto { spawnId = "meadow_s1", x = -21f, y = 0 })).Code);
+        HeroCombatDto up = farm.Revive(a, mage.characterId);
+        Assert.False(up.dead);
+        Assert.Equal(75, up.hp);
+        Assert.Equal("not_dead", Assert.Throws<GameError>(() => farm.Revive(a, mage.characterId)).Code);
+        clock += 300;
+        Assert.Equal(75, farm.Presence(a, mage.characterId, new PresenceRequestDto { x = -35.5f, y = 1 }).hp); // at the respawn point, no "teleport" refusal
+    }
 
     [Fact]
     public void Real_config_is_valid_and_keeps_the_hub_safe()

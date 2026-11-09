@@ -48,6 +48,9 @@ builder.Services.AddSingleton(sp => new CosmeticShop(sp.GetRequiredService<Datab
 builder.Services.AddSingleton(sp => new DiamondStore(sp.GetRequiredService<Database>(), vip));
 string monstersPath = Path.Combine(contentRoot, cfg["MonsterConfigPath"] ?? "config/monsters.json");
 builder.Services.AddSingleton(sp => new FarmService(sp.GetRequiredService<Database>(), FarmConfig.Load(monstersPath)));
+// Production config = the owner's DRAFT (enabled=false) until rewards are approved; tests point this at welfare.dev.json.
+string welfarePath = Path.Combine(contentRoot, cfg["WelfareConfigPath"] ?? "config/welfare.json");
+builder.Services.AddSingleton(sp => new CheckinService(sp.GetRequiredService<Database>(), WelfareConfig.Load(welfarePath), sp.GetRequiredService<CosmeticShop>().Catalog));
 builder.Services.AddKeyedSingleton("login", new AttemptLimiter(10, TimeSpan.FromMinutes(5)));
 builder.Services.AddKeyedSingleton("register", new AttemptLimiter(5, TimeSpan.FromHours(1)));
 
@@ -140,6 +143,16 @@ api.MapPost("/characters/{id}/farm/attack", (string id, AttackRequestDto body, H
     farm.Attack(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/farm/pickup", (string id, PickupRequestDto body, HttpContext ctx, AccountService accounts, FarmService farm) =>
     farm.Pickup(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/farm/presence", (string id, PresenceRequestDto body, HttpContext ctx, AccountService accounts, FarmService farm) =>
+    farm.Presence(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/farm/revive", (string id, HttpContext ctx, AccountService accounts, FarmService farm) =>
+    farm.Revive(accounts.Authenticate(Bearer(ctx)), id));
+
+// ---------------------------------------------------------------- 7-day check-in (server clock, VN calendar day)
+api.MapGet("/characters/{id}/checkin", (string id, HttpContext ctx, AccountService accounts, CheckinService checkin) =>
+    checkin.Status(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/checkin/claim", (string id, CheckinClaimDto body, HttpContext ctx, AccountService accounts, CheckinService checkin) =>
+    checkin.Claim(accounts.Authenticate(Bearer(ctx)), id, body));
 
 // ---------------------------------------------------------------- diamond store (catalog only; payments disabled)
 api.MapGet("/store/catalog", (HttpContext ctx, AccountService accounts, DiamondStore store) =>

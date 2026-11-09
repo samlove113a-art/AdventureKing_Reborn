@@ -23,7 +23,7 @@ namespace AdventureKing.Tests
         public IEnumerator SetUp()
         {
             TestRunnerGuard.Protect();
-            server = new TestServer(5213, starterGold: 5000); // fixture: the audit buys an item (production starter Gold is 800)
+            server = new TestServer(5213, starterGold: 5000, devWelfare: true); // fixture: the audit buys an item (production starter Gold is 800)
             yield return server.Start();
             Directory.CreateDirectory(Dir);
         }
@@ -72,6 +72,49 @@ namespace AdventureKing.Tests
             StringAssert.Contains("chưa được mở", popup.Message, "unbuilt features say so honestly");
             yield return UiAudit.Screen(Dir, "02c_shortcut_popup", problems);
             popup.Hide();
+
+            // ---- 7-day check-in (dev reward config on this test server; production keeps the owner's draft off)
+            var checkin = Object.FindAnyObjectByType<CheckinPanel>();
+            Assert.IsNotNull(checkin, "check-in panel built");
+            until = Time.time + 5f;
+            while (!checkin.RedDotShown && Time.time < until) yield return null;
+            Assert.IsTrue(checkin.RedDotShown, "red dot: the server says today's gift is claimable");
+            checkin.Open();
+            until = Time.time + 5f;
+            while ((checkin.Last == null || checkin.Busy) && Time.time < until) yield return null;
+            yield return new WaitForSeconds(0.2f);
+            Assert.IsTrue(checkin.Last.canClaimToday);
+            Assert.AreEqual("claimable", checkin.Last.days[0].state);
+            yield return UiAudit.Screen(Dir, "02d_checkin", problems);
+            long goldBefore = world.Character.gold;
+            checkin.Claim();
+            checkin.Claim(); // impatient double click: ignored while the first is in flight
+            until = Time.time + 5f;
+            while ((checkin.Busy || checkin.Last.claimedDays == 0) && Time.time < until) yield return null;
+            Assert.AreEqual(1, checkin.Last.claimedDays, "day 1 claimed once");
+            Assert.AreEqual(goldBefore + 200, world.Character.gold, "server-paid day-1 Gold (dev config) on the HUD");
+            Assert.AreEqual("claimed", checkin.Last.days[0].state);
+            Assert.IsFalse(checkin.Last.canClaimToday, "one claim per VN day");
+            Assert.IsFalse(checkin.RedDotShown, "dot gone once claimed");
+            yield return UiAudit.Screen(Dir, "02e_checkin_claimed", problems);
+            checkin.Close();
+
+            // ---- real name above the hero's head (no fake VIP frame)
+            var plate = Object.FindAnyObjectByType<PlayerNameplate>();
+            Assert.IsNotNull(plate, "player nameplate");
+            Assert.AreEqual("Cung Thủ Sớm", plate.Shown, "server character name above the head");
+
+            // ---- fold arrow: the whole icon block folds away and back (PC too), minimap untouched
+            var bar = Object.FindAnyObjectByType<HudShortcutBar>();
+            bar.ToggleCollapsed();
+            yield return new WaitForSeconds(0.6f);
+            Assert.IsTrue(bar.Collapsed);
+            Assert.Less(bar.GetComponent<CanvasGroup>().alpha, 0.05f, "icons folded away");
+            yield return UiAudit.Screen(Dir, "02f_icons_folded", problems);
+            bar.ToggleCollapsed();
+            yield return new WaitForSeconds(0.6f);
+            Assert.IsFalse(bar.Collapsed);
+            Assert.Greater(bar.GetComponent<CanvasGroup>().alpha, 0.95f, "icons back");
 
             var merchant = Object.FindAnyObjectByType<FashionMerchant>();
             world.Player.transform.position = merchant.transform.position + new Vector3(1.6f, 0.9f, 0f);

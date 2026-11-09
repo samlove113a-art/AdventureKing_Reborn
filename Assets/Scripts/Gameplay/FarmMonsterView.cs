@@ -54,6 +54,9 @@ namespace AdventureKing.Gameplay
             var nr = name.rectTransform; nr.anchorMin = new Vector2(0f, 0.45f); nr.anchorMax = Vector2.one; nr.offsetMin = nr.offsetMax = Vector2.zero;
             name.font = font ? font : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             name.text = label; name.fontSize = 22; name.alignment = TextAnchor.MiddleCenter; name.color = new Color(1f, 0.97f, 0.9f);
+            // (the 25-unit box was shorter than the font's line height: Truncate drew nothing)
+            name.verticalOverflow = VerticalWrapMode.Overflow; name.horizontalOverflow = HorizontalWrapMode.Overflow;
+            NameLabel = name;
             name.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.7f);
             Image track = new GameObject("Track", typeof(RectTransform)).AddComponent<Image>();
             track.transform.SetParent(canvasGo.transform, false);
@@ -73,7 +76,8 @@ namespace AdventureKing.Gameplay
             MaxHp = Mathf.Max(1, s.maxHp);
             Hp = s.hp;
             if (hpFill) hpFill.fillAmount = Hp / (float)MaxHp;
-            if (hpRoot) hpRoot.SetActive(s.alive && Hp < MaxHp);
+            if (hpRoot) hpRoot.SetActive(s.alive); // name + HP bar whenever it is alive
+            if (!s.alive) Chase = null;
             if (s.alive && !Alive)
             {
                 body.gameObject.SetActive(true);
@@ -87,8 +91,18 @@ namespace AdventureKing.Gameplay
             Alive = s.alive;
         }
 
+        public Text NameLabel { get; private set; }
+        /// <summary>Hero this monster is fighting (set when the hero hits it); it chases within its leash.</summary>
+        public Transform Chase { get; set; }
+        public float Leash { get; set; } = 3.5f;
+        public int Strikes { get; private set; }
+        private float lungeT = -1f;
+
         /// <summary>Server confirmed a hit: flash + knock squash.</summary>
         public void ShowHit() => flash = 1f;
+
+        /// <summary>The server says this monster struck the hero: lunge at it.</summary>
+        public void Strike() { lungeT = 0f; Strikes++; }
 
         private void Update()
         {
@@ -110,8 +124,29 @@ namespace AdventureKing.Gameplay
                 if (popT >= 1f) popT = -1f;
                 return;
             }
-            // hop around home (visual only; the server keeps the spawn point)
             float t = Time.time;
+            if (Chase)
+            {
+                // fighting: close in on the hero, never past the leash the server uses
+                float goal = Mathf.Clamp(Chase.position.x + (Chase.position.x > transform.position.x ? -0.9f : 0.9f), Home.x - Leash, Home.x + Leash);
+                float x = Mathf.MoveTowards(transform.position.x, goal, dt * 2.4f);
+                float lunge = 0f;
+                if (lungeT >= 0f)
+                {
+                    lungeT += dt * 4f;
+                    lunge = Mathf.Sin(Mathf.Clamp01(lungeT) * Mathf.PI) * 0.55f * Mathf.Sign(Chase.position.x - x);
+                    if (lungeT >= 1f) lungeT = -1f;
+                }
+                transform.position = new Vector3(x + lunge, Home.y, transform.position.z);
+                float bob = Mathf.Abs(Mathf.Sin(t * 7f)) * 0.22f;
+                body.localPosition = new Vector3(0f, bob + Mathf.Abs(lunge) * 0.4f, 0f);
+                body.localRotation = Quaternion.Euler(0f, Chase.position.x > x ? 25f : -25f, 0f);
+                float sq = Mathf.Abs(Mathf.Sin(t * 7f)) * 0.1f + flash * 0.25f;
+                body.localScale = new Vector3(1f + sq, 1f - sq, 1f + sq);
+                UpdateFlash(dt);
+                return;
+            }
+            // hop around home (visual only; the server keeps the spawn point)
             if (t >= nextHop && hopT >= 1f || hopT == 0f && nextHop == 0f)
             {
                 hopFrom = transform.position.x;
@@ -132,6 +167,11 @@ namespace AdventureKing.Gameplay
             float squash = flash * 0.25f;
             body.localPosition = new Vector3(0f, y, 0f);
             body.localScale = new Vector3(1f + breathe + squash, 1f - breathe - squash, 1f + breathe + squash);
+            UpdateFlash(dt);
+        }
+
+        private void UpdateFlash(float dt)
+        {
             if (flash > 0f)
             {
                 flash = Mathf.Max(0f, flash - dt * 5f);

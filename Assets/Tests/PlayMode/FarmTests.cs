@@ -107,6 +107,9 @@ namespace AdventureKing.Tests
             while (farm.Monsters.Count == 0 && Time.time < until) yield return null;
             Assert.AreEqual(8, farm.Monsters.Count, "server spawns shown");
             Assert.IsTrue(farm.Monsters.Values.All(m => m.Alive));
+            FarmMonsterView first = farm.Monsters["meadow_s1"];
+            Assert.IsTrue(first.NameLabel && first.NameLabel.isActiveAndEnabled, "monster name shown above its HP bar");
+            Assert.AreEqual("Slime Bông", first.NameLabel.text);
 
             // ---- walk up to the first slime (x = -22) and swing until the server says it died
             yield return WalkTo(-23.6f);
@@ -124,12 +127,18 @@ namespace AdventureKing.Tests
                 yield return new WaitForSeconds(0.95f); // Kiếm Sĩ pace
             }
             Assert.IsFalse(slime.Alive, "slime killed by the server; last error: " + farm.LastError);
+            Assert.Greater(slime.Strikes, 0, "the slime fought back on the server's timer while being hit");
+            var health = motor.GetComponent<Health2D>();
+            Assert.Less(health.CurrentHealth, health.MaxHealth, "hero HP lowered by server-decided hits");
             Assert.AreEqual(1, farm.Kills);
             Assert.AreEqual(1, farm.Drops.Count, "one Gold drop on the ground");
             GoldDropView drop = farm.Drops.Values.First();
             long amount = drop.Amount;
             Assert.That(amount, Is.InRange(5, 11), "server-rolled Gold");
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSeconds(0.35f);
+            yield return Shot("03a_gold_flying");
+            yield return new WaitForSeconds(0.45f);
+            Assert.IsTrue(drop.Landed, "coins landed and bounced");
             yield return Shot("03_gold_on_ground");
 
             // ---- walk onto the coins: the server credits the wallet, the HUD shows it
@@ -137,6 +146,7 @@ namespace AdventureKing.Tests
             until = Time.time + 5f;
             while (farm.GoldPickedUp == 0 && Time.time < until) yield return null;
             Assert.AreEqual(amount, farm.GoldPickedUp, "picked up; last error: " + farm.LastError);
+            Assert.AreEqual(1, farm.CoinChimes, "coin chime played once");
             Assert.AreEqual(800 + amount, world.Character.gold);
             yield return new WaitForSeconds(0.3f);
             var hud = Object.FindAnyObjectByType<PlayerHud>();
@@ -156,6 +166,66 @@ namespace AdventureKing.Tests
             Assert.AreEqual(slime.MaxHp, slime.Hp);
             yield return new WaitForSeconds(0.6f);
             yield return Shot("05_respawned");
+        }
+
+        /// <summary>A fragile Mage gets knocked out by a slime it provoked: death screen, no actions, server revive.</summary>
+        [UnityTest]
+        public IEnumerator Monster_Knocks_Out_Hero_Death_Screen_And_Server_Revive()
+        {
+            yield return server.OpenGame();
+            yield return TestServer.RegisterCreateAndEnter("farmm" + Random.Range(1000, 9999), "farm-pass-2026", HeroClass.Mage, "Pháp Sư Liều");
+            var world = AdventureWorldSession.Current;
+            motor = world.Player;
+            input = motor.GetComponent<PlayerInput2D>();
+            var rb = motor.GetComponent<Rigidbody2D>();
+            rb.position = new Vector2(TownLayout.Hub.Portals[0].X - 3f, 1.2f);
+            rb.linearVelocity = Vector2.zero;
+            yield return new WaitForSeconds(0.5f);
+            yield return WalkTo(TownLayout.Hub.Portals[0].X, 10f);
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Up, true);
+            yield return null; yield return null;
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Up, false);
+            float until = Time.time + 3f;
+            while (!world.ConfirmOpen && Time.time < until) yield return null;
+            world.ConfirmPortal();
+            yield return TestServer.WaitForScene(TownLayout.Meadow.Scene);
+            world = AdventureWorldSession.Current;
+            motor = world.Player;
+            input = motor.GetComponent<PlayerInput2D>();
+            FarmField farm = FarmField.Current;
+            until = Time.time + 6f;
+            while (farm.Monsters.Count == 0 && Time.time < until) yield return null;
+
+            // one fireball at the slime (Mage reach 6 m), then stand right next to it and let it fight back
+            yield return WalkTo(-23f);
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Attack, true);
+            yield return null;
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Attack, false);
+            FarmMonsterView slime = farm.Monsters["meadow_s1"];
+            until = Time.time + 3f;
+            while (slime.Hp == slime.MaxHp && Time.time < until) yield return null;
+            Assert.Less(slime.Hp, slime.MaxHp, "hit landed; last error: " + farm.LastError);
+            yield return new WaitForSeconds(2.2f);
+            yield return Shot("06_slime_fights_back");
+            until = Time.time + 30f; // 75 HP, 8 per hit every 1.6 s
+            while (!farm.HeroDead && Time.time < until) yield return null;
+            Assert.IsTrue(farm.HeroDead, "knocked out by server-decided hits; last error: " + farm.LastError);
+            Assert.AreEqual(0, motor.GetComponent<Health2D>().CurrentHealth);
+            Assert.IsTrue(farm.DeathPanel && farm.DeathPanel.activeSelf, "death screen");
+            Assert.IsFalse(input.enabled, "no moving or attacking while down");
+            yield return new WaitForSeconds(0.8f);
+            yield return Shot("07_knocked_out");
+
+            farm.Revive();
+            until = Time.time + 5f;
+            while (farm.HeroDead && Time.time < until) yield return null;
+            Assert.IsFalse(farm.HeroDead, "revived by the server");
+            Assert.AreEqual(TownLayout.Meadow.Spawn.x, motor.transform.position.x, 1f, "back at the village gate");
+            Assert.AreEqual(75, motor.GetComponent<Health2D>().CurrentHealth, "full HP from the server");
+            Assert.IsTrue(input.enabled);
+            yield return new WaitForSeconds(1.2f); // a heartbeat later the server agrees (no teleport refusal)
+            Assert.IsFalse(farm.HeroDead);
+            yield return Shot("08_revived");
         }
     }
 }

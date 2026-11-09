@@ -6,6 +6,49 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★★★ Hoàn thiện Đợt 5 + rà soát gói 17H (2026-11-10)
+**Trạng thái:** đã test, commit (xem `git log`). Chưa sang Pet, chống macro, xã hội. Meshy vẫn 931.
+
+### Đợt 5 — phần còn tồn đọng (đã làm + kiểm thử)
+1. **Quái đánh trả, HP người chơi do server quyết định** (`FarmService`):
+   - Quái bị đánh sẽ bám mục tiêu trong phạm vi xích 3,5 m quanh điểm sinh.
+   - Server tự tính các đòn đánh theo đồng hồ server: `attack - phòng thủ/2`, mỗi 1,6–1,8 giây, dựa trên vị trí cuối cùng người chơi báo về. **Im lặng không né được đòn.**
+   - Hồi máu ngoài giao tranh (sau 6 giây, 3 %/giây).
+   - Gục ngã: không đánh/nhặt được, màn hình "Bạn đã gục ngã!". `POST /farm/revive` hồi sinh tại cổng làng với đầy máu, không mất Vàng hay đồ.
+   - Heartbeat vị trí `POST /farm/presence` 2 lần/giây, có kiểm tra tốc độ.
+2. **Quái 3D trong Play Mode thật:**
+   - Slime nhảy lại gần (trong phạm vi xích), lao vào khi server báo trúng đòn.
+   - Thanh máu và **tên quái phía trên thanh HP**. Trước đó tên không hiện vì ô chữ thấp hơn chiều cao dòng.
+   - Ảnh `QA/Farm/06_slime_fights_back.png`, `07_knocked_out.png`, `08_revived.png`.
+3. **Vàng:**
+   - Bay ra theo vòng cung, chạm đất nảy 2 lần, có lấp lánh (quad additive).
+   - Chồng xu to 1,7 lần.
+   - **Tiếng "ting" nhặt vàng** tự tổng hợp bằng code (2 nốt E6–B6, file gốc, không lấy từ game khác).
+   - Chữ **+N Vàng** cỡ 44, bám theo phía trên nhân vật.
+   - Ảnh `03a_gold_flying.png`, `03_gold_on_ground.png`, `04_picked_up.png`.
+4. **Đã kiểm tra lại:**
+   - Hồi sinh 60 giây (server test: 59 giây vẫn chết; PlayMode: slime tự sống lại).
+   - Chống nhận trùng (8 yêu cầu đồng thời chỉ trả 1 lần).
+   - Chống gian lận (dịch chuyển, ngoài tầm, đánh quá nhanh, nhặt của người khác, đánh khi đã gục).
+
+### Gói 17H — đối chiếu từng mục
+| Mục | Trạng thái |
+|---|---|
+| `EquipmentManager.cs` | Đã biên dịch, **không gắn vào nhân vật**. `HeroOutfit` vẫn là đường mặc đồ duy nhất (đã dọn mảnh cũ trước khi dựng mảnh mới, skin vào xương thân, kiểm 4 nghề × 6 trạng thái). Gắn song song sẽ vẽ trùng slot, đúng như cảnh báo trong gói. Chỉ dùng khi có prefab áo rời xuất từ đúng rig. |
+| Điểm danh 7 ngày | **Đã làm thật:** server `CheckinService` (DB V4) và popup (6 ô 3×2 + ô ngày 7 lớn, có chọn quà), chấm đỏ chỉ khi server báo nhận được, chống bấm trùng. Thưởng là **DRAFT**: `config/welfare.json` giữ `enabled=false` (server từ chối bật bản draft); test dùng `welfare.dev.json`. **Cần chủ dự án duyệt mức quà mới bật.** |
+| Mũi tên thu gọn/mở rộng icon | Đã làm, chạy trên cả PC và mobile, lưu trạng thái, không che minimap. |
+| Khung tên trên đầu | Hiện **tên thật** từ server. Khung VIP/Boss Hunter **chưa hiện**: chưa có dữ liệu sở hữu khung trên server, không làm giả "VIP 5". PNG trong `ArtSource/OwnerProvided/Nameplates_2026-11-08/` chưa nhập vì cần QA mép và độ phân giải. |
+| Sự kiện / Phúc lợi / Nạp đầu / Thư / Giftcode / BXH | **Chưa làm.** Các nút vẫn báo thật "chưa được mở". Nạp đầu khóa vì thanh toán đang tắt. |
+| Âm thanh BGM | 6 BGM nháp trong `Assets/Audio/AKOriginalDrafts/` **chưa gắn vào game**: gói ghi là bản nháp chưa duyệt. Đã có tiếng nhặt vàng tự tạo. |
+| HUD theo ảnh mẫu | Đã có: cụm trái, icon phải, minimap, mũi tên. Chưa có: khung chat có tab, thanh nút dưới (túi đồ/nhân vật/pet/shop/bang/kết hôn/kỹ năng), nút skill + Auto, bảng nhiệm vụ, Lực Chiến. |
+
+### Giá shop + 800 Vàng khởi đầu
+Được áp dụng sau tin nhắn của chủ dự án trong phiên ngày 2026-11-09: "Approve, start Đợt 5". Đó là nút trả lời Claude đề xuất, chủ dự án đã bấm. Nếu đó **không phải** ý duyệt chính thức, cần báo để trả về trạng thái "đề xuất". Test `ApprovedEconomyTests` sẽ báo đỏ khi giá thay đổi.
+
+### Lưu ý commit
+Commit `6866036` đã vô tình gom luôn các file gói 17H mà chủ dự án đặt vào repo: tài liệu, ảnh tham khảo, `EquipmentManager.cs`, WAV nháp. Đã đọc lại: không có khóa/bí mật.
+
+---
 ## ★★★★★★★★★ Đợt 5 (2026-11-09 đêm): quái + vàng rơi do server quản lý; bảng giá & Vàng khởi đầu đã duyệt
 **Trạng thái:** đã test, đã commit, **chưa push**. Meshy vẫn 931.
 

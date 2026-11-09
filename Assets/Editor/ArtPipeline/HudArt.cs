@@ -269,6 +269,24 @@ namespace AdventureKing.ArtPipeline
             Paint("mini_player", false,
                 (p => Poly(p, new[] { new Vector2(0f, -0.95f), new Vector2(0.72f, 0.3f), new Vector2(0f, 0.95f), new Vector2(-0.72f, 0.3f) }), _ => White),
                 (p => Poly(p, new[] { new Vector2(0f, -0.75f), new Vector2(0.55f, 0.28f), new Vector2(0f, 0.76f), new Vector2(-0.55f, 0.28f) }), Grad(new Color(0.85f, 0.12f, 0.15f), new Color(1f, 0.5f, 0.45f))));
+            // check-in rewards: bronze chest, outfit choice (wrapped crown), done tick
+            Paint("reward_chest", false,
+                (p => Box(p, new Vector2(0f, -0.2f), new Vector2(0.72f, 0.42f), 0.08f), Grad(new Color(0.45f, 0.24f, 0.1f), new Color(0.7f, 0.42f, 0.2f))),
+                (p => Box(p, new Vector2(0f, 0.32f), new Vector2(0.72f, 0.2f), 0.14f), Grad(new Color(0.55f, 0.3f, 0.12f), new Color(0.82f, 0.52f, 0.26f))),
+                (p => Mathf.Min(Box(p, new Vector2(0f, 0.05f), new Vector2(0.74f, 0.06f)), Mathf.Min(Box(p, new Vector2(-0.48f, 0f), new Vector2(0.07f, 0.62f)), Box(p, new Vector2(0.48f, 0f), new Vector2(0.07f, 0.62f)))), gold),
+                (p => Box(p, new Vector2(0f, 0.02f), new Vector2(0.13f, 0.16f), 0.04f), gold),
+                (p => Circle(p, new Vector2(0f, -0.02f), 0.05f), _ => new Color(0.2f, 0.1f, 0.04f)));
+            Paint("reward_skin", false,
+                (p => Box(p, new Vector2(0f, -0.18f), new Vector2(0.66f, 0.5f), 0.1f), Grad(new Color(0.55f, 0.25f, 0.75f), new Color(0.82f, 0.5f, 1f))),
+                (p => Mathf.Min(Box(p, new Vector2(0f, -0.18f), new Vector2(0.09f, 0.5f)), Box(p, new Vector2(0f, -0.08f), new Vector2(0.66f, 0.08f))), gold),
+                (p => Poly(p, new[] { new Vector2(-0.46f, 0.38f), new Vector2(0.46f, 0.38f), new Vector2(0.52f, 0.86f), new Vector2(0.22f, 0.62f), new Vector2(0f, 0.92f), new Vector2(-0.22f, 0.62f), new Vector2(-0.52f, 0.86f) }), gold),
+                (p => Circle(p, new Vector2(0f, 0.66f), 0.08f), _ => new Color(0.35f, 0.95f, 0.85f)));
+            Paint("reward_done", false,
+                (p => Circle(p, Vector2.zero, 0.92f), _ => new Color(0.1f, 0.55f, 0.35f)),
+                (p => Mathf.Min(Seg(p, new Vector2(-0.45f, 0.02f), new Vector2(-0.12f, -0.32f), 0.12f), Seg(p, new Vector2(-0.12f, -0.32f), new Vector2(0.5f, 0.38f), 0.12f)), _ => White));
+            // collapse / expand arrow (medallion with a right chevron; rotated 180° when folded)
+            Paint("icon_arrow", true,
+                (p => Mathf.Min(Seg(p, new Vector2(-0.18f, 0.36f), new Vector2(0.22f, 0f), 0.11f), Seg(p, new Vector2(0.22f, 0f), new Vector2(-0.18f, -0.36f), 0.11f)), gold));
             Paint("icon_sun", false,
                 (p => Mathf.Min(Circle(p, Vector2.zero, 0.5f), Poly(p, Star(10, 0.95f, 0.5f))), Grad(new Color(1f, 0.6f, 0.15f), new Color(1f, 0.92f, 0.45f))));
             Paint("icon_moon", false,

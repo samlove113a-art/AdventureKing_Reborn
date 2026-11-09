@@ -1273,6 +1273,23 @@ namespace AdventureKing.ArtPipeline
             Blob(root.transform, "Coin1", PrimitiveType.Cylinder, new Vector3(0.16f, -0.08f, 0.05f), new Vector3(0.3f, 0.022f, 0.3f), gold, new Vector3(80f, 20f, 0f));
             Blob(root.transform, "Coin2", PrimitiveType.Cylinder, new Vector3(-0.14f, -0.1f, 0.03f), new Vector3(0.28f, 0.02f, 0.28f), gold, new Vector3(100f, -15f, 0f));
             Blob(root.transform, "Coin3", PrimitiveType.Cylinder, new Vector3(0.02f, 0.14f, -0.02f), new Vector3(0.26f, 0.02f, 0.26f), gold, new Vector3(70f, 40f, 0f));
+            // twinkling sparkles (additive soft glow, faces the camera; animated by GoldDropView)
+            string sp = $"{MatDir}/farm_sparkle_add.mat";
+            var sm = AssetDatabase.LoadAssetAtPath<Material>(sp);
+            if (!sm) { sm = new Material(Shader.Find("AdventureKing/VFX")); AssetDatabase.CreateAsset(sm, sp); }
+            sm.shader = Shader.Find("AdventureKing/VFX");
+            sm.SetTexture("_MainTex", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/VFX/Textures/soft_dot.png"));
+            sm.SetColor("_TintColor", new Color(1f, 0.92f, 0.55f, 1f));
+            sm.SetFloat("_Intensity", 2.2f);
+            sm.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            sm.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.One);
+            EditorUtility.SetDirty(sm);
+            Vector3[] spots = { new Vector3(0.22f, 0.18f, -0.15f), new Vector3(-0.2f, 0.05f, -0.15f), new Vector3(0.05f, 0.3f, -0.15f) };
+            for (int i = 0; i < spots.Length; i++)
+            {
+                var s = Blob(root.transform, "Sparkle" + i, PrimitiveType.Quad, spots[i], Vector3.one * (0.22f - i * 0.04f), sm);
+                s.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
             root.transform.localScale = Vector3.one * 1.7f; // must read at gameplay distance
             return root.AddComponent<GoldDropView>();
         }
@@ -1289,6 +1306,8 @@ namespace AdventureKing.ArtPipeline
             so.FindProperty("mossTemplate").objectReferenceValue = Slime(templates, "SlimeReu", new Color(0.5f, 0.8f, 0.42f), new Color(0.25f, 0.6f, 0.25f), true);
             so.FindProperty("coinTemplate").objectReferenceValue = CoinPile(templates);
             so.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            so.FindProperty("panelSprite").objectReferenceValue = FrameArt.Get("popup_card");
+            so.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_jade");
             so.ApplyModifiedPropertiesWithoutUndo();
             foreach (Transform t in templates) t.gameObject.SetActive(false);
         }
@@ -1615,6 +1634,11 @@ namespace AdventureKing.ArtPipeline
             go.AddComponent<PlayerInput2D>();
             var motor = go.AddComponent<PlayerMotor2D>();
             var melee = go.AddComponent<PlayerMelee2D>();
+            // real character name above the head (server snapshot); frames only when earned (none yet)
+            var plateSo = new SerializedObject(go.AddComponent<PlayerNameplate>());
+            plateSo.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            plateSo.FindProperty("plateSprite").objectReferenceValue = FrameArt.Get("chip");
+            plateSo.ApplyModifiedPropertiesWithoutUndo();
 
             var probe = new GameObject("GroundProbe").transform;
             probe.SetParent(go.transform, false);
@@ -1864,7 +1888,7 @@ namespace AdventureKing.ArtPipeline
             };
             var secondaryIcons = new System.Collections.Generic.List<GameObject>();
             HudFeatureButton moreInfo = null;
-            Button moreButton = null;
+            Button moreButton = null, checkinButton = null;
             foreach (var (icon, label, title, msg, vip) in shortcuts)
             {
                 Button b = IconButton(grid.transform, "Shortcut_" + icon.Replace("icon_", ""), icon, label, new Vector2(0.5f, 0.5f), Vector2.zero, 82f);
@@ -1876,6 +1900,7 @@ namespace AdventureKing.ArtPipeline
                 fso.FindProperty("popup").objectReferenceValue = popup;
                 fso.ApplyModifiedPropertiesWithoutUndo();
                 if (icon == "icon_more") { moreInfo = fb; moreButton = b; continue; }
+                if (icon == "icon_checkin") { checkinButton = b; Object.DestroyImmediate(fb); continue; } // real server check-in panel (below)
                 UnityEventTools.AddPersistentListener(b.onClick, fb.Open);
                 if (icon is "icon_welfare" or "icon_giftcode" or "icon_ranking" or "icon_vip") secondaryIcons.Add(b.gameObject); // phones: behind "Thêm"
             }
@@ -1887,6 +1912,12 @@ namespace AdventureKing.ArtPipeline
             bso2.FindProperty("moreInfo").objectReferenceValue = moreInfo;
             bso2.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(moreButton.onClick, bar.More);
+            // arrow left of the icon block: folds the whole block away / back (PC + mobile); minimap stays
+            Button fold = IconButton(right.transform, "ShortcutsFold", "icon_arrow", "", new Vector2(1f, 1f), new Vector2(-500f - 40f, -236f), 64f);
+            bso2.FindProperty("arrowIcon").objectReferenceValue = fold.transform.Find("Icon");
+            bso2.ApplyModifiedPropertiesWithoutUndo();
+            UnityEventTools.AddPersistentListener(fold.onClick, bar.ToggleCollapsed);
+            if (checkinButton) BuildCheckin(canvasGo.transform, checkinButton);
 
             // system / settings menu (graphics, sound, save & exit)
             var menuGo = EntrySceneBuilder.Panel(canvasGo.transform, "SystemMenu", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.45f), null);
@@ -2003,6 +2034,95 @@ namespace AdventureKing.ArtPipeline
         }
 
         /// <summary>Round medallion icon button (procedural HUD art) with an optional caption underneath.</summary>
+        /// <summary>"Điểm Danh 7 Ngày" popup (reference: AdventureKing_Checkin_Events_VisualReference.png): 3×2 day cells +
+        /// a large day-7 milestone with outfit choices, Claim / Close, a red dot on the HUD icon (server-claimable only).</summary>
+        private static void BuildCheckin(Transform canvas, Button opener)
+        {
+            Color cream = new Color(1f, 0.97f, 0.9f), gold = new Color(1f, 0.84f, 0.48f), muted = new Color(0.78f, 0.82f, 0.92f);
+            var modal = EntrySceneBuilder.Panel(canvas, "CheckinPopup", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.5f), null);
+            var card = EntrySceneBuilder.Panel(modal.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1180f, 760f), new Color(0.07f, 0.09f, 0.15f, 0.95f), EntrySceneBuilder.PanelSprite);
+            EntrySceneBuilder.Skin(card, "popup_card");
+            Text title = EntrySceneBuilder.Label(card.transform, "CheckinTitle", "Điểm Danh 7 Ngày", 36, gold, new Vector2(0.5f, 1f), new Vector2(0f, -30f), new Vector2(700f, 50f), FontStyle.Bold);
+            title.gameObject.AddComponent<Outline>().effectColor = new Color(0.25f, 0.12f, 0.03f, 0.9f);
+            Text status = EntrySceneBuilder.Label(card.transform, "CheckinStatus", "", 22, cream, new Vector2(0.5f, 1f), new Vector2(0f, -92f), new Vector2(1060f, 40f));
+            status.resizeTextForBestFit = true; status.resizeTextMinSize = 15; status.resizeTextMaxSize = 22;
+
+            var cells = new CheckinPanel.Cell[7];
+            CheckinPanel.Cell MakeCell(int day, Vector2 pos, Vector2 size, float iconSize)
+            {
+                var frame = EntrySceneBuilder.Panel(card.transform, "Day" + day, new Vector2(0f, 1f), new Vector2(0f, 1f), pos, size, Color.white, EntrySceneBuilder.PanelSprite);
+                EntrySceneBuilder.Skin(frame, "hall_card");
+                frame.GetComponent<Image>().raycastTarget = false;
+                var c = new CheckinPanel.Cell { frame = frame.GetComponent<Image>() };
+                c.dayLabel = EntrySceneBuilder.Label(frame.transform, "DayLabel", "Ngày " + day, 22, gold, new Vector2(0.5f, 1f), new Vector2(0f, -24f), new Vector2(size.x - 20f, 32f), FontStyle.Bold);
+                c.icon = EntrySceneBuilder.Img(frame.transform, "Icon", new Vector2(0.5f, 1f), new Vector2(iconSize, iconSize), Color.white, HudArt.Get("coin"));
+                c.icon.type = Image.Type.Simple; c.icon.preserveAspect = true;
+                c.icon.rectTransform.anchoredPosition = new Vector2(0f, -44f - iconSize * 0.5f);
+                c.rewardLabel = EntrySceneBuilder.Label(frame.transform, "Reward", "", 18, cream, new Vector2(0.5f, 1f), new Vector2(0f, -54f - iconSize - 18f), new Vector2(size.x - 16f, 44f));
+                c.rewardLabel.resizeTextForBestFit = true; c.rewardLabel.resizeTextMinSize = 12; c.rewardLabel.resizeTextMaxSize = 18;
+                c.stateLabel = EntrySceneBuilder.Label(frame.transform, "State", "", 16, muted, new Vector2(0.5f, 0f), new Vector2(0f, 20f), new Vector2(size.x - 16f, 26f));
+                c.done = EntrySceneBuilder.Img(frame.transform, "Done", new Vector2(1f, 1f), new Vector2(44f, 44f), Color.white, HudArt.Get("reward_done"));
+                c.done.type = Image.Type.Simple;
+                c.done.rectTransform.anchoredPosition = new Vector2(-30f, -30f);
+                c.done.gameObject.SetActive(false);
+                return c;
+            }
+            // card 1180×760: status band ends at -112; cell rows -132..-368 and -382..-618; buttons -672..-744
+            for (int i = 0; i < 6; i++)
+                cells[i] = MakeCell(i + 1, new Vector2(180f + (i % 3) * 252f, -250f - (i / 3) * 250f), new Vector2(236f, 236f), 92f);
+            cells[6] = MakeCell(7, new Vector2(990f, -375f), new Vector2(340f, 486f), 150f);
+            EntrySceneBuilder.Skin(cells[6].frame.gameObject, "hall_card_on");
+            var d7 = cells[6].frame.transform;
+            var choices = new Button[3];
+            for (int i = 0; i < 3; i++)
+            {
+                choices[i] = EntrySceneBuilder.Btn(d7, "Choice" + i, "Lựa chọn", new Vector2(0f, 190f - i * 66f), new Vector2(300f, 62f), new Color(0.48f, 0.3f, 0.7f), cream, new Vector2(0.5f, 0f)); // 62 units: >= 40 px at 720p
+                choices[i].GetComponentInChildren<Text>().fontSize = 18;
+            }
+            cells[6].stateLabel.rectTransform.anchoredPosition = new Vector2(0f, 12f); // under the choices (lowest spans 27..85)
+
+            Button claim = EntrySceneBuilder.Btn(card.transform, "CheckinClaim", "Nhận Quà", new Vector2(-150f, 56f), new Vector2(280f, 72f), new Color(1f, 0.82f, 0.45f), new Color(0.24f, 0.13f, 0.03f), new Vector2(0.5f, 0f));
+            Button close = EntrySceneBuilder.Btn(card.transform, "CheckinClose", "Đóng", new Vector2(170f, 56f), new Vector2(240f, 72f), new Color(0.36f, 0.36f, 0.42f), cream, new Vector2(0.5f, 0f));
+
+            // red dot on the HUD icon: shown only when the server says today's gift can be claimed
+            var dot = EntrySceneBuilder.Img(opener.transform, "RedDot", new Vector2(1f, 1f), new Vector2(26f, 26f), new Color(0.92f, 0.18f, 0.2f), AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_circle.png"));
+            dot.type = Image.Type.Simple;
+            dot.rectTransform.anchoredPosition = new Vector2(-16f, -10f);
+
+            var panel = canvas.gameObject.AddComponent<CheckinPanel>(); // on the always-active canvas: it hides/shows the modal
+            var so = new SerializedObject(panel);
+            so.FindProperty("root").objectReferenceValue = modal;
+            so.FindProperty("statusText").objectReferenceValue = status;
+            var cp = so.FindProperty("cells");
+            cp.arraySize = 7;
+            for (int i = 0; i < 7; i++)
+            {
+                var e = cp.GetArrayElementAtIndex(i);
+                e.FindPropertyRelative("frame").objectReferenceValue = cells[i].frame;
+                e.FindPropertyRelative("icon").objectReferenceValue = cells[i].icon;
+                e.FindPropertyRelative("done").objectReferenceValue = cells[i].done;
+                e.FindPropertyRelative("dayLabel").objectReferenceValue = cells[i].dayLabel;
+                e.FindPropertyRelative("rewardLabel").objectReferenceValue = cells[i].rewardLabel;
+                e.FindPropertyRelative("stateLabel").objectReferenceValue = cells[i].stateLabel;
+            }
+            so.FindProperty("claimButton").objectReferenceValue = claim;
+            so.FindProperty("closeButton").objectReferenceValue = close;
+            so.FindProperty("claimLabel").objectReferenceValue = claim.GetComponentInChildren<Text>();
+            var ch = so.FindProperty("choiceButtons");
+            ch.arraySize = 3;
+            for (int i = 0; i < 3; i++) ch.GetArrayElementAtIndex(i).objectReferenceValue = choices[i];
+            so.FindProperty("redDot").objectReferenceValue = dot.gameObject;
+            so.FindProperty("goldIcon").objectReferenceValue = HudArt.Get("coin");
+            so.FindProperty("diamondIcon").objectReferenceValue = HudArt.Get("diamond");
+            so.FindProperty("chestIcon").objectReferenceValue = HudArt.Get("reward_chest");
+            so.FindProperty("skinIcon").objectReferenceValue = HudArt.Get("reward_skin");
+            so.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("hall_card");
+            so.FindProperty("cellOnSprite").objectReferenceValue = FrameArt.Get("hall_card_on");
+            so.ApplyModifiedPropertiesWithoutUndo();
+            UnityEventTools.AddPersistentListener(opener.onClick, panel.Open);
+            modal.SetActive(false);
+        }
+
         private static Button IconButton(Transform parent, string name, string icon, string caption, Vector2 anchor, Vector2 pos, float size)
         {
             var go = new GameObject(name, typeof(RectTransform)) { layer = 5 };

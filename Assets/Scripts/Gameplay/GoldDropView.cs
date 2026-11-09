@@ -16,6 +16,19 @@ namespace AdventureKing.Gameplay
         private float age, expiresAt, collectT = -1f;
         private Vector3 from;
         private Transform target;
+        private Transform[] sparkles = new Transform[0];
+        private Vector3[] sparkleBase = new Vector3[0];
+
+        /// <summary>True once the coins have hit the ground (bounce phase reached).</summary>
+        public bool Landed { get; private set; }
+
+        private void Awake()
+        {
+            var list = new System.Collections.Generic.List<Transform>();
+            foreach (Transform t in GetComponentsInChildren<Transform>(true)) if (t.name.StartsWith("Sparkle")) list.Add(t);
+            sparkles = list.ToArray();
+            sparkleBase = System.Array.ConvertAll(sparkles, s => s.localScale);
+        }
 
         public void Bind(FarmDropState d, Vector2 popFrom)
         {
@@ -49,15 +62,30 @@ namespace AdventureKing.Gameplay
                 return;
             }
             age += dt;
-            // pop out in an arc, then rest on the ground spinning and bobbing
-            Vector3 rest = new Vector3(Ground.x + 0.6f, Ground.y + 0.25f, 0.2f);
+            // fly out in an arc, land and bounce twice (decaying), then rest spinning and bobbing
+            Vector3 rest = new Vector3(Ground.x + 0.6f, Ground.y + 0.3f, 0.2f);
             if (age < 0.5f)
             {
                 float k = age / 0.5f;
-                transform.position = Vector3.Lerp(from, rest, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 1.1f;
+                transform.position = Vector3.Lerp(from, rest, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 1.4f;
+            }
+            else if (age < 1.05f)
+            {
+                float b = age - 0.5f;                                   // two bounces: 0.32 m then 0.12 m
+                float h = b < 0.32f ? Mathf.Sin(b / 0.32f * Mathf.PI) * 0.32f : Mathf.Sin((b - 0.32f) / 0.23f * Mathf.PI) * 0.12f;
+                transform.position = rest + Vector3.up * Mathf.Max(0f, h);
+                Landed = true;
             }
             else transform.position = rest + Vector3.up * (Mathf.Sin(age * 3f) * 0.08f);
             transform.rotation = Quaternion.Euler(0f, age * 140f, 0f);
+            // sparkles: twinkle around the pile, always facing the camera
+            for (int i = 0; i < sparkles.Length; i++)
+            {
+                if (!sparkles[i]) continue;
+                float tw = Mathf.Max(0f, Mathf.Sin(age * 5f + i * 2.1f));
+                sparkles[i].localScale = sparkleBase[i] * (0.3f + tw);
+                sparkles[i].rotation = Quaternion.Euler(0f, 0f, age * 90f + i * 40f);
+            }
             if (Time.time > expiresAt - 5f) // blink before it expires
                 foreach (Renderer r in GetComponentsInChildren<Renderer>()) r.enabled = Mathf.Repeat(Time.time * 6f, 1f) > 0.3f;
         }

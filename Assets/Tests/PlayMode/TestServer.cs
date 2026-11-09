@@ -18,12 +18,15 @@ namespace AdventureKing.Tests
         private readonly string dbDir;
         private Process process;
         private readonly long? starterGold;
+        private readonly bool devWelfare;
 
         /// <param name="starterGold">Test fixture override of the server's starter Gold (null = the real config value).</param>
-        public TestServer(int port, long? starterGold = null)
+        /// <param name="devWelfare">Use config/welfare.dev.json (check-in enabled for tests; production keeps the draft off).</param>
+        public TestServer(int port, long? starterGold = null, bool devWelfare = false)
         {
             this.port = port;
             this.starterGold = starterGold;
+            this.devWelfare = devWelfare;
             dbDir = Path.Combine(Path.GetTempPath(), "ak_srv_" + System.Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dbDir);
         }
@@ -37,7 +40,8 @@ namespace AdventureKing.Tests
         {
             if (!File.Exists(Dll)) Assert.Ignore("Server not built: run `dotnet build Server/AdventureKing.Server` first.");
             var psi = new ProcessStartInfo("dotnet", $"\"{Dll}\" --urls http://127.0.0.1:{port} --AdventureKing:DatabasePath=\"{Path.Combine(dbDir, "test.db")}\"" +
-                (starterGold.HasValue ? $" --AdventureKing:StarterGold={starterGold.Value}" : ""))
+                (starterGold.HasValue ? $" --AdventureKing:StarterGold={starterGold.Value}" : "") +
+                (devWelfare ? " --AdventureKing:WelfareConfigPath=config/welfare.dev.json" : ""))
             {
                 WorkingDirectory = Path.GetDirectoryName(Dll), UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardOutput = true, RedirectStandardError = true,

@@ -85,6 +85,14 @@ public sealed class Database
             Exec(c, tx, Schema.V3);
             Exec(c, tx, "PRAGMA user_version=3;");
             tx.Commit();
+            version = 3;
+        }
+        if (version < 4)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V4);
+            Exec(c, tx, "PRAGMA user_version=4;");
+            tx.Commit();
         }
     }
 
@@ -117,7 +125,29 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 3;
+    public const int Current = 4;
+
+    // V4: 7-day check-in (account scope). One receipt per (account, cycle, day): the primary key makes a second claim
+    // of the same day impossible even under concurrent requests; last_vn_day enforces one claim per VN calendar day.
+    public const string V4 = """
+    CREATE TABLE checkin_progress (
+        account_id   TEXT PRIMARY KEY REFERENCES accounts(id),
+        cycle        INTEGER NOT NULL DEFAULT 1,
+        claimed_days INTEGER NOT NULL DEFAULT 0 CHECK (claimed_days BETWEEN 0 AND 7),
+        last_vn_day  TEXT NOT NULL DEFAULT ''
+    );
+    CREATE TABLE checkin_claims (
+        account_id   TEXT NOT NULL REFERENCES accounts(id),
+        cycle        INTEGER NOT NULL,
+        day          INTEGER NOT NULL CHECK (day BETWEEN 1 AND 7),
+        character_id TEXT NOT NULL,
+        vn_day       TEXT NOT NULL,
+        catalog_id   TEXT NOT NULL,
+        reward_json  TEXT NOT NULL,
+        claimed_ms   INTEGER NOT NULL,
+        PRIMARY KEY (account_id, cycle, day)
+    );
+    """;
 
     // V3: wardrobe / inventory ownership (cosmetics now; pets + pet food later: kind + quantity) and shop history.
     // character_id NULL = owned by the whole account (Diamond sets). The partial unique index makes a second

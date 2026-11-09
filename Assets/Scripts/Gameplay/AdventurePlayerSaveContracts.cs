@@ -125,12 +125,22 @@ namespace AdventureKing.Gameplay
         public long amount, expiresInMs;
     }
 
+    /// <summary>The hero's HP on a farm map, as the server decided it (monster hits, regeneration, death).</summary>
+    [Serializable]
+    public sealed class HeroCombatState
+    {
+        public int hp, maxHp, damageTaken;
+        public bool dead;
+        public string[] hitBy = new string[0];
+    }
+
     [Serializable]
     public sealed class FarmState
     {
         public string mapId;
         public FarmMonsterState[] monsters = new FarmMonsterState[0];
         public FarmDropState[] drops = new FarmDropState[0];
+        public HeroCombatState hero;
     }
 
     [Serializable]
@@ -140,6 +150,7 @@ namespace AdventureKing.Gameplay
         public int damage;
         public bool killed;
         public FarmDropState drop;
+        public HeroCombatState hero;
         public bool HasDrop => killed && drop != null && !string.IsNullOrEmpty(drop.id);
     }
 
@@ -148,6 +159,7 @@ namespace AdventureKing.Gameplay
     {
         public string dropId;
         public long amount, gold;
+        public HeroCombatState hero;
     }
 
     [Serializable]
