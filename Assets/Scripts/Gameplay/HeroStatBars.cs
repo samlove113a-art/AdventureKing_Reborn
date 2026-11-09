@@ -28,7 +28,9 @@ namespace AdventureKing.Gameplay
             {
                 if (!fills[i]) continue;
                 Vector2 s = fills[i].sizeDelta;
-                s.x = Mathf.Lerp(s.x, targets[i] * fullWidth, 1f - Mathf.Exp(-animateSpeed * Time.unscaledDeltaTime));
+                // the groove may be laid out responsively: fill the parent's width when there is one
+                float full = fills[i].parent is RectTransform pr && pr.rect.width > 1f ? pr.rect.width : fullWidth;
+                s.x = Mathf.Lerp(s.x, targets[i] * full, 1f - Mathf.Exp(-animateSpeed * Time.unscaledDeltaTime));
                 fills[i].sizeDelta = s;
             }
         }

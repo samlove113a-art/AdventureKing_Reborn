@@ -47,6 +47,12 @@ namespace AdventureKing.Gameplay
         [Tooltip("Status line on the hero hall (create/enter/name errors). Falls back to statusText.")]
         [SerializeField] private Text selectionStatusText;
         [SerializeField] private GameObject registerFields;
+        [Tooltip("Optional: card title / mode switch link / buttons, updated when switching login <-> register.")]
+        [SerializeField] private Text authTitle;
+        [SerializeField] private Text registerToggleLabel;
+        [SerializeField] private Button loginButton;
+        [SerializeField] private Button registerButton;
+        public bool RegisterMode { get; private set; }
 
         [Header("Four hero classes")]
         [SerializeField] private Text heroName;
@@ -80,6 +86,7 @@ namespace AdventureKing.Gameplay
         {
             if (splashLogo && officialAdventureKingLogo)
                 splashLogo.sprite = officialAdventureKingLogo;
+            SetRegisterMode(false);
             if (ReturningFromWorld)
             {
                 ReturningFromWorld = false;
@@ -118,9 +125,18 @@ namespace AdventureKing.Gameplay
 
         public void SetRegisterMode(bool register)
         {
+            RegisterMode = register;
             if (registerFields) registerFields.SetActive(register);
+            if (authTitle) authTitle.text = register ? "Tạo tài khoản" : "Đăng nhập";
+            if (registerToggleLabel) registerToggleLabel.text = register ? "Đã có tài khoản? Đăng nhập" : "Chưa có tài khoản? Tạo mới";
+            // one clear primary action per mode
+            if (loginButton) loginButton.gameObject.SetActive(!register);
+            if (registerButton) registerButton.gameObject.SetActive(register);
             SetStatus("");
         }
+
+        /// <summary>"Chưa có tài khoản? Tạo mới" / "Đã có tài khoản? Đăng nhập".</summary>
+        public void ToggleRegisterMode() => SetRegisterMode(!RegisterMode);
 
         public void LoginPassword() => PasswordAuth(SignInMethod.PasswordLogin);
         public void RegisterPassword() => PasswordAuth(SignInMethod.PasswordRegister);

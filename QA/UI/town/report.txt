@@ -1,0 +1,133 @@
+UI audit: 132 problems
+[01_elder_dialog pc_1920x1080] HIDDEN TEXT: HUD/SafeArea/ControlsHint/Hint is covered by a panel drawn on top
+[01_elder_dialog pc_1366x768] HIDDEN TEXT: HUD/SafeArea/ControlsHint/Hint is covered by a panel drawn on top
+[01_elder_dialog phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/CharacterPlate/CharacterName glyphs [-1041,426..-621,456] vs safe [-1005,-499..1005,499]
+[01_elder_dialog phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/ExitButton/Text glyphs [885,433..1017,453] vs safe [-1005,-499..1005,499]
+[01_elder_dialog phone_19.5x9] HIDDEN TEXT: HUD/SafeArea/ControlsHint/Hint is covered by a panel drawn on top
+[01_elder_dialog phone_19.5x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [841,413..1061,473] vs [-1005,-499..1005,499]
+[01_elder_dialog phone_16x9] HIDDEN TEXT: HUD/SafeArea/ControlsHint/Hint is covered by a panel drawn on top
+[01_elder_dialog phone_16x9] TOO SMALL: HUD/SafeArea/ExitButton is 147x40 px (< 40 px)
+[01_elder_dialog phone_16x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [720,454..940,514] vs [-922,-540..922,540]
+[01_elder_dialog phone_16x9] TOO SMALL: HUD/SafeArea/GraphicsButton is 153x40 px (< 40 px)
+[01_elder_dialog tablet_4x3] HIDDEN TEXT: HUD/SafeArea/ControlsHint/Hint is covered by a panel drawn on top
+[01_elder_dialog tablet_4x3] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [568,520..788,580] vs [-775,-606..775,606]
+[02_hud phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/CharacterPlate/CharacterName glyphs [-1041,426..-621,456] vs safe [-1005,-499..1005,499]
+[02_hud phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/ExitButton/Text glyphs [885,433..1017,453] vs safe [-1005,-499..1005,499]
+[02_hud phone_19.5x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [841,413..1061,473] vs [-1005,-499..1005,499]
+[02_hud phone_16x9] TOO SMALL: HUD/SafeArea/ExitButton is 147x40 px (< 40 px)
+[02_hud phone_16x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [720,454..940,514] vs [-922,-540..922,540]
+[02_hud phone_16x9] TOO SMALL: HUD/SafeArea/GraphicsButton is 153x40 px (< 40 px)
+[02_hud tablet_4x3] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [568,520..788,580] vs [-775,-606..775,606]
+[03_merchant_menu phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/CharacterPlate/CharacterName glyphs [-1041,426..-621,456] vs safe [-1005,-499..1005,499]
+[03_merchant_menu phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/ExitButton/Text glyphs [885,433..1017,453] vs safe [-1005,-499..1005,499]
+[03_merchant_menu phone_19.5x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [841,413..1061,473] vs [-1005,-499..1005,499]
+[03_merchant_menu phone_16x9] TOO SMALL: HUD/SafeArea/ExitButton is 147x40 px (< 40 px)
+[03_merchant_menu phone_16x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [720,454..940,514] vs [-922,-540..922,540]
+[03_merchant_menu phone_16x9] TOO SMALL: HUD/SafeArea/GraphicsButton is 153x40 px (< 40 px)
+[03_merchant_menu tablet_4x3] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [568,520..788,580] vs [-775,-606..775,606]
+[04_shop_gold pc_1920x1080] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopWallet glyphs [426,421..773,450] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[04_shop_gold pc_1366x768] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopWallet glyphs [433,421..772,451] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopClassFilter is 178x40 px (< 40 px)
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_all is 90x33 px (< 40 px)
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_head is 90x33 px (< 40 px)
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_top is 90x33 px (< 40 px)
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_bottom is 90x33 px (< 40 px)
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_gloves is 90x33 px (< 40 px)
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_shoes is 90x33 px (< 40 px)
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_accessory is 90x33 px (< 40 px)
+[04_shop_gold pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_back is 90x33 px (< 40 px)
+[04_shop_gold phone_19.5x9] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_shoes_ember_boots/ShopName is covered by a panel drawn on top
+[04_shop_gold phone_19.5x9] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_shoes_ember_boots/ShopPrice is covered by a panel drawn on top
+[04_shop_gold phone_19.5x9] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_acc_silver_bell/ShopName is covered by a panel drawn on top
+[04_shop_gold phone_19.5x9] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_acc_silver_bell/ShopPrice is covered by a panel drawn on top
+[04_shop_gold phone_19.5x9] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_wind_cape/ShopName is covered by a panel drawn on top
+[04_shop_gold phone_19.5x9] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_wind_cape/ShopPrice is covered by a panel drawn on top
+[04_shop_gold phone_19.5x9] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_dragonfly_wings/ShopName is covered by a panel drawn on top
+[04_shop_gold phone_19.5x9] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_dragonfly_wings/ShopPrice is covered by a panel drawn on top
+[04_shop_gold phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/CharacterPlate/CharacterName glyphs [-1041,426..-621,456] vs safe [-1005,-499..1005,499]
+[04_shop_gold phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/ExitButton/Text glyphs [885,433..1017,453] vs safe [-1005,-499..1005,499]
+[04_shop_gold phone_19.5x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [841,413..1061,473] vs [-1005,-499..1005,499]
+[04_shop_gold phone_16x9] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopWallet glyphs [432,422..774,452] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopTab_Gold is 187x40 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopTab_Premium is 187x40 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopTab_Wardrobe is 187x40 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopClassFilter is 167x37 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_all is 84x31 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_head is 84x31 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_top is 84x31 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_bottom is 84x31 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_gloves is 84x31 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_shoes is 84x31 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_accessory is 84x31 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_back is 84x31 px (< 40 px)
+[04_shop_gold phone_16x9] TOO SMALL: HUD/SafeArea/ExitButton is 147x40 px (< 40 px)
+[04_shop_gold phone_16x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [720,454..940,514] vs [-922,-540..922,540]
+[04_shop_gold phone_16x9] TOO SMALL: HUD/SafeArea/GraphicsButton is 153x40 px (< 40 px)
+[04_shop_gold tablet_4x3] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopWallet glyphs [295,484..628,511] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-724,-520..724,511])
+[04_shop_gold tablet_4x3] OFF SCREEN/SAFE AREA: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_back/ShopText glyphs [710,353..820,371] vs safe [-775,-606..775,606]
+[04_shop_gold tablet_4x3] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_wind_cape/ShopName is covered by a panel drawn on top
+[04_shop_gold tablet_4x3] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_wind_cape/ShopPrice is covered by a panel drawn on top
+[04_shop_gold tablet_4x3] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_dragonfly_wings/ShopName is covered by a panel drawn on top
+[04_shop_gold tablet_4x3] HIDDEN TEXT: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_dragonfly_wings/ShopPrice is covered by a panel drawn on top
+[04_shop_gold tablet_4x3] COVERED: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopTab_Wardrobe centre is under FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopClassFilter
+[04_shop_gold tablet_4x3] OUTSIDE SAFE AREA: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_back [702,340..828,386] vs [-775,-606..775,606]
+[04_shop_gold tablet_4x3] COVERED: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_wind_cape centre is under FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopDetail
+[04_shop_gold tablet_4x3] COVERED: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopGrid/Content/Card_back_dragonfly_wings centre is under FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopDetail
+[04_shop_gold tablet_4x3] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [568,520..788,580] vs [-775,-606..775,606]
+[05_shop_confirm pc_1920x1080] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard/ShopTitle glyphs [-108,102..106,136] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard (content area [-340,-130..340,121])
+[05_shop_confirm pc_1366x768] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard/ShopTitle glyphs [-107,101..105,136] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard (content area [-340,-130..340,121])
+[05_shop_confirm phone_19.5x9] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard/ShopTitle glyphs [-105,103..104,136] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard (content area [-340,-130..340,121])
+[05_shop_confirm phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/CharacterPlate/CharacterName glyphs [-1041,426..-621,456] vs safe [-1005,-499..1005,499]
+[05_shop_confirm phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/ExitButton/Text glyphs [885,433..1017,453] vs safe [-1005,-499..1005,499]
+[05_shop_confirm phone_19.5x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [841,413..1061,473] vs [-1005,-499..1005,499]
+[05_shop_confirm phone_16x9] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard/ShopTitle glyphs [-109,101..107,136] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard (content area [-340,-130..340,121])
+[05_shop_confirm phone_16x9] TOO SMALL: HUD/SafeArea/ExitButton is 147x40 px (< 40 px)
+[05_shop_confirm phone_16x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [720,454..940,514] vs [-922,-540..922,540]
+[05_shop_confirm phone_16x9] TOO SMALL: HUD/SafeArea/GraphicsButton is 153x40 px (< 40 px)
+[05_shop_confirm tablet_4x3] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard/ShopTitle glyphs [-107,102..106,135] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopConfirm/ShopCard (content area [-340,-130..340,121])
+[05_shop_confirm tablet_4x3] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [568,520..788,580] vs [-775,-606..775,606]
+[06_shop_wardrobe pc_1920x1080] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopWallet glyphs [427,421..773,450] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[06_shop_wardrobe pc_1920x1080] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopStatus glyphs [-319,-487..317,-459] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[06_shop_wardrobe pc_1366x768] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopWallet glyphs [435,421..772,451] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[06_shop_wardrobe pc_1366x768] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopStatus glyphs [-304,-488..302,-459] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopClassFilter is 178x40 px (< 40 px)
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_all is 90x33 px (< 40 px)
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_head is 90x33 px (< 40 px)
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_top is 90x33 px (< 40 px)
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_bottom is 90x33 px (< 40 px)
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_gloves is 90x33 px (< 40 px)
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_shoes is 90x33 px (< 40 px)
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_accessory is 90x33 px (< 40 px)
+[06_shop_wardrobe pc_1366x768] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_back is 90x33 px (< 40 px)
+[06_shop_wardrobe phone_19.5x9] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopStatus glyphs [-308,-449..306,-422] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-984,-421..984,412])
+[06_shop_wardrobe phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/CharacterPlate/CharacterName glyphs [-1041,426..-621,456] vs safe [-1005,-499..1005,499]
+[06_shop_wardrobe phone_19.5x9] OFF SCREEN/SAFE AREA: HUD/SafeArea/ExitButton/Text glyphs [885,433..1017,453] vs safe [-1005,-499..1005,499]
+[06_shop_wardrobe phone_19.5x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [841,413..1061,473] vs [-1005,-499..1005,499]
+[06_shop_wardrobe phone_16x9] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopWallet glyphs [433,422..774,452] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[06_shop_wardrobe phone_16x9] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopStatus glyphs [-299,-487..299,-459] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-869,-459..869,450])
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopTab_Gold is 187x40 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopTab_Premium is 187x40 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopTab_Wardrobe is 187x40 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopClassFilter is 167x37 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_all is 84x31 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_head is 84x31 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_top is 84x31 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_bottom is 84x31 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_gloves is 84x31 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_shoes is 84x31 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_accessory is 84x31 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_back is 84x31 px (< 40 px)
+[06_shop_wardrobe phone_16x9] TOO SMALL: HUD/SafeArea/ExitButton is 147x40 px (< 40 px)
+[06_shop_wardrobe phone_16x9] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [720,454..940,514] vs [-922,-540..922,540]
+[06_shop_wardrobe phone_16x9] TOO SMALL: HUD/SafeArea/GraphicsButton is 153x40 px (< 40 px)
+[06_shop_wardrobe tablet_4x3] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopWallet glyphs [295,484..628,511] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-724,-520..724,511])
+[06_shop_wardrobe tablet_4x3] OFF SCREEN/SAFE AREA: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_back/ShopText glyphs [710,353..820,371] vs safe [-775,-606..775,606]
+[06_shop_wardrobe tablet_4x3] ON FRAME BORDER: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopStatus glyphs [-310,-548..308,-521] cross the ornament of FashionShop/FashionShopCanvas/ShopShop/ShopWindow (content area [-724,-520..724,511])
+[06_shop_wardrobe tablet_4x3] COVERED: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopTab_Wardrobe centre is under FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopClassFilter
+[06_shop_wardrobe tablet_4x3] OUTSIDE SAFE AREA: FashionShop/FashionShopCanvas/ShopShop/ShopWindow/ShopCatalogue/ShopChip_back [702,340..828,386] vs [-775,-606..775,606]
+[06_shop_wardrobe tablet_4x3] OUTSIDE SAFE AREA: HUD/SafeArea/ExitButton [568,520..788,580] vs [-775,-606..775,606]
+[07_portal_confirm pc_1920x1080] ON FRAME BORDER: HUD/PortalConfirm/Card/Title glyphs [-139,106..139,145] cross the ornament of HUD/PortalConfirm/Card (content area [-350,-130..350,121])
+[07_portal_confirm pc_1366x768] ON FRAME BORDER: HUD/PortalConfirm/Card/Title glyphs [-139,105..136,144] cross the ornament of HUD/PortalConfirm/Card (content area [-350,-130..350,121])
+[07_portal_confirm phone_19.5x9] ON FRAME BORDER: HUD/PortalConfirm/Card/Title glyphs [-136,107..136,144] cross the ornament of HUD/PortalConfirm/Card (content area [-350,-130..350,121])
+[07_portal_confirm phone_16x9] ON FRAME BORDER: HUD/PortalConfirm/Card/Title glyphs [-141,105..140,144] cross the ornament of HUD/PortalConfirm/Card (content area [-350,-130..350,121])
+[07_portal_confirm tablet_4x3] ON FRAME BORDER: HUD/PortalConfirm/Card/Title glyphs [-139,106..138,145] cross the ornament of HUD/PortalConfirm/Card (content area [-350,-130..350,121])

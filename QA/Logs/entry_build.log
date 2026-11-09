@@ -1,0 +1,634 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 15480)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 16520)
+VBCSCompiler prewarm took 9.14 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-09T02:15:06Z
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
+[Licensing::Module] Successfully launched the LicensingClient (PId: 16684)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
+-batchmode
+-projectPath
+.
+-executeMethod
+AdventureKing.ArtPipeline.EntrySceneBuilder.BuildFromCommandLine
+-logFile
+QA/Logs/entry_build.log
+Successfully changed project path to: C:/AdventureKing_Reborn
+C:/AdventureKing_Reborn
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [15940]  Target information:
+
+Player connection [15940]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 2340054555 [EditorId] 2340054555 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [15940] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [15940] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Starting IPC server.
+Waiting for clients to connect on \\.\pipe\Unity-LicenseClient-PC, press Ctrl-C to exit.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-09T02:15:06.8995036Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 16684, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-5636" after 0.5 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              4c6d38f6f3c6422f9b02e1e4eee7f820
+  Correlation Id:          5c03e6a3cab79c0aabde07169e09e325
+  External correlation Id: 5335345561443779098
+  Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.13s, handshake: 0.07s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-09T02:15:07.0961451Z"
+[Licensing::Module] Connected to LicensingClient (PId: 16684, launch time: 0.00, total connection time: 0.76s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968527504213-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.02
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.83s
+[Licensing::Module] Licensing is initialized (took 0.11s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Initialising UDS system complete:
+  - System type: Client
+  - Resource namespace: c94cbebc08b987cf34377c38e7a385d0
+  - Shared memory size: 1073741824
+  - Command buffer id: 1052576
+  - Command buffer size: 8192
+  - Hashmap size: 4194304
+  - Service connected: false
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/AdventureKing_RebornUnity Data Store running and initialised
+[Physics::Module] Selected backend (deferred post-plugins).
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.6.7f1 (b22767f04f04)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=262144, entitiesPerBlock=1024, blocksPerSlotPage=0, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/AdventureKing_Reborn/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+d3d12: failed to query info queue interface (0x80004002).
+Direct3D:
+    Version:         Direct3D 12 [level 12.1]
+    Renderer:        NVIDIA GeForce GTX 1050 Ti (ID=0x1c82)
+    Vendor:          NVIDIA
+    VRAM:            4004 MB
+    App VRAM Budget: 3403 MB
+    Driver:          32.0.15.7680
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56636
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.007722 seconds.
+[usbmuxd] Start listen thread
+[usbmuxd] Listen thread started
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.344 seconds
+Domain Reload Profiling: 2239ms
+	BeginReloadAssembly (193ms)
+		CreateAndSetChildDomain (7ms)
+	RebuildCommonClasses (7ms)
+	RebuildNativeTypeToScriptingClass (29ms)
+	initialDomainReloadingComplete (104ms)
+	LoadAllAssembliesAndSetupDomain (560ms)
+		LoadAssemblies (184ms)
+		TypeCache.Refresh (373ms)
+			TypeCache.ScanAssembly (352ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (1346ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (19ms)
+			BeforeProcessingInitializeOnLoad (191ms)
+			ProcessInitializeOnLoadAttributes (232ms)
+			ProcessInitializeOnLoadMethodAttributes (543ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 31 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.inputsystem@1.20.1 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.inputsystem@2436e68c60c4)
+    com.unity.searcher@4.9.5 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.profiling.core@1.0.3 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.sprite@752945c75a6f)
+    com.unity.2d.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.tilemap@f4c7bd71ac8a)
+    com.unity.render-pipelines.universal@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal@ffe395a3a1d1)
+    com.unity.test-framework@1.8.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework@ee3fe9477490)
+    com.unity.ugui@2.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ugui@eb824e41fbc7)
+    com.unity.modules.animation@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.audio@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.modules.physics@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.ext.nunit@2.1.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.render-pipelines.core@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.core@13460d8ea9e5)
+    com.unity.shadergraph@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.shadergraph@8b7e693cdbfe)
+    com.unity.render-pipelines.universal-config@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal-config@561422b74439)
+    com.unity.graph-authoring@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.graph-authoring@cfd2588851ee)
+    com.unity.burst@2.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.collections@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.collections@4920e8897b5a)
+    com.unity.test-framework.performance@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework.performance@e8b39e3ef3d9)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Assembly system.runtime.interopservices.windowsruntime has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\System.Runtime.InteropServices.WindowsRuntime.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\NetStandard\Extensions\2.0.0\System.Runtime.InteropServices.WindowsRuntime.dll"
+warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Assembly system.componentmodel.composition has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\System.ComponentModel.Composition.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ComponentModel.Composition.dll"
+DisplayProgressbar: Compiling Scripts
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\DotNetSdk\dotnet.exe "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 4 Duration: 2s145ms
+[624/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+*** Tundra requires additional run (2.10 seconds), 3 items updated, 795 evaluated
+ExitCode: 0 Duration: 1s732ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 0 Duration: 3s458ms
+Finished compiling graph: 807 nodes, 14176 flattened edges (12130 ToBuild, 120 ToUse), maximum node priority 901
+[392/804    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.rsp
+[620/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[780/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll (+2 others)
+Assets\Scripts\Gameplay\LoginBackdrop.cs(26,23): warning CS0414: The field 'LoginBackdrop.raysImg' is assigned but its value is never used
+[781/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Gameplay.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll, with 148 defines and 280 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[782/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.pdb
+[783/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.dll
+[784/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll (+2 others)
+[785/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll, with 148 defines and 279 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[786/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.pdb
+[787/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.dll
+[788/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll (+2 others)
+[789/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll, with 146 defines and 313 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[790/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.Editor.dll
+[791/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.Editor.pdb
+[792/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.EditMode.dll (+2 others)
+[793/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.EditMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.EditMode.dll, with 146 defines and 310 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[794/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.EditMode.pdb
+[795/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.EditMode.dll
+[796/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll (+2 others)
+[797/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.PlayMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll, with 148 defines and 276 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[798/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll
+[799/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.pdb
+[800/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll (+2 others)
+Assets\Editor\ArtPipeline\HeroHandRig.cs(79,29): warning CS8321: The local function 'Pieces' is declared but never used
+
+Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
+[801/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.ArtPipeline.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll, with 146 defines and 314 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[802/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.pdb
+[803/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.dll
+*** Tundra build success (3.43 seconds), 26 items updated, 804 evaluated
+Assets\Scripts\Gameplay\LoginBackdrop.cs(26,23): warning CS0414: The field 'LoginBackdrop.raysImg' is assigned but its value is never used
+Assets\Editor\ArtPipeline\HeroHandRig.cs(79,29): warning CS8321: The local function 'Pieces' is declared but never used
+Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
+AssetDatabase: script compilation time: 8.082747s
+Begin MonoManager ReloadAssembly
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.614 seconds
+Domain Reload Profiling: 3276ms
+	BeginReloadAssembly (599ms)
+		DisableScriptedObjects (41ms)
+		CreateAndSetChildDomain (191ms)
+	RebuildCommonClasses (20ms)
+	RebuildNativeTypeToScriptingClass (40ms)
+	initialDomainReloadingComplete (105ms)
+	LoadAllAssembliesAndSetupDomain (896ms)
+		LoadAssemblies (566ms)
+		TypeCache.Refresh (199ms)
+			TypeCache.ScanAssembly (182ms)
+		AnalyzeDomain (85ms)
+			BuildScriptInfoCaches (66ms)
+			ResolveRequiredComponents (16ms)
+	FinalizeReload (1617ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (6ms)
+			InitializePlatformSupportModulesInManaged (19ms)
+			BeforeProcessingInitializeOnLoad (221ms)
+			ProcessInitializeOnLoadAttributes (319ms)
+			ProcessInitializeOnLoadMethodAttributes (491ms)
+			AfterProcessingInitializeOnLoad (13ms)
+		AwakeInstancesAfterBackupRestoration (48ms)
+Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=31ff78f9d99e19443b95d5c96657d08f): Total: 12.455 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2192 ms
+		Asset DB Callback time: managed=301 ms, native=26 ms
+		Scripting: domain reloads=1, domain reload time=1764 ms, compile time=8085 ms, other=86 ms
+		Project Asset Count: scripts=968, non-scripts=2253
+		Asset File Changes: new=1, changed=3, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 20.985ms
+	ApplyChangesToAssetFolders: 0.586ms
+	Scan: 95.836ms
+	Collect global state as custom dependencies: 31.597ms
+	OnSourceAssetsModified: 0.871ms
+	CategorizeScriptCompilationAssets: 32.721ms
+	ProcessAssetsWithTransientArtifactChanges: 83.797ms
+	CategorizeAssets: 83.767ms
+	CompileScripts: 8084.778ms
+	ImportOutOfDateAssets: 1633.050ms (1622.664ms without children)
+		ReloadNativeAssets: 0.055ms
+		UnloadImportedAssets: 5.088ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.251ms
+		ImportSchedulerStart: 3.987ms
+	PostProcessAllAssets: 301.640ms
+		VCAutoAddAssetPostprocess 1.468ms
+		XRBuildSystem.XRAssetImported 0.129ms
+		VersionControlSettings.HiddenFilePostprocess 0.111ms
+		PostProcessCallbackCreateDeferredMaterials 0.065ms
+		MonoPostProcessAllAssets: 299.025ms
+			AssetPostprocessor.OnPostprocessAllAssets 173.749ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 30.468ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 25.885ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 10.267ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 4.182ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 3.564ms
+			AssetChangedListener.OnPostprocessAllAssets 3.376ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.949ms
+			SyncVS.PostprocessSyncProject 2.660ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.643ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.982ms
+			MaterialPostprocessor.OnPostprocessAllAssets 1.557ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.323ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.179ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.797ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.772ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.751ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.706ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.584ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.532ms
+			PostProcessor.OnPostprocessAllAssets 0.500ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.498ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.491ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.458ms
+			AssetEvents.OnPostprocessAllAssets 0.402ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.393ms
+			AssetProcessor.OnPostprocessAllAssets 0.384ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.364ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.342ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.326ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.290ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.283ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.223ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.122ms
+	PostAssetChangesProfiler: 7.115ms
+	UnloadStreamsBegin: 2.436ms
+	PersistCurrentRevisions: 0.185ms
+	GenerateScriptTypeHashes: 3.361ms
+	GenerateScriptTypeSerializationHashes: 6.336ms
+	Untracked: 2069.021ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 2.740ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Adventure King Reborn
+Unloading 66 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3922 unused Assets / (10.0 MB). Loaded Objects now: 4874.
+Memory consumption went from 350.1 MB to 340.1 MB.
+Total: 17.082900 ms (FindLiveObjects: 0.944600 ms CreateObjectMapping: 0.477600 ms MarkObjects: 10.653700 ms  DeleteObjects: 4.695500 ms)
+
+Curl error 35: Recv failure: Connection was reset
+Importing 'GUID: a95ed05a6dde0a44f9d743517fd60082 - Path: Assets/Art/UI/ui_panel.png' with importer (TextureImporter)
+Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
+Asset Pipeline Refresh (id=112efeeca3ee116459bf944552e25420): Total: 0.140 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: c76076ffd6548c4836e96289ba5cf38d, producedFiles[0].extension: , producedFiles[0].contentHash: 31edcb4c20d915faf16fa993430f4ba3
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: 2d72480f4227fec760398781dcfa85cf, producedFiles[0].extension: , producedFiles[0].contentHash: f14ab2b46531802ee80c28ccb8822b5e
+Importer(TextureImporter) generated inconsistent result for asset(guid:a95ed05a6dde0a44f9d743517fd60082) "Assets/Art/UI/ui_panel.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:704)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:56)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:191)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 704]
+
+Importing 'GUID: a95ed05a6dde0a44f9d743517fd60082 - Path: Assets/Art/UI/ui_panel.png' with importer (TextureImporter)
+Imported 'GUID: a95ed05a6dde0a44f9d743517fd60082' -> (Import Result ID: 'c76076ffd6548c4836e96289ba5cf38d') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=70d7477c3b7cda9abebce2243c7c5883 DependenciesID=bc61f6b61799e4eff0dcaabd857868ee StaticDependenciesID=50ba16e619a4ad4306c58f8bd613d5c1 
+Asset Pipeline Refresh (id=e148b5b30a0829f459e7ce8f18e2e649): Total: 0.025 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: c76076ffd6548c4836e96289ba5cf38d, producedFiles[0].extension: , producedFiles[0].contentHash: 31edcb4c20d915faf16fa993430f4ba3
+ConsistencyChecker - guid: a95ed05a6dde0a44f9d743517fd60082, dependenciesHash.value: bc61f6b61799e4eff0dcaabd857868ee, importResultID: 2d72480f4227fec760398781dcfa85cf, producedFiles[0].extension: , producedFiles[0].contentHash: f14ab2b46531802ee80c28ccb8822b5e
+Importer(TextureImporter) generated inconsistent result for asset(guid:a95ed05a6dde0a44f9d743517fd60082) "Assets/Art/UI/ui_panel.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+UnityEditor.AssetDatabase:ImportAsset (string)
+UnityEditor.AssetImporter:SaveAndReimport ()
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:710)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:56)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:191)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 710]
+
+Importing 'GUID: a8c53e28846725349a567e4452955eaa - Path: Assets/Art/UI/ui_pill.png' with importer (TextureImporter)
+Imported 'GUID: a8c53e28846725349a567e4452955eaa' -> (Import Result ID: '6e324eeb9bf2ecfc1f13f3cb2a9200f8') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc8abdefac17bd5ed8c245858ea11af DependenciesID=a1a3784a24f0ecb690083fa668622c98 StaticDependenciesID=0d52825a4c7ae9949b742631091bb9f7 
+Asset Pipeline Refresh (id=18210ac21e3823c478d4a7fe22a8152c): Total: 0.024 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: 6e324eeb9bf2ecfc1f13f3cb2a9200f8, producedFiles[0].extension: , producedFiles[0].contentHash: 69ce02932a1b0727530639a2ab270257
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: aa659222456c67463407f934f6a93aa8, producedFiles[0].extension: , producedFiles[0].contentHash: b1b82a9ef003c83545902599911a4f05
+Importer(TextureImporter) generated inconsistent result for asset(guid:a8c53e28846725349a567e4452955eaa) "Assets/Art/UI/ui_pill.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:704)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:57)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:191)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 704]
+
+Importing 'GUID: a8c53e28846725349a567e4452955eaa - Path: Assets/Art/UI/ui_pill.png' with importer (TextureImporter)
+Imported 'GUID: a8c53e28846725349a567e4452955eaa' -> (Import Result ID: '6e324eeb9bf2ecfc1f13f3cb2a9200f8') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc8abdefac17bd5ed8c245858ea11af DependenciesID=a1a3784a24f0ecb690083fa668622c98 StaticDependenciesID=0d52825a4c7ae9949b742631091bb9f7 
+Asset Pipeline Refresh (id=6c7a580e1db1bd24c9da22376d193c2f): Total: 0.021 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: 6e324eeb9bf2ecfc1f13f3cb2a9200f8, producedFiles[0].extension: , producedFiles[0].contentHash: 69ce02932a1b0727530639a2ab270257
+ConsistencyChecker - guid: a8c53e28846725349a567e4452955eaa, dependenciesHash.value: a1a3784a24f0ecb690083fa668622c98, importResultID: aa659222456c67463407f934f6a93aa8, producedFiles[0].extension: , producedFiles[0].contentHash: b1b82a9ef003c83545902599911a4f05
+Importer(TextureImporter) generated inconsistent result for asset(guid:a8c53e28846725349a567e4452955eaa) "Assets/Art/UI/ui_pill.png"
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+UnityEditor.AssetDatabase:ImportAsset (string)
+UnityEditor.AssetImporter:SaveAndReimport ()
+AdventureKing.ArtPipeline.EntrySceneBuilder:RoundedSprite (string,int,int) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:710)
+AdventureKing.ArtPipeline.EntrySceneBuilder:InitUi () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:57)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:191)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+[Assets/Editor/ArtPipeline/EntrySceneBuilder.cs line 710]
+
+Importing 'GUID: e20b2cda29bfe6741810831bc292661c - Path: Assets/Art/UI/ui_enamel.png' with importer (TextureImporter)
+Imported 'GUID: e20b2cda29bfe6741810831bc292661c' -> (Import Result ID: 'ef60faccf2ccdab4ecd47fab6daae535') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=08d2d136a936447ecd8e6f96463df8c1 DependenciesID=65f251aadf51eac00f294feed78eb237 StaticDependenciesID=b7c50589b97ec5e4ae9fe3a76b33e68a 
+Asset Pipeline Refresh (id=b0c7023c58b73ab4999f8d3934751484): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e20b2cda29bfe6741810831bc292661c - Path: Assets/Art/UI/ui_enamel.png' with importer (TextureImporter)
+Imported 'GUID: e20b2cda29bfe6741810831bc292661c' -> (Import Result ID: 'ef60faccf2ccdab4ecd47fab6daae535') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=08d2d136a936447ecd8e6f96463df8c1 DependenciesID=65f251aadf51eac00f294feed78eb237 StaticDependenciesID=b7c50589b97ec5e4ae9fe3a76b33e68a 
+Asset Pipeline Refresh (id=da952f7b97984ba4f9315a792290ce29): Total: 0.027 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: c99feed878db6c84695ec57228effd8e - Path: Assets/Art/UI/ui_gilded_rim.png' with importer (TextureImporter)
+Imported 'GUID: c99feed878db6c84695ec57228effd8e' -> (Import Result ID: 'd4acd6880c30b755d0e485508b00fea7') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7577d96dc4c637f105367453935e5aca DependenciesID=3ff89271924067f7db12284deed62ff8 StaticDependenciesID=4b1cbb8daea46a8df55dafd0840ecfe7 
+Asset Pipeline Refresh (id=df7b1c35383069e4daf4d76ec8110c40): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: c99feed878db6c84695ec57228effd8e - Path: Assets/Art/UI/ui_gilded_rim.png' with importer (TextureImporter)
+Imported 'GUID: c99feed878db6c84695ec57228effd8e' -> (Import Result ID: 'd4acd6880c30b755d0e485508b00fea7') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7577d96dc4c637f105367453935e5aca DependenciesID=3ff89271924067f7db12284deed62ff8 StaticDependenciesID=4b1cbb8daea46a8df55dafd0840ecfe7 
+Asset Pipeline Refresh (id=28f786441a6cd0e4eba9debf83bc6964): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 8 unused Assets / (28.9 KB). Loaded Objects now: 4892.
+Memory consumption went from 334.4 MB to 334.4 MB.
+Total: 10.476700 ms (FindLiveObjects: 0.506400 ms CreateObjectMapping: 0.121800 ms MarkObjects: 9.504000 ms  DeleteObjects: 0.046400 ms)
+
+[UI] AuthCard: drawn border L58 B58 R58 T70, content (568.72, 716.36)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.EntrySceneBuilder:FramedContent (UnityEngine.GameObject,single,single) (at Assets/Editor/ArtPipeline/EntryLayoutKit.cs:115)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildAuth (UnityEngine.Transform,UnityEngine.UI.InputField&,UnityEngine.UI.InputField&,UnityEngine.UI.InputField&,UnityEngine.UI.Text&,UnityEngine.GameObject&,AdventureKing.Gameplay.AdventureEntryFlow) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:447)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:240)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/EntryLayoutKit.cs Line: 115)
+
+[UI] ClassCards: drawn border L38 B38 R38 T46, content (262.24, 504.12)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.EntrySceneBuilder:FramedContent (UnityEngine.GameObject,single,single) (at Assets/Editor/ArtPipeline/EntryLayoutKit.cs:115)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildSelection (UnityEngine.Transform,UnityEngine.RenderTexture,UnityEngine.Camera,UnityEngine.Transform,AdventureKing.Gameplay.AdventureEntryFlow,AdventureKing.Gameplay.HeroSelectionPreview3D&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.InputField&,UnityEngine.UI.Text[]&,UnityEngine.UI.Text&,UnityEngine.UI.Text&) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:527)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:241)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/EntryLayoutKit.cs Line: 115)
+
+[UI] ClassInfo: drawn border L38 B38 R38 T46, content (354.22, 496.11)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.EntrySceneBuilder:FramedContent (UnityEngine.GameObject,single,single) (at Assets/Editor/ArtPipeline/EntryLayoutKit.cs:115)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildSelection (UnityEngine.Transform,UnityEngine.RenderTexture,UnityEngine.Camera,UnityEngine.Transform,AdventureKing.Gameplay.AdventureEntryFlow,AdventureKing.Gameplay.HeroSelectionPreview3D&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.InputField&,UnityEngine.UI.Text[]&,UnityEngine.UI.Text&,UnityEngine.UI.Text&) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:564)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:241)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/EntryLayoutKit.cs Line: 115)
+
+[UI] SlotBar: drawn border L38 B38 R38 T46, content (1323.86, 132.12)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.EntrySceneBuilder:FramedContent (UnityEngine.GameObject,single,single) (at Assets/Editor/ArtPipeline/EntryLayoutKit.cs:115)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildSelection (UnityEngine.Transform,UnityEngine.RenderTexture,UnityEngine.Camera,UnityEngine.Transform,AdventureKing.Gameplay.AdventureEntryFlow,AdventureKing.Gameplay.HeroSelectionPreview3D&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.Text&,UnityEngine.UI.InputField&,UnityEngine.UI.Text[]&,UnityEngine.UI.Text&,UnityEngine.UI.Text&) (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:620)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:241)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/EntryLayoutKit.cs Line: 115)
+
+Importing 'GUID: a65aa526cc03b1b4da33fb600328767e - Path: Assets/Art/UI/HeroPreview_RT.renderTexture' with importer (NativeFormatImporter)
+Imported 'GUID: a65aa526cc03b1b4da33fb600328767e' -> (Import Result ID: '09da229fa359b96bff6904dad090b18b') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=e0bc215e6cea20144b937c48de542832 DependenciesID=ec0c460357f9cb0dcf133e781756169c StaticDependenciesID=c59ace39da21c4a433fb7d0e188f2fc0 
+Importing 'GUID: 8ad04eeecd328e245a796ad0b6bc5863 - Path: Assets/Art/UI/stage_gold.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 8ad04eeecd328e245a796ad0b6bc5863' -> (Import Result ID: 'd8cd4255af180e84780060e57f370b66') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4b0b54a1374b2336cdc548186eece040 DependenciesID=162fe63d79c452365e2db7ff92ac8b52 StaticDependenciesID=517f759fe3f21e0ac950bc1129e60563 
+Importing 'GUID: 7dad5d14343e3344c906e54a6989a418 - Path: Assets/Art/UI/stage_stone_light.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 7dad5d14343e3344c906e54a6989a418' -> (Import Result ID: 'e3ff94d75965cf12f7b377febc05a192') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=9e6dd2440781c8d5e637fdff79eaff41 DependenciesID=5a91cc5eeef4b26eabfe7ba54cf26a41 StaticDependenciesID=ddbf9875f9f39a64c2fe7ae4bfe82f95 
+Importing 'GUID: be28d5cc038480748b241eab8dd68639 - Path: Assets/Art/UI/stage_stone_dark.mat' with importer (NativeFormatImporter)
+Imported 'GUID: be28d5cc038480748b241eab8dd68639' -> (Import Result ID: '20f0fbd9ffe797923545757e8c99597b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=fe3763e48b502d5f5cfdbe3319589179 DependenciesID=11129aa6bab26eda70e47e4d83c0fe9d StaticDependenciesID=ff603f1439d5d31255f51381571c14e6 
+Importing 'GUID: 1f2be64d092f2ac4b9e90f1a135c644b - Path: Assets/Art/UI/stage_stone.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 1f2be64d092f2ac4b9e90f1a135c644b' -> (Import Result ID: '1e5a6036649b2702ae447dca62f24cb6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3e58565796e3b25c6e49c39cc6d8545d DependenciesID=5df15ccc4109729bdfb6aec11be8dddf StaticDependenciesID=c43b24ed8184e97209bf67152b45cd9b 
+Asset Pipeline Refresh (id=107d1a655233e3a4cbe02ed022f34517): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 84d49f2667b118c4f84344bc628a97a9 - Path: Assets/Scenes/AK_Entry.unity' with importer (DefaultImporter)
+Imported 'GUID: 84d49f2667b118c4f84344bc628a97a9' -> (Import Result ID: '7316519c998acb7e0078449804a8c732') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c88c7b413ceb075c2c811a3eca705768 DependenciesID=ea6f5710e20d2702bc82465d88e340d0 StaticDependenciesID=239bcae6ac1b474298649a17755d5327 
+Asset Pipeline Refresh (id=b007767e445d4b34ca00201600c80438): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[ENTRY] Scene built: Assets/Scenes/AK_Entry.unity
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.EntrySceneBuilder:Build () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:272)
+AdventureKing.ArtPipeline.EntrySceneBuilder:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/EntrySceneBuilder.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/EntrySceneBuilder.cs Line: 272)
+
+MonoPathRemapper: Attempts to remap: 8591; Successful remaps: 0
+Serialized file version minimum: 22, current 23
+Curl error 42: Callback aborted
+Worker ready: AssetImportWorkerHW0 0
+Killing ADB server in 2.102016 seconds.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-PC-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-PC channel disconnected successfully.
+Shut down.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+Shut down UDS service system complete
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+abort_threads: Failed aborting id: 00000000000026AC, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000001F24, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 00000000000026AC, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000001F24, mono_thread_manage will ignore it
+
+debugger-agent: Unable to listen on 4132
+[usbmuxd] Stop listen thread
+[usbmuxd] Listen thread exiting
+VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794190530714,"processId":5636,"allocatedMemory":15572514,"memoryLabels":[{"Default":200295},{"Permanent":15516},{"NewDelete":76743},{"Thread":4202008},{"Manager":31709},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":839496},{"Material":132},{"GfxDevice":58008},{"Animation":952},{"Audio":984},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":16576},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1258384},{"BaseObject":52912},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":13323},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":870353},{"StaticString":3808},{"Utility":2673718},{"Curl":2676},{"PoolAlloc":2264},{"AI":80},{"TypeTree":23229},{"ScriptManager":12656},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":7152},{"WebRequest":712},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":592},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":115725},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4482676},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40441},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3594},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+~StackAllocator(ALLOC_TEMP_MAIN) m_LastAlloc not NULL. Did you forget to call FreeAllStackAllocations()? To get more information, run app with -diag-temp-memory-leak-validation cmd line argument

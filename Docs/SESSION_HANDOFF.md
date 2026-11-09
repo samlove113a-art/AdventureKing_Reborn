@@ -6,7 +6,21 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
-## ★★★ Cập nhật mới nhất — Giai đoạn B/C: Shop thời trang 3D, tủ đồ server, NPC bán hàng (2026-11-08 tối)
+## ★★★★ Cập nhật mới nhất — Lệnh tổng hợp 2026-11-09: Đợt 1 (UI + nền đăng nhập)
+**Trạng thái:** Đợt 1 xong, đã test, đã commit (xem `git log`). Đợt 2 (HUD) và Đợt 3 (Shop) đang làm. **Meshy: 0 credit** (931).
+
+**Nguyên nhân gốc lỗi chữ đè hoa văn:** `Assets/Art/UI/Fantasy/frame_panel.png` được import ở chế độ sprite *Multiple* nên sprite Unity dùng (`frame_panel_0`) có viền 9-slice = 0 → mọi khung (đăng nhập, sảnh, hội thoại NPC, xác nhận cổng, shop) bị vẽ như MỘT ảnh kéo giãn: hoa văn phình theo kích thước panel và đè lên chữ. Sửa trong mã sinh (`EntrySceneBuilder.FantasySprite` → Single).
+
+**Giải pháp dùng chung** (`Assets/Editor/ArtPipeline/EntryLayoutKit.cs`): đo viền khung Unity thực vẽ (`DrawnBorder` từ mesh 9-slice), chỉnh độ dày viền (`SetBand`), vùng nội dung bên trong hoa văn (`FramedContent`), xếp bằng Layout Group (`VStack/HRow/Size`), nhãn nút một dòng tự co (`FitOneLine`), chữ trong ô nhập cách viền, panel cách mép ≥ 100 đơn vị (an toàn tai thỏ).
+
+**Nền đăng nhập mới** (`LoginBackdropBaker.cs` → `Assets/Art/UI/LoginBackdrop/`): Làng Chuông Gió lúc bình minh (cầu đá, đa cổ treo đèn, tháp chuông, rừng nấm phát sáng) render từ chính thế giới game 2816×1584 + trời/đồi thủ tục — không ảnh phóng to, không tài nguyên ngoài. `LoginBackdrop.cs`: 4 lớp parallax trôi chậm (chu kỳ 22 s, ≤ 3% màn hình), sương, tia nắng, đom đóm; đồ họa "Thấp" → tĩnh, tắt hạt. Nền này cũng nằm sau sảnh chọn nhân vật (camera sân khấu nền trong suốt) và màn hình tải.
+
+**Kiểm tra UI tự động** (`Assets/Tests/PlayMode/UiAudit.cs`): render từng màn ở 1920×1080, 1366×768, điện thoại 19.5:9 / 16:9, tablet 4:3; đo glyph thật: chữ đè chữ, chữ bị cắt/tràn, chữ trên viền hoa văn, chữ/nút ngoài safe area, nút < 40 px, nút bị che, chữ bị panel che; bỏ qua nền phía sau hộp thoại modal. `UiScreensTests`: (1) đối chứng âm — dựng lại đúng lỗi chủ dự án chụp, audit phải bắt được; (2) Splash, Đăng nhập, Đăng ký, lỗi đăng ký thật từ server, Sảnh tạo nhân vật — **0 lỗi ở cả 5 độ phân giải**. Ảnh: `QA/UI/entry/*.png`, báo cáo `QA/UI/entry/report.txt`, nền `QA/UI/login_bg_composite.png`.
+
+**Kết quả test Đợt 1:** server 83/83, EditMode 4/4, PlayMode 37 passed / 0 failed / 2 skipped, 0 exception. Test audit trong làng (`UiTownScreensTests`) chưa đưa vào Đợt 1 vì HUD/Shop cũ còn lỗi — sẽ vào cùng Đợt 2/3 (không đổi thứ tự test để che lỗi).
+
+---
+## ★★★ Giai đoạn B/C: Shop thời trang 3D, tủ đồ server, NPC bán hàng (2026-11-08 tối)
 **Commit:** `0b9b539` (server) + commit client/art tiếp theo (xem `git log`), nối tiếp `b073e14`. **Meshy: 0 credit** (số dư vẫn 931). Không mua tài nguyên, không bật thanh toán thật, không đổi giá gói Kim Cương.
 
 ### Đã hoàn thành (có kiểm thử thật)

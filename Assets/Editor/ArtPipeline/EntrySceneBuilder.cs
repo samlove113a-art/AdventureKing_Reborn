@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using AdventureKing.Gameplay;
 using UnityEditor;
 using UnityEditor.Events;
@@ -18,7 +18,7 @@ namespace AdventureKing.ArtPipeline
     /// the four animated class prefabs, drag-to-rotate, Try Attack / Try Skill / Reset View.
     /// Authentication stays fail-closed: no backend is wired, so login cannot fake success.
     /// </summary>
-    public static class EntrySceneBuilder
+    public static partial class EntrySceneBuilder
     {
         public const string ScenePath = "Assets/Scenes/AK_Entry.unity";
         public const int PreviewLayer = 29;
@@ -124,9 +124,12 @@ namespace AdventureKing.ArtPipeline
         {
             if (!File.Exists(path)) return null;
             var ti = (TextureImporter)AssetImporter.GetAtPath(path);
-            if (ti.textureType != TextureImporterType.Sprite || ti.spriteBorder != border)
+            // Single mode: in Multiple mode the sub-sprite (frame_panel_0) has NO border, so the frame was drawn as one
+            // stretched picture (ornament scaling with the panel, text landing on the crest). 9-slice needs Single.
+            if (ti.textureType != TextureImporterType.Sprite || ti.spriteBorder != border || ti.spriteImportMode != SpriteImportMode.Single)
             {
                 ti.textureType = TextureImporterType.Sprite;
+                ti.spriteImportMode = SpriteImportMode.Single;
                 ti.spriteBorder = border;
                 ti.alphaIsTransparency = true;
                 ti.mipmapEnabled = false;
@@ -221,6 +224,8 @@ namespace AdventureKing.ArtPipeline
             canvasGo.AddComponent<GraphicRaycaster>();
             var flow = canvasGo.AddComponent<AdventureEntryFlow>();
 
+            BuildBackdrop(canvasGo.transform); // fantasy dawn village behind login + hero hall (splash covers it)
+
             // Studio splash: the owner-provided SAM logo (dark metal + black lettering) on a warm ivory field.
             GameObject splash = Panel(canvasGo.transform, "SplashRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.965f, 0.955f, 0.935f, 1f), null);
             Sprite ownerLogo = OwnerLogo();
@@ -311,9 +316,9 @@ namespace AdventureKing.ArtPipeline
 
             // Tiered stone dais with a gold inlay ring and soft glyph glow.
             Prim(PrimitiveType.Cylinder, "DaisBase", new Vector3(0, -0.18f, 0), new Vector3(2.6f, 0.12f, 2.6f), Toon("stage_stone_dark", new Color(0.32f, 0.36f, 0.44f), 0.004f), stage);
-            Prim(PrimitiveType.Cylinder, "DaisTop", new Vector3(0, -0.04f, 0), new Vector3(2.1f, 0.06f, 2.1f), Toon("stage_stone", new Color(0.56f, 0.6f, 0.68f), 0.004f), stage);
+            Prim(PrimitiveType.Cylinder, "DaisTop", new Vector3(0, -0.04f, 0), new Vector3(2.1f, 0.06f, 2.1f), Toon("stage_stone", new Color(0.4f, 0.42f, 0.5f), 0.004f), stage);
             Prim(PrimitiveType.Cylinder, "DaisInlay", new Vector3(0, 0.0f, 0), new Vector3(1.75f, 0.022f, 1.75f), Toon("stage_gold", new Color(0.95f, 0.76f, 0.38f)), stage);
-            Prim(PrimitiveType.Cylinder, "DaisCenter", new Vector3(0, 0.008f, 0), new Vector3(1.6f, 0.022f, 1.6f), Toon("stage_stone_light", new Color(0.66f, 0.7f, 0.78f)), stage);
+            Prim(PrimitiveType.Cylinder, "DaisCenter", new Vector3(0, 0.008f, 0), new Vector3(1.6f, 0.022f, 1.6f), Toon("stage_stone_light", new Color(0.46f, 0.48f, 0.55f)), stage);
             var glyph = new GameObject("DaisGlyph");
             glyph.layer = L;
             glyph.transform.SetParent(stage, false);
@@ -330,26 +335,8 @@ namespace AdventureKing.ArtPipeline
             sso.FindProperty("tint").colorValue = new Color(0.55f, 0.85f, 1f, 0.55f);
             sso.ApplyModifiedPropertiesWithoutUndo();
 
-            // Backdrop: deep gradient wall, distant pillars for depth, drifting light motes.
-            var back = new GameObject("Backdrop");
-            back.layer = L;
-            back.transform.SetParent(stage, false);
-            back.transform.localPosition = new Vector3(0, 2.2f, 7f);
-            back.transform.localScale = new Vector3(28, 14, 1);
-            back.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Quad.fbx");
-            var bmr = back.AddComponent<MeshRenderer>();
-            bmr.sharedMaterial = GradientMaterial();
-            bmr.shadowCastingMode = ShadowCastingMode.Off;
-            var pillar = Toon("stage_pillar", new Color(0.2f, 0.26f, 0.36f), 0.006f);
-            for (int i = 0; i < 6; i++)
-            {
-                float x = (i - 2.5f) * 2.6f;
-                float z = 3.6f + (i % 2) * 1.2f;
-                Prim(PrimitiveType.Cylinder, "Pillar" + i, new Vector3(x, 1.8f, z), new Vector3(0.45f, 2.6f, 0.45f), pillar, stage);
-                Prim(PrimitiveType.Cube, "PillarCap" + i, new Vector3(x, 4.45f, z), new Vector3(0.75f, 0.18f, 0.75f), pillar, stage);
-            }
-            var floor = Prim(PrimitiveType.Plane, "HallFloor", new Vector3(0, -0.24f, 3f), new Vector3(3, 1, 2), Toon("stage_floor", new Color(0.18f, 0.22f, 0.3f)), stage);
-            floor.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+            // No wall / pillars / floor any more: the camera clears to transparent and the shared fantasy backdrop
+            // (LoginBackdrop) is visible behind the dais and the hero.
             var motes = new GameObject("Motes");
             motes.layer = L;
             motes.transform.SetParent(stage, false);
@@ -376,19 +363,17 @@ namespace AdventureKing.ArtPipeline
             key.transform.rotation = Quaternion.Euler(38f, -28f, 0f);
             var kl = key.AddComponent<Light>();
             kl.type = LightType.Directional;
-            kl.intensity = 1.2f;
-            kl.color = new Color(1f, 0.94f, 0.84f);
+            kl.intensity = 1.0f;
+            kl.color = new Color(1f, 0.9f, 0.8f);
             kl.shadows = LightShadows.Soft;
             kl.shadowStrength = 0.65f;
             RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = new Color(0.45f, 0.58f, 0.85f);
             RenderSettings.ambientEquatorColor = new Color(0.4f, 0.42f, 0.55f);
             RenderSettings.ambientGroundColor = new Color(0.2f, 0.18f, 0.22f);
-            RenderSettings.fog = true;
-            RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(0.1f, 0.13f, 0.22f);
-            RenderSettings.fogStartDistance = 9f;
-            RenderSettings.fogEndDistance = 22f;
+            RenderSettings.fog = false;
+            RenderSettings.ambientSkyColor = new Color(0.86f, 0.78f, 0.78f); // warm dawn, matches the backdrop
+            RenderSettings.ambientEquatorColor = new Color(0.72f, 0.66f, 0.66f);
 
             var mountGo = new GameObject("ModelMount");
             mountGo.layer = L;
@@ -404,8 +389,10 @@ namespace AdventureKing.ArtPipeline
             cam.fieldOfView = 26f;
             cam.cullingMask = 1 << L;
             cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = new Color(0.08f, 0.1f, 0.17f, 1f);
+            cam.backgroundColor = new Color(0f, 0f, 0f, 0f); // transparent: backdrop shows through
             cam.targetTexture = rt;
+            var camData = camGo.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+            camData.renderPostProcessing = false; // keeps the alpha channel
             cam.nearClipPlane = 0.1f;
             cam.farClipPlane = 40f;
             return cam;
@@ -445,32 +432,66 @@ namespace AdventureKing.ArtPipeline
         private static GameObject BuildAuth(Transform canvas, out InputField acc, out InputField pwd, out InputField confirm,
             out Text status, out GameObject registerFields, AdventureEntryFlow flow)
         {
-            GameObject root = Panel(canvas, "AuthRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.05f, 0.07f, 0.12f, 1f), null);
-            Img(root.transform, "Glow", new Vector2(0.5f, 0.55f), new Vector2(1400, 900), new Color(0.25f, 0.35f, 0.6f, 0.25f), RoundedSprite("ui_glow", 128, 60));
-            GameObject card = Panel(root.transform, "AuthCard", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -20), new Vector2(700, 800), Ink, panelSprite);
+            // Transparent root: the shared fantasy backdrop (LoginBackdrop, behind every entry screen) shows through.
+            GameObject root = Panel(canvas, "AuthRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0f), null);
+            root.GetComponent<Image>().raycastTarget = false;
+            // Card on the right third on wide screens (the scene stays visible), centred on narrow ones.
+            GameObject card = Panel(root.transform, "AuthCard", new Vector2(0.71f, 0.5f), new Vector2(0.71f, 0.5f), Vector2.zero, new Vector2(720, 880), Ink, panelSprite);
+            var anchor = card.AddComponent<ResponsiveAnchor>();
+            var aso = new SerializedObject(anchor);
+            aso.FindProperty("wideX").floatValue = 0.71f;
+            aso.FindProperty("narrowX").floatValue = 0.5f;
+            aso.FindProperty("wideAspect").floatValue = 1.55f;
+            aso.ApplyModifiedPropertiesWithoutUndo();
             Frame(card, 2.6f);
-            Label(card.transform, "Title", "Đăng nhập", 50, Gold, new Vector2(0.5f, 1f), new Vector2(0, -70), new Vector2(560, 70), FontStyle.Bold);
-            Label(card.transform, "Subtitle", "Tài khoản Adventure King", 24, Muted, new Vector2(0.5f, 1f), new Vector2(0, -122), new Vector2(560, 36));
-            acc = Field(card.transform, "AccountInput", "Tên tài khoản hoặc email", new Vector2(0, -200), false);
-            pwd = Field(card.transform, "PasswordInput", "Mật khẩu (tối thiểu 8 ký tự)", new Vector2(0, -282), true);
+            RectTransform content = FramedContent(card, 18f, topBand: 70f);
+            VStack(content, 12f, TextAnchor.MiddleCenter);
+
+            Text title = BlockLabel(content, "Title", "Đăng nhập", 44, Gold, 58f, FontStyle.Bold);
+            var tOutline = title.gameObject.AddComponent<Outline>();
+            tOutline.effectColor = new Color(0.25f, 0.13f, 0.04f, 0.85f);
+            tOutline.effectDistance = new Vector2(1.5f, -1.5f);
+            BlockLabel(content, "Subtitle", "Chào mừng đến Adventure King", 22, Muted, 30f);
+            acc = Field(content, "AccountInput", "Tên tài khoản hoặc email", Vector2.zero, false, new Vector2(560, 76));
+            Size(acc, 76f);
+            pwd = Field(content, "PasswordInput", "Mật khẩu (tối thiểu 8 ký tự)", Vector2.zero, true, new Vector2(560, 76));
+            Size(pwd, 76f);
             registerFields = new GameObject("RegisterFields", typeof(RectTransform));
-            registerFields.transform.SetParent(card.transform, false);
-            Stretch((RectTransform)registerFields.transform);
-            confirm = Field(registerFields.transform, "ConfirmPasswordInput", "Nhập lại mật khẩu", new Vector2(0, -364), true);
+            registerFields.layer = 5;
+            registerFields.transform.SetParent(content, false);
+            Size(registerFields.transform, 76f);
+            confirm = Field(registerFields.transform, "ConfirmPasswordInput", "Nhập lại mật khẩu", Vector2.zero, true, new Vector2(560, 76));
+            Stretch((RectTransform)confirm.transform);
             registerFields.SetActive(false);
 
-            Button login = Btn(card.transform, "LoginButton", "Đăng nhập", new Vector2(-140, -460), new Vector2(260, 70), Gold, new Color(0.15f, 0.1f, 0.05f));
-            Button register = Btn(card.transform, "RegisterButton", "Đăng ký", new Vector2(140, -460), new Vector2(260, 70), new Color(0.3f, 0.4f, 0.6f), Cream);
-            Button google = Btn(card.transform, "GoogleButton", "Tiếp tục với Google", new Vector2(0, -552), new Vector2(540, 62), new Color(0.95f, 0.96f, 0.98f), new Color(0.15f, 0.17f, 0.2f));
-            Button facebook = Btn(card.transform, "FacebookButton", "Tiếp tục với Facebook", new Vector2(0, -626), new Vector2(540, 62), new Color(0.23f, 0.38f, 0.7f), Color.white);
-            var toggleRow = Btn(card.transform, "ToggleRegister", "Chưa có tài khoản? Tạo mới", new Vector2(0, -700), new Vector2(540, 44), new Color(0, 0, 0, 0), Muted);
-            status = Label(card.transform, "AuthStatus", "", 22, new Color(1f, 0.62f, 0.55f), new Vector2(0.5f, 0f), new Vector2(0, -36), new Vector2(600, 60));
+            RectTransform row1 = HRow(content, "PrimaryRow", 72f, 16f);
+            Button login = Btn(row1, "LoginButton", "Đăng nhập", Vector2.zero, new Vector2(270, 72), Gold, new Color(0.15f, 0.1f, 0.05f));
+            Size(login, 72f, 270f, 1f);
+            Button register = Btn(row1, "RegisterButton", "Đăng ký", Vector2.zero, new Vector2(270, 72), new Color(0.3f, 0.4f, 0.6f), Cream);
+            Size(register, 72f, 270f, 1f);
+            BlockLabel(content, "Or", "hoặc", 20, Muted, 26f);
+            RectTransform row2 = HRow(content, "SocialRow", 64f, 16f);
+            Button google = Btn(row2, "GoogleButton", "Google", Vector2.zero, new Vector2(270, 64), new Color(0.95f, 0.96f, 0.98f), new Color(0.15f, 0.17f, 0.2f));
+            Size(google, 64f, 270f, 1f);
+            Button facebook = Btn(row2, "FacebookButton", "Facebook", Vector2.zero, new Vector2(270, 64), new Color(0.23f, 0.38f, 0.7f), Color.white);
+            Size(facebook, 64f, 270f, 1f);
+            var toggleRow = Btn(content, "ToggleRegister", "Chưa có tài khoản? Tạo mới", Vector2.zero, new Vector2(560, 46), new Color(0, 0, 0, 0), new Color(0.85f, 0.9f, 1f));
+            Size(toggleRow, 46f);
+            Text toggleLabel = toggleRow.GetComponentInChildren<Text>();
+            toggleLabel.fontStyle = FontStyle.Normal;
+            status = BlockLabel(content, "AuthStatus", "", 22, new Color(1f, 0.66f, 0.58f), 56f);
 
             UnityEventTools.AddPersistentListener(login.onClick, flow.LoginPassword);
             UnityEventTools.AddPersistentListener(register.onClick, flow.RegisterPassword);
             UnityEventTools.AddPersistentListener(google.onClick, flow.ContinueWithGoogle);
             UnityEventTools.AddPersistentListener(facebook.onClick, flow.ContinueWithFacebook);
-            UnityEventTools.AddBoolPersistentListener(toggleRow.onClick, flow.SetRegisterMode, true);
+            UnityEventTools.AddPersistentListener(toggleRow.onClick, flow.ToggleRegisterMode);
+            var fso = new SerializedObject(flow);
+            fso.FindProperty("authTitle").objectReferenceValue = title;
+            fso.FindProperty("registerToggleLabel").objectReferenceValue = toggleLabel;
+            fso.FindProperty("loginButton").objectReferenceValue = login;
+            fso.FindProperty("registerButton").objectReferenceValue = register;
+            fso.ApplyModifiedPropertiesWithoutUndo();
             return root;
         }
 
@@ -489,18 +510,22 @@ namespace AdventureKing.ArtPipeline
             raw.texture = rt;
             raw.raycastTarget = true;
             preview = raw.gameObject.AddComponent<HeroSelectionPreview3D>();
-            var vignette = Img(root.transform, "Vignette", new Vector2(0.5f, 0.5f), new Vector2(1920, 1080), new Color(0, 0, 0, 0.0f), null);
-            vignette.raycastTarget = false;
 
-            Text hallTitle = Label(root.transform, "HallTitle", "Chọn Anh Hùng", 52, Gold, new Vector2(0.5f, 1f), new Vector2(0, -60), new Vector2(800, 70), FontStyle.Bold);
+            Text hallTitle = Label(root.transform, "HallTitle", "Chọn Anh Hùng", 52, Gold, new Vector2(0.5f, 1f), new Vector2(0, -64), new Vector2(760, 70), FontStyle.Bold);
             hallTitle.raycastTarget = false;
             var outline = hallTitle.gameObject.AddComponent<Outline>();
             outline.effectColor = new Color(0.25f, 0.13f, 0.04f, 0.9f);
             outline.effectDistance = new Vector2(2f, -2f);
 
-            // Class cards (left)
-            GameObject cards = Panel(root.transform, "ClassCards", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(210, 40), new Vector2(370, 680), InkSoft, panelSprite);
+            // Every panel keeps >= 100 units from the screen edges (phone notches / rounded corners) and is laid out
+            // with measured frame content areas + layout groups (no hand-placed text inside ornaments).
+            const float Edge = 100f;
+
+            // ---- class cards (left)
+            GameObject cards = Panel(root.transform, "ClassCards", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(Edge + 175, 95), new Vector2(350, 600), InkSoft, panelSprite);
             Frame(cards, 3.2f);
+            RectTransform cardList = FramedContent(cards, 6f, topBand: 46f);
+            VStack(cardList, 10f, TextAnchor.MiddleCenter);
             (string name, string role, HeroClass c, Color tint)[] classes =
             {
                 ("Kiếm Sĩ", "Cận chiến • Bền bỉ", HeroClass.Swordsman, new Color(1f, 0.55f, 0.35f)),
@@ -511,11 +536,19 @@ namespace AdventureKing.ArtPipeline
             for (int i = 0; i < classes.Length; i++)
             {
                 var (n, role, c, tint) = classes[i];
-                Button b = Btn(cards.transform, "Card_" + c, "", new Vector2(0, 225 - i * 150), new Vector2(290, 132), new Color(0.13f, 0.17f, 0.26f, 0.95f), Cream);
-                var bar = Img(b.transform, "Accent", new Vector2(0f, 0.5f), new Vector2(10, 104), tint, pillSprite);
-                bar.rectTransform.anchoredPosition = new Vector2(22, 0);
-                Label(b.transform, "Name", n, 34, Cream, new Vector2(0.5f, 0.5f), new Vector2(12, 18), new Vector2(240, 46), FontStyle.Bold).alignment = TextAnchor.MiddleLeft;
-                Label(b.transform, "Role", role, 20, tint, new Vector2(0.5f, 0.5f), new Vector2(12, -24), new Vector2(240, 30)).alignment = TextAnchor.MiddleLeft;
+                Button b = Btn(cardList, "Card_" + c, "", Vector2.zero, new Vector2(270, 112), new Color(0.13f, 0.17f, 0.26f, 0.95f), Cream);
+                Size(b, 112f);
+                var bar = Img(b.transform, "Accent", new Vector2(0f, 0.5f), new Vector2(10, 84), tint, pillSprite);
+                bar.rectTransform.anchoredPosition = new Vector2(26, 0);
+                var nameBox = new GameObject("NameBox", typeof(RectTransform));
+                nameBox.layer = 5;
+                nameBox.transform.SetParent(b.transform, false);
+                var nb = (RectTransform)nameBox.transform;
+                nb.anchorMin = Vector2.zero; nb.anchorMax = Vector2.one;
+                nb.offsetMin = new Vector2(46, 14); nb.offsetMax = new Vector2(-22, -12);
+                VStack(nb, 2f, TextAnchor.MiddleLeft);
+                BlockLabel(nb, "Name", n, 32, Cream, 44f, FontStyle.Bold, TextAnchor.MiddleLeft);
+                BlockLabel(nb, "Role", role, 19, tint, 26f, FontStyle.Normal, TextAnchor.MiddleLeft);
                 switch (c)
                 {
                     case HeroClass.Swordsman: UnityEventTools.AddPersistentListener(b.onClick, flow.SelectSwordsman); break;
@@ -525,13 +558,14 @@ namespace AdventureKing.ArtPipeline
                 }
             }
 
-            // Detail panel (right)
-            GameObject info = Panel(root.transform, "ClassInfo", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-250, 60), new Vector2(460, 620), InkSoft, panelSprite);
+            // ---- class details + preview actions (right)
+            GameObject info = Panel(root.transform, "ClassInfo", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-(Edge + 225), 95), new Vector2(450, 600), InkSoft, panelSprite);
             Frame(info, 3.0f);
-            heroName = Label(info.transform, "HeroName", "", 48, Gold, new Vector2(0.5f, 1f), new Vector2(0, -56), new Vector2(380, 64), FontStyle.Bold);
-            heroDesc = Label(info.transform, "HeroDescription", "", 24, Cream, new Vector2(0.5f, 1f), new Vector2(0, -150), new Vector2(370, 110));
-            heroDesc.alignment = TextAnchor.UpperCenter;
-            heroStats = Label(info.transform, "HeroStats", "", 22, Muted, new Vector2(0.5f, 1f), new Vector2(0, -240), new Vector2(380, 40));
+            RectTransform infoC = FramedContent(info, 10f, topBand: 46f);
+            VStack(infoC, 6f, TextAnchor.UpperCenter);
+            heroName = BlockLabel(infoC, "HeroName", "", 40, Gold, 52f, FontStyle.Bold);
+            heroDesc = BlockLabel(infoC, "HeroDescription", "", 22, Cream, 96f, FontStyle.Normal, TextAnchor.UpperCenter);
+            heroStats = BlockLabel(infoC, "HeroStats", "", 19, Muted, 28f);
             var bars = info.AddComponent<HeroStatBars>();
             var bso = new SerializedObject(bars);
             var fills = bso.FindProperty("fills");
@@ -539,41 +573,60 @@ namespace AdventureKing.ArtPipeline
             fills.arraySize = statNames.Length;
             for (int i = 0; i < statNames.Length; i++)
             {
-                float y = -300 - i * 54;
-                Label(info.transform, "StatLabel" + i, statNames[i], 20, Muted, new Vector2(0.5f, 1f), new Vector2(-110, y), new Vector2(170, 30)).alignment = TextAnchor.MiddleLeft;
+                RectTransform row = HRow(infoC, "StatRow" + i, 34f, 10f, TextAnchor.MiddleLeft);
+                Text sl = BlockLabel(row, "StatLabel" + i, statNames[i], 19, Muted, 34f, FontStyle.Normal, TextAnchor.MiddleLeft);
+                Size(sl, 34f, 150f, 0f, 150f);
+                var track = new GameObject("StatTrack" + i, typeof(RectTransform));
+                track.layer = 5;
+                track.transform.SetParent(row, false);
+                Size(track.transform, 34f, 200f, 1f, 160f);
                 if (frameBar)
                 {
-                    // Gilded bar frame (Meshy art) behind the fill; its dark groove is the empty part of the bar.
-                    var fr = Img(info.transform, "StatFrame" + i, new Vector2(0.5f, 1f), new Vector2(272, 40), Color.white, frameBar);
+                    // gilded bar frame (Meshy art) around the groove; the fill grows inside it
+                    var fr = Img(track.transform, "StatFrame" + i, new Vector2(0.5f, 0.5f), Vector2.zero, Color.white, frameBar);
+                    fr.rectTransform.anchorMin = Vector2.zero; fr.rectTransform.anchorMax = Vector2.one;
+                    fr.rectTransform.offsetMin = fr.rectTransform.offsetMax = Vector2.zero;
                     fr.pixelsPerUnitMultiplier = 4.5f;
-                    fr.rectTransform.anchoredPosition = new Vector2(80, y);
                 }
-                Img(info.transform, "StatBack" + i, new Vector2(0.5f, 1f), new Vector2(200, 14), new Color(1, 1, 1, 0.06f), pillSprite).rectTransform.anchoredPosition = new Vector2(80, y);
-                var fill = Img(info.transform, "StatFill" + i, new Vector2(0.5f, 1f), new Vector2(200, 14), Gold, pillSprite);
+                var groove = Img(track.transform, "StatBack" + i, new Vector2(0.5f, 0.5f), Vector2.zero, new Color(1, 1, 1, 0.06f), pillSprite);
+                groove.rectTransform.anchorMin = new Vector2(0f, 0.5f); groove.rectTransform.anchorMax = new Vector2(1f, 0.5f);
+                groove.rectTransform.offsetMin = new Vector2(18f, -6f); groove.rectTransform.offsetMax = new Vector2(-18f, 6f);
+                var fill = Img(groove.transform, "StatFill" + i, new Vector2(0f, 0.5f), new Vector2(150, 12), Gold, pillSprite);
                 fill.rectTransform.pivot = new Vector2(0f, 0.5f);
-                fill.rectTransform.anchoredPosition = new Vector2(-20, y);
+                fill.rectTransform.anchoredPosition = Vector2.zero;
                 fills.GetArrayElementAtIndex(i).objectReferenceValue = fill.rectTransform;
             }
             bso.FindProperty("preview").objectReferenceValue = preview;
             bso.ApplyModifiedPropertiesWithoutUndo();
-
-            // Preview actions (bottom centre)
-            Button atk = Btn(root.transform, "TryAttack", "Xem đòn đánh", new Vector2(-220, -330), new Vector2(240, 64), new Color(0.2f, 0.26f, 0.38f, 0.95f), Cream, new Vector2(0.5f, 0.5f));
-            Button skl = Btn(root.transform, "TrySkill", "Xem kỹ năng", new Vector2(40, -330), new Vector2(240, 64), new Color(0.48f, 0.3f, 0.7f, 0.95f), Cream, new Vector2(0.5f, 0.5f));
-            Button rst = Btn(root.transform, "ResetView", "Đặt lại góc nhìn", new Vector2(290, -330), new Vector2(220, 64), new Color(0.2f, 0.26f, 0.38f, 0.95f), Muted, new Vector2(0.5f, 0.5f));
+            BlockLabel(infoC, "DragHint", "Kéo nhân vật để xoay", 18, Muted, 26f).raycastTarget = false;
+            RectTransform actions = HRow(infoC, "PreviewActions", 62f, 8f);
+            Button atk = Btn(actions, "TryAttack", "Đòn đánh", Vector2.zero, new Vector2(120, 62), new Color(0.2f, 0.26f, 0.38f, 0.95f), Cream);
+            Size(atk, 62f, 120f, 1f);
+            Button skl = Btn(actions, "TrySkill", "Kỹ năng", Vector2.zero, new Vector2(120, 62), new Color(0.48f, 0.3f, 0.7f, 0.95f), Cream);
+            Size(skl, 62f, 120f, 1f);
+            Button rst = Btn(actions, "ResetView", "Góc nhìn", Vector2.zero, new Vector2(120, 62), new Color(0.2f, 0.26f, 0.38f, 0.95f), Muted);
+            Size(rst, 62f, 120f, 1f);
             UnityEventTools.AddPersistentListener(atk.onClick, preview.PlayAttackPreview);
             UnityEventTools.AddPersistentListener(skl.onClick, preview.PlaySkillPreview);
             UnityEventTools.AddPersistentListener(rst.onClick, preview.ResetRotation);
-            Label(root.transform, "DragHint", "Kéo để xoay nhân vật", 20, Muted, new Vector2(0.5f, 0.5f), new Vector2(0, -280), new Vector2(400, 30)).raycastTarget = false;
 
-            // Slots + naming (bottom bar)
-            GameObject bottom = Panel(root.transform, "SlotBar", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0, 98), new Vector2(1760, 186), Ink, panelSprite);
+            // ---- slots + naming (bottom bar, stretched between the safe margins)
+            GameObject bottom = Panel(root.transform, "SlotBar", new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, Vector2.zero, Ink, panelSprite);
+            var br = (RectTransform)bottom.transform;
+            br.pivot = new Vector2(0.5f, 0f);
+            br.offsetMin = new Vector2(Edge, 24f);
+            br.offsetMax = new Vector2(-Edge, 24f + 232f);
             Frame(bottom, 3.4f);
+            RectTransform barC = FramedContent(bottom, 8f, topBand: 46f);
+            VStack(barC, 8f, TextAnchor.MiddleCenter);
+            existing = BlockLabel(barC, "ExistingDetails", "", 20, Muted, 28f);
+            RectTransform slotRow = HRow(barC, "SlotRow", 84f, 12f);
             slots = new Text[4];
             for (int i = 0; i < 4; i++)
             {
-                Button s = Btn(bottom.transform, "Slot" + i, "", new Vector2(-660 + i * 250, 0), new Vector2(232, 104), new Color(0.13f, 0.17f, 0.26f, 1f), Cream);
-                slots[i] = Label(s.transform, "Label", "Ô " + (i + 1), 20, Cream, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(214, 96));
+                Button s = Btn(slotRow, "Slot" + i, "", Vector2.zero, new Vector2(190, 84), new Color(0.13f, 0.17f, 0.26f, 1f), Cream);
+                Size(s, 84f, 180f, 1f, 120f);
+                slots[i] = FillLabel(s.transform, "Label", "Ô " + (i + 1), 20, Cream, FontStyle.Normal, 16f, 6f, 14);
                 switch (i)
                 {
                     case 0: UnityEventTools.AddPersistentListener(s.onClick, flow.SelectSlot0); break;
@@ -582,14 +635,18 @@ namespace AdventureKing.ArtPipeline
                     default: UnityEventTools.AddPersistentListener(s.onClick, flow.SelectSlot3); break;
                 }
             }
-            charName = Field(bottom.transform, "CharacterNameInput", "Tên nhân vật (3–16 ký tự)", new Vector2(420, 28), false, new Vector2(340, 56), new Vector2(0.5f, 0.5f));
-            Button create = Btn(bottom.transform, "CreateAndEnter", "Tạo & vào game", new Vector2(330, -34), new Vector2(200, 56), Gold, new Color(0.15f, 0.1f, 0.05f));
-            Button enter = Btn(bottom.transform, "EnterGame", "Vào game", new Vector2(560, -34), new Vector2(200, 56), new Color(0.3f, 0.6f, 0.4f), Color.white);
-            existing = Label(bottom.transform, "ExistingDetails", "", 20, Muted, new Vector2(0.5f, 1f), new Vector2(0, 26), new Vector2(1200, 30));
-            status = Label(root.transform, "SelectionStatus", "", 22, new Color(1f, 0.62f, 0.55f), new Vector2(0.5f, 0f), new Vector2(0, 186), new Vector2(1200, 34));
+            charName = Field(slotRow, "CharacterNameInput", "Tên nhân vật (3–16 ký tự)", Vector2.zero, false, new Vector2(340, 72), new Vector2(0.5f, 0.5f));
+            Size(charName, 72f, 400f, 1.6f, 320f);
+            Button create = Btn(slotRow, "CreateAndEnter", "Tạo & vào game", Vector2.zero, new Vector2(220, 72), Gold, new Color(0.15f, 0.1f, 0.05f));
+            Size(create, 72f, 220f, 0.4f, 170f);
+            Button enter = Btn(slotRow, "EnterGame", "Vào game", Vector2.zero, new Vector2(170, 72), new Color(0.3f, 0.6f, 0.4f), Color.white);
+            Size(enter, 72f, 170f, 0.3f, 130f);
+            status = Label(root.transform, "SelectionStatus", "", 22, new Color(1f, 0.66f, 0.58f), new Vector2(0.5f, 0f), new Vector2(0, 24f + 232f + 26f), new Vector2(1100, 40));
+            status.resizeTextForBestFit = true; status.resizeTextMinSize = 16; status.resizeTextMaxSize = 22;
+            status.verticalOverflow = VerticalWrapMode.Truncate;
             UnityEventTools.AddPersistentListener(create.onClick, flow.CreateCharacterAndEnter);
             UnityEventTools.AddPersistentListener(enter.onClick, flow.EnterSelectedCharacter);
-            Button back = Btn(root.transform, "BackToLogin", "Đăng xuất", new Vector2(-120, -60), new Vector2(180, 52), new Color(0.2f, 0.26f, 0.38f, 0.9f), Muted, new Vector2(1f, 1f));
+            Button back = Btn(root.transform, "BackToLogin", "Đăng xuất", new Vector2(-(Edge + 100), -70), new Vector2(200, 64), new Color(0.2f, 0.26f, 0.38f, 0.9f), Muted, new Vector2(1f, 1f));
             UnityEventTools.AddPersistentListener(back.onClick, flow.BackToAuthentication);
 
             // Wire the preview component.
@@ -741,7 +798,13 @@ namespace AdventureKing.ArtPipeline
             b.colors = cb;
             if (bg.a > 0.05f) Rim(go.transform);
             if (!string.IsNullOrEmpty(label))
-                Label(go.transform, "Text", label, size.y > 60 ? 26 : 22, fg, new Vector2(0.5f, 0.5f), Vector2.zero, size, FontStyle.Bold).raycastTarget = false;
+            {
+                // inset from the gilded rim; shrinks to fit (Vietnamese diacritics included) instead of spilling
+                int max = size.y > 60 ? 26 : 22;
+                Text t = FillLabel(go.transform, "Text", label, max, fg, FontStyle.Bold, Mathf.Clamp(size.y * 0.24f, 10f, 20f), 4f, 15);
+                t.raycastTarget = false;
+                t.gameObject.AddComponent<FitOneLine>().Configure(max, 14); // one line, shrinks to fit
+            }
             return b;
         }
 
@@ -759,11 +822,17 @@ namespace AdventureKing.ArtPipeline
             var img = go.AddComponent<Image>();
             img.sprite = enamelSprite ? enamelSprite : pillSprite; img.type = Image.Type.Sliced; img.color = new Color(0.05f, 0.06f, 0.11f, 0.82f);
             Rim(go.transform, 0.85f);
-            var text = Label(go.transform, "Text", "", 24, Cream, new Vector2(0.5f, 0.5f), Vector2.zero, sz - new Vector2(40, 10));
+            // text sits clear of the rounded gilded rim (inset ~ half the height), large and upright for readability
+            float inset = Mathf.Clamp(sz.y * 0.6f, 30f, 48f);
+            int fontSize = Mathf.RoundToInt(Mathf.Clamp(sz.y * 0.38f, 22f, 30f));
+            var text = FillLabel(go.transform, "Text", "", fontSize, Cream, FontStyle.Normal, inset, 6f, 18);
             text.alignment = TextAnchor.MiddleLeft;
             text.supportRichText = false;
+            text.resizeTextForBestFit = false;
+            text.horizontalOverflow = HorizontalWrapMode.Overflow; // InputField scrolls long input itself
+            text.verticalOverflow = VerticalWrapMode.Overflow;
             Object.DestroyImmediate(text.GetComponent<Shadow>());
-            var ph = Label(go.transform, "Placeholder", placeholder, 22, new Color(0.7f, 0.75f, 0.85f, 0.6f), new Vector2(0.5f, 0.5f), Vector2.zero, sz - new Vector2(40, 10), FontStyle.Italic);
+            var ph = FillLabel(go.transform, "Placeholder", placeholder, fontSize - 2, new Color(0.78f, 0.82f, 0.9f, 0.72f), FontStyle.Normal, inset, 6f, 16);
             ph.alignment = TextAnchor.MiddleLeft;
             Object.DestroyImmediate(ph.GetComponent<Shadow>());
             var f = go.AddComponent<InputField>();
