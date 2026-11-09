@@ -104,6 +104,9 @@ namespace AdventureKing.Tests
 
             FarmField farm = FarmField.Current;
             Assert.IsNotNull(farm, "meadow has the farm");
+            until = Time.realtimeSinceStartup + 4f;
+            while (!(AdventureAudioDirector.Instance.CurrentMusic && AdventureAudioDirector.Instance.CurrentMusic.name.Contains("BGM_Meadow")) && Time.realtimeSinceStartup < until) yield return null;
+            StringAssert.Contains("BGM_Meadow", AdventureAudioDirector.Instance.CurrentMusic.name, "farm map plays its own theme");
             until = Time.time + 6f;
             while (farm.Monsters.Count == 0 && Time.time < until) yield return null;
             Assert.AreEqual(8, farm.Monsters.Count, "server spawns shown");
@@ -224,9 +227,33 @@ namespace AdventureKing.Tests
             Assert.AreEqual(TownLayout.Meadow.Spawn.x, motor.transform.position.x, 1f, "back at the village gate");
             Assert.AreEqual(75, motor.GetComponent<Health2D>().CurrentHealth, "full HP from the server");
             Assert.IsTrue(input.enabled);
+            var visual = motor.GetComponent<CharacterVisual3D>();
+            yield return new WaitForSeconds(0.3f);
+            Assert.AreEqual(1, visual.Revived, "the body stood up on revive");
+            Assert.IsFalse(visual.InDeathPose, "not lying down after revive (no Attack press needed)");
             yield return new WaitForSeconds(1.2f); // a heartbeat later the server agrees (no teleport refusal)
             Assert.IsFalse(farm.HeroDead);
+            Assert.IsFalse(visual.InDeathPose);
             yield return Shot("08_revived");
+
+            // walk, jump and swing normally again
+            float x0 = Pos.x;
+            yield return WalkTo(x0 + 2.5f, 6f);
+            Assert.Greater(Pos.x, x0 + 2f, "walks after revive");
+            float y0 = Pos.y;
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Jump, true);
+            float peak = y0; until = Time.time + 1.2f;
+            while (Time.time < until) { peak = Mathf.Max(peak, Pos.y); yield return null; if (Time.time > until - 1f) input.SetTouchHeld(PlayerInput2D.TouchAction.Jump, false); }
+            Assert.Greater(peak, y0 + 0.5f, "jumps after revive");
+            yield return new WaitForSeconds(0.8f);
+            var anim = visual.Animator;
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Attack, true);
+            yield return null;
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Attack, false);
+            bool swung = false; until = Time.time + 1f;
+            while (Time.time < until && !swung) { swung = anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") || anim.GetNextAnimatorStateInfo(0).IsName("Attack"); yield return null; }
+            Assert.IsTrue(swung, "attacks after revive");
+            yield return Shot("09_after_revive_moving");
         }
     }
 }

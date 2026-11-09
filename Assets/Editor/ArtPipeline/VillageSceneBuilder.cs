@@ -1423,7 +1423,11 @@ namespace AdventureKing.ArtPipeline
             // 3D gate (Meshy model, toon material): lavender rune ring with crystals on hexagonal steps, just behind
             // the walking line so the hero walks in front of it into the vortex.
             const float gateZ = 1.1f;
-            Prop(root.transform, "portal_gate", p.X, gateZ, 5.4f, false);
+            GameObject gateProp = Prop(root.transform, "portal_gate", p.X, gateZ, 5.4f, false);
+            // The stone steps reach forward through the walking line: give them a real walkable surface measured
+            // from the mesh itself (z = 0 slice), so the hero climbs the steps instead of sinking into them.
+            PortalStepsInfo steps = MeasurePortal(gateProp, p.X);
+            if (steps.Profile != null) PortalSteps(root.transform, steps.Profile);
 
             // Swirling vortex inside the ring: two counter-rotating spiral discs + core glow.
             Texture2D spiral = GeneratedTexture("portal_spiral", 256, (u, v) =>
@@ -1445,7 +1449,9 @@ namespace AdventureKing.ArtPipeline
             float ringY = PortalRingY; // ring centre on the 3D gate (tuned against Play Mode captures)
             var vortexRoot = new GameObject("Vortex").transform;
             vortexRoot.SetParent(root.transform, false);
-            vortexRoot.localPosition = new Vector3(0f, ringY, gateZ);
+            // centre of the ring opening measured from the mesh (falls back to the tuned constant)
+            if (steps.RingFound) ringY = steps.RingCenter.y;
+            vortexRoot.localPosition = new Vector3(steps.RingFound ? steps.RingCenter.x : 0f, ringY, steps.RingFound ? steps.RingCenter.z - 0.05f : gateZ);
             vortexRoot.localRotation = Quaternion.Euler(0f, -14f, 0f); // same three-quarter angle as the gate
             GameObject Disc(string n, Material m, float size, float dz)
             {
@@ -1466,8 +1472,10 @@ namespace AdventureKing.ArtPipeline
             // Trigger, interaction prompt, ambient hum.
             var col = root.AddComponent<BoxCollider2D>();
             col.isTrigger = true;
+            // trigger stands on the top step, under the ring (not buried in the ground in front of the steps)
+            float deck = steps.TopHeight;
             col.size = new Vector2(2.6f, 3.2f);
-            col.offset = new Vector2(0f, 1.6f);
+            col.offset = new Vector2(steps.RingFound ? steps.RingCenter.x : 0f, deck + 1.6f);
             var gate = root.AddComponent<PortalGate2D>();
             var hum = root.AddComponent<AudioSource>();
             hum.clip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/Portal_Hum.wav");
@@ -1489,6 +1497,120 @@ namespace AdventureKing.ArtPipeline
             // Leaving the safe town for a field asks first; coming home does not.
             so.FindProperty("requireConfirmation").boolValue = p.ToScene != TownLayout.Hub.Scene;
             so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private struct PortalStepsInfo
+        {
+            public List<Vector2> Profile; // walking-line surface, root-local (x, height)
+            public float TopHeight;
+            public bool RingFound;
+            public Vector3 RingCenter;    // root-local centre of the ring
+        }
+
+        /// <summary>Measures the gate model: the step surface where it crosses the walking line (z = 0) and the
+        /// centre of the ring above it. Temporary MeshColliders are removed again.</summary>
+        private static PortalStepsInfo MeasurePortal(GameObject gate, float rootX)
+        {
+            var info = new PortalStepsInfo();
+            if (!gate) return info;
+            var temp = new List<MeshCollider>();
+            foreach (MeshFilter mf in gate.GetComponentsInChildren<MeshFilter>())
+                if (mf.sharedMesh) { var mc = mf.gameObject.AddComponent<MeshCollider>(); mc.sharedMesh = mf.sharedMesh; temp.Add(mc); }
+            Physics.SyncTransforms();
+            var heights = new List<Vector2>();
+            for (float x = -4f; x <= 4.001f; x += 0.05f)
+            {
+                float h = 0f;
+                foreach (RaycastHit hit in Physics.RaycastAll(new Vector3(rootX + x, 1.6f, 0f), Vector3.down, 2.4f))
+                    if (temp.Contains(hit.collider as MeshCollider)) h = Mathf.Max(h, hit.point.y);
+                heights.Add(new Vector2(x, h));
+            }
+            // ring opening: shoot rays along +z (the camera's view) on a grid; cells with no hit but gate on all four
+            // sides are the hole — its centroid is where the vortex belongs
+            const float cell = 0.05f;
+            int nx = Mathf.RoundToInt(6f / cell), ny = Mathf.RoundToInt(6f / cell);
+            var solid = new bool[nx, ny];
+            for (int i = 0; i < nx; i++)
+                for (int j = 0; j < ny; j++)
+                {
+                    Vector3 o = new Vector3(rootX - 3f + i * cell, 0.5f + j * cell, -6f);
+                    foreach (RaycastHit hit in Physics.RaycastAll(o, Vector3.forward, 14f))
+                        if (temp.Contains(hit.collider as MeshCollider)) { solid[i, j] = true; break; }
+                }
+            float sx = 0f, sy = 0f; int holes = 0;
+            for (int i = 0; i < nx; i++)
+                for (int j = 0; j < ny; j++)
+                {
+                    if (solid[i, j]) continue;
+                    bool l = false, r = false, u = false, d = false;
+                    for (int k = 0; k < i && !l; k++) l = solid[k, j];
+                    for (int k = i + 1; k < nx && !r; k++) r = solid[k, j];
+                    for (int k = 0; k < j && !d; k++) d = solid[i, k];
+                    for (int k = j + 1; k < ny && !u; k++) u = solid[i, k];
+                    if (l && r && u && d) { sx += i; sy += j; holes++; }
+                }
+            foreach (var mc in temp) Object.DestroyImmediate(mc);
+            if (holes > 50)
+            {
+                info.RingFound = true;
+                info.RingCenter = new Vector3(-3f + sx / holes * cell, 0.5f + sy / holes * cell, 1.1f);
+            }
+
+            int first = heights.FindIndex(v => v.y > 0.04f), last = heights.FindLastIndex(v => v.y > 0.04f);
+            if (first >= 0)
+            {
+                var prof = new List<Vector2> { new Vector2(heights[first].x, -0.3f) };
+                float prev = 0f;
+                for (int i = first; i <= last; i++)
+                {
+                    float h = Mathf.Round(Mathf.Max(0f, heights[i].y) / 0.02f) * 0.02f;
+                    if (Mathf.Abs(h - prev) > 0.001f) { prof.Add(new Vector2(heights[i].x, prev)); prof.Add(new Vector2(heights[i].x, h)); prev = h; }
+                    info.TopHeight = Mathf.Max(info.TopHeight, h);
+                }
+                prof.Add(new Vector2(heights[last].x + 0.05f, prev));
+                prof.Add(new Vector2(heights[last].x + 0.05f, -0.3f));
+                prof[1] = new Vector2(prof[1].x, Mathf.Max(prof[1].y, 0f));
+                // a riser taller than the hero's step (0.45) gets a half-way ledge 0.14 m out, so both sides walk up
+                // (surface risers only: the first and last segments close the outline into the ground)
+                for (int i = 1; i + 2 < prof.Count; i++)
+                {
+                    Vector2 a = prof[i], b = prof[i + 1];
+                    if (Mathf.Abs(a.x - b.x) > 0.001f || Mathf.Abs(b.y - a.y) <= 0.4f) continue;
+                    float mid = (a.y + b.y) * 0.5f;
+                    if (b.y > a.y) // rising (walking right): ledge on the left, low side
+                    {
+                        prof[i] = new Vector2(a.x - 0.14f, a.y);
+                        prof.Insert(i + 1, new Vector2(a.x - 0.14f, mid));
+                        prof.Insert(i + 2, new Vector2(a.x, mid));
+                    }
+                    else // falling: ledge on the right, low side
+                    {
+                        prof[i + 1] = new Vector2(a.x + 0.14f, b.y);
+                        prof.Insert(i + 1, new Vector2(a.x, mid));
+                        prof.Insert(i + 2, new Vector2(a.x + 0.14f, mid));
+                    }
+                    i += 2;
+                }
+                info.Profile = prof;
+            }
+
+            var risers = new List<string>();
+            if (info.Profile != null)
+                for (int i = 1; i + 1 < info.Profile.Count; i++)
+                    if (Mathf.Abs(info.Profile[i].x - info.Profile[i + 1].x) < 0.001f) risers.Add((info.Profile[i + 1].y - info.Profile[i].y).ToString("F2"));
+            Debug.Log($"[PORTAL] steps top={info.TopHeight:F2} span={(first >= 0 ? heights[first].x : 0):F2}..{(last >= 0 ? heights[last].x : 0):F2} risers=[{string.Join(",", risers)}] ring={(info.RingFound ? info.RingCenter.ToString("F2") : "n/a")} holeCells={holes}");
+            return info;
+        }
+
+        /// <summary>Solid stair surface for the portal steps (ground layer: the hero walks up the risers).</summary>
+        private static void PortalSteps(Transform root, List<Vector2> profile)
+        {
+            var go = new GameObject("PortalSteps") { layer = GroundLayer };
+            go.transform.SetParent(root, false);
+            var poly = go.AddComponent<PolygonCollider2D>();
+            var pts = new List<Vector2>(profile);
+            pts.Reverse(); // clockwise outline: bottom-right -> surface -> bottom-left
+            poly.points = pts.ToArray();
         }
 
         private static Material VfxMat(string name, Texture2D tex, Color tint)
@@ -1912,8 +2034,9 @@ namespace AdventureKing.ArtPipeline
             bso2.FindProperty("moreInfo").objectReferenceValue = moreInfo;
             bso2.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(moreButton.onClick, bar.More);
-            // arrow left of the icon block: folds the whole block away / back (PC + mobile); minimap stays
-            Button fold = IconButton(right.transform, "ShortcutsFold", "icon_arrow", "", new Vector2(1f, 1f), new Vector2(-500f - 40f, -236f), 64f);
+            // arrow tucked into the icon block's top-left corner, right under the settings gear and beside the minimap
+            // (never floating over the map): folds the whole block away / back (PC + mobile); the minimap stays
+            Button fold = IconButton(right.transform, "ShortcutsFold", "icon_arrow", "", new Vector2(1f, 1f), new Vector2(-468f, -139f), 68f); // >= 40 px touch target on a 720p phone
             bso2.FindProperty("arrowIcon").objectReferenceValue = fold.transform.Find("Icon");
             bso2.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(fold.onClick, bar.ToggleCollapsed);
@@ -1921,7 +2044,7 @@ namespace AdventureKing.ArtPipeline
 
             // system / settings menu (graphics, sound, save & exit)
             var menuGo = EntrySceneBuilder.Panel(canvasGo.transform, "SystemMenu", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.45f), null);
-            var menuCard = EntrySceneBuilder.Panel(menuGo.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(620f, 640f), ink, EntrySceneBuilder.PanelSprite);
+            var menuCard = EntrySceneBuilder.Panel(menuGo.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(620f, 840f), ink, EntrySceneBuilder.PanelSprite);
             if (!EntrySceneBuilder.Skin(menuCard, "settings_card")) EntrySceneBuilder.Frame(menuCard, 2.8f);
             RectTransform mc = EntrySceneBuilder.FramedContent(menuCard, 0f, topBand: 0f);
             EntrySceneBuilder.VStack(mc, 14f, TextAnchor.MiddleCenter);
@@ -1935,6 +2058,12 @@ namespace AdventureKing.ArtPipeline
             UnityEventTools.AddPersistentListener(gfx.onClick, quality.Cycle);
             Button sound = EntrySceneBuilder.Btn(mc, "SoundButton", "Âm thanh: Bật", Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
             EntrySceneBuilder.Size(sound, 66f);
+            Button musicBtn = EntrySceneBuilder.Btn(mc, "MusicButton", "Nhạc nền: Bật", Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
+            EntrySceneBuilder.Size(musicBtn, 66f);
+            Button musicVol = EntrySceneBuilder.Btn(mc, "MusicVolumeButton", "Âm lượng nhạc: 75%", Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
+            EntrySceneBuilder.Size(musicVol, 66f);
+            Button sfxVol = EntrySceneBuilder.Btn(mc, "EffectsVolumeButton", "Âm lượng hiệu ứng: 85%", Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
+            EntrySceneBuilder.Size(sfxVol, 66f);
             Button timeBtn = EntrySceneBuilder.Btn(mc, "TimeButton", DayNightCycle.ModeLabel, Vector2.zero, new Vector2(400f, 66f), new Color(0.2f, 0.28f, 0.42f), Color.white);
             EntrySceneBuilder.Size(timeBtn, 66f);
             exit = EntrySceneBuilder.Btn(mc, "ExitButton", "Lưu & Thoát", Vector2.zero, new Vector2(400f, 66f), new Color(0.62f, 0.26f, 0.24f), Color.white);
@@ -1946,7 +2075,13 @@ namespace AdventureKing.ArtPipeline
             sso.FindProperty("panel").objectReferenceValue = menuGo;
             sso.FindProperty("soundLabel").objectReferenceValue = sound.GetComponentInChildren<Text>();
             sso.FindProperty("timeLabel").objectReferenceValue = timeBtn.GetComponentInChildren<Text>();
+            sso.FindProperty("musicLabel").objectReferenceValue = musicBtn.GetComponentInChildren<Text>();
+            sso.FindProperty("musicVolumeLabel").objectReferenceValue = musicVol.GetComponentInChildren<Text>();
+            sso.FindProperty("effectsVolumeLabel").objectReferenceValue = sfxVol.GetComponentInChildren<Text>();
             sso.ApplyModifiedPropertiesWithoutUndo();
+            UnityEventTools.AddPersistentListener(musicBtn.onClick, sys.ToggleMusic);
+            UnityEventTools.AddPersistentListener(musicVol.onClick, sys.CycleMusicVolume);
+            UnityEventTools.AddPersistentListener(sfxVol.onClick, sys.CycleEffectsVolume);
             UnityEventTools.AddPersistentListener(timeBtn.onClick, sys.CycleTimeOfDay);
             UnityEventTools.AddPersistentListener(gear.onClick, sys.Toggle);
             UnityEventTools.AddPersistentListener(sound.onClick, sys.ToggleSound);

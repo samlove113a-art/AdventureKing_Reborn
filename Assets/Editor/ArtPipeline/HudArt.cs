@@ -74,11 +74,22 @@ namespace AdventureKing.ArtPipeline
                             Color c = Color.clear;
                             if (medallion)
                             {
-                                if (Circle(p, Vector2.zero, 0.96f) < 0f) c = Color.Lerp(GoldLo, GoldHi, (p.y + 1f) * 0.5f);
-                                if (Circle(p, Vector2.zero, 0.84f) < 0f) c = Color.Lerp(NavyLo, NavyHi, (p.y + 1f) * 0.5f + 0.15f * (1f - p.magnitude));
+                                c = Medallion(p);
+                                // symbols: drop shadow, dark ink outline, then the fill lit from the top-left (bevel)
+                                foreach (var (sdf, col) in layers)
+                                {
+                                    float d = sdf(p);
+                                    if (d > 0.06f && sdf(p - ShadowOffset) > 0f) continue;
+                                    Color k = col(p);
+                                    if (k.a < 0.95f) { if (d < 0f) c = Color.Lerp(c, new Color(k.r, k.g, k.b, 1f), k.a); continue; } // highlights/glints stay flat
+                                    if (sdf(p - ShadowOffset) < 0f && d >= 0f) c = Color.Lerp(c, Ink, 0.35f);
+                                    if (d < Outline) c = Color.Lerp(c, Ink, 0.92f);
+                                    if (d < 0f) c = Lit(k, p, d, sdf);
+                                }
                             }
-                            foreach (var (sdf, col) in layers)
-                                if (sdf(p) < 0f) { Color k = col(p); c = Color.Lerp(c, new Color(k.r, k.g, k.b, 1f), k.a); }
+                            else
+                                foreach (var (sdf, col) in layers)
+                                    if (sdf(p) < 0f) { Color k = col(p); c = Color.Lerp(c, new Color(k.r, k.g, k.b, 1f), k.a); }
                             acc += c;
                         }
                     px[y * S + x] = acc / 16f;
@@ -100,6 +111,61 @@ namespace AdventureKing.ArtPipeline
         }
 
         private static Func<Vector2, Color> Grad(Color lo, Color hi) => p => Color.Lerp(lo, hi, (p.y + 1f) * 0.5f);
+
+        // ---------------------------------------------------------------- medallion look (shared by every HUD shortcut)
+        private static readonly Color Ink = new Color(0.08f, 0.05f, 0.1f);
+        private static readonly Vector2 ShadowOffset = new Vector2(0.03f, -0.05f);
+        private const float Outline = 0.035f;
+        private static readonly Vector2 LightDir = new Vector2(-0.55f, 0.83f);
+
+        /// <summary>Bevelled gold rim (lit top-left, ink edges) around a deep jewel-blue face with a soft glow behind the
+        /// symbol and a glossy highlight across the top.</summary>
+        private static Color Medallion(Vector2 p)
+        {
+            float r = p.magnitude;
+            if (r > 0.985f) return Color.clear;
+            if (r > 0.955f) return Ink;
+            if (r > 0.85f)
+            {
+                // rim: radial normal; shade by how much it faces the light, plus a fine engraved groove
+                Vector2 n = r > 0.0001f ? p / r : Vector2.up;
+                float facing = Vector2.Dot(n, LightDir);
+                float across = Mathf.InverseLerp(0.955f, 0.85f, r);           // 0 outer .. 1 inner
+                float roll = Mathf.Sin(across * Mathf.PI);                     // rounded profile
+                Color gold = Color.Lerp(GoldLo, GoldHi, 0.5f + 0.45f * facing * (1f - across * 0.6f));
+                gold = Color.Lerp(gold, Color.white, Mathf.Clamp01(facing) * roll * 0.35f);
+                if (Mathf.Abs(r - 0.902f) < 0.006f) gold = Color.Lerp(gold, new Color(0.45f, 0.26f, 0.06f), 0.7f);
+                for (int i = 0; i < 8; i++) // eight tiny studs on the rim
+                {
+                    float a = i * Mathf.PI / 4f + Mathf.PI / 8f;
+                    float dd = (p - new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * 0.902f).magnitude;
+                    if (dd < 0.022f) gold = Color.Lerp(GoldHi, Color.white, 0.5f);
+                }
+                return gold;
+            }
+            if (r > 0.835f) return Ink;
+            // face: radial jewel gradient + glow behind the symbol + inner shadow under the rim + glossy cap
+            Color face = Color.Lerp(new Color(0.16f, 0.32f, 0.62f), NavyLo, Mathf.SmoothStep(0f, 1f, r / 0.835f));
+            face = Color.Lerp(face, new Color(0.36f, 0.62f, 0.95f), Mathf.Pow(Mathf.Clamp01(1f - r / 0.6f), 2f) * 0.55f);
+            float innerShadow = Mathf.Clamp01((r - 0.7f) / 0.135f) * Mathf.Clamp01(0.5f + 0.5f * Vector2.Dot(p.normalized, LightDir));
+            face = Color.Lerp(face, Ink, innerShadow * 0.45f);
+            float gloss = Mathf.Clamp01(1f - ((p - new Vector2(-0.05f, 0.42f)) / new Vector2(0.62f, 0.3f)).magnitude);
+            face = Color.Lerp(face, Color.white, Mathf.SmoothStep(0f, 1f, gloss) * 0.16f);
+            return face;
+        }
+
+        /// <summary>Fill colour with a bevel: edges facing the light brighten, the far edges darken.</summary>
+        private static Color Lit(Color k, Vector2 p, float d, Func<Vector2, float> sdf)
+        {
+            const float e = 0.01f, bevel = 0.1f;
+            Vector2 n = new Vector2(sdf(p + new Vector2(e, 0f)) - sdf(p - new Vector2(e, 0f)), sdf(p + new Vector2(0f, e)) - sdf(p - new Vector2(0f, e)));
+            if (n.sqrMagnitude > 1e-8f) n.Normalize();
+            float edge = Mathf.Clamp01(1f + d / bevel); // 1 at the edge -> 0 deeper inside
+            float facing = Vector2.Dot(n, LightDir);
+            Color c = new Color(k.r, k.g, k.b, 1f);
+            c = facing > 0f ? Color.Lerp(c, Color.white, facing * edge * 0.45f) : Color.Lerp(c, Ink, -facing * edge * 0.35f);
+            return c;
+        }
 
         public static Sprite Get(string name) => AssetDatabase.LoadAssetAtPath<Sprite>($"{Dir}/{name}.png");
 
@@ -189,8 +255,10 @@ namespace AdventureKing.ArtPipeline
                 (p => Mathf.Min(Circle(p, Vector2.zero, 0.42f), Poly(p, Star(8, 0.6f, 0.44f, 0f))), gold),
                 (p => Circle(p, Vector2.zero, 0.2f), _ => NavyLo));
             Paint("icon_event", true,
-                (p => Poly(p, Star(8, 0.62f, 0.3f)), gold),
-                (p => Poly(p, Star(4, 0.3f, 0.1f, 45f)), _ => White));
+                (p => Poly(p, Star(8, 0.6f, 0.3f)), gold),
+                (p => Circle(p, Vector2.zero, 0.24f), _ => new Color(0.92f, 0.3f, 0.36f)),
+                (p => Poly(p, Star(4, 0.2f, 0.07f, 45f)), _ => White),
+                (p => Mathf.Min(Poly(p - new Vector2(-0.52f, 0.5f), Star(4, 0.13f, 0.04f)), Poly(p - new Vector2(0.55f, -0.42f), Star(4, 0.1f, 0.035f))), _ => new Color(1f, 1f, 0.9f, 0.9f)));
             Paint("icon_checkin", true,
                 (p => Box(p, new Vector2(0f, -0.06f), new Vector2(0.5f, 0.46f), 0.08f), _ => White),
                 (p => Box(p, new Vector2(0f, 0.32f), new Vector2(0.5f, 0.12f), 0.06f), _ => new Color(0.86f, 0.25f, 0.24f)),
@@ -208,7 +276,9 @@ namespace AdventureKing.ArtPipeline
                 (p => Circle(p, new Vector2(-0.2f, 0.22f), 0.08f), _ => new Color(1f, 1f, 1f, 0.7f)));
             Paint("icon_mail", true,
                 (p => Box(p, Vector2.zero, new Vector2(0.56f, 0.38f), 0.06f), _ => White),
-                (p => Mathf.Min(Seg(p, new Vector2(-0.54f, 0.34f), new Vector2(0f, -0.06f), 0.05f), Seg(p, new Vector2(0.54f, 0.34f), new Vector2(0f, -0.06f), 0.05f)), gold));
+                (p => Mathf.Min(Seg(p, new Vector2(-0.54f, 0.34f), new Vector2(0f, -0.06f), 0.05f), Seg(p, new Vector2(0.54f, 0.34f), new Vector2(0f, -0.06f), 0.05f)), gold),
+                (p => Circle(p, new Vector2(0f, -0.08f), 0.14f), _ => new Color(0.82f, 0.18f, 0.22f)), // wax seal
+                (p => Poly(p - new Vector2(0f, -0.08f), Star(5, 0.08f, 0.035f)), _ => new Color(1f, 0.8f, 0.4f, 0.9f)));
             Paint("icon_giftcode", true,
                 (p => Mathf.Max(Box(p, Vector2.zero, new Vector2(0.6f, 0.32f), 0.05f), -Mathf.Min(Circle(p, new Vector2(-0.6f, 0f), 0.13f), Circle(p, new Vector2(0.6f, 0f), 0.13f))), gold),
                 (p => Box(p, Vector2.zero, new Vector2(0.02f, 0.26f)), _ => NavyLo),

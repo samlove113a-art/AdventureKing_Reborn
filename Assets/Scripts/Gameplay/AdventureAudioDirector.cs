@@ -11,7 +11,9 @@ namespace AdventureKing.Gameplay
         CharacterSelection,
         Village,
         Exploration,
-        Boss
+        Boss,
+        VillageNight, // appended: keeps serialized indices of the stages above
+        Wedding
     }
 
     [Serializable]
@@ -63,9 +65,29 @@ namespace AdventureKing.Gameplay
         private const string AmbienceVolumeKey = "AK_Option_AmbienceVolume";
         private const string EffectsVolumeKey = "AK_Option_EffectsVolume";
         private const string MutedKey = "AK_Option_Muted";
-        private bool muted;
+        private const string MusicOnKey = "AK_Option_MusicOn";
+        private bool muted, musicOn = true;
 
         public bool Muted => muted;
+        /// <summary>Background music on/off on its own (SFX keep playing).</summary>
+        public bool MusicOn => musicOn;
+        public AdventureMusicStage CurrentStage => currentStage;
+        public AudioClip CurrentMusic => musicSource ? musicSource.clip : null;
+        public bool MusicAudible => musicSource && musicSource.isPlaying && !musicSource.mute && musicSource.volume > 0.01f;
+        public float MusicSourceVolume => musicSource ? musicSource.volume : 0f;
+
+        public void SetMusicOn(bool value)
+        {
+            musicOn = value;
+            PlayerPrefs.SetInt(MusicOnKey, value ? 1 : 0);
+            PlayerPrefs.Save();
+            musicSource.mute = muted || !musicOn;
+        }
+
+        /// <summary>Steps 0 → 25 → 50 → 75 → 100 % → 0 (settings button).</summary>
+        public void CycleMusicVolume() => SetMusicVolume(NextStep(musicVolume));
+        public void CycleEffectsVolume() => SetEffectsVolume(NextStep(effectsVolume));
+        private static float NextStep(float v) { float n = Mathf.Round(v * 4f) / 4f + 0.25f; return n > 1.001f ? 0f : n; }
         private float musicVolume;
         private float ambienceVolume;
         private float effectsVolume;
@@ -101,6 +123,7 @@ namespace AdventureKing.Gameplay
             ambienceVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(AmbienceVolumeKey, 0.65f));
             effectsVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(EffectsVolumeKey, 0.85f));
             ApplyVolumes();
+            musicOn = PlayerPrefs.GetInt(MusicOnKey, 1) == 1;
             SetAllMuted(PlayerPrefs.GetInt(MutedKey, 0) == 1);
         }
 
@@ -132,7 +155,7 @@ namespace AdventureKing.Gameplay
         public void SetAllMuted(bool value)
         {
             muted = value;
-            musicSource.mute = value;
+            musicSource.mute = value || !musicOn;
             ambienceSource.mute = value;
             effectsSource.mute = value;
             PlayerPrefs.SetInt(MutedKey, value ? 1 : 0);

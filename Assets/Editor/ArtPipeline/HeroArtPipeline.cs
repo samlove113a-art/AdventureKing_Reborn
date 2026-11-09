@@ -260,6 +260,7 @@ namespace AdventureKing.ArtPipeline
             Link(fall, idle, 0.08f, ("Grounded", AnimatorConditionMode.If, 0));
 
             AnyLink(sm, states["Death"], 0.1f, false, ("Dead", AnimatorConditionMode.If, 0));
+            Link(states["Death"], idle, 0.15f, ("Dead", AnimatorConditionMode.IfNot, 0)); // revive stands up by itself
             AnyLink(sm, states["Climb"], 0.12f, false, ("Climbing", AnimatorConditionMode.If, 0), ("Dead", AnimatorConditionMode.IfNot, 0));
             Link(states["Climb"], idle, 0.12f, ("Climbing", AnimatorConditionMode.IfNot, 0));
             AnyLink(sm, states["Attack"], 0.06f, true, ("Attack", AnimatorConditionMode.If, 0), ("Dead", AnimatorConditionMode.IfNot, 0));

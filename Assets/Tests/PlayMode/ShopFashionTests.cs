@@ -351,6 +351,12 @@ namespace AdventureKing.Tests
                     outfit.Apply(art.slot == "set" ? new OutfitLoadout().WithSet(id) : new OutfitLoadout().With(art.slot, id));
                     yield return null;
                     Assert.Greater(outfit.PieceCount, 0, $"{Heroes[hi]} {id}: pieces built");
+                    // the previous item is gone (no stacked layers) and the body mesh is still there
+                    var live = go.GetComponentsInChildren<SkinnedMeshRenderer>(false);
+                    var stray = live.Where(r => r.name.StartsWith("Outfit_") && !outfit.Pieces.Contains(r.gameObject)).Select(r => r.name).ToList();
+                    Assert.IsEmpty(stray, $"{Heroes[hi]} {id}: leftover pieces of the previous outfit");
+                    Assert.IsTrue(live.Any(r => !r.name.StartsWith("Outfit_") && !r.name.StartsWith("Weapon_") && r.sharedMesh && r.enabled), $"{Heroes[hi]} {id}: body mesh kept");
+                    Assert.IsEmpty(go.GetComponentsInChildren<MonoBehaviour>(true).Where(b => b && b.GetType().Name == "EquipmentManager"), "EquipmentManager must not drive the same slots as HeroOutfit");
                     foreach (GameObject p in outfit.Pieces)
                     {
                         var smr = p ? p.GetComponent<SkinnedMeshRenderer>() : null;

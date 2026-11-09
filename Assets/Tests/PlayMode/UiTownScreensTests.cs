@@ -56,6 +56,8 @@ namespace AdventureKing.Tests
             yield return new WaitForSeconds(3.5f); // map banner faded
             var hud = Object.FindAnyObjectByType<PlayerHud>();
             Assert.IsNotNull(hud, "player HUD");
+            // the fold state is a saved local preference (shared with manual play sessions): start unfolded
+            Object.FindAnyObjectByType<HudShortcutBar>().SetCollapsed(false, true);
             Assert.AreEqual("5.000", hud.GoldShown, "HUD Gold = server starter Gold");
             Assert.AreEqual("0", hud.DiamondsShown, "HUD Diamonds = server value");
             Assert.Greater(hud.HpFraction, 0.95f, "HP bar from the player Health2D");
@@ -64,6 +66,44 @@ namespace AdventureKing.Tests
             menu.Toggle();
             Assert.IsTrue(menu.IsOpen, "settings menu");
             yield return UiAudit.Screen(Dir, "02b_settings", problems);
+
+            // ---- background music: village day theme really plays; music on/off and volume are separate from SFX
+            var audio = AdventureAudioDirector.Instance;
+            Assert.IsNotNull(audio, "audio director");
+            bool wasMuted = audio.Muted, wasMusicOn = audio.MusicOn;
+            audio.SetAllMuted(false);
+            audio.SetMusicOn(true);
+            until = Time.realtimeSinceStartup + 3f;
+            while (!audio.MusicAudible && Time.realtimeSinceStartup < until) yield return null;
+            Assert.IsTrue(audio.MusicAudible, "village BGM playing and audible");
+            StringAssert.Contains("BGM_Village_Day", audio.CurrentMusic.name);
+            float sfxBefore = audio.EffectsVolume;
+            menu.ToggleMusic();
+            Assert.IsFalse(audio.MusicOn);
+            Assert.IsFalse(audio.MusicAudible, "music off silences only the BGM");
+            Assert.AreEqual(sfxBefore, audio.EffectsVolume, "SFX volume untouched");
+            Assert.AreEqual("Nhạc nền: Tắt", menu.MusicLabelText);
+            menu.ToggleMusic();
+            Assert.IsTrue(audio.MusicOn);
+            float mv = audio.MusicVolume;
+            menu.CycleMusicVolume();
+            Assert.AreNotEqual(mv, audio.MusicVolume, "music volume step");
+            while (Mathf.Abs(audio.MusicVolume - 0.75f) > 0.01f) menu.CycleMusicVolume(); // back to default
+            menu.CycleEffectsVolume();
+            Assert.AreNotEqual(sfxBefore, audio.EffectsVolume, "SFX volume step");
+            audio.SetEffectsVolume(sfxBefore);
+            // night falls (display mode) -> the calm night theme fades in
+            var prevMode = DayNightCycle.ModeOverride;
+            DayNightCycle.ModeOverride = DayNightMode.Night;
+            until = Time.realtimeSinceStartup + 4f;
+            while (!(audio.CurrentMusic && audio.CurrentMusic.name.Contains("BGM_Village_Night") && audio.MusicAudible) && Time.realtimeSinceStartup < until) yield return null;
+            StringAssert.Contains("BGM_Village_Night", audio.CurrentMusic.name, "night theme after dark");
+            DayNightCycle.ModeOverride = prevMode;
+            until = Time.realtimeSinceStartup + 4f;
+            while (!audio.CurrentMusic.name.Contains("BGM_Village_Day") && Time.realtimeSinceStartup < until) yield return null;
+            StringAssert.Contains("BGM_Village_Day", audio.CurrentMusic.name, "day theme back");
+            audio.SetMusicOn(wasMusicOn);
+            audio.SetAllMuted(wasMuted);
             menu.Close();
             var mail = Object.FindObjectsByType<HudFeatureButton>(FindObjectsInactive.Exclude).First(b => b.Title == "Hộp Thư");
             mail.Open();

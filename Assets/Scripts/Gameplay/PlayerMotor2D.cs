@@ -137,8 +137,39 @@ namespace AdventureKing.Gameplay
             if (IsGrounded && y <= 0.01f) cutJump = false;
 
             body.linearVelocity = new Vector2(x, y);
+            if (IsGrounded && y <= 0.01f) StepUp(controls.Horizontal);
             UpdateFacing();
         }
+
+        [Tooltip("Highest ledge (stair riser) the hero walks up without jumping, like the portal's stone steps.")]
+        [SerializeField, Min(0f)] private float maxStepHeight = 0.45f;
+        private Collider2D bodyCollider;
+
+        /// <summary>Walking into a low riser lifts the body onto it (a stair step, not a wall): something solid
+        /// right at the feet, nothing at step height, and a floor on top within <see cref="maxStepHeight"/>.</summary>
+        private void StepUp(float horizontal)
+        {
+            if (Mathf.Abs(horizontal) < 0.1f || maxStepHeight <= 0f) return;
+            if (!bodyCollider) bodyCollider = GetComponent<Collider2D>();
+            if (!bodyCollider) return;
+            Bounds b = bodyCollider.bounds;
+            float dir = Mathf.Sign(horizontal), reach = b.extents.x + 0.14f, feet = b.min.y;
+            Vector2 from = new Vector2(body.position.x, feet + 0.05f);
+            RaycastHit2D low = Physics2D.Raycast(from, Vector2.right * dir, reach, groundMask);
+            if (!low || Mathf.Abs(low.normal.y) > 0.5f) return;
+            RaycastHit2D high = Physics2D.Raycast(new Vector2(body.position.x, feet + maxStepHeight + 0.03f), Vector2.right * dir, reach, groundMask);
+            if (high) return; // a wall, not a step
+            Vector2 above = new Vector2(body.position.x + dir * reach, feet + maxStepHeight + 0.03f);
+            RaycastHit2D top = Physics2D.Raycast(above, Vector2.down, maxStepHeight + 0.05f, groundMask);
+            if (!top) return;
+            float lift = top.point.y - feet;
+            if (lift < 0.02f || lift > maxStepHeight + 0.01f) return;
+            body.position += Vector2.up * (lift + 0.02f);
+            StepsTaken++;
+        }
+
+        /// <summary>Ledges climbed by walking (tests).</summary>
+        public int StepsTaken { get; private set; }
 
         private void UpdateFacing()
         {

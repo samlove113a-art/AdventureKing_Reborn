@@ -218,6 +218,7 @@ namespace AdventureKing.ArtPipeline
         {
             EnsureLayer();
             InitUi();
+            if (!File.Exists(LogoArt.OutPath)) LogoArt.Build(); // in-engine title logo (proposal for the owner)
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             // ---------------------------------------------------------------- audio + input
@@ -464,6 +465,22 @@ namespace AdventureKing.ArtPipeline
             // Transparent root: the shared fantasy backdrop (LoginBackdrop, behind every entry screen) shows through.
             GameObject root = Panel(canvas, "AuthRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0f), null);
             root.GetComponent<Image>().raycastTarget = false;
+            // Game title logo on the left half (wide screens); a 4:3 tablet centres the card, so the logo steps aside.
+            Sprite titleLogo = LogoArt.Sprite();
+            if (titleLogo)
+            {
+                Image logoImg = Img(root.transform, "TitleLogo", new Vector2(0.27f, 0.6f), new Vector2(880f, 495f), Color.white, titleLogo);
+                logoImg.type = Image.Type.Simple;
+                logoImg.preserveAspect = true;
+                logoImg.raycastTarget = false;
+                var la = logoImg.gameObject.AddComponent<ResponsiveAnchor>();
+                var lso = new SerializedObject(la);
+                lso.FindProperty("wideX").floatValue = 0.27f;
+                lso.FindProperty("narrowX").floatValue = 0.27f;
+                lso.FindProperty("wideAspect").floatValue = 1.55f;
+                lso.FindProperty("hideWhenNarrow").boolValue = true;
+                lso.ApplyModifiedPropertiesWithoutUndo();
+            }
             // Card on the right third on wide screens (the scene stays visible), centred on narrow ones.
             GameObject card = Panel(root.transform, "AuthCard", new Vector2(0.71f, 0.5f), new Vector2(0.71f, 0.5f), Vector2.zero, new Vector2(720, 880), Ink, panelSprite);
             var anchor = card.AddComponent<ResponsiveAnchor>();
@@ -499,12 +516,22 @@ namespace AdventureKing.ArtPipeline
             Button register = Btn(row1, "RegisterButton", "Đăng ký", Vector2.zero, new Vector2(270, 72), new Color(0.3f, 0.4f, 0.6f), Cream);
             Style(register, "btn_jade", Cream);
             Size(register, 72f, 270f, 1f);
-            BlockLabel(content, "Or", "hoặc", 20, Muted, 26f);
+            // Real OAuth is not configured yet: say so on the screen and grey the buttons out (the server refuses them too)
+            BlockLabel(content, "Or", "Google / Facebook: chưa khả dụng", 20, Muted, 26f);
             RectTransform row2 = HRow(content, "SocialRow", 64f, 16f);
-            Button google = Btn(row2, "GoogleButton", "Google", Vector2.zero, new Vector2(270, 64), new Color(0.95f, 0.96f, 0.98f), new Color(0.15f, 0.17f, 0.2f));
+            Button google = Btn(row2, "GoogleButton", "Google · chưa mở", Vector2.zero, new Vector2(270, 64), new Color(0.95f, 0.96f, 0.98f), new Color(0.15f, 0.17f, 0.2f));
             Size(google, 64f, 270f, 1f);
-            Button facebook = Btn(row2, "FacebookButton", "Facebook", Vector2.zero, new Vector2(270, 64), new Color(0.23f, 0.38f, 0.7f), Color.white);
+            Button facebook = Btn(row2, "FacebookButton", "Facebook · chưa mở", Vector2.zero, new Vector2(270, 64), new Color(0.23f, 0.38f, 0.7f), Color.white);
             Size(facebook, 64f, 270f, 1f);
+            foreach (Button social in new[] { google, facebook })
+            {
+                social.interactable = false;
+                ColorBlock cb = social.colors;
+                cb.disabledColor = new Color(0.62f, 0.62f, 0.66f, 0.75f);
+                social.colors = cb;
+                Text t = social.GetComponentInChildren<Text>();
+                if (t) t.color = new Color(t.color.r, t.color.g, t.color.b, 0.8f);
+            }
             var toggleRow = Btn(content, "ToggleRegister", "Chưa có tài khoản? Tạo mới", Vector2.zero, new Vector2(560, 62), new Color(0, 0, 0, 0), new Color(0.85f, 0.9f, 1f));
             Size(toggleRow, 62f); // ghost button: still a full-size touch target (>= 40 px on a 720p phone)
             Text toggleLabel = toggleRow.GetComponentInChildren<Text>();

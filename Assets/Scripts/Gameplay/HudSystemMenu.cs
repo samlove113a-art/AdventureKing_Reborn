@@ -42,10 +42,40 @@ namespace AdventureKing.Gameplay
             AdventureWorldSession.Current?.ExitToLogin();
         }
 
+        [SerializeField] private Text musicLabel;
+        [SerializeField] private Text musicVolumeLabel;
+        [SerializeField] private Text effectsVolumeLabel;
+
+        public void ToggleMusic()
+        {
+            var a = AdventureAudioDirector.Instance;
+            if (a) a.SetMusicOn(!a.MusicOn);
+            Refresh();
+        }
+
+        public void CycleMusicVolume()
+        {
+            var a = AdventureAudioDirector.Instance;
+            if (a) a.CycleMusicVolume();
+            Refresh();
+        }
+
+        public void CycleEffectsVolume()
+        {
+            var a = AdventureAudioDirector.Instance;
+            if (a) a.CycleEffectsVolume();
+            Refresh();
+        }
+
+        public string MusicLabelText => musicLabel ? musicLabel.text : "";
+
         private void Refresh()
         {
             var a = AdventureAudioDirector.Instance;
             if (soundLabel) soundLabel.text = a && a.Muted ? "Âm thanh: Tắt" : "Âm thanh: Bật";
+            if (musicLabel) musicLabel.text = a && !a.MusicOn ? "Nhạc nền: Tắt" : "Nhạc nền: Bật";
+            if (musicVolumeLabel) musicVolumeLabel.text = "Âm lượng nhạc: " + Mathf.RoundToInt((a ? a.MusicVolume : 0f) * 100f) + "%";
+            if (effectsVolumeLabel) effectsVolumeLabel.text = "Âm lượng hiệu ứng: " + Mathf.RoundToInt((a ? a.EffectsVolume : 0f) * 100f) + "%";
             if (timeLabel) timeLabel.text = DayNightCycle.ModeLabel;
         }
     }

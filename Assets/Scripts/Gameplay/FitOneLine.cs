@@ -25,10 +25,25 @@ namespace AdventureKing.Gameplay
 
         public void Configure(int max, int min) { maxSize = max; minSize = min; Fit(true); }
 
-        private void OnEnable() { if (!live.Contains(this)) live.Add(this); Fit(true); }
-        private void OnDisable() => live.Remove(this);
+        private void OnEnable() { if (!live.Contains(this)) live.Add(this); Font.textureRebuilt += OnAtlasRebuilt; Fit(true); }
+        private void OnDisable() { live.Remove(this); Font.textureRebuilt -= OnAtlasRebuilt; }
+
+        /// <summary>The dynamic font atlas was rebuilt (new glyphs/sizes requested elsewhere): our mesh UVs point into
+        /// the old layout, so regenerate — otherwise the label shows eroded, half-transparent letters until the next
+        /// unrelated rebuild.</summary>
+        private void OnAtlasRebuilt(Font f)
+        {
+            if (!text) text = GetComponent<Text>();
+            if (text && text.font == f) atlasStale = true; // can fire inside the canvas rebuild: refresh next LateUpdate
+        }
+
+        private bool atlasStale;
         private void OnRectTransformDimensionsChange() => Fit(false);
-        private void LateUpdate() => Fit(false);
+        private void LateUpdate()
+        {
+            if (atlasStale && text) { atlasStale = false; text.SetVerticesDirty(); }
+            Fit(false);
+        }
 
         private void Fit(bool force)
         {

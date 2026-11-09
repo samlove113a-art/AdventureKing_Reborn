@@ -160,8 +160,34 @@ namespace AdventureKing.Gameplay
             if (hasClimbPlayback) animator.SetFloat(ClimbPlayback, ClimbPlaybackFor(motion.y));
             if (hasClimbPhase && profile && profile.climbPhaseDriven && motor.Ladder && visualRoot)
                 animator.SetFloat(ClimbPhaseId, profile.ClimbPhase(visualRoot.position.y, motor.Ladder.Bottom, Mathf.Abs(visualRoot.lossyScale.y)));
-            if (health) animator.SetBool(Dead, health.IsDead);
+            if (health)
+            {
+                bool dead = health.IsDead;
+                animator.SetBool(Dead, dead);
+                if (wasDead && !dead) StandUp();
+                wasDead = dead;
+            }
         }
+
+        private bool wasDead;
+        private static readonly int IdleState = Animator.StringToHash("Idle");
+
+        /// <summary>Revived (HP back above 0): leave the Death pose at once and stand in Idle.
+        /// The Death state has no exit of its own, so without this only an Attack trigger pulled the body up.</summary>
+        private void StandUp()
+        {
+            animator.ResetTrigger(Attack);
+            animator.ResetTrigger(Hit);
+            animator.ResetTrigger(Skill);
+            animator.Play(IdleState, 0, 0f);
+            animator.Update(0f);
+            if (face) face.Pulse(HeroFace.Expression.Happy, 0.6f);
+            Revived++;
+        }
+
+        /// <summary>How many times the body stood back up after death (tests).</summary>
+        public int Revived { get; private set; }
+        public bool InDeathPose => animator && animator.GetCurrentAnimatorStateInfo(0).IsName("Death");
 
         private void HandleAttack()
         {

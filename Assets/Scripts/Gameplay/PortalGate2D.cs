@@ -31,6 +31,7 @@ namespace AdventureKing.Gameplay
         public bool RequireConfirmation => requireConfirmation;
         public string DestinationName => destinationName;
         public bool PlayerInside => playerInside;
+        public Transform Vortex => vortex;
 
         private void Awake()
         {

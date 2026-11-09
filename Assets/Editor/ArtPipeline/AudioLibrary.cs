@@ -6,9 +6,9 @@ using UnityEngine;
 namespace AdventureKing.ArtPipeline
 {
     /// <summary>
-    /// Wires the original synthesised class SFX (Tools/audio/synth_sfx.py -> Assets/Audio/SFX) into
-    /// AdventureAudioDirector. Stage music is intentionally NOT assigned: no original or licensed
-    /// soundtrack exists yet, and silent/placeholder tracks must not be passed off as music.
+    /// Wires the original synthesised class SFX (Tools/audio/synth_sfx.py -> Assets/Audio/SFX) and the original
+    /// in-code BGM drafts (<see cref="MusicComposer"/>) into AdventureAudioDirector. The BGM is labelled DRAFT:
+    /// it is original, but not yet approved by the owner for a commercial release.
     /// </summary>
     public static class AudioLibrary
     {
@@ -31,6 +31,23 @@ namespace AdventureKing.ArtPipeline
                 e.FindPropertyRelative("attackImpact").objectReferenceValue = Clip(c + "_AttackImpact");
                 e.FindPropertyRelative("skillCast").objectReferenceValue = Clip(c + "_SkillCast");
                 e.FindPropertyRelative("skillImpact").objectReferenceValue = Clip(c + "_SkillImpact");
+            }
+            // Stage music: original in-code compositions (MusicComposer, DRAFT until the owner approves by ear).
+            if (System.Array.Exists(MusicComposer.Tracks, t => !System.IO.File.Exists(MusicComposer.PathOf(t)))) MusicComposer.ComposeAll();
+            (AdventureMusicStage stage, string track)[] map =
+            {
+                (AdventureMusicStage.Splash, "BGM_Login"), (AdventureMusicStage.Authentication, "BGM_Login"), (AdventureMusicStage.CharacterSelection, "BGM_Login"),
+                (AdventureMusicStage.Village, "BGM_Village_Day"), (AdventureMusicStage.VillageNight, "BGM_Village_Night"),
+                (AdventureMusicStage.Exploration, "BGM_Meadow"), (AdventureMusicStage.Boss, "BGM_Boss"), (AdventureMusicStage.Wedding, "BGM_Wedding"),
+            };
+            var music = so.FindProperty("soundtracks");
+            music.arraySize = map.Length;
+            for (int i = 0; i < map.Length; i++)
+            {
+                var e = music.GetArrayElementAtIndex(i);
+                e.FindPropertyRelative("stage").enumValueIndex = (int)map[i].stage;
+                e.FindPropertyRelative("music").objectReferenceValue = MusicComposer.Clip(map[i].track);
+                e.FindPropertyRelative("ambience").objectReferenceValue = null;
             }
             so.ApplyModifiedPropertiesWithoutUndo();
         }

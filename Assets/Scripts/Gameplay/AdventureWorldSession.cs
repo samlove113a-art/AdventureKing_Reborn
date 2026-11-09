@@ -126,7 +126,8 @@ namespace AdventureKing.Gameplay
             if (characterLabel)
                 characterLabel.text = character.characterName + "  ·  Lv." + character.level + "  ·  " +
                                       HeroClassCatalog.Get(character.heroClass).displayName;
-            if (AdventureAudioDirector.Instance) AdventureAudioDirector.Instance.PlayStage(musicStage);
+            requestedMusic = MusicNow;
+            if (AdventureAudioDirector.Instance) AdventureAudioDirector.Instance.PlayStage(MusicNow);
             SetStatus("");
         }
 
@@ -204,8 +205,18 @@ namespace AdventureKing.Gameplay
             }
         }
 
+        /// <summary>The village plays its day theme by day and the calm night theme after dark (VN time / display mode).</summary>
+        private AdventureMusicStage? requestedMusic;
+        public AdventureMusicStage MusicNow => musicStage == AdventureMusicStage.Village && DayNightCycle.TargetNight > 0.5f
+            ? AdventureMusicStage.VillageNight : musicStage;
+
         private void Update()
         {
+            if (character != null && AdventureAudioDirector.Instance && requestedMusic != MusicNow)
+            {
+                requestedMusic = MusicNow;
+                AdventureAudioDirector.Instance.PlayStage(requestedMusic.Value);
+            }
 #if ENABLE_INPUT_SYSTEM
             if (ConfirmOpen && UnityEngine.InputSystem.Keyboard.current is { } k)
             {

@@ -6,6 +6,96 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★★★★ Chỉ thị tổng "Kinh tế 200 map" — GIAI ĐOẠN A: sửa lỗi thực tế (2026-11-10)
+**Trạng thái:** đã làm + kiểm thử Giai đoạn A. **Chưa bắt đầu Giai đoạn B** (skill/MP/Auto Skill, túi đồ, Dược Sư, vé, nhiệm vụ, logout về sảnh) và các giai đoạn sau. Meshy vẫn 931 (không gọi). Không mua tài nguyên, không bật thanh toán, không đổi giá/kinh tế (giá shop + 5.000 Gold vẫn là ĐỀ XUẤT).
+
+### Đã sửa (có kiểm thử Play Mode thật)
+1. **Hồi sinh vẫn nằm:**
+   - **Nguyên nhân:** trạng thái `Death` trong animator không có đường ra. Chỉ trigger `Attack` (AnyState) kéo được nhân vật dậy, nên phải bấm đánh mới đứng lên.
+   - **Sửa:**
+     - `CharacterVisual3D` phát hiện HP từ 0 lên >0 (server hồi sinh), reset trigger Attack/Hit/Skill và chuyển ngay về `Idle`;
+     - `HeroArtPipeline` có thêm chuyển trạng thái Death→Idle cho lần dựng lại sau.
+   - **Test:** `FarmTests` chạy chết → hồi sinh → không còn tư thế Death → đi → nhảy → đánh.
+   - **Ảnh:** `QA/Farm/08_revived.png`, `09_after_revive_moving.png`.
+2. **Cổng dịch chuyển:**
+   - **Nguyên nhân:** bậc đá của mô hình cổng không có va chạm, nên nhân vật đi xuyên ở mặt đất và trông như lún vào bệ.
+   - **Sửa:**
+     - Lúc dựng scene, `VillageSceneBuilder` đo chính mesh cổng: mặt cắt bậc thềm tại đường đi z=0 (cao 0,86 m, các bậc ≤0,30 m) và tâm lỗ vòng bằng lưới tia.
+     - Từ số đo đó tạo `PortalSteps` (PolygonCollider2D lớp Ground).
+     - Lốc xoáy đặt đúng tâm vòng: y=2,79. Giá trị chỉnh tay cũ là 3,3, bị lệch lên trên.
+     - Vùng trigger đặt trên bậc cao nhất.
+     - `PlayerMotor2D` có thêm bước lên bậc thấp ≤0,45 m (giống cầu thang thật; tường cao hơn thì vẫn chặn).
+   - **Test mới `PortalStepsTests`:**
+     - leo từ trái, đứng đúng mặt bậc trên cùng, vào được trigger;
+     - lốc xoáy nằm giữa vòng;
+     - xuống bên phải rồi leo lại;
+     - nhảy và đáp lại trên bậc;
+     - cổng vẫn hỏi xác nhận.
+   - `TownHubTests` (đi đường thật qua sảnh) cũng qua.
+   - **Ảnh:** `QA/Portal/01_on_top_step.png`, `QA/HubTest/05_portal.png`.
+   - Dịch chuyển thất bại vẫn trả lại quyền điều khiển, không đổi dữ liệu (code cũ, không đổi).
+3. **Mũi tên thu gọn:** chuyển vào góc trên-trái cụm icon, ngay dưới nút cài đặt, cạnh minimap; không còn lơ lửng giữa map. Cỡ 68 cho đủ vùng chạm ≥40 px trên điện thoại. Minimap luôn hiện kể cả khi thu gọn.
+4. **Icon HUD bớt sơ sài:**
+   - `HudArt` vẽ lại toàn bộ huy hiệu:
+     - viền vàng vát cạnh có đinh tán;
+     - nền xanh ngọc có quầng sáng;
+     - mỗi biểu tượng có viền mực, đổ bóng và chiếu sáng cạnh;
+     - thêm sao lấp lánh cho Sự kiện và dấu sáp cho Thư.
+   - Vẫn là art tự vẽ bằng code, không lấy của game khác.
+   - **Chưa đạt** mức ảnh mẫu thương mại vẽ tay. Nếu muốn mức đó cần art riêng (chờ duyệt).
+5. **Logo màn đăng nhập (ĐỀ XUẤT chờ duyệt):**
+   - Logo "ADVENTURE KING / REBORN" dựng hoàn toàn trong Unity (`LogoArt.cs`): vương miện gắn ngọc, chữ vàng chuyển màu viền nâu đậm, ruy băng đỏ.
+   - File `Assets/Art/Branding/AK_TitleLogo_PROPOSAL.png`.
+   - Đặt bên trái, cân với khung đăng nhập. Tự ẩn trên màn 4:3 vì khung nằm giữa, không đủ chỗ.
+   - Logo SAM của chủ dự án vẫn là màn mở đầu.
+   - **Ảnh:** `QA/UI/entry/02_login_*.png`.
+6. **Google/Facebook:**
+   - Nút xám không bấm được, chữ "· chưa mở", dòng "Google / Facebook: chưa khả dụng".
+   - Server vẫn từ chối (không có đăng nhập giả).
+   - Lưu ý: nút Facebook trên ảnh vẫn hơi xanh vì skin nút đè màu disabled. Không bấm được (có test), nhưng nên chỉnh màu cho rõ hơn.
+7. **Nhạc nền (BẢN NHÁP, chờ chủ dự án nghe duyệt):**
+   - `MusicComposer.cs` sáng tác và tổng hợp 6 vòng lặp hoàn toàn bằng code: không sample, không giai điệu của tác phẩm khác; vòng hợp âm + motif sinh có seed, harp/chuông FM/marimba/sáo/dây/trống tổng hợp, reverb.
+   - Các bài: Đăng nhập (Rê trưởng, 84 bpm), Làng ngày (Sol trưởng, 108), Làng đêm (Mi thứ, hộp nhạc, 72), Đồng cỏ (La mixolydian, 124), Boss (Đô thứ hòa âm, 150), Lễ cưới (Fa trưởng, valse 3/4, 96).
+   - File `Assets/Audio/BGM/*_DRAFT.wav` (32 kHz stereo, 25–53 giây, streaming Vorbis).
+   - **Đã gắn:**
+     - đăng nhập/chọn nhân vật dùng bài Đăng nhập;
+     - sảnh đổi ngày↔đêm theo giờ VN và chế độ hiển thị, chuyển mượt;
+     - Đồng Cỏ Gió dùng bài Đồng cỏ.
+   - Boss và Lễ cưới **đã có bài nhưng chưa có map nào phát** (chưa có map Boss/khu cưới).
+   - **Cài đặt:** Âm thanh (tắt hết), **Nhạc nền bật/tắt riêng**, **Âm lượng nhạc** và **Âm lượng hiệu ứng** riêng (bước 25 %).
+   - **Đo kỹ thuật:** RMS −13,7…−15,6 dB, đỉnh −2 dB, chỗ nối vòng nhỏ hơn bước nhảy lớn nhất trong bài (không có tiếng "tạch" khi lặp).
+   - **Test:** nhạc làng thực sự đang phát (`isPlaying`, không mute, volume > 0), tắt nhạc không ảnh hưởng hiệu ứng, đêm thì chuyển bài đêm, farm thì phát bài Đồng cỏ, màn đăng nhập phát bài Đăng nhập.
+   - ⚠ **Claude không nghe được bằng tai.** Chất lượng âm nhạc phải do chủ dự án nghe trong Unity rồi duyệt; đây không phải nhạc thương mại đã duyệt.
+   - 6 WAV nháp của chủ dự án (`AKOriginalDrafts/`) giữ nguyên, chưa gắn.
+8. **Trang phục chồng lớp:**
+   - Đã kiểm tra: `HeroOutfit.Apply` dọn toàn bộ mảnh cũ trước khi dựng mảnh mới, skin vào đúng xương/bindpose của thân. `EquipmentManager` không gắn ở đâu.
+   - Test bổ sung trong `Every_Catalog_Item_Builds_On_Every_Class` (21 món × 4 nghề):
+     - không còn mảnh của bộ trước;
+     - mesh thân vẫn còn;
+     - không có `EquipmentManager`.
+   - Trạng thái Idle/Run/Jump/Climb/Attack/Skill vẫn do test contact sheet cũ kiểm (`QA/Shop/states_*.png`).
+
+### Kiểm thử
+- Server 109/109.
+- EditMode 4/4.
+- **PlayMode toàn bộ 44 (42 qua + 2 bỏ qua), 0 lỗi, 0 exception.**
+- UI audit ở 1920×1080, 1366×768, 16:9, 19.5:9 và 4:3: sạch.
+
+### Còn tồn / chưa làm (ghi thật)
+- Trong 1–3 ảnh audit đầu tiên của `UiTownScreensTests`, chữ dưới các icon chưa mở (Sự kiện, Nạp đầu…) bị xám/nhòe. Các ảnh sau trong cùng lượt chạy (ví dụ `07_portal_confirm`) thì sạch. **Chưa xác định nguyên nhân.**
+  - Đã thử ép làm mới chữ khi atlas font dựng lại (`FitOneLine`): không hết lỗi nhưng vô hại.
+  - Cần điều tra tiếp.
+- Trạng thái thu gọn icon lưu trong PlayerPrefs dùng chung với Editor. Test giờ tự đặt về "mở" trước khi chụp.
+- Icon skill PNG mẫu của chủ dự án (`Assets/Art/UI/SkillButtons/ExtractedConcept/`, `README_SKILL_ART.md`) **chưa commit, chưa dùng**. Đó là việc Giai đoạn B (nút skill thật).
+- HUD theo ảnh mẫu còn thiếu: bảng nhiệm vụ, chat, thanh nút dưới, nút skill/Auto/thuốc/Nhặt, Lực Chiến. Tất cả thuộc Giai đoạn B/C.
+
+### Cần chủ dự án quyết định
+1. Duyệt hay đề nghị sửa **logo đề xuất**.
+2. **Nghe 6 bài nhạc nháp** và duyệt/yêu cầu sửa (`Assets/Audio/BGM/`).
+3. Có cần art icon/skill vẽ tay thương mại (tốn tiền/credit) hay giữ art tự vẽ bằng code.
+4. Giá shop, Vàng khởi đầu, thưởng điểm danh: vẫn chờ duyệt như trước.
+
+---
 ## ★★★★★★★★★★ Hoàn thiện Đợt 5 + rà soát gói 17H (2026-11-10)
 **Trạng thái:** đã test, commit (xem `git log`). Chưa sang Pet, chống macro, xã hội. Meshy vẫn 931.
 

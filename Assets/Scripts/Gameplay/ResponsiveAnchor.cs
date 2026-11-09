@@ -15,6 +15,9 @@ namespace AdventureKing.Gameplay
         [SerializeField, Range(0f, 1f)] private float narrowX = 0.5f;
         [Tooltip("Width / height at or above which the wide layout is used.")]
         [SerializeField] private float wideAspect = 1.55f;
+        [Tooltip("Hide on narrow screens (e.g. the title logo beside the login card has no room on a 4:3 tablet).")]
+        [SerializeField] private bool hideWhenNarrow;
+        private CanvasGroup group;
 
         private static readonly System.Collections.Generic.List<ResponsiveAnchor> live = new System.Collections.Generic.List<ResponsiveAnchor>();
 
@@ -32,7 +35,15 @@ namespace AdventureKing.Gameplay
             if (!parent) return;
             Rect r = parent.rect;
             if (r.height <= 1f) return;
-            float x = r.width / r.height >= wideAspect ? wideX : narrowX;
+            bool wide = r.width / r.height >= wideAspect;
+            float x = wide ? wideX : narrowX;
+            if (hideWhenNarrow)
+            {
+                if (!group) group = GetComponent<CanvasGroup>();
+                if (!group) group = gameObject.AddComponent<CanvasGroup>();
+                group.alpha = wide ? 1f : 0f;
+                group.blocksRaycasts = wide;
+            }
             var rt = (RectTransform)transform;
             if (Mathf.Approximately(rt.anchorMin.x, x) && Mathf.Approximately(rt.anchorMax.x, x)) return;
             rt.anchorMin = new Vector2(x, rt.anchorMin.y);
