@@ -58,6 +58,8 @@ namespace AdventureKing.Gameplay
         {
             ["village_wind_bell"] = "AK_Village",
             ["meadow_breeze"] = "AK_Meadow",
+            [TownLayout.GuildHall.MapId] = TownLayout.GuildHall.Scene,
+            [TownLayout.WeddingHall.MapId] = TownLayout.WeddingHall.Scene,
         };
 
         public static AdventureWorldSession Current { get; private set; }
@@ -264,7 +266,7 @@ namespace AdventureKing.Gameplay
             SetInput(true);
         }
 
-        private static string DisplayNameForMap(string id) => id == TownLayout.Meadow.MapId ? TownLayout.Meadow.DisplayName : TownLayout.Hub.DisplayName;
+        private static string DisplayNameForMap(string id) => TownLayout.For(id).DisplayName;
 
         private void SetInput(bool on)
         {
@@ -335,7 +337,7 @@ namespace AdventureKing.Gameplay
             });
         }
 
-        private static string MapDisplayName(string mapId) => mapId == TownLayout.Meadow.MapId ? TownLayout.Meadow.DisplayName : TownLayout.Hub.DisplayName;
+        private static string MapDisplayName(string mapId) => TownLayout.For(mapId).DisplayName;
 
         private IEnumerator TravelAndLoad(string scene, string destination)
         {

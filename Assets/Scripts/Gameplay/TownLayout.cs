@@ -33,7 +33,7 @@ namespace AdventureKing.Gameplay
         public static class Hub
         {
             public const string MapId = "village_wind_bell", Scene = "AK_Village", DisplayName = "Thị trấn Chuông Gió";
-            public const float MinX = -60f, MaxX = 80f;
+            public const float MinX = -60f, MaxX = 86f; // east end widened for the Guild Hall portal (x 74) so the camera can centre on it
             public static readonly Vector2 Spawn = new Vector2(0f, 1f);
             public const float StreamX = -16f, StreamHalfWidth = 2.2f;
 
@@ -57,7 +57,12 @@ namespace AdventureKing.Gameplay
                 new Climb("ThangDaiCoiXay", 40f, 5f, 10.8f, false),
             };
 
-            public static readonly PortalSpot[] Portals = { new PortalSpot("hub_east_meadow", 66f, "AK_Meadow", "Đồng Cỏ Gió") };
+            public static readonly PortalSpot[] Portals =
+            {
+                new PortalSpot("hub_east_meadow", 66f, "AK_Meadow", "Đồng Cỏ Gió"),
+                new PortalSpot("hub_guild_hall", 74f, GuildHall.Scene, GuildHall.DisplayName),
+                new PortalSpot("hub_wedding_hall", -56f, WeddingHall.Scene, WeddingHall.DisplayName),
+            };
 
             /// <summary>Where NPCs will stand (marked in the scene as NpcSpot_*; NPC models are not built yet).</summary>
             public static readonly (string role, float x, float y)[] NpcSpots =
@@ -89,6 +94,54 @@ namespace AdventureKing.Gameplay
             };
 
             public static readonly PortalSpot[] Portals = { new PortalSpot("meadow_west_hub", -40f, "AK_Village", "Thị trấn Chuông Gió") };
+        }
+
+        // ------------------------------------------------------------ Sảnh Bang Hội (Phase D interior, safe zone)
+        public static class GuildHall
+        {
+            public const string MapId = "guild_hall", Scene = "AK_GuildHall", DisplayName = "Sảnh Bang Hội";
+            public const float MinX = -24f, MaxX = 24f;
+            public static readonly Vector2 Spawn = new Vector2(-14f, 1f);
+            public static readonly Deck[] Decks = { };
+            public static readonly Climb[] Climbs = { };
+            public static readonly PortalSpot[] Portals = { new PortalSpot("guild_hall_hub", -19f, Hub.Scene, Hub.DisplayName) };
+        }
+
+        // ------------------------------------------------------------ Sảnh Kết Hôn (Phase D interior, safe zone)
+        public static class WeddingHall
+        {
+            public const string MapId = "wedding_hall", Scene = "AK_WeddingHall", DisplayName = "Sảnh Kết Hôn";
+            public const float MinX = -26f, MaxX = 26f;
+            public static readonly Vector2 Spawn = new Vector2(-16f, 1f);
+            public static readonly Deck[] Decks = { };
+            public static readonly Climb[] Climbs = { };
+            public static readonly PortalSpot[] Portals = { new PortalSpot("wedding_hall_hub", -21f, Hub.Scene, Hub.DisplayName) };
+        }
+
+        /// <summary>One entry per world map (scene, name, bounds, minimap data).</summary>
+        public sealed class MapInfo
+        {
+            public string MapId, Scene, DisplayName;
+            public float MinX, MaxX;
+            public Vector2 Spawn;
+            public Deck[] Decks;
+            public Climb[] Climbs;
+            public PortalSpot[] Portals;
+        }
+
+        public static readonly MapInfo[] Maps =
+        {
+            new MapInfo { MapId = Hub.MapId, Scene = Hub.Scene, DisplayName = Hub.DisplayName, MinX = Hub.MinX, MaxX = Hub.MaxX, Spawn = Hub.Spawn, Decks = Hub.Decks, Climbs = Hub.Climbs, Portals = Hub.Portals },
+            new MapInfo { MapId = Meadow.MapId, Scene = Meadow.Scene, DisplayName = Meadow.DisplayName, MinX = Meadow.MinX, MaxX = Meadow.MaxX, Spawn = Meadow.Spawn, Decks = Meadow.Decks, Climbs = Meadow.Climbs, Portals = Meadow.Portals },
+            new MapInfo { MapId = GuildHall.MapId, Scene = GuildHall.Scene, DisplayName = GuildHall.DisplayName, MinX = GuildHall.MinX, MaxX = GuildHall.MaxX, Spawn = GuildHall.Spawn, Decks = GuildHall.Decks, Climbs = GuildHall.Climbs, Portals = GuildHall.Portals },
+            new MapInfo { MapId = WeddingHall.MapId, Scene = WeddingHall.Scene, DisplayName = WeddingHall.DisplayName, MinX = WeddingHall.MinX, MaxX = WeddingHall.MaxX, Spawn = WeddingHall.Spawn, Decks = WeddingHall.Decks, Climbs = WeddingHall.Climbs, Portals = WeddingHall.Portals },
+        };
+
+        /// <summary>The map with this id (the hub when unknown).</summary>
+        public static MapInfo For(string mapId)
+        {
+            foreach (MapInfo m in Maps) if (m.MapId == mapId) return m;
+            return Maps[0];
         }
     }
 }

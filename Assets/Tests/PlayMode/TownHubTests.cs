@@ -300,7 +300,7 @@ namespace AdventureKing.Tests
                 Assert.IsFalse(c.isTrigger, c.name + " must be solid");
             }
             Assert.AreEqual(TownLayout.Hub.Climbs.Length, Object.FindObjectsByType<LadderZone2D>(FindObjectsInactive.Exclude).Length);
-            Assert.AreEqual(1, Object.FindObjectsByType<PortalGate2D>(FindObjectsInactive.Exclude).Length);
+            Assert.AreEqual(TownLayout.Hub.Portals.Length, Object.FindObjectsByType<PortalGate2D>(FindObjectsInactive.Exclude).Length); // meadow + 2 halls
 
             // ---- spawn & jump
             yield return Settle();
@@ -351,7 +351,7 @@ namespace AdventureKing.Tests
 
             // ---- portal to the meadow (validated by the server)
             yield return WalkTo(TownLayout.Hub.Portals[0].X);
-            var gate = Object.FindAnyObjectByType<PortalGate2D>();
+            var gate = Object.FindObjectsByType<PortalGate2D>(FindObjectsInactive.Exclude).First(g => g.name == "Portal_" + TownLayout.Hub.Portals[0].Id);
             Assert.IsTrue(gate.PlayerInside, "inside portal trigger");
             yield return Shot("05_portal");
             input.SetTouchHeld(PlayerInput2D.TouchAction.Up, true);

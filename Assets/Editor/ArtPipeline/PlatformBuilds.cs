@@ -17,7 +17,8 @@ namespace AdventureKing.ArtPipeline
     public static class PlatformBuilds
     {
         private const string EndpointFile = "Assets/Resources/ServerEndpoint.txt";
-        private static readonly string[] Scenes = { "Assets/Scenes/AK_Entry.unity", "Assets/Scenes/AK_Village.unity", "Assets/Scenes/AK_Meadow.unity" };
+        private static readonly string[] Scenes = { "Assets/Scenes/AK_Entry.unity", "Assets/Scenes/AK_Village.unity", "Assets/Scenes/AK_Meadow.unity",
+            "Assets/Scenes/AK_GuildHall.unity", "Assets/Scenes/AK_WeddingHall.unity" };
 
         [MenuItem("AdventureKing/Build/Apply Player Settings (PC, Android, iOS)")]
         public static void ApplySettings()

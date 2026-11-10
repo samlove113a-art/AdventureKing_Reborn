@@ -131,6 +131,9 @@ public sealed class CharacterService
     {
         ["village_wind_bell"] = new("village_wind_bell", "Thị trấn Chuông Gió", -70f, 100f, -8f, 40f),
         ["meadow_breeze"] = new("meadow_breeze", "Đồng Cỏ Gió", -50f, 90f, -8f, 30f),
+        // Phase D interiors (safe zones: no monsters, no farming)
+        ["guild_hall"] = new("guild_hall", "Sảnh Bang Hội", -28f, 28f, -4f, 20f),
+        ["wedding_hall"] = new("wedding_hall", "Sảnh Kết Hôn", -30f, 30f, -4f, 20f),
     };
 
     public const string StartMap = "village_wind_bell";
@@ -145,6 +148,10 @@ public sealed class CharacterService
     {
         ["hub_east_meadow"] = new("hub_east_meadow", "village_wind_bell", 66f, 0f, "meadow_breeze", -36f, 0.9f),
         ["meadow_west_hub"] = new("meadow_west_hub", "meadow_breeze", -40f, 0f, "village_wind_bell", 62f, 0.9f),
+        ["hub_guild_hall"] = new("hub_guild_hall", "village_wind_bell", 74f, 0f, "guild_hall", -14f, 0.9f),
+        ["guild_hall_hub"] = new("guild_hall_hub", "guild_hall", -19f, 0f, "village_wind_bell", 71f, 0.9f),
+        ["hub_wedding_hall"] = new("hub_wedding_hall", "village_wind_bell", -56f, 0f, "wedding_hall", -16f, 0.9f),
+        ["wedding_hall_hub"] = new("wedding_hall_hub", "wedding_hall", -21f, 0f, "village_wind_bell", -53f, 0.9f),
     };
 
     public const float PortalReach = 3.5f;

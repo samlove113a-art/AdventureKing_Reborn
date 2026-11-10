@@ -23,7 +23,7 @@ namespace AdventureKing.ArtPipeline
     /// layers (AdventureKing/Cutout) + 3D gameplay structures (decks, ladders, ropes, bridge, portal) + painted
     /// parallax backdrop. Gameplay = 2D physics on the z = 0 plane.
     /// </summary>
-    public static class VillageSceneBuilder
+    public static partial class VillageSceneBuilder
     {
         public const string SceneName = "AK_Village";
         public const string ScenePath = "Assets/Scenes/AK_Village.unity";
@@ -51,6 +51,8 @@ namespace AdventureKing.ArtPipeline
             EnsureLayer(OneWayLayer, "OneWayPlatform");
             BuildTown();
             BuildMeadow();
+            BuildGuildHall();
+            BuildWeddingHall();
             RegisterBuildScenes();
         }
 
@@ -58,7 +60,7 @@ namespace AdventureKing.ArtPipeline
         public static void RegisterBuildScenes()
         {
             var scenes = new List<EditorBuildSettingsScene> { new(EntrySceneBuilder.ScenePath, true) };
-            foreach (string p in new[] { ScenePath, MeadowScenePath })
+            foreach (string p in new[] { ScenePath, MeadowScenePath, GuildHallScenePath, WeddingHallScenePath })
                 if (File.Exists(p)) scenes.Add(new EditorBuildSettingsScene(p, true));
             EditorBuildSettings.scenes = scenes.ToArray();
         }
@@ -105,6 +107,8 @@ namespace AdventureKing.ArtPipeline
             Signboard(art, -38f, 2.6f, "Phố\nThợ Rèn\n&\nChợ Phiên");
             Signboard(art, 34f, 2.6f, "Quán Trà\nGió\nChiều");
             Signboard(art, 59f, 2.6f, "Cổng\nDịch Chuyển\n→\nĐồng Cỏ Gió");
+            Signboard(art, 70f, 2.6f, "Sảnh\nBang Hội\n→");
+            Signboard(art, -52.5f, 2.6f, "←\nSảnh\nKết Hôn");
 
             foreach (var spot in TownLayout.Hub.NpcSpots)
             {
@@ -1135,6 +1139,9 @@ namespace AdventureKing.ArtPipeline
             ["windmill"] = 10f, ["banyan_tree"] = 10f, ["bamboo"] = 5.5f, ["stone_lantern"] = 1.8f, ["lantern_post"] = 3.4f,
             ["signboard"] = 2.6f, ["hero_statue"] = 5f, ["stone_bridge"] = 2.6f, ["portal_gate"] = 5.4f, ["crates"] = 1.6f,
             ["planter"] = 1.1f,
+            // Phase D halls (Tools/blender/export_prop.py heights; hero = 1.6 m)
+            ["gh_throne"] = 2.8f, ["gh_council_set"] = 1.5f, ["gh_pillar"] = 7f, ["gh_wall_arch"] = 7.5f, ["gh_banner"] = 4.2f,
+            ["gh_ranking_board"] = 3.4f,
         };
 
         /// <summary>
@@ -1142,9 +1149,10 @@ namespace AdventureKing.ArtPipeline
         /// <paramref name="height"/> rescales relative to the exported height; <paramref name="flip"/> mirrors for variety.
         /// Missing props are skipped (never replaced by flat paintings in the play area).
         /// </summary>
-        private static GameObject Prop(Transform parent, string name, float x, float z, float height, bool flip, float y = 0f)
+        private static GameObject Prop(Transform parent, string name, float x, float z, float height, bool flip, float y = 0f, string dir = null, float yawOffset = 0f)
         {
-            string fbx = $"{PropDir}/{name}/{name}.fbx";
+            dir ??= PropDir;
+            string fbx = $"{dir}/{name}/{name}.fbx";
             var mi = AssetImporter.GetAtPath(fbx) as ModelImporter;
             if (!mi) { Debug.LogWarning("[WORLD] prop missing: " + name); return null; }
             if (mi.bakeAxisConversion || mi.materialImportMode != ModelImporterMaterialImportMode.None || mi.animationType != ModelImporterAnimationType.None)
@@ -1162,11 +1170,11 @@ namespace AdventureKing.ArtPipeline
             float s = height / baseH;
             go.transform.position = new Vector3(x, y, z);
             // Face the camera with a slight three-quarter turn so volumes read in the side view.
-            float yaw = 180f + (flip ? 14f : -14f);
+            float yaw = 180f + (flip ? 14f : -14f) + yawOffset;
             // Keep the model's own root orientation (axis conversion) and add the yaw on top — never overwrite it.
             go.transform.rotation = Quaternion.Euler(0f, yaw, 0f) * prefab.transform.localRotation;
             go.transform.localScale = new Vector3(flip ? -s : s, s, s);
-            Material m = PropMaterial(name);
+            Material m = PropMaterial(name, dir);
             foreach (var r in go.GetComponentsInChildren<MeshRenderer>())
             {
                 r.sharedMaterial = m;
@@ -1176,15 +1184,16 @@ namespace AdventureKing.ArtPipeline
             return go;
         }
 
-        private static Material PropMaterial(string name)
+        private static Material PropMaterial(string name, string dir = null)
         {
+            dir ??= PropDir;
             string key = "prop_" + name;
             if (mats.TryGetValue(key, out Material cached)) return cached;
             string path = $"{MatDir}/{key}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (!m) { m = new Material(Shader.Find("AdventureKing/Toon")); AssetDatabase.CreateAsset(m, path); }
             m.shader = Shader.Find("AdventureKing/Toon");
-            string texPath = $"{PropDir}/{name}/{name}_baseColor.png";
+            string texPath = $"{dir}/{name}/{name}_baseColor.png";
             var ti = AssetImporter.GetAtPath(texPath) as TextureImporter;
             if (ti && (ti.maxTextureSize != 2048 || ti.textureCompression != TextureImporterCompression.CompressedHQ))
             {
@@ -1649,8 +1658,8 @@ namespace AdventureKing.ArtPipeline
             so.FindProperty("promptLabel").objectReferenceValue = label;
             so.FindProperty("hum").objectReferenceValue = hum;
             so.FindProperty("vortex").objectReferenceValue = vortexRoot;
-            // Leaving the safe town for a field asks first; coming home does not.
-            so.FindProperty("requireConfirmation").boolValue = p.ToScene != TownLayout.Hub.Scene;
+            // Leaving for a monster field asks first; the town and the halls are safe zones (no question).
+            so.FindProperty("requireConfirmation").boolValue = p.ToScene == TownLayout.Meadow.Scene;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 

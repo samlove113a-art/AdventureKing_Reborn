@@ -72,7 +72,7 @@ namespace AdventureKing.Tests
             input = motor.GetComponent<PlayerInput2D>();
             var rb = motor.GetComponent<Rigidbody2D>();
             var col = motor.GetComponent<Collider2D>();
-            var gate = Object.FindObjectsByType<PortalGate2D>(FindObjectsInactive.Exclude).First();
+            var gate = Object.FindObjectsByType<PortalGate2D>(FindObjectsInactive.Exclude).First(g => g.name == "Portal_hub_east_meadow"); // the meadow gate asks first (halls do not)
             float gx = gate.transform.position.x;
             var steps = gate.transform.Find("PortalSteps");
             Assert.IsNotNull(steps, "walkable step surface built from the gate mesh");
