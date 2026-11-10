@@ -6,8 +6,14 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ▶ ĐANG LÀM: CHƯƠNG 1 — xem `Docs/CHAPTER01_PLAN.md` (kế hoạch, quyết định, ngân sách Meshy, nhật ký)
+- Nhánh: `feat/chapter1-mushroom-kingdom`. Sao lưu trước Chương 1: nhánh `backup/pre-chapter1-20261110` (= `670f6f9`, đã có trên GitHub qua nhánh `feat/diamond-store-catalog-20261107`) + git bundle + database trong `C:\AdventureKing_ArtBackup\`.
+- **Lễ cưới 180 s = WIP, TẠM DỪNG** (`670f6f9`): server 8 cảnh/180 s + chống mất kết nối (158/158 test) đã xong; client timeline/IK/đạo cụ/âm thanh có nhưng **chưa nghiệm thu** (test xem trước còn lỗi tầm với khi Sát Thủ uống ly; chưa chạy bản 2 client 180 s; chưa có video). Không sửa tiếp khi chưa có lệnh.
+- Meshy: key đang cấu hình (biến môi trường User) 3.242 credit; key cũ còn 32 (không dùng).
+
+---
 ## ★★★★★★★★★★★★★★★★ GIAI ĐOẠN D — HOÀN THIỆN: Bang Hội, Kết Hôn, Bạn bè/Chat, Multiplayer (2026-11-10)
-**Chỉ ghi điều đã chạy và kiểm thử thật.** Chưa sang Chương 1 / Giai đoạn E — chờ chỉ thị của chủ dự án.
+**Chỉ ghi điều đã chạy và kiểm thử thật.**
 
 ### Kiểm thử nhiều client trên cùng một server (đã chạy thật)
 `Assets/Tests/PlayMode/MultiplayerSocialTests.cs`: **2 tài khoản thật** trên cùng server thử nghiệm — người chơi A là game Unity (bấm UI thật), người chơi B là client thứ hai độc lập (`SecondClient.cs`: phiên đăng nhập riêng, cùng các endpoint, nhịp đồng bộ 6 Hz riêng). Kết quả: **PASS**. Ảnh: `QA/Multiplayer/*.png`.
