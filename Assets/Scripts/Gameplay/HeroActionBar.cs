@@ -291,7 +291,18 @@ namespace AdventureKing.Gameplay
                 // safe zone: skills are practice only (animation, no damage, no MP) — the tutorial quest counts it
                 if (fromAuto) return;
                 var visual = world.Player.GetComponent<CharacterVisual3D>();
-                if (visual) visual.PlaySkill();
+                if (SkillVfxDirector.IsCasting(world.Player.transform)) return;
+                // practice: the full skill effect plays at a point ahead (no monster, no damage)
+                var motor = world.Player.GetComponent<PlayerMotor2D>();
+                int facing = motor ? motor.Facing : 1;
+                SkillDefDto practice = SkillBook.Skill(Class, slot);
+                float reach = practice == null ? 3f : practice.shape == "self" ? 0f : Mathf.Min(4f, Mathf.Max(2f, practice.range * 0.6f));
+                SkillVfxDirector.Play(new SkillCast
+                {
+                    Class = Class, Slot = slot, Hero = world.Player.transform, Visual = visual, Facing = facing,
+                    Target = world.Player.transform.position + Vector3.right * facing * reach,
+                    Radius = practice == null ? 2f : Mathf.Max(1.4f, practice.radius), Range = practice == null ? 4f : Mathf.Min(5f, practice.range),
+                });
                 Say("Luyện tập kỹ năng (trong làng không gây sát thương — khu an toàn).");
                 QuestBook.Event("practice:skill" + slot);
                 return;

@@ -426,17 +426,30 @@ namespace AdventureKing.Gameplay
                 if (!ok || r == null) { LastSkillError = err; Toast(err); done?.Invoke(false, err); return; }
                 SkillsCast++;
                 var visual = world.Player.GetComponent<CharacterVisual3D>();
-                if (visual) visual.PlaySkill();
-                SkillFlash(new Vector2(r.cx, r.cy), s.shape == "line" ? Mathf.Max(1.2f, s.range * 0.5f) : Mathf.Max(1f, s.radius), slot);
-                foreach (SkillHitState h in r.hits)
+                // The class choreography (SkillVfxDirector) plays the move; the server's numbers appear on its impact beat.
+                var cast = new SkillCast
                 {
-                    if (h.monster == null || !monsters.TryGetValue(h.monster.id, out FarmMonsterView m) || !m) continue;
-                    m.ShowHit();
-                    m.Apply(h.monster);
-                    if (h.monster.alive) m.Chase = world.Player.transform;
-                    Popup(m.Position + Vector2.up * 1.6f, "-" + h.damage, slot == 3 ? new Color(1f, 0.55f, 0.3f) : new Color(1f, 0.85f, 0.5f), slot == 3 ? 40 : 34);
-                    if (h.HasDrop) { Kills++; SpawnDrop(h.drop, m.Position); }
-                }
+                    Class = world.Character.heroClass, Slot = slot, Hero = world.Player.transform, Visual = visual,
+                    Facing = motor ? motor.Facing : 1, Radius = s.radius, Range = s.range,
+                    Target = s.shape == "self" ? world.Player.transform.position : new Vector3(r.cx, r.cy, 0f),
+                };
+                if (s.shape == "target" || s.shape == "line")
+                    cast.Target = s.shape == "line" ? (Vector3)target.Position : new Vector3(r.cx, r.cy, 0f);
+                foreach (SkillHitState h in r.hits)
+                    if (h.monster != null && monsters.TryGetValue(h.monster.id, out FarmMonsterView hm) && hm) cast.Victims.Add(hm);
+                var hits = r.hits;
+                cast.Landed = () =>
+                {
+                    foreach (SkillHitState h in hits)
+                    {
+                        if (h.monster == null || !monsters.TryGetValue(h.monster.id, out FarmMonsterView m) || !m) continue;
+                        m.Apply(h.monster);
+                        if (h.monster.alive) m.Chase = world.Player.transform;
+                        Popup(m.Position + Vector2.up * 1.6f, "-" + h.damage, slot == 3 ? new Color(1f, 0.55f, 0.3f) : new Color(1f, 0.85f, 0.5f), slot == 3 ? 40 : 34);
+                        if (h.HasDrop) { Kills++; SpawnDrop(h.drop, m.Position); }
+                    }
+                };
+                SkillVfxDirector.Play(cast);
                 ApplyHero(r.hero);
                 done?.Invoke(true, r.name);
             });

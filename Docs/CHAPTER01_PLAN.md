@@ -87,4 +87,13 @@ Quy tắc: làm **1 mẫu, kiểm tra, rồi mới làm loạt**; ghi credit t�
   - Lỗi thật sửa nhờ ảnh: cổng đông Đồng Cỏ Gió nằm ở biên camera → dòng "▲ / W · Đến Làng Nấm" bị nút cài đặt che → nới `Meadow.MaxX` 84→88.
   - Kiểm thử PlayMode `Chapter1Tests` (cửa sổ, server thật): hub → Đồng Cỏ Gió → Làng Nấm, nhận/nộp 2 nhiệm vụ, nói chuyện NPC (dấu "!"), hạ 2 Nấm Non (thấy Attack/Hit/Death), tiến trình nhiệm vụ đọc lại từ server = 2/5, nhạc riêng, bệ có collider, không Missing Script. Fixture: bỏ chuỗi tân thủ main_01–10 khỏi config nhiệm vụ của test (thứ tự chuỗi do test server kiểm).
   - Regression mục tiêu: FarmTests/TownHubTests/QuestHealerTests/HallTravelTests 5/6 — `FarmTests.Monster_Knocks_Out_Hero...` fail khi chạy chung, **PASS khi chạy riêng** (phụ thuộc thứ tự, chưa sửa; theo dõi ở regression cuối giai đoạn).
+  - 2026-11-11 **Bộ VFX 12 kỹ năng — bản nháp 1, chờ chủ dự án duyệt** (yêu cầu bổ sung tiêu chuẩn mỹ thuật skill, chặn việc nhân rộng map). Gồm:
+    - shader `AdventureKing/VFXFlow`, texture tự sinh `SkillVfxArt`;
+    - `SkillVfxKit`/`SkillVfxDirector`: 12 biên đạo 4 pha, rung camera, hit-stop, zoom, camera tránh HUD;
+    - quái phản ứng, 29 âm thanh gốc, bộ hiệu ứng nhẹ cho điện thoại.
+
+    Không dùng Meshy. Video và ảnh ở `QA/SkillVfx/`; tự đánh giá và danh sách chưa đạt ở `Docs/SKILL_VFX_REVIEW.md`.
+    - Lỗi thật đã sửa nhờ xem ảnh: shader làm mọi gradient thành khối đục (đĩa trắng, cột vuông); lõi HDR cháy trắng; hiệu ứng nằm dưới cụm HUD.
+    - Test: `SkillVfxShowcaseTests` 4/4. SkillCombatTests đã sửa vì quái giờ chết đúng nhịp va chạm, không chết ngay khi server trả lời. SkillCombat + Pet: 2/2; Chapter1Tests chạy riêng: PASS.
+    - Lỗi phụ thuộc thứ tự, chưa sửa: `FarmTests` knockout; `Chapter1Tests` khi chạy sau FarmTests (không tải được Đồng Cỏ Gió).
   - Còn thiếu / chưa đạt (ghi thật): nền xa (parallax) vẫn là tranh ruộng bậc thang của thị trấn, chưa có nền riêng tông đỏ-cam; Trưởng Làng ở hub chưa có câu thoại giới thiệu Làng Nấm (hub giữ nguyên — chỉ chỉ đường qua bảng Nhiệm vụ); chưa có EXP theo quái (chỉ EXP nhiệm vụ); chưa có âm thanh môi trường riêng; thanh máu Nấm Non bị bảng tên anh hùng che khi đứng sát (giống slime cũ); Map 1 chưa có cổng sang Map 2 (biển "sắp mở").

@@ -137,8 +137,11 @@ namespace AdventureKing.Tests
             until = Time.time + 4f;
             while (farm.SkillsCast == 0 && Time.time < until) yield return null;
             Assert.AreEqual(1, farm.SkillsCast, "cast accepted; last error: " + farm.LastSkillError);
+            // the server already decided the kill; the client shows it on the meteor's impact beat (SkillVfxDirector)
+            until = Time.time + 3f;
+            while (slime.Alive && Time.time < until) yield return null;
             Assert.IsFalse(slime.Alive, "meteor (34 x 3.6 = 122) kills a 60 HP slime");
-            Assert.LessOrEqual(Mathf.RoundToInt(mana.Current), 140 - 45 + 2, "MP spent per the server");
+            Assert.LessOrEqual(Mathf.RoundToInt(mana.Current), 140 - 45 + 7, "MP spent per the server (+ regen while the meteor falls)");
             yield return new WaitForSeconds(0.4f);
             StringAssert.IsMatch("^(19|20)$", bar.SecondsShown(3), "cooldown seconds on the button");
             Assert.Greater(bar.SweepShown(3), 0.9f, "cooldown sweep almost full");

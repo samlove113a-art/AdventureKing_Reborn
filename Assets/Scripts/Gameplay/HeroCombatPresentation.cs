@@ -71,8 +71,12 @@ namespace AdventureKing.Gameplay
 
         private Quaternion FacingRotation() => Quaternion.LookRotation(Flat(facing.forward), Vector3.up);
 
+        /// <summary>A class skill choreography owns this hero: the clip events it borrows must not add the old effects.</summary>
+        private bool SkillShowing => SkillVfxDirector.IsCasting(transform) || (transform.parent && SkillVfxDirector.IsCasting(transform.parent)) || SkillVfxDirector.IsCasting(transform.root);
+
         private void OnAttack()
         {
+            if (SkillShowing) return;
             Vector3 at = Point(attackOffset);
             if (attackEffect) Spawn(attackEffect, at, FacingRotation());
             if (attackProjectile)
@@ -83,12 +87,14 @@ namespace AdventureKing.Gameplay
 
         private void OnSkillCast()
         {
+            if (SkillShowing) return;
             if (skillCastEffect) Spawn(skillCastEffect, facing.position + Vector3.up * 0.02f, FacingRotation());
             if (AdventureAudioDirector.Instance) AdventureAudioDirector.Instance.PlayClassSkillCast(heroClass);
         }
 
         private void OnSkill()
         {
+            if (SkillShowing) return;
             Vector3 at = Point(skillOffset);
             Quaternion rot = FacingRotation();
             if (skillEffect) Spawn(skillEffect, at, rot);

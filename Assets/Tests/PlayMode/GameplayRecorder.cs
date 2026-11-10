@@ -21,6 +21,17 @@ namespace AdventureKing.Tests
         public string Directory => dir;
         public int Frames => frame;
 
+        public static GameplayRecorder Begin(string name, int w, int h)
+        {
+            var r = Begin(name);
+            r.rt.Release();
+            Destroy(r.buffer);
+            r.width = w; r.height = h;
+            r.rt = new RenderTexture(w, h, 24) { antiAliasing = 4 };
+            r.buffer = new Texture2D(w, h, TextureFormat.RGB24, false);
+            return r;
+        }
+
         public static GameplayRecorder Begin(string name)
         {
             var go = new GameObject("QA_GameplayRecorder");

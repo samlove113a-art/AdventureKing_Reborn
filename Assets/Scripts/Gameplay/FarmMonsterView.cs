@@ -124,7 +124,28 @@ namespace AdventureKing.Gameplay
         private float lungeT = -1f;
 
         /// <summary>Server confirmed a hit: flash + knock squash.</summary>
-        public void ShowHit() { flash = 1f; if (animator && Alive) PlayOnce("Hit", 0.45f); }
+        public void ShowHit() { flashColor = Color.white; Hit(); }
+        private void Hit() { flash = 1f; if (animator && Alive) PlayOnce("Hit", 0.45f); }
+
+        private Color flashColor = Color.white;
+        private float knock, knockVel;
+        /// <summary>Skill hit reaction: knocked back along <paramref name="dirX"/>, flashes in the skill's colour.</summary>
+        public void React(Color tint, float strength, float dirX)
+        {
+            flashColor = tint;
+            Hit();
+            knockVel += Mathf.Sign(dirX == 0f ? 1f : dirX) * 4.5f * strength;
+            Reactions++;
+        }
+        public int Reactions { get; private set; }
+
+        private void ApplyKnock(float dt)
+        {
+            // spring back to the spot: a quick shove, a little overshoot, settle
+            knockVel += (-knock * 140f - knockVel * 16f) * dt;
+            knock += knockVel * dt;
+            if (body && Mathf.Abs(knock) > 0.0005f) body.localPosition += new Vector3(knock, Mathf.Abs(knock) * 0.25f, 0f);
+        }
 
         /// <summary>The server says this monster struck the hero: lunge at it.</summary>
         public void Strike() { lungeT = 0f; Strikes++; if (animator && Alive) PlayOnce("Attack", 0.7f); }
@@ -147,6 +168,7 @@ namespace AdventureKing.Gameplay
         /// Attack / Hit one-shots from the server's answers, Death clip then gone. Same server rules as the slimes.</summary>
         private void AnimatedUpdate(float dt)
         {
+            if (body) body.localPosition = Vector3.zero;
             if (deathT >= 0f && deathT < 1f)
             {
                 if (deathT == 0f) PlayOnce("Death", 1.4f);
@@ -181,6 +203,12 @@ namespace AdventureKing.Gameplay
         }
 
         private void Update()
+        {
+            UpdateCore();
+            if (Alive) ApplyKnock(Time.deltaTime);
+        }
+
+        private void UpdateCore()
         {
             float dt = Time.deltaTime;
             if (animator) { AnimatedUpdate(dt); return; }
@@ -256,7 +284,7 @@ namespace AdventureKing.Gameplay
                 {
                     if (!r) continue;
                     r.GetPropertyBlock(block);
-                    block.SetColor(BaseColorId, Color.white * flash * 0.8f);
+                    block.SetColor(BaseColorId, flashColor * flash * 0.8f);
                     r.SetPropertyBlock(block);
                 }
             }
