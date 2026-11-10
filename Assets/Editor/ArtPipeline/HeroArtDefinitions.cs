@@ -53,6 +53,10 @@ namespace AdventureKing.ArtPipeline
             new Clip("Cheer", "Cheer_with_Both_Hands_Up", 0, 44),
             new Clip("Celebrate", "Cheer_with_Both_Hands", 0, 70),
             new Clip("Bow", "Formal_Bow", 0, 184) { Speed = 1.5f },
+            // Romance batch (Meshy library, 2026-11-10, 6 credits per class): a heart over the head after the kiss,
+            // a happy sway while the partner cuts the cake. Kiss itself = PoseOverlay lean (no library clip exists).
+            new Clip("Heart", "Big_Heart_Gesture", 0, 148) { Speed = 1.15f },
+            new Clip("Sway", "Happy_Sway_Standing", 0, 120),
         };
 
         private static Clip[] With(Clip[] shared, params Clip[] extra)
