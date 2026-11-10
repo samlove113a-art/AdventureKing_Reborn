@@ -260,6 +260,11 @@ public sealed class FarmService
     public Func<string, (int attack, int defense)>? EquipmentBonus { get; set; }
     private (int attack, int defense) Bonus(string characterId) => EquipmentBonus?.Invoke(characterId) ?? (0, 0);
 
+    /// <summary>Pet hooks (wired to PetService): satiety drain per heartbeat, and whether a fed pet is out.</summary>
+    public Action<string>? PetTick { get; set; }
+    public Func<string, bool>? PetCanCollect { get; set; }
+    public float PetReach { get; set; } = 8f;
+
     /// <summary>Quest progress hook (accountId, characterId, event, amount): kills, pickups, skills that hit.</summary>
     public Action<string, string, string, int>? QuestEvent { get; set; }
     private void Fire(string acc, string ch, string ev, int n = 1) { try { QuestEvent?.Invoke(acc, ch, ev, n); } catch (Exception e) { Console.Error.WriteLine("quest hook: " + e.Message); } }
@@ -390,7 +395,9 @@ public sealed class FarmService
             Hero h = HeroOf(characterId, heroClass, level, t);
             if (!h.Dead) Move(characterId, mapId, req?.x ?? float.NaN, req?.y ?? float.NaN, t);
             Evaluate(characterId, mapId, h, t);
-            return Drain(h, t);
+            var dto = Drain(h, t);
+            if (!h.Dead) try { PetTick?.Invoke(characterId); } catch (Exception e) { Console.Error.WriteLine("pet tick: " + e.Message); }
+            return dto;
         }
     }
 
@@ -598,7 +605,17 @@ public sealed class FarmService
         }
     }
 
-    public PickupResultDto Pickup(string accountId, string characterId, PickupRequestDto? req)
+    /// <summary>The summoned pet collects one of the owner's drops: only while the pet is out and fed, only the owner's
+    /// own drops, within the pet's reach of the owner's (speed-checked) position. Same drop, same ledger key: never twice.</summary>
+    public PickupResultDto PetPickup(string accountId, string characterId, PickupRequestDto? req)
+    {
+        if (PetCanCollect == null || !PetCanCollect(characterId)) throw new GameError("pet_unavailable", "Không có thú cưng no bụng đang được triệu hồi.", 409);
+        return Pickup(accountId, characterId, req, byPet: true);
+    }
+
+    public PickupResultDto Pickup(string accountId, string characterId, PickupRequestDto? req) => Pickup(accountId, characterId, req, byPet: false);
+
+    private PickupResultDto Pickup(string accountId, string characterId, PickupRequestDto? req, bool byPet)
     {
         var (heroClass, mapId, level) = Character(accountId, characterId);
         long t = now();
@@ -614,7 +631,8 @@ public sealed class FarmService
             if (req?.dropId == null || !drops.TryGetValue(req.dropId, out d!) || d.Picked || d.ExpiresMs <= t)
                 throw new GameError("drop_gone", "Vàng này không còn trên mặt đất.", 409);
             if (d.Owner != characterId || d.MapId != mapId) throw new GameError("not_your_drop", "Đây không phải vàng của bạn.", 403);
-            if (MathF.Abs(req.x - d.X) > PickupReach || MathF.Abs(req.y - d.Y) > 2.5f) throw new GameError("too_far", "Hãy lại gần hơn để nhặt.", 409);
+            float reach = byPet ? PetReach : PickupReach;
+            if (MathF.Abs(req.x - d.X) > reach || MathF.Abs(req.y - d.Y) > (byPet ? 4f : 2.5f)) throw new GameError("too_far", byPet ? "Vàng ở quá xa thú cưng." : "Hãy lại gần hơn để nhặt.", 409);
             d.Picked = true; // claimed: a second request (double click, replay) can never reach the wallet
         }
         try

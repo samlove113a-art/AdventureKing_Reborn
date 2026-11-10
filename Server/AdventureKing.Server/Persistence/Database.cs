@@ -109,6 +109,14 @@ public sealed class Database
             Exec(c, tx, Schema.V6);
             Exec(c, tx, "PRAGMA user_version=6;");
             tx.Commit();
+            version = 6;
+        }
+        if (version < 7)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V7);
+            Exec(c, tx, "PRAGMA user_version=7;");
+            tx.Commit();
         }
     }
 
@@ -141,7 +149,20 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 6;
+    public const int Current = 7;
+
+    // V7: pets owned by a character (one row per pet: buying twice is impossible), at most one summoned, satiety in
+    // milliseconds of summoned activity left.
+    public const string V7 = """
+    CREATE TABLE pets_owned (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        pet_id       TEXT NOT NULL,
+        summoned     INTEGER NOT NULL DEFAULT 0,
+        satiety_ms   INTEGER NOT NULL CHECK (satiety_ms >= 0),
+        bought_ms    INTEGER NOT NULL,
+        PRIMARY KEY (character_id, pet_id)
+    );
+    """;
 
     // V6: quest progress. period = '' for main/side quests, the Vietnam calendar day for daily quests. claimed_ms set
     // once: the primary key + the claimed check make a second reward for the same (quest, period) impossible.

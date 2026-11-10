@@ -23,6 +23,8 @@ public sealed class ItemDef
     public float destX { get; set; }
     public float destY { get; set; }
     public int minLevel { get; set; } = 1;
+    // pet food
+    public int satietyMinutes { get; set; }
 }
 
 public sealed class ShopTab { public string id { get; set; } = ""; public string name { get; set; } = ""; public string[] items { get; set; } = Array.Empty<string>(); }

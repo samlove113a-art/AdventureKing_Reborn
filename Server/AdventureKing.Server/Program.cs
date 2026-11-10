@@ -52,6 +52,8 @@ builder.Services.AddSingleton(sp => new FarmService(sp.GetRequiredService<Databa
 string itemsPath = Path.Combine(contentRoot, cfg["ItemConfigPath"] ?? "config/items.json");
 builder.Services.AddSingleton(sp => new InventoryService(sp.GetRequiredService<Database>(), ItemConfig.Load(itemsPath), sp.GetRequiredService<FarmService>()));
 builder.Services.AddSingleton(sp => new ShopService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
+string petsPath = Path.Combine(contentRoot, cfg["PetConfigPath"] ?? "config/pets.json");
+builder.Services.AddSingleton(sp => new PetService(sp.GetRequiredService<Database>(), PetConfig.Load(petsPath), sp.GetRequiredService<InventoryService>()));
 string questsPath = Path.Combine(contentRoot, cfg["QuestConfigPath"] ?? "config/quests.json");
 builder.Services.AddSingleton(sp => new QuestService(sp.GetRequiredService<Database>(),
     QuestConfig.Load(questsPath, sp.GetRequiredService<InventoryService>().Config), sp.GetRequiredService<InventoryService>()));
@@ -71,6 +73,11 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
     app.Services.GetRequiredService<InventoryService>().QuestEvent = record;
     app.Services.GetRequiredService<ShopService>().QuestEvent = record;
     app.Services.GetRequiredService<CharacterService>().QuestEvent = record;
+    var pets = app.Services.GetRequiredService<PetService>();
+    var farmSvc = app.Services.GetRequiredService<FarmService>();
+    farmSvc.PetTick = pets.Tick;
+    farmSvc.PetCanCollect = pets.CanCollect;
+    farmSvc.PetReach = pets.Config.pickupReach;
 }
 
 app.Use(async (ctx, next) =>
@@ -181,6 +188,15 @@ api.MapPost("/characters/{id}/shop/buy", (string id, BuyRequestDto body, HttpCon
     shops.Buy(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/travel/ticket", (string id, TicketRequestDto body, HttpContext ctx, AccountService accounts, ShopService shops) =>
     shops.UseTicket(accounts.Authenticate(Bearer(ctx)), id, body));
+
+// ---------------------------------------------------------------- pets
+api.MapGet("/characters/{id}/pets", (string id, HttpContext ctx, AccountService accounts, PetService pets) => pets.Get(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/pets/buy", (string id, PetBuyDto body, HttpContext ctx, AccountService accounts, PetService pets) => pets.Buy(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/pets/summon", (string id, PetIdDto body, HttpContext ctx, AccountService accounts, PetService pets) => pets.Summon(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/pets/dismiss", (string id, HttpContext ctx, AccountService accounts, PetService pets) => pets.Dismiss(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/pets/feed", (string id, PetFeedDto body, HttpContext ctx, AccountService accounts, PetService pets) => pets.Feed(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/farm/pet-pickup", (string id, PickupRequestDto body, HttpContext ctx, AccountService accounts, FarmService farm) =>
+    farm.PetPickup(accounts.Authenticate(Bearer(ctx)), id, body));
 
 // ---------------------------------------------------------------- quests
 api.MapGet("/characters/{id}/quests", (string id, HttpContext ctx, AccountService accounts, QuestService quests) =>
