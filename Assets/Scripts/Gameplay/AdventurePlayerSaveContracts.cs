@@ -176,6 +176,19 @@ namespace AdventureKing.Gameplay
     [Serializable] public sealed class BuyResult { public string itemId; public int qty; public long totalGold, gold; public bool replayed; public InventoryState inventory; }
     [Serializable] public sealed class TicketResult { public AdventureCharacterSnapshot character; public InventoryState inventory; }
 
+    // ---------------------------------------------------------------- pets
+    [Serializable] public sealed class PetDefState { public string id, name, tier, currency, desc; public long price; }
+    [Serializable] public sealed class OwnedPetState { public string petId, name, tier; public bool summoned, hungry; public long satietyMs; }
+    [Serializable]
+    public sealed class PetsState
+    {
+        public PetDefState[] catalog = new PetDefState[0];
+        public OwnedPetState[] owned = new OwnedPetState[0];
+        public string summoned;
+        public long maxSatietyMs, gold, diamonds;
+        public float pickupReach;
+    }
+
     // ---------------------------------------------------------------- quests
     [Serializable] public sealed class QuestObjectiveState { public string text; public int have, need; }
     [Serializable]

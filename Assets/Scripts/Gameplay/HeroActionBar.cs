@@ -50,6 +50,8 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Sprite attackIcon, autoIcon, pickupIcon, hpIcon, mpIcon, bagIcon, frame, frameUltimate;
         [SerializeField] private Font font;
         [SerializeField] private InventoryPanel inventory;
+        [SerializeField] private PetPanel petPanel;
+        [SerializeField] private Sprite petIcon;
 
         private const string AutoKey = "ak_auto_skill", AutoOrderKey = "ak_auto_order";
         private static readonly int[][] Orders = { new[] { 3, 2, 1 }, new[] { 1, 2, 3 }, new[] { 2, 3, 1 }, new[] { 3, 1, 2 } };
@@ -81,6 +83,7 @@ namespace AdventureKing.Gameplay
         public ActionPress HpButton { get; private set; }
         public ActionPress MpButton { get; private set; }
         public ActionPress BagButton { get; private set; }
+        public ActionPress PetButton { get; private set; }
         public ActionPress AutoButton { get; private set; }
         public ActionPress SkillButton(int slot) => slots[slot - 1]?.Press;
         public string SecondsShown(int slot) => slots[slot - 1]?.Seconds && slots[slot - 1].Seconds.enabled ? slots[slot - 1].Seconds.text : "";
@@ -222,6 +225,9 @@ namespace AdventureKing.Gameplay
             Button("Bag", bagIcon, frame, new Vector2(-690f, 125f), 90f, out _, out ActionPress bag, "I");
             BagButton = bag;
             bag.Down = () => { if (inventory) inventory.Toggle(); };
+            Button("Pet", petIcon, frame, new Vector2(-690f, 250f), 90f, out _, out ActionPress pet, "P");
+            PetButton = pet;
+            pet.Down = () => { if (petPanel) petPanel.Toggle(); };
 
             message = Label(transform, "ActionMessage", "", 26, new Color(1f, 0.9f, 0.7f), Vector2.zero, new Vector2(900f, 34f));
             var mrt = message.rectTransform;

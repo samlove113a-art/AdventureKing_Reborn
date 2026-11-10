@@ -35,7 +35,7 @@ namespace AdventureKing.Gameplay
         private GameObject root, confirm;
         private Text greet, goldLabel, nameLabel, descLabel, qtyLabel, totalLabel, msgLabel, confirmText;
         private Image detailIcon;
-        private readonly Button[] tabButtons = new Button[2];
+        private readonly Button[] tabButtons = new Button[3];
         private readonly (Image bg, Image icon, Text name, Text price)[] rows = new (Image, Image, Text, Text)[6];
         private Button buyButton;
 
@@ -94,10 +94,11 @@ namespace AdventureKing.Gameplay
             coin.sprite = coinSprite; coin.preserveAspect = true;
             goldLabel = Txt(c, "Gold", "", 26, gold, new Vector2(0f, 1f), new Vector2(210f, -64f), new Vector2(200f, 40f), TextAnchor.MiddleLeft, true);
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < tabButtons.Length; i++)
             {
                 int idx = i;
-                tabButtons[i] = Btn(c, "Tab" + i, i == 0 ? "Dược Phẩm" : "Vé Dịch Chuyển", new Vector2(0f, 1f), new Vector2(170f + i * 250f, -200f), new Vector2(236f, 58f), new Color(0.3f, 0.36f, 0.55f), () => SetTab(idx));
+                string[] names = { "Dược Phẩm", "Vé Dịch Chuyển", "Thức Ăn Pet" };
+                tabButtons[i] = Btn(c, "Tab" + i, names[i], new Vector2(0f, 1f), new Vector2(160f + i * 230f, -200f), new Vector2(220f, 62f), new Color(0.3f, 0.36f, 0.55f), () => SetTab(idx));
             }
             for (int i = 0; i < rows.Length; i++)
             {
@@ -214,7 +215,11 @@ namespace AdventureKing.Gameplay
             for (int i = 0; i < tabButtons.Length; i++)
             {
                 tabButtons[i].gameObject.SetActive(i < Shop.tabs.Length);
-                if (i < Shop.tabs.Length) tabButtons[i].GetComponent<Image>().color = i == TabIndex ? new Color(0.82f, 0.6f, 0.18f) : new Color(0.3f, 0.36f, 0.55f);
+                if (i < Shop.tabs.Length)
+                {
+                    tabButtons[i].GetComponent<Image>().color = i == TabIndex ? new Color(0.82f, 0.6f, 0.18f) : new Color(0.3f, 0.36f, 0.55f);
+                    tabButtons[i].GetComponentInChildren<Text>().text = Shop.tabs[i].name; // names come from the server
+                }
             }
             var items = Shop.tabs[TabIndex].items;
             for (int i = 0; i < rows.Length; i++)

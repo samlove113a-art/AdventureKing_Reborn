@@ -282,6 +282,22 @@ namespace AdventureKing.Gameplay
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/quests/event", "{\"event\":\"" + ev.Replace("\"", "") + "\"}", true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<QuestLog>(json) : null, err));
 
+        // pets
+        public void GetPets(string characterId, Action<bool, PetsState, string> completed) =>
+            Send("GET", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/pets", null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<PetsState>(json) : null, err));
+        public void BuyPet(string characterId, string petId, string requestId, Action<bool, PetsState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/pets/buy", JsonUtility.ToJson(new PetBody { petId = petId, requestId = requestId }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<PetsState>(json) : null, err));
+        public void SummonPet(string characterId, string petId, Action<bool, PetsState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/pets/summon", JsonUtility.ToJson(new PetBody { petId = petId }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<PetsState>(json) : null, err));
+        public void DismissPet(string characterId, Action<bool, PetsState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/pets/dismiss", "{}", true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<PetsState>(json) : null, err));
+        public void FeedPet(string characterId, string petId, int slot, Action<bool, PetsState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/pets/feed", JsonUtility.ToJson(new PetBody { petId = petId, slot = slot }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<PetsState>(json) : null, err));
+        public void FarmPetPickup(string characterId, string dropId, Vector2 heroPosition, Action<bool, FarmPickupResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm/pet-pickup",
+                JsonUtility.ToJson(new PickupBody { dropId = dropId, x = heroPosition.x, y = heroPosition.y }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<FarmPickupResult>(json) : null, err));
+        [Serializable] private sealed class PetBody { public string petId, requestId; public int slot; }
+
         [Serializable] private sealed class BuyBody { public string shopId, itemId, requestId; public int qty; }
         [Serializable] private sealed class QuestBody { public string questId; }
         [Serializable] private sealed class SkillBody { public int slot; public string spawnId; public float x, y; public int facing; }

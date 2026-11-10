@@ -140,7 +140,7 @@ namespace AdventureKing.Tests
             while ((!shop.IsOpen || shop.Shop == null) && Time.time < until) yield return null;
             Assert.IsTrue(shop.IsOpen, "shop open");
             Assert.AreEqual(1, healer.Greetings);
-            Assert.AreEqual(2, shop.Shop.tabs.Length, "Dược Phẩm + Vé Dịch Chuyển");
+            Assert.AreEqual(3, shop.Shop.tabs.Length, "Dược Phẩm + Vé Dịch Chuyển + Thức Ăn Pet");
             yield return WaitMain("main_04", true);
 
             // ---- buy 5 small HP potions through the UI: quantity, total, confirmation, server Gold

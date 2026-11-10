@@ -333,6 +333,29 @@ namespace AdventureKing.Gameplay
             return true;
         }
 
+        /// <summary>The summoned pet reached this drop: the server checks the pet (out, fed), the owner and the reach,
+        /// and pays the same drop once. The coins fly into the pet.</summary>
+        public void PetCollect(GoldDropView drop, Transform pet, System.Action<bool, string> done)
+        {
+            if (!loaded || HeroDead || !Net || !drop || drop.Pending) { done?.Invoke(false, "busy"); return; }
+            drop.Pending = true;
+            Net.FarmPetPickup(CharId, drop.DropId, HeroPos, (ok, r, err) =>
+            {
+                if (!ok || r == null) { if (drop) drop.Pending = false; LastError = err; done?.Invoke(false, err); return; }
+                drops.Remove(drop.DropId);
+                world.Character.gold = r.gold;
+                GoldPickedUp += r.amount;
+                PetGoldPickedUp += r.amount;
+                if (drop) drop.Collect(pet ? pet : world.Player.transform);
+                PlayChime();
+                Popup(Vector2.zero, "+" + r.amount + " Vàng", new Color(1f, 0.86f, 0.3f), 40, pet ? pet : world.Player.transform);
+                ApplyHero(r.hero);
+                done?.Invoke(true, null);
+            });
+        }
+
+        public long PetGoldPickedUp { get; private set; }
+
         // ------------------------------------------------------------------ skills (the server decides everything)
         public int SkillsCast { get; private set; }
         public string LastSkillError { get; private set; }
@@ -465,16 +488,16 @@ namespace AdventureKing.Gameplay
             t.font = font ? font : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             t.text = text; t.fontSize = size; t.color = color; t.alignment = TextAnchor.MiddleCenter; t.fontStyle = FontStyle.Bold;
             var o = t.gameObject.AddComponent<Outline>(); o.effectColor = new Color(0.15f, 0.08f, 0.02f, 0.9f); o.effectDistance = new Vector2(2f, -2f);
-            StartCoroutine(Rise(go, t, follow));
+            StartCoroutine(Rise(go, t, follow, follow && world && world.Player && follow != world.Player.transform ? 1.15f : 2.1f));
         }
 
-        private static IEnumerator Rise(GameObject go, Text t, Transform follow)
+        private static IEnumerator Rise(GameObject go, Text t, Transform follow, float above = 2.1f)
         {
             Vector3 start = go.transform.position;
             for (float k = 0f; k < 1f; k += Time.deltaTime / 0.9f)
             {
                 if (!go) yield break;
-                Vector3 basePos = follow ? follow.position + new Vector3(0f, 2.1f, -0.5f) : start; // Gold text rides above the hero
+                Vector3 basePos = follow ? follow.position + new Vector3(0f, above, -0.5f) : start; // above the hero (or the smaller pet) // Gold text rides above the hero
                 go.transform.position = basePos + Vector3.up * k * 0.9f;
                 Color c = t.color; c.a = 1f - Mathf.Max(0f, k - 0.5f) * 2f; t.color = c;
                 yield return null;

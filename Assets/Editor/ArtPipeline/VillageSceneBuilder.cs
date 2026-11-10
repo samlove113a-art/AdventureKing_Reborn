@@ -997,7 +997,7 @@ namespace AdventureKing.ArtPipeline
         {
             ("item_potion_hp", "action_potion_hp"), ("item_potion_mp", "action_potion_mp"), ("item_weapon_sword", "item_weapon_sword"), ("item_weapon_staff", "item_weapon_staff"),
             ("item_weapon_dagger", "item_weapon_dagger"), ("item_weapon_bow", "item_weapon_bow"), ("item_armor_vest", "item_armor_vest"), ("item_charm", "item_charm"),
-            ("item_ticket", "item_ticket"),
+            ("item_ticket", "item_ticket"), ("item_petfood", "item_petfood"), ("item_petfood_feast", "item_petfood_feast"),
         };
 
         private static void SetIcons(SerializedObject so)
@@ -2354,6 +2354,33 @@ namespace AdventureKing.ArtPipeline
             abso.FindProperty("frameUltimate").objectReferenceValue = SkillIconArt.Get("frame_skill_ultimate");
             abso.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
             abso.FindProperty("inventory").objectReferenceValue = invPanel;
+            // pets: the director (pet in the world) + the window
+            var petDirGo = new GameObject("PetDirector") { layer = 5 };
+            petDirGo.transform.SetParent(canvasGo.transform, false);
+            var petDir = petDirGo.AddComponent<PetDirector>();
+            var pdso = new SerializedObject(petDir);
+            var pp = pdso.FindProperty("pets");
+            pp.arraySize = PetArt.Ids.Length;
+            for (int i = 0; i < PetArt.Ids.Length; i++)
+            {
+                pp.GetArrayElementAtIndex(i).FindPropertyRelative("id").stringValue = PetArt.Ids[i];
+                pp.GetArrayElementAtIndex(i).FindPropertyRelative("prefab").objectReferenceValue = PetArt.Prefab(PetArt.Ids[i]);
+                pp.GetArrayElementAtIndex(i).FindPropertyRelative("portrait").objectReferenceValue = PetArt.Portrait(PetArt.Ids[i]);
+            }
+            pdso.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            pdso.ApplyModifiedPropertiesWithoutUndo();
+            var petWinGo = new GameObject("PetWindow", typeof(RectTransform)) { layer = 5 };
+            petWinGo.transform.SetParent(canvasGo.transform, false);
+            var petPanel = petWinGo.AddComponent<PetPanel>();
+            var ppso = new SerializedObject(petPanel);
+            ppso.FindProperty("panelSprite").objectReferenceValue = FrameArt.Get("shop_window");
+            ppso.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("item_cell");
+            ppso.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
+            ppso.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            ppso.FindProperty("bag").objectReferenceValue = invPanel;
+            ppso.ApplyModifiedPropertiesWithoutUndo();
+            abso.FindProperty("petPanel").objectReferenceValue = petPanel;
+            abso.FindProperty("petIcon").objectReferenceValue = PetArt.Portrait("pet_cloud_cat");
             abso.ApplyModifiedPropertiesWithoutUndo();
 
             popupGo.transform.SetAsLastSibling();

@@ -373,6 +373,17 @@ namespace AdventureKing.ArtPipeline
                 L(p => Union(Circle(p, new Vector2(-0.55f, 0f), 0.14f), Circle(p, new Vector2(0.55f, 0f), 0.14f)), V(new Color(0.6f, 0.4f, 0.2f), new Color(0.85f, 0.6f, 0.35f))),
                 L(p => Box(p, new Vector2(0f, 0f), new Vector2(0.55f, 0.06f)), Flat(new Color(0.85f, 0.2f, 0.25f))),
                 L(p => Arc(p, new Vector2(0.05f, 0.02f), 0.2f, 0f, 359.9f, 0.04f, 0.04f), V(new Color(0.3f, 0.6f, 1f), new Color(0.75f, 0.95f, 1f)), 0.08f, Wind, bevel: false));
+            Func<Vector2, Color> meadow = p => Backdrop(p, new Color(0.08f, 0.2f, 0.08f), new Color(0.55f, 0.85f, 0.45f), new Color(1f, 1f, 0.85f), 67);
+            Paint("item_petfood", meadow,
+                L(p => Union(Circle(p, new Vector2(0f, -0.2f), 0.48f)), V(new Color(0.75f, 0.45f, 0.25f), new Color(0.95f, 0.7f, 0.45f))), // bowl
+                L(p => Box(p, new Vector2(0f, -0.02f), new Vector2(0.5f, 0.08f), 0.06f), V(new Color(0.55f, 0.3f, 0.15f), new Color(0.8f, 0.5f, 0.3f))),
+                L(p => Union(Circle(p, new Vector2(-0.22f, 0.14f), 0.12f), Circle(p, new Vector2(0.02f, 0.2f), 0.13f), Circle(p, new Vector2(0.25f, 0.12f), 0.11f), Circle(p, new Vector2(-0.08f, 0.04f), 0.1f), Circle(p, new Vector2(0.14f, 0.02f), 0.1f)),
+                    V(new Color(0.85f, 0.6f, 0.25f), new Color(1f, 0.85f, 0.5f))));
+            Paint("item_petfood_feast", p => Backdrop(p, new Color(0.25f, 0.06f, 0.15f), new Color(1f, 0.6f, 0.75f), new Color(1f, 0.95f, 0.85f), 69),
+                L(p => Box(p, new Vector2(0f, -0.25f), new Vector2(0.5f, 0.22f), 0.08f), V(new Color(0.9f, 0.65f, 0.4f), new Color(1f, 0.85f, 0.6f))),
+                L(p => Box(p, new Vector2(0f, 0.04f), new Vector2(0.44f, 0.12f), 0.1f), V(new Color(1f, 0.75f, 0.85f), Color.white)),
+                L(p => Circle(p, new Vector2(0f, 0.3f), 0.13f), V(new Color(0.85f, 0.1f, 0.2f), new Color(1f, 0.45f, 0.5f)), 0.06f, new Color(1f, 0.5f, 0.6f)),
+                L(p => Poly(p, Star(4, 0.12f, 0.04f, 45f, new Vector2(0.38f, 0.45f))), Flat(new Color(1f, 1f, 0.85f, 0.9f)), outline: false));
             Paint("action_bag", p => Backdrop(p, new Color(0.18f, 0.1f, 0.04f), new Color(0.75f, 0.52f, 0.28f), new Color(1f, 0.9f, 0.7f), 63),
                 L(p => Union(Circle(p, new Vector2(0f, -0.18f), 0.5f), Box(p, new Vector2(0f, 0.35f), new Vector2(0.22f, 0.12f), 0.05f)), V(new Color(0.5f, 0.3f, 0.15f), new Color(0.85f, 0.6f, 0.35f))),
                 L(p => Box(p, new Vector2(0f, 0.2f), new Vector2(0.3f, 0.05f), 0.03f), V(GoldDark, Gold)),
