@@ -133,6 +133,14 @@ public sealed class Database
             Exec(c, tx, Schema.V9);
             Exec(c, tx, "PRAGMA user_version=9;");
             tx.Commit();
+            version = 9;
+        }
+        if (version < 10)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V10);
+            Exec(c, tx, "PRAGMA user_version=10;");
+            tx.Commit();
         }
     }
 
@@ -165,7 +173,18 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 9;
+    public const int Current = 10;
+
+    // V10: pet auto-potion settings per character (the server decides every drink; the client only stores settings).
+    public const string V10 = """
+    CREATE TABLE pet_auto_potion (
+        character_id TEXT PRIMARY KEY REFERENCES characters(id),
+        hp_enabled   INTEGER NOT NULL DEFAULT 0,
+        hp_percent   INTEGER NOT NULL DEFAULT 50,
+        mp_enabled   INTEGER NOT NULL DEFAULT 0,
+        mp_percent   INTEGER NOT NULL DEFAULT 30
+    );
+    """;
 
     // V9: nameplate frames (VIP / Boss Hunter / special) — granted only by server code from valid data; one equipped.
     public const string V9 = """

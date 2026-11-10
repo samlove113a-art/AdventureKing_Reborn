@@ -3,6 +3,8 @@
   "version": 1,
   "maxSatietyMinutes": 60,
   "pickupReach": 8.0,
+  "_autoPotion": "Pet auto-potion (PROPOSAL): a fed, summoned pet gives the owner one potion from the bag when HP/MP falls below the player's threshold, on farm maps only, at most once per cooldown per bar. Same rules for normal and VIP pets.",
+  "autoPotion": { "cooldownSeconds": 8.0, "minPercent": 10, "maxPercent": 90 },
   "pets": [
     { "id": "pet_cloud_cat", "name": "Mèo Mây Mochi", "tier": "normal", "currency": "gold", "price": 3000, "desc": "Mèo mây tròn ủm, lon ton theo chủ và nhặt Vàng giúp." },
     { "id": "pet_chick", "name": "Gà Bông Lúa", "tier": "normal", "currency": "gold", "price": 2500, "desc": "Gà con lông bông vàng, chạy lạch bạch nhặt Vàng." },

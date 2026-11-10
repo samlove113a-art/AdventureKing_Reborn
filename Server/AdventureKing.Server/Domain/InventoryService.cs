@@ -197,6 +197,9 @@ public sealed class InventoryService
         else Database.Exec(c, tx, "DELETE FROM bag_slots WHERE character_id=$c AND slot_index=$s AND qty=$q", ("$c", characterId), ("$s", slot), ("$q", qty));
     }
 
+    /// <summary>All occupied bag cells (slot → item, qty), inside the caller's transaction.</summary>
+    public IReadOnlyDictionary<int, (string item, int qty)> Cells(SqliteConnection c, SqliteTransaction tx, string characterId) => Bag(c, tx, characterId);
+
     public (string item, int qty)? Cell(SqliteConnection c, SqliteTransaction tx, string characterId, int slot) =>
         Bag(c, tx, characterId).TryGetValue(slot, out var cell) ? cell : null;
 

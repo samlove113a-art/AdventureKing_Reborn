@@ -13,11 +13,13 @@ public sealed class PetDef
     public long price { get; set; }
     public string desc { get; set; } = "";
 }
+public sealed class AutoPotionConfig { public float cooldownSeconds { get; set; } = 8f; public int minPercent { get; set; } = 10; public int maxPercent { get; set; } = 90; }
 public sealed class PetConfig
 {
     public int version { get; set; }
     public int maxSatietyMinutes { get; set; } = 60;
     public float pickupReach { get; set; } = 8f;
+    public AutoPotionConfig autoPotion { get; set; } = new();
     public PetDef[] pets { get; set; } = Array.Empty<PetDef>();
     public long MaxSatietyMs => maxSatietyMinutes * 60_000L;
 
@@ -25,6 +27,8 @@ public sealed class PetConfig
     {
         var cfg = JsonSerializer.Deserialize<PetConfig>(File.ReadAllText(path)) ?? throw new InvalidDataException("empty pet config");
         if (cfg.maxSatietyMinutes < 1 || cfg.pickupReach <= 0) throw new InvalidDataException("bad pet config");
+        if (cfg.autoPotion.cooldownSeconds < 1f || cfg.autoPotion.minPercent < 1 || cfg.autoPotion.maxPercent > 99 || cfg.autoPotion.minPercent > cfg.autoPotion.maxPercent)
+            throw new InvalidDataException("bad pet autoPotion config");
         foreach (PetDef p in cfg.pets)
             if (p.price <= 0 || p.currency is not ("gold" or "diamonds") || p.tier is not ("normal" or "vip")) throw new InvalidDataException(p.id + ": bad pet");
         return cfg;
@@ -41,7 +45,21 @@ public sealed class PetStateDto
     public float pickupReach { get; set; }
     public long gold { get; set; }
     public long diamonds { get; set; }
+    public AutoPotionDto autoPotion { get; set; } = new();
 }
+/// <summary>Player's auto-potion settings (+ the server's limits, for the UI).</summary>
+public sealed class AutoPotionDto
+{
+    public bool hpEnabled { get; set; }
+    public int hpPercent { get; set; } = 50;
+    public bool mpEnabled { get; set; }
+    public int mpPercent { get; set; } = 30;
+    public float cooldownSeconds { get; set; }
+    public int minPercent { get; set; }
+    public int maxPercent { get; set; }
+}
+/// <summary>What the pet did on this heartbeat (the client animates it).</summary>
+public sealed class PetDrinkDto { public string itemId { get; set; } = ""; public string itemName { get; set; } = ""; public int hp { get; set; } public int mp { get; set; } public int left { get; set; } }
 public sealed class PetBuyDto { public string? petId { get; set; } public string? requestId { get; set; } }
 public sealed class PetIdDto { public string? petId { get; set; } }
 public sealed class PetFeedDto { public string? petId { get; set; } public int slot { get; set; } }
@@ -95,7 +113,75 @@ public sealed class PetService
             maxSatietyMs = Config.MaxSatietyMs, pickupReach = Config.pickupReach,
             gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)),
             diamonds = Database.Scalar<long>(c, tx, "SELECT diamonds FROM accounts WHERE id=$a", ("$a", accountId)),
+            autoPotion = AutoSettings(c, tx, characterId),
         };
+    }
+
+    private AutoPotionDto AutoSettings(SqliteConnection c, SqliteTransaction? tx, string characterId)
+    {
+        var a = new AutoPotionDto { cooldownSeconds = Config.autoPotion.cooldownSeconds, minPercent = Config.autoPotion.minPercent, maxPercent = Config.autoPotion.maxPercent };
+        using var cmd = Database.Command(c, tx, "SELECT hp_enabled, hp_percent, mp_enabled, mp_percent FROM pet_auto_potion WHERE character_id=$c", ("$c", characterId));
+        using var r = cmd.ExecuteReader();
+        if (r.Read()) { a.hpEnabled = r.GetInt64(0) != 0; a.hpPercent = r.GetInt32(1); a.mpEnabled = r.GetInt64(2) != 0; a.mpPercent = r.GetInt32(3); }
+        return a;
+    }
+
+    /// <summary>Saves the player's auto-potion settings (thresholds clamped to the server's limits).</summary>
+    public PetStateDto SetAutoPotion(string accountId, string characterId, AutoPotionDto? req) => db.InTransaction((c, tx) =>
+    {
+        Own(c, tx, accountId, characterId);
+        if (req == null) throw new GameError("bad_request", "Thiếu dữ liệu.");
+        int Clamp(int p) => Math.Clamp(p, Config.autoPotion.minPercent, Config.autoPotion.maxPercent);
+        Database.Exec(c, tx, """
+            INSERT INTO pet_auto_potion(character_id, hp_enabled, hp_percent, mp_enabled, mp_percent) VALUES($c,$he,$hp,$me,$mp)
+            ON CONFLICT(character_id) DO UPDATE SET hp_enabled=excluded.hp_enabled, hp_percent=excluded.hp_percent, mp_enabled=excluded.mp_enabled, mp_percent=excluded.mp_percent
+            """, ("$c", characterId), ("$he", req.hpEnabled ? 1 : 0), ("$hp", Clamp(req.hpPercent)), ("$me", req.mpEnabled ? 1 : 0), ("$mp", Clamp(req.mpPercent)));
+        return Snapshot(c, tx, accountId, characterId);
+    });
+
+    private readonly Dictionary<string, long> hpReady = new(), mpReady = new();
+    private const int BarHp = 0, BarMp = 1;
+
+    /// <summary>
+    /// Called by the farm after each heartbeat with the hero's server HP/MP. If the player enabled it, a summoned pet
+    /// with satiety left gives ONE potion from the bag for a bar under its threshold, once per cooldown per bar. The
+    /// potion that best fits the missing amount is chosen (largest that does not overshoot, else the smallest).
+    /// Removing the potion and restoring happen in one request; the client cannot trigger or fake a drink.
+    /// </summary>
+    public PetDrinkDto? AutoPotion(string accountId, string characterId, HeroCombatDto hero, Func<int, int, (int hp, int mp, HeroCombatDto hero)> restore)
+    {
+        if (hero.dead || hero.maxHp <= 0) return null;
+        long t = now();
+        return db.InTransaction<PetDrinkDto?>((c, tx) =>
+        {
+            if (Database.Scalar<long?>(c, tx, "SELECT satiety_ms FROM pets_owned WHERE character_id=$c AND summoned=1", ("$c", characterId)) is not > 0) return null;
+            AutoPotionDto a = AutoSettings(c, tx, characterId);
+            foreach (int bar in new[] { BarHp, BarMp })
+            {
+                bool on = bar == BarHp ? a.hpEnabled : a.mpEnabled && hero.maxMp > 0;
+                if (!on) continue;
+                int cur = bar == BarHp ? hero.hp : hero.mp, max = bar == BarHp ? hero.maxHp : hero.maxMp;
+                if (cur * 100 >= (bar == BarHp ? a.hpPercent : a.mpPercent) * max) continue;
+                var ready = bar == BarHp ? hpReady : mpReady;
+                lock (gate) if (ready.TryGetValue(characterId, out long r) && t < r) continue;
+                int missing = max - cur;
+                var choices = inv.Cells(c, tx, characterId)
+                    .Select(kv => (slot: kv.Key, kv.Value.item, kv.Value.qty, def: inv.Config.Get(kv.Value.item)))
+                    .Where(x => x.def != null && x.def.kind == "consumable" && (bar == BarHp ? x.def.hp > 0 && x.def.mp == 0 : x.def.mp > 0 && x.def.hp == 0))
+                    .Select(x => (x.slot, x.item, x.qty, amount: bar == BarHp ? x.def!.hp : x.def!.mp, x.def!.name))
+                    .ToList();
+                if (choices.Count == 0) continue;
+                var fit = choices.Where(x => x.amount <= missing).OrderByDescending(x => x.amount).ThenBy(x => x.slot).FirstOrDefault();
+                var pick = fit.item != null ? fit : choices.OrderBy(x => x.amount).ThenBy(x => x.slot).First();
+                inv.RemoveFromSlot(c, tx, characterId, pick.slot, pick.item, 1);
+                var (hp, mp, after) = restore(bar == BarHp ? pick.amount : 0, bar == BarMp ? pick.amount : 0);
+                lock (gate) ready[characterId] = t + (long)(Config.autoPotion.cooldownSeconds * 1000f);
+                hero.hp = after.hp; hero.mp = after.mp;
+                int left = inv.Cells(c, tx, characterId).Values.Where(v => v.item == pick.item).Sum(v => v.qty);
+                return new PetDrinkDto { itemId = pick.item, itemName = pick.name, hp = hp, mp = mp, left = left };
+            }
+            return null;
+        });
     }
 
     public PetStateDto Get(string accountId, string characterId) => db.InTransaction((c, tx) => { Own(c, tx, accountId, characterId); return Snapshot(c, tx, accountId, characterId); });

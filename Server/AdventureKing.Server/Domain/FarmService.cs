@@ -157,6 +157,7 @@ public sealed class HeroCombatDto
     public bool dead { get; set; }
     public int damageTaken { get; set; }           // since the previous answer (for hit feedback)
     public string[] hitBy { get; set; } = Array.Empty<string>(); // spawn ids that struck since the previous answer
+    public PetDrinkDto? petDrink { get; set; }     // the pet gave a potion on this heartbeat (server-decided)
 }
 
 public sealed class FarmStateDto
@@ -402,16 +403,28 @@ public sealed class FarmService
     {
         var (heroClass, mapId, level) = Character(accountId, characterId);
         long t = now();
+        HeroCombatDto dto;
         lock (gate)
         {
             Hero h = HeroOf(characterId, heroClass, level, t);
             if (!h.Dead) Move(characterId, mapId, req?.x ?? float.NaN, req?.y ?? float.NaN, t);
             Evaluate(characterId, mapId, h, t);
-            var dto = Drain(h, t);
+            dto = Drain(h, t);
             if (!h.Dead) try { PetTick?.Invoke(characterId); } catch (Exception e) { Console.Error.WriteLine("pet tick: " + e.Message); }
-            return dto;
         }
+        if (!dto.dead && PetAutoPotion != null)
+        {
+            try
+            {
+                dto.petDrink = PetAutoPotion(accountId, characterId, dto, (hp, mp) => Restore(accountId, characterId, hp, mp));
+            }
+            catch (GameError) { } // e.g. fell in between: no drink, nothing consumed (rolled back)
+        }
+        return dto;
     }
+
+    /// <summary>Pet auto-potion hook (PetService.AutoPotion), run after each heartbeat on farm maps.</summary>
+    public Func<string, string, HeroCombatDto, Func<int, int, (int hp, int mp, HeroCombatDto hero)>, PetDrinkDto?>? PetAutoPotion { get; set; }
 
     /// <summary>Gets a fallen hero back up at the map's respawn point with full HP (no Gold or item loss).</summary>
     public HeroCombatDto Revive(string accountId, string characterId)

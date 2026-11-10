@@ -91,6 +91,7 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
     farmSvc.PetTick = pets.Tick;
     farmSvc.PetCanCollect = pets.CanCollect;
     farmSvc.PetReach = pets.Config.pickupReach;
+    farmSvc.PetAutoPotion = pets.AutoPotion;
 }
 
 app.Use(async (ctx, next) =>
@@ -208,6 +209,7 @@ api.MapPost("/characters/{id}/pets/buy", (string id, PetBuyDto body, HttpContext
 api.MapPost("/characters/{id}/pets/summon", (string id, PetIdDto body, HttpContext ctx, AccountService accounts, PetService pets) => pets.Summon(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/pets/dismiss", (string id, HttpContext ctx, AccountService accounts, PetService pets) => pets.Dismiss(accounts.Authenticate(Bearer(ctx)), id));
 api.MapPost("/characters/{id}/pets/feed", (string id, PetFeedDto body, HttpContext ctx, AccountService accounts, PetService pets) => pets.Feed(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/pets/auto-potion", (string id, AutoPotionDto body, HttpContext ctx, AccountService accounts, PetService pets) => pets.SetAutoPotion(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/farm/pet-pickup", (string id, PickupRequestDto body, HttpContext ctx, AccountService accounts, FarmService farm) =>
     farm.PetPickup(accounts.Authenticate(Bearer(ctx)), id, body));
 
