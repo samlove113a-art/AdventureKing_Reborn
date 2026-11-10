@@ -32,7 +32,17 @@ namespace AdventureKing.Gameplay
         private Transform body, head, eyeL, eyeR, aura;
         private Transform[] tails = new Transform[0], wingsL = new Transform[0], wingsR = new Transform[0];
         private TextMesh bubble;
-        private float x, y, groundY, hop, nextPoll, nextBlink, happyUntil, fetchCooldown;
+        private float x, y, groundY, hop, nextPoll, nextBlink, happyUntil, fetchCooldown, potionUntil;
+        private bool potionHp;
+        public int PotionsGiven { get; private set; }
+
+        /// <summary>The server says the pet just gave the owner a potion: run to the hero, toss it, show +HP / +MP.</summary>
+        public void GivePotion(bool hp)
+        {
+            PotionsGiven++;
+            potionHp = hp;
+            potionUntil = Time.time + 1.2f;
+        }
         private int facing = 1;
         private GoldDropView target;
         private bool busy;
@@ -111,7 +121,9 @@ namespace AdventureKing.Gameplay
                     .OrderBy(d => Mathf.Abs(d.Ground.x - x)).FirstOrDefault();
             }
             if (hungry) target = null;
-            float goalX = target ? target.Ground.x + 0.6f : hero.x - heroFacing * 1.15f;
+            bool giving = Time.time < potionUntil;
+            if (giving) target = null;
+            float goalX = giving ? hero.x - heroFacing * 0.55f : target ? target.Ground.x + 0.6f : hero.x - heroFacing * 1.15f;
             float goalY = target ? target.Ground.y : groundY;
             float speed = target ? 9f : Mathf.Abs(goalX - x) > 4f ? 10f : 5.5f;
             float before = x;
@@ -130,12 +142,13 @@ namespace AdventureKing.Gameplay
                     target = null;
                 });
             }
-            Mood = hungry ? "hungry" : Time.time < happyUntil ? "happy" : target ? "fetch" : moving ? "follow" : "idle";
+            Mood = hungry ? "hungry" : giving ? "potion" : Time.time < happyUntil ? "happy" : target ? "fetch" : moving ? "follow" : "idle";
 
             // ---- procedural animation
             hop = moving ? hop + dt * (target ? 14f : 10f) : Mathf.MoveTowards(hop, Mathf.Round(hop / Mathf.PI) * Mathf.PI, dt * 6f);
             float hopH = moving ? Mathf.Abs(Mathf.Sin(hop)) * 0.18f : 0f;
-            float happyJump = Mood == "happy" ? Mathf.Abs(Mathf.Sin((happyUntil - Time.time) * 9f)) * 0.35f : 0f;
+            float happyJump = Mood == "happy" ? Mathf.Abs(Mathf.Sin((happyUntil - Time.time) * 9f)) * 0.35f
+                : Mood == "potion" ? Mathf.Abs(Mathf.Sin((potionUntil - Time.time) * 5.2f)) * 0.5f : 0f; // two big hops: the toss
             Pet.position = new Vector3(x, y + hopH + happyJump, -0.25f);
             float yaw = Mood == "happy" ? (happyUntil - Time.time) * 720f : facing > 0 ? 115f : 245f;
             if (!moving && Mood == "idle") yaw = Mathf.LerpAngle(facing > 0 ? 115f : 245f, 180f, 0.5f);
@@ -155,13 +168,13 @@ namespace AdventureKing.Gameplay
             // eyes: blink, happy squint, sad droop
             if (Time.time >= nextBlink) nextBlink = Time.time + UnityEngine.Random.Range(2.2f, 4.5f);
             float blink = Time.time > nextBlink - 0.12f ? 0.15f : 1f;
-            float eyeY = Mood == "happy" ? 0.35f : hungry ? 0.6f : blink;
+            float eyeY = Mood == "happy" || Mood == "potion" ? 0.35f : hungry ? 0.6f : blink;
             if (eyeL) eyeL.localScale = new Vector3(eyeL.localScale.x, Mathf.Abs(eyeL.localScale.x) * 1.25f * eyeY, eyeL.localScale.z);
             if (eyeR) eyeR.localScale = new Vector3(eyeR.localScale.x, Mathf.Abs(eyeR.localScale.x) * 1.25f * eyeY, eyeR.localScale.z);
             if (bubble)
             {
-                bubble.text = hungry ? "Đói..." : Mood == "happy" ? "♥" : "";
-                bubble.color = hungry ? new Color(0.6f, 0.78f, 1f) : new Color(1f, 0.45f, 0.6f);
+                bubble.text = hungry ? "Đói..." : Mood == "potion" ? (potionHp ? "+HP" : "+MP") : Mood == "happy" ? "♥" : "";
+                bubble.color = hungry ? new Color(0.6f, 0.78f, 1f) : Mood == "potion" ? (potionHp ? new Color(1f, 0.35f, 0.35f) : new Color(0.4f, 0.65f, 1f)) : new Color(1f, 0.45f, 0.6f);
                 bubble.transform.rotation = Quaternion.identity;
             }
         }

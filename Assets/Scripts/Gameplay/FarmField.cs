@@ -115,6 +115,7 @@ namespace AdventureKing.Gameplay
                 foreach (string id in h.hitBy)
                     if (monsters.TryGetValue(id, out FarmMonsterView m) && m) { m.Chase = world.Player.transform; m.Strike(); HeroHits++; }
             if (h.damageTaken > 0) Popup(Vector2.zero, "-" + h.damageTaken, new Color(1f, 0.38f, 0.35f), 34, world.Player.transform);
+            if (h.PetDrank) PetGavePotion(h.petDrink);
             if (h.dead && !HeroDead) ShowDeath();
             HeroDead = h.dead;
         }
@@ -355,6 +356,29 @@ namespace AdventureKing.Gameplay
         }
 
         public long PetGoldPickedUp { get; private set; }
+
+        /// <summary>Potions the pet gave on its own (server-decided on a heartbeat) and the last one.</summary>
+        public int PetDrinks { get; private set; }
+        public PetDrinkState LastPetDrink { get; private set; }
+        private InventoryPanel bagPanel;
+
+        private IEnumerator DelayedPopup(float delay, string text, Color color)
+        {
+            yield return new WaitForSeconds(delay);
+            if (world && world.Player) Popup(Vector2.zero, text, color, 36, world.Player.transform);
+        }
+
+        private void PetGavePotion(PetDrinkState d)
+        {
+            PetDrinks++;
+            LastPetDrink = d;
+            bool hp = d.hp > 0;
+            StartCoroutine(DelayedPopup(0.45f, hp ? $"+{d.hp} HP" : $"+{d.mp} MP", hp ? new Color(0.5f, 1f, 0.55f) : new Color(0.55f, 0.8f, 1f))); // after the hit number, not on top of it
+            if (PetDirector.Current) PetDirector.Current.GivePotion(hp);
+            if (d.left == 0) Toast(hp ? "Pet: hết thuốc HP trong túi!" : "Pet: hết thuốc MP trong túi!");
+            if (!bagPanel) bagPanel = FindAnyObjectByType<InventoryPanel>(FindObjectsInactive.Include);
+            if (bagPanel) bagPanel.Refresh(); // HUD potion counts follow the server bag
+        }
 
         // ------------------------------------------------------------------ skills (the server decides everything)
         public int SkillsCast { get; private set; }

@@ -28,6 +28,52 @@ namespace AdventureKing.Gameplay
         private sealed class Card { public GameObject Go; public Image Portrait; public Text Name, Desc, Price, Sat; public Image SatFill; public Button Buy, Summon, Feed; public Text SummonLabel; }
         private readonly Card[] cards = new Card[2];
         private string pendingBuy;
+        private readonly Button[] autoToggle = new Button[2];
+        private readonly Text[] autoToggleLabel = new Text[2], autoPct = new Text[2];
+        private Text autoInfo;
+        public AutoPotionState Auto => Director?.State?.autoPotion;
+
+        /// <summary>Turns the pet's automatic HP (or MP) potion on/off on the server.</summary>
+        public void ToggleAuto(bool hp)
+        {
+            AutoPotionState cur = Auto;
+            if (cur == null) return;
+            var next = Copy(cur);
+            if (hp) next.hpEnabled = !cur.hpEnabled; else next.mpEnabled = !cur.mpEnabled;
+            SendAuto(next, hp ? (next.hpEnabled ? "Pet sẽ tự bơm thuốc HP." : "Đã tắt tự bơm HP.") : (next.mpEnabled ? "Pet sẽ tự bơm thuốc MP." : "Đã tắt tự bơm MP."));
+        }
+
+        /// <summary>Moves the HP (or MP) threshold by delta % (the server clamps it to its limits).</summary>
+        public void StepAuto(bool hp, int delta)
+        {
+            AutoPotionState cur = Auto;
+            if (cur == null) return;
+            var next = Copy(cur);
+            if (hp) next.hpPercent = Mathf.Clamp(cur.hpPercent + delta, cur.minPercent, cur.maxPercent);
+            else next.mpPercent = Mathf.Clamp(cur.mpPercent + delta, cur.minPercent, cur.maxPercent);
+            if (next.hpPercent == cur.hpPercent && next.mpPercent == cur.mpPercent) return;
+            SendAuto(next, null);
+        }
+
+        private static AutoPotionState Copy(AutoPotionState s) => new AutoPotionState
+        {
+            hpEnabled = s.hpEnabled, mpEnabled = s.mpEnabled, hpPercent = s.hpPercent, mpPercent = s.mpPercent,
+            minPercent = s.minPercent, maxPercent = s.maxPercent, cooldownSeconds = s.cooldownSeconds,
+        };
+
+        private void SendAuto(AutoPotionState next, string okText)
+        {
+            var w = AdventureWorldSession.Current;
+            if (Busy || !Director || !w || w.Character == null || !AdventureServerConnection.Instance) return;
+            Busy = true;
+            AdventureServerConnection.Instance.SetPetAutoPotion(w.Character.characterId, next, (ok, s, err) =>
+            {
+                Busy = false;
+                if (ok && s != null) { Director.Apply(s); if (okText != null) Message(okText); }
+                else Message(err ?? "Không lưu được cài đặt.");
+                Redraw();
+            });
+        }
 
         private PetDirector Director => PetDirector.Current;
 
@@ -78,26 +124,26 @@ namespace AdventureKing.Gameplay
             root = dim.gameObject;
             var drt = (RectTransform)root.transform; drt.anchorMin = Vector2.zero; drt.anchorMax = Vector2.one; drt.offsetMin = drt.offsetMax = Vector2.zero;
             dim.color = new Color(0f, 0f, 0f, 0.5f);
-            Image card = Make<Image>(root.transform, "Card", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1240f, 800f));
+            Image card = Make<Image>(root.transform, "Card", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1240f, 860f));
             card.sprite = panelSprite; card.type = panelSprite ? Image.Type.Sliced : Image.Type.Simple; card.color = panelSprite ? Color.white : new Color(0.1f, 0.12f, 0.2f, 0.97f);
             Transform c = card.transform;
             Color gold = new Color(1f, 0.85f, 0.45f), cream = new Color(1f, 0.96f, 0.88f);
             Txt(c, "Title", "Thú Cưng", 40, gold, new Vector2(0.5f, 1f), new Vector2(0f, -86f), new Vector2(600f, 56f), TextAnchor.MiddleCenter, true);
             Btn(c, "Close", "Đóng", new Vector2(1f, 1f), new Vector2(-130f, -64f), new Vector2(150f, 62f), new Color(0.55f, 0.3f, 0.3f), Close);
-            goldLabel = Txt(c, "Wallet", "", 24, gold, new Vector2(0f, 1f), new Vector2(230f, -64f), new Vector2(360f, 40f), TextAnchor.MiddleLeft, true);
+            goldLabel = Txt(c, "Wallet", "", 24, gold, new Vector2(0.5f, 1f), new Vector2(0f, -130f), new Vector2(600f, 36f), TextAnchor.MiddleCenter, true); // centred under the title: clear of the HUD corner frames on every screen
             for (int i = 0; i < 2; i++)
             {
                 bool vip = i == 1;
-                tabs[i] = Btn(c, "Tab" + i, vip ? "Pet VIP (Kim Cương)" : "Pet thường (Vàng)", new Vector2(0.5f, 1f), new Vector2(-170f + i * 340f, -168f), new Vector2(320f, 62f), new Color(0.3f, 0.36f, 0.55f), () => { Vip = vip; Redraw(); });
+                tabs[i] = Btn(c, "Tab" + i, vip ? "Pet VIP (Kim Cương)" : "Pet thường (Vàng)", new Vector2(0.5f, 1f), new Vector2(-170f + i * 340f, -180f), new Vector2(320f, 62f), new Color(0.3f, 0.36f, 0.55f), () => { Vip = vip; Redraw(); });
             }
             for (int i = 0; i < 2; i++)
             {
                 var k = new Card();
-                Image bg = Make<Image>(c, "PetCard" + i, new Vector2(0.5f, 0.5f), new Vector2(-290f + i * 580f, -60f), new Vector2(540f, 470f));
+                Image bg = Make<Image>(c, "PetCard" + i, new Vector2(0.5f, 0.5f), new Vector2(-290f + i * 580f, -5f), new Vector2(540f, 440f));
                 bg.sprite = cellSprite; bg.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple; bg.color = new Color(0.55f, 0.6f, 0.78f, 0.95f);
                 k.Go = bg.gameObject;
                 Transform t = bg.transform;
-                k.Portrait = Make<Image>(t, "Portrait", new Vector2(0f, 1f), new Vector2(130f, -130f), new Vector2(210f, 210f)); k.Portrait.preserveAspect = true; k.Portrait.raycastTarget = false;
+                k.Portrait = Make<Image>(t, "Portrait", new Vector2(0f, 1f), new Vector2(130f, -118f), new Vector2(190f, 190f)); k.Portrait.preserveAspect = true; k.Portrait.raycastTarget = false;
                 k.Name = Txt(t, "Name", "", 28, gold, new Vector2(0f, 1f), new Vector2(380f, -50f), new Vector2(300f, 40f), TextAnchor.MiddleLeft, true);
                 k.Desc = Txt(t, "Desc", "", 19, cream, new Vector2(0f, 1f), new Vector2(380f, -130f), new Vector2(300f, 110f), TextAnchor.UpperLeft);
                 k.Price = Txt(t, "Price", "", 24, gold, new Vector2(0f, 1f), new Vector2(380f, -210f), new Vector2(300f, 36f), TextAnchor.MiddleLeft, true);
@@ -113,7 +159,23 @@ namespace AdventureKing.Gameplay
                 k.Feed = Btn(t, "Feed", "Cho ăn", new Vector2(0.5f, 0f), new Vector2(125f, 80f), new Vector2(230f, 66f), new Color(0.25f, 0.6f, 0.4f), () => Feed(idx));
                 cards[i] = k;
             }
-            msgLabel = Txt(c, "Message", "", 22, new Color(1f, 0.78f, 0.6f), new Vector2(0.5f, 0f), new Vector2(0f, 50f), new Vector2(1100f, 34f), TextAnchor.MiddleCenter);
+            // ---- pet auto-potion (server decides every drink; these are only the player's settings)
+            Image auto = Make<Image>(c, "AutoPotion", new Vector2(0.5f, 0.5f), new Vector2(0f, -292f), new Vector2(1140f, 104f));
+            auto.sprite = cellSprite; auto.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple; auto.color = new Color(0.45f, 0.5f, 0.68f, 0.95f); auto.raycastTarget = false;
+            Transform a = auto.transform;
+            Txt(a, "AutoTitle", "Pet tự bơm thuốc", 24, gold, new Vector2(0.5f, 0.5f), new Vector2(-430f, 14f), new Vector2(260f, 40f), TextAnchor.MiddleLeft, true);
+            for (int k = 0; k < 2; k++)
+            {
+                bool hp = k == 0;
+                float x0 = hp ? -200f : 220f;
+                autoToggle[k] = Btn(a, hp ? "AutoHp" : "AutoMp", "", new Vector2(0.5f, 0.5f), new Vector2(x0, 14f), new Vector2(170f, 62f), new Color(0.3f, 0.36f, 0.55f), () => ToggleAuto(hp));
+                autoToggleLabel[k] = autoToggle[k].GetComponentInChildren<Text>();
+                Btn(a, hp ? "HpMinus" : "MpMinus", "−", new Vector2(0.5f, 0.5f), new Vector2(x0 + 130f, 14f), new Vector2(62f, 62f), new Color(0.3f, 0.36f, 0.55f), () => StepAuto(hp, -5));
+                autoPct[k] = Txt(a, hp ? "HpPct" : "MpPct", "", 24, cream, new Vector2(0.5f, 0.5f), new Vector2(x0 + 200f, 14f), new Vector2(76f, 40f), TextAnchor.MiddleCenter, true);
+                Btn(a, hp ? "HpPlus" : "MpPlus", "+", new Vector2(0.5f, 0.5f), new Vector2(x0 + 270f, 14f), new Vector2(62f, 62f), new Color(0.3f, 0.36f, 0.55f), () => StepAuto(hp, 5));
+            }
+            autoInfo = Txt(a, "AutoInfo", "", 20, cream, new Vector2(0.5f, 0.5f), new Vector2(0f, -36f), new Vector2(1100f, 30f), TextAnchor.MiddleCenter);
+            msgLabel = Txt(c, "Message", "", 22, new Color(1f, 0.78f, 0.6f), new Vector2(0.5f, 0f), new Vector2(0f, 46f), new Vector2(1100f, 34f), TextAnchor.MiddleCenter);
             Image cd = Make<Image>(root.transform, "ConfirmDim", new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
             confirm = cd.gameObject;
             var crt = (RectTransform)confirm.transform; crt.anchorMin = Vector2.zero; crt.anchorMax = Vector2.one; crt.offsetMin = crt.offsetMax = Vector2.zero;
@@ -150,6 +212,16 @@ namespace AdventureKing.Gameplay
             PetsState s = Director ? Director.State : null;
             if (goldLabel) goldLabel.text = s == null ? "" : $"{s.gold:N0} Vàng · {s.diamonds:N0} Kim Cương";
             for (int i = 0; i < 2; i++) tabs[i].GetComponent<Image>().color = (i == 1) == Vip ? new Color(0.82f, 0.6f, 0.18f) : new Color(0.3f, 0.36f, 0.55f);
+            AutoPotionState ap = s?.autoPotion;
+            for (int k = 0; k < 2 && ap != null; k++)
+            {
+                bool on = k == 0 ? ap.hpEnabled : ap.mpEnabled;
+                autoToggleLabel[k].text = (k == 0 ? "HP: " : "MP: ") + (on ? "Bật" : "Tắt");
+                autoToggle[k].GetComponent<Image>().color = on ? (k == 0 ? new Color(0.75f, 0.28f, 0.3f) : new Color(0.25f, 0.42f, 0.8f)) : new Color(0.3f, 0.36f, 0.55f);
+                autoPct[k].text = (k == 0 ? ap.hpPercent : ap.mpPercent) + "%";
+            }
+            if (autoInfo) autoInfo.text = ap == null ? "" : s.summoned == "" ? "Triệu hồi một thú cưng để dùng tính năng này."
+                : $"Dùng thuốc trong túi khi dưới ngưỡng · {ap.cooldownSeconds:0.#} giây/lần · pet phải đang theo và còn no · chỉ ở bản đồ săn quái";
             PetDefState[] list = Shown();
             for (int i = 0; i < cards.Length; i++)
             {

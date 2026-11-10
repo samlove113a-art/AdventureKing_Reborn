@@ -293,6 +293,8 @@ namespace AdventureKing.Gameplay
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/pets/dismiss", "{}", true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<PetsState>(json) : null, err));
         public void FeedPet(string characterId, string petId, int slot, Action<bool, PetsState, string> completed) =>
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/pets/feed", JsonUtility.ToJson(new PetBody { petId = petId, slot = slot }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<PetsState>(json) : null, err));
+        public void SetPetAutoPotion(string characterId, AutoPotionState settings, Action<bool, PetsState, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/pets/auto-potion", JsonUtility.ToJson(settings), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<PetsState>(json) : null, err));
         public void FarmPetPickup(string characterId, string dropId, Vector2 heroPosition, Action<bool, FarmPickupResult, string> completed) =>
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/farm/pet-pickup",
                 JsonUtility.ToJson(new PickupBody { dropId = dropId, x = heroPosition.x, y = heroPosition.y }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<FarmPickupResult>(json) : null, err));

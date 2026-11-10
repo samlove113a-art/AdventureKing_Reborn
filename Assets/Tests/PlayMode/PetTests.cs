@@ -167,6 +167,46 @@ namespace AdventureKing.Tests
             AdventureServerConnection.Instance.GetWardrobe(world.Character.characterId, (ok, w, err) => { done = true; serverGold = ok ? w.gold : -1; });
             while (!done) yield return null;
             Assert.AreEqual(world.Character.gold, serverGold, "server wallet = HUD");
+
+            // ---- pet auto-potion: turn HP on at 90 % in the Pet window (server settings), get hit once by a slime:
+            // the server has the pet give one HP potion from the bag (count drops by one), the pet shows +HP
+            var petPanel = Object.FindAnyObjectByType<PetPanel>();
+            petPanel.Open();
+            until = Time.time + 5f;
+            while ((petPanel.Auto == null || petPanel.Busy) && Time.time < until) yield return null;
+            Assert.IsFalse(petPanel.Auto.hpEnabled, "off by default");
+            petPanel.ToggleAuto(true);
+            until = Time.time + 5f;
+            while (petPanel.Busy && Time.time < until) yield return null;
+            for (int i = 0; i < 10 && petPanel.Auto.hpPercent < 90; i++)
+            {
+                petPanel.StepAuto(true, 5);
+                until = Time.time + 5f;
+                while (petPanel.Busy && Time.time < until) yield return null;
+            }
+            Assert.IsTrue(petPanel.Auto.hpEnabled);
+            Assert.AreEqual(90, petPanel.Auto.hpPercent, "clamped at the server's 90 % maximum");
+            var problems = new System.Collections.Generic.List<string>();
+            yield return UiAudit.Screen("QA/Pets", "05_pet_auto_potion_settings", problems);
+            UiAudit.WriteReport("QA/Pets/report.txt", problems);
+            Assert.IsEmpty(problems, string.Join("\n", problems));
+            petPanel.Close();
+            var bag = Object.FindAnyObjectByType<InventoryPanel>();
+            int hpPotions = bag.PotionCount(true);
+            Assert.Greater(hpPotions, 0, "starter HP potions in the bag");
+            yield return WalkTo(-15.2f);                                  // next to slime s2 (-14)
+            yield return Tap(PlayerInput2D.TouchAction.Attack);           // aggro: it strikes back
+            until = Time.time + 15f;
+            while (farm.PetDrinks == 0 && Time.time < until) yield return null;
+            yield return null; yield return null;
+            Assert.AreEqual(1, farm.PetDrinks, "one server-decided pet potion; last error " + farm.LastError);
+            Assert.Greater(farm.LastPetDrink.hp, 0);
+            Assert.AreEqual(1, dir.PotionsGiven);
+            Assert.AreEqual("potion", dir.Mood);
+            yield return Shot("06_pet_gives_potion");
+            until = Time.time + 5f;
+            while (bag.PotionCount(true) != hpPotions - 1 && Time.time < until) yield return null;
+            Assert.AreEqual(hpPotions - 1, bag.PotionCount(true), "exactly one potion left the server bag");
         }
     }
 }

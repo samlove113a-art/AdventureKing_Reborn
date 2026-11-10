@@ -134,7 +134,10 @@ namespace AdventureKing.Gameplay
         public long[] cooldownMs = new long[3]; // skills 1..3, remaining (server clock)
         public bool dead;
         public string[] hitBy = new string[0];
+        public PetDrinkState petDrink; // the pet gave a bag potion on this heartbeat (server-decided); empty itemId = none
+        public bool PetDrank => petDrink != null && !string.IsNullOrEmpty(petDrink.itemId);
     }
+    [Serializable] public sealed class PetDrinkState { public string itemId, itemName; public int hp, mp, left; }
 
     // ---------------------------------------------------------------- skills (server-decided)
     [Serializable] public sealed class SkillDefDto { public int slot; public string id, name, shape; public float cooldownSeconds, range, radius, damageMultiplier; public int mpCost, maxTargets; }
@@ -187,6 +190,14 @@ namespace AdventureKing.Gameplay
         public string summoned;
         public long maxSatietyMs, gold, diamonds;
         public float pickupReach;
+        public AutoPotionState autoPotion = new AutoPotionState();
+    }
+    [Serializable]
+    public sealed class AutoPotionState
+    {
+        public bool hpEnabled, mpEnabled;
+        public int hpPercent = 50, mpPercent = 30, minPercent = 10, maxPercent = 90;
+        public float cooldownSeconds = 8f;
     }
 
     // ---------------------------------------------------------------- events / welfare, mail, giftcode, rankings, titles
