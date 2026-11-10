@@ -46,6 +46,7 @@ namespace AdventureKing.Gameplay
             if (animator && !(health && health.IsDead))
             {
                 animator.SetTrigger(Skill);
+                LastAction = "skill"; LastActionTime = Time.time;
                 if (face) face.Pulse(HeroFace.Expression.Angry, 0.7f); // determined battle cry
             }
         }
@@ -62,7 +63,51 @@ namespace AdventureKing.Gameplay
             animator.CrossFadeInFixedTime(hash, 0.2f, 0);
             if (face) face.Pulse(expression, expressionSeconds);
             LastEmote = state;
+            EmoteSeq++;
             return true;
+        }
+
+        /// <summary>Counts emotes (multiplayer: other clients replay an emote when this number changes).</summary>
+        public int EmoteSeq { get; private set; }
+        public float LastActionTime { get; private set; } = -10f;
+        public string LastAction { get; private set; } = "";
+
+        /// <summary>The animation state other players should see (multiplayer heartbeat).</summary>
+        public string NetAnim()
+        {
+            if (health && health.IsDead) return "dead";
+            if (Time.time - LastActionTime < 0.3f) return LastAction;
+            if (!motor) return "idle";
+            if (motor.IsClimbing) return "climb";
+            if (!motor.IsGrounded) return motor.Velocity.y > 0.5f ? "jump" : "fall";
+            return Mathf.Abs(motor.Velocity.x) > 0.25f ? "run" : "idle";
+        }
+
+        /// <summary>Remote players: drive the animator from the synced state (no local motor).</summary>
+        public void DriveRemote(Vector2 velocity, string anim, int facing, bool turn = true)
+        {
+            if (visualRoot && turn)
+            {
+                float yaw = anim == "climb" ? climbingYaw : facing < 0 ? -rightFacingYaw : rightFacingYaw;
+                visualRoot.localRotation = Quaternion.Slerp(visualRoot.localRotation, Quaternion.Euler(0f, yaw, 0f), 1f - Mathf.Exp(-turnSpeed * Time.deltaTime));
+            }
+            if (!animator) return;
+            animator.SetFloat(Speed, anim == "run" ? Mathf.Max(Mathf.Abs(velocity.x), 2f) : 0f);
+            animator.SetFloat(VerticalSpeed, anim == "jump" ? Mathf.Max(velocity.y, 1f) : anim == "fall" ? Mathf.Min(velocity.y, -2f) : velocity.y);
+            animator.SetBool(Grounded, anim is not ("jump" or "fall" or "climb"));
+            animator.SetBool(Climbing, anim == "climb");
+            animator.SetBool(Dead, anim == "dead");
+            if (hasRunPlayback) animator.SetFloat(RunPlayback, RunPlaybackFor(Mathf.Abs(velocity.x)));
+            if (hasClimbPlayback) animator.SetFloat(ClimbPlayback, anim == "climb" ? ClimbPlaybackFor(velocity.y) : 1f);
+        }
+
+        /// <summary>Remote players: one-shot actions seen in the sync.</summary>
+        public void RemoteAction(string anim)
+        {
+            if (!animator) return;
+            if (anim == "attack") animator.SetTrigger(Attack);
+            else if (anim == "skill") animator.SetTrigger(Skill);
+            else if (anim == "hit") animator.SetTrigger(Hit);
         }
 
         public string LastEmote { get; private set; }
@@ -104,6 +149,7 @@ namespace AdventureKing.Gameplay
         public GameObject Held => held;
 
         private HeroFace face;
+        public HeroFace Face => face;
         private static readonly int ClimbPhaseId = Animator.StringToHash("ClimbPhase");
         private bool hasClimbPhase, hasBaseLocal;
         private Vector3 baseLocal;
@@ -245,6 +291,7 @@ namespace AdventureKing.Gameplay
         private void HandleAttack()
         {
             if (animator) animator.SetTrigger(Attack);
+            LastAction = "attack"; LastActionTime = Time.time;
             if (face && face.Current != HeroFace.Expression.Hurt) face.Pulse(HeroFace.Expression.Angry, 0.4f);
         }
 

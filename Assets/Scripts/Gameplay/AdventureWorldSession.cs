@@ -163,6 +163,8 @@ namespace AdventureKing.Gameplay
 
         public HeroOutfit Outfit { get; private set; }
         public GameObject[] HeroPrefabs => heroPrefabs;
+        public float HeroScale => heroScale;
+        public CharacterVisual3D PlayerVisual => playerVisual;
 
         /// <summary>Adds (or finds) the outfit component on a hero visual and binds it to the body mesh.</summary>
         public static HeroOutfit DressHero(GameObject hero, HeroClass heroClass)

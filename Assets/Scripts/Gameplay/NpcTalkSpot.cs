@@ -31,7 +31,7 @@ namespace AdventureKing.Gameplay
             var world = AdventureWorldSession.Current;
             if (!world || !world.Player) return;
             var greeter = FindAnyObjectByType<ElderGreeter>();
-            bool busy = greeter && greeter.Greeting;
+            bool busy = greeter && greeter.Greeting || CinematicDirector.Current && CinematicDirector.Current.Playing;
             Vector2 d = world.Player.transform.position - transform.position;
             bool near = !busy && Mathf.Abs(d.x) < range && Mathf.Abs(d.y) < 2.2f && !(world.Traveling || world.Leaving);
             if (near != PlayerNear)

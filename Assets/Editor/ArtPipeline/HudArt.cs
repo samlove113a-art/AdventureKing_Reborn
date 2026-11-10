@@ -292,6 +292,18 @@ namespace AdventureKing.ArtPipeline
                 (p => Mathf.Max(Circle(p, new Vector2(-0.4f, 0.28f), 0.18f), -Circle(p, new Vector2(-0.4f, 0.28f), 0.1f)), gold),
                 (p => Mathf.Max(Circle(p, new Vector2(0.4f, 0.28f), 0.18f), -Circle(p, new Vector2(0.4f, 0.28f), 0.1f)), gold),
                 (p => Poly(p - new Vector2(0f, 0.22f), Star(5, 0.16f, 0.07f)), _ => NavyLo));
+            // social: two friends + a small heart
+            Paint("icon_social", true,
+                (p => Mathf.Min(Mathf.Min(Circle(p, new Vector2(-0.26f, 0.22f), 0.17f), Box(p, new Vector2(-0.26f, -0.22f), new Vector2(0.24f, 0.2f), 0.18f)),
+                    Mathf.Min(Circle(p, new Vector2(0.26f, 0.22f), 0.17f), Box(p, new Vector2(0.26f, -0.22f), new Vector2(0.24f, 0.2f), 0.18f))), _ => White),
+                (p => Mathf.Min(Mathf.Min(Circle(p, new Vector2(-0.07f, 0.5f), 0.09f), Circle(p, new Vector2(0.07f, 0.5f), 0.09f)),
+                    Poly(p, new[] { new Vector2(-0.15f, 0.47f), new Vector2(0.15f, 0.47f), new Vector2(0f, 0.3f) })), _ => new Color(0.95f, 0.35f, 0.45f)));
+            // guild: shield with a wind bell
+            Paint("icon_guild", true,
+                (p => Mathf.Min(Box(p, new Vector2(0f, 0.18f), new Vector2(0.48f, 0.34f), 0.08f), Poly(p, new[] { new Vector2(-0.48f, 0.0f), new Vector2(0.48f, 0.0f), new Vector2(0f, -0.62f) })), gold),
+                (p => Mathf.Min(Box(p, new Vector2(0f, 0.16f), new Vector2(0.36f, 0.24f), 0.06f), Poly(p, new[] { new Vector2(-0.36f, -0.02f), new Vector2(0.36f, -0.02f), new Vector2(0f, -0.48f) })), _ => new Color(0.2f, 0.3f, 0.62f)),
+                (p => Mathf.Min(Box(p, new Vector2(0f, 0.1f), new Vector2(0.14f, 0.16f), 0.12f), Box(p, new Vector2(0f, -0.06f), new Vector2(0.2f, 0.04f), 0.03f)), gold),
+                (p => Circle(p, new Vector2(0f, -0.15f), 0.05f), gold));
             Paint("icon_more", true,
                 (p => Mathf.Min(Circle(p, new Vector2(-0.34f, 0f), 0.12f), Mathf.Min(Circle(p, Vector2.zero, 0.12f), Circle(p, new Vector2(0.34f, 0f), 0.12f))), gold));
             Paint("icon_shop", true,

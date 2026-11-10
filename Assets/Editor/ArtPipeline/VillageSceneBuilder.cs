@@ -2177,6 +2177,7 @@ namespace AdventureKing.ArtPipeline
                 ("icon_giftcode", "Giftcode", "Giftcode", "Nhập giftcode" + soon, false),
                 ("icon_vip", "VIP", "VIP", "", true),
                 ("icon_ranking", "BXH", "Bảng Xếp Hạng", "Bảng xếp hạng" + soon, false),
+                ("icon_social", "Xã hội", "Xã Hội", "", false),
                 ("icon_more", "Thêm", "Thêm", "Các tính năng khác (bang hội, bạn bè, thú cưng…) sẽ xuất hiện tại đây khi được hoàn thành.", false),
             };
             var secondaryIcons = new System.Collections.Generic.List<GameObject>();
@@ -2195,7 +2196,7 @@ namespace AdventureKing.ArtPipeline
                 fso.ApplyModifiedPropertiesWithoutUndo();
                 if (icon == "icon_more") { moreInfo = fb; moreButton = b; continue; }
                 if (icon == "icon_checkin") { checkinButton = b; Object.DestroyImmediate(fb); continue; } // real server check-in panel (below)
-                if (icon is "icon_event" or "icon_welfare" or "icon_firsttopup" or "icon_mail" or "icon_giftcode" or "icon_ranking")
+                if (icon is "icon_event" or "icon_welfare" or "icon_firsttopup" or "icon_mail" or "icon_giftcode" or "icon_ranking" or "icon_social")
                     { realWindows[icon] = b; Object.DestroyImmediate(fb); } // real server windows (below)
                 else UnityEventTools.AddPersistentListener(b.onClick, fb.Open);
                 if (icon is "icon_welfare" or "icon_giftcode" or "icon_ranking" or "icon_vip") secondaryIcons.Add(b.gameObject); // phones: behind "Thêm"
@@ -2469,6 +2470,20 @@ namespace AdventureKing.ArtPipeline
             if (buttons.TryGetValue("icon_giftcode", out Button gb)) UnityEventTools.AddPersistentListener(gb.onClick, gift.Open);
             var rank = Window<RankingPanel>("RankingWindow");
             if (buttons.TryGetValue("icon_ranking", out Button rb)) UnityEventTools.AddPersistentListener(rb.onClick, rank.Open);
+
+            // multiplayer heartbeat + social window (chat ticker, friends, guild, marriage)
+            var sync = canvas.gameObject.AddComponent<WorldSync>();
+            var syso = new SerializedObject(sync);
+            syso.FindProperty("font").objectReferenceValue = bold;
+            syso.ApplyModifiedPropertiesWithoutUndo();
+            var social = Window<SocialPanel>("SocialWindow");
+            if (buttons.TryGetValue("icon_social", out Button sb))
+            {
+                var sso = new SerializedObject(social);
+                sso.FindProperty("dot").objectReferenceValue = Dot(sb);
+                sso.ApplyModifiedPropertiesWithoutUndo();
+                UnityEventTools.AddStringPersistentListener(sb.onClick, social.OpenTab, "chat");
+            }
         }
 
         /// <summary>Owner-provided nameplate frames (Assets/Art/Nameplates), imported as sprites; name = server title id.</summary>

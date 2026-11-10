@@ -320,6 +320,59 @@ namespace AdventureKing.Gameplay
             Send("GET", Ch(characterId) + "/rankings/" + UnityWebRequest.EscapeURL(board), null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<RankBoardState>(json) : null, err));
         public void GetTitles(string characterId, Action<bool, TitlesState, string> completed) =>
             Send("GET", Ch(characterId) + "/titles", null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<TitlesState>(json) : null, err));
+        // ------------------------------------------------------------------ multiplayer heartbeat + social (Phase D)
+        [Serializable] public sealed class SyncBody { public float x, y; public int facing = 1, emoteSeq; public string anim = "idle", emote = ""; public long chatAfter; }
+        [Serializable] private sealed class NameBody { public string name; }
+        [Serializable] private sealed class IdBody { public string id; }
+        [Serializable] private sealed class TargetBody { public string id, name, role; public bool accept; }
+        [Serializable] private sealed class ChatBody { public string channel, to, text; }
+        [Serializable] private sealed class GuildCreateBody { public string name, emblem, requestId; }
+        [Serializable] private sealed class ContributeBody { public long amount; public string requestId; }
+        [Serializable] private sealed class NoticeBody { public string notice; }
+        [Serializable] private sealed class ProposeBody { public string name, requestId; }
+
+        public void Sync(string characterId, SyncBody body, Action<bool, SyncState, string> completed) =>
+            Send("POST", Ch(characterId) + "/sync", JsonUtility.ToJson(body), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<SyncState>(json) : null, err));
+        public void SendChat(string characterId, string channel, string to, string text, Action<bool, string> completed) =>
+            Send("POST", Ch(characterId) + "/chat", JsonUtility.ToJson(new ChatBody { channel = channel, to = to, text = text }), true, (ok, json, err) => completed(ok, err));
+
+        private void Friends(string characterId, string path, object body, Action<bool, FriendsState, string> completed) =>
+            Send(body == null ? "GET" : "POST", Ch(characterId) + "/friends" + path, body == null ? null : JsonUtility.ToJson(body), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<FriendsState>(json) : null, err));
+        public void GetFriends(string c, Action<bool, FriendsState, string> done) => Friends(c, "", null, done);
+        public void FriendRequest(string c, string name, Action<bool, FriendsState, string> done) => Friends(c, "/request", new NameBody { name = name }, done);
+        public void FriendAccept(string c, string id, bool accept, Action<bool, FriendsState, string> done) => Friends(c, accept ? "/accept" : "/decline", new IdBody { id = id }, done);
+        public void FriendRemove(string c, string id, Action<bool, FriendsState, string> done) => Friends(c, "/remove", new IdBody { id = id }, done);
+        public void Block(string c, string name, Action<bool, FriendsState, string> done) => Friends(c, "/block", new NameBody { name = name }, done);
+        public void Unblock(string c, string id, Action<bool, FriendsState, string> done) => Friends(c, "/unblock", new IdBody { id = id }, done);
+
+        private void Guild(string characterId, string path, object body, Action<bool, GuildViewState, string> completed) =>
+            Send(body == null && path == "" ? "GET" : "POST", Ch(characterId) + "/guild" + path, body == null ? (path == "" ? null : "{}") : JsonUtility.ToJson(body), true,
+                (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<GuildViewState>(json) : null, err));
+        public void GetGuild(string c, Action<bool, GuildViewState, string> done) => Guild(c, "", null, done);
+        public void GuildCreate(string c, string name, string emblem, Action<bool, GuildViewState, string> done) => Guild(c, "/create", new GuildCreateBody { name = name, emblem = emblem, requestId = Guid.NewGuid().ToString("N") }, done);
+        public void GuildApply(string c, string guildId, Action<bool, GuildViewState, string> done) => Guild(c, "/apply", new TargetBody { id = guildId }, done);
+        public void GuildInvite(string c, string name, Action<bool, GuildViewState, string> done) => Guild(c, "/invite", new TargetBody { name = name }, done);
+        public void GuildRespondInvite(string c, string guildId, bool accept, Action<bool, GuildViewState, string> done) => Guild(c, "/invite/respond", new TargetBody { id = guildId, accept = accept }, done);
+        public void GuildReview(string c, string characterId, bool accept, Action<bool, GuildViewState, string> done) => Guild(c, "/review", new TargetBody { id = characterId, accept = accept }, done);
+        public void GuildLeave(string c, Action<bool, GuildViewState, string> done) => Guild(c, "/leave", null, done);
+        public void GuildDisband(string c, Action<bool, GuildViewState, string> done) => Guild(c, "/disband", null, done);
+        public void GuildKick(string c, string characterId, Action<bool, GuildViewState, string> done) => Guild(c, "/kick", new TargetBody { id = characterId }, done);
+        public void GuildRole(string c, string characterId, string role, Action<bool, GuildViewState, string> done) => Guild(c, "/role", new TargetBody { id = characterId, role = role }, done);
+        public void GuildNotice(string c, string notice, Action<bool, GuildViewState, string> done) => Guild(c, "/notice", new NoticeBody { notice = notice }, done);
+        public void GuildContribute(string c, long amount, Action<bool, GuildViewState, string> done) => Guild(c, "/contribute", new ContributeBody { amount = amount, requestId = Guid.NewGuid().ToString("N") }, done);
+
+        private void Marriage(string characterId, string path, object body, Action<bool, MarriageState, string> completed) =>
+            Send(body == null && path == "" ? "GET" : "POST", Ch(characterId) + "/marriage" + path, body == null ? (path == "" ? null : "{}") : JsonUtility.ToJson(body), true,
+                (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<MarriageState>(json) : null, err));
+        public void GetMarriage(string c, Action<bool, MarriageState, string> done) => Marriage(c, "", null, done);
+        public void Propose(string c, string name, Action<bool, MarriageState, string> done) => Marriage(c, "/propose", new ProposeBody { name = name, requestId = Guid.NewGuid().ToString("N") }, done);
+        public void RespondProposal(string c, string fromId, bool accept, Action<bool, MarriageState, string> done) => Marriage(c, "/respond", new TargetBody { id = fromId, accept = accept }, done);
+        public void CancelProposal(string c, string toId, Action<bool, MarriageState, string> done) => Marriage(c, "/cancel-proposal", new TargetBody { id = toId }, done);
+        public void Divorce(string c, Action<bool, MarriageState, string> done) => Marriage(c, "/divorce", null, done);
+        public void StartCeremony(string c, Action<bool, MarriageState, string> done) => Marriage(c, "/ceremony/start", null, done);
+        public void ConfirmCeremony(string c, Action<bool, MarriageState, string> done) => Marriage(c, "/ceremony/confirm", null, done);
+        public void CancelCeremony(string c, Action<bool, MarriageState, string> done) => Marriage(c, "/ceremony/cancel", null, done);
+
         [Serializable] private sealed class KeyBody { public string key; }
         [Serializable] private sealed class MailBody { public string mailId; }
         [Serializable] private sealed class CodeBody { public string code; }

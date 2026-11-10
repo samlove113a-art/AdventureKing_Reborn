@@ -227,12 +227,13 @@ namespace AdventureKing.ArtPipeline
             HallProp(art, "hall_chandelier", -7.5f, 2.6f, 2.0f, y: 3.6f);
             HallProp(art, "hall_chandelier", 10.5f, 2.6f, 2.0f, y: 3.6f);
             foreach (float bx in new[] { -15.5f, 7.4f }) HallGlow(art, "gh_crystal", new Vector3(bx, 2.75f, 3.1f), 1.6f, new Color(0.45f, 0.95f, 1f) * 0.5f);
-            HallNpc(play, "NpcCaptain", "Đội Trưởng Liên Minh", -9f, 0f, 1.6f, new[]
+            var (captainActor, captainTalk) = HallNpc(play, "NpcCaptain", "Đội Trưởng Liên Minh", -9f, 0f, 1.6f, new[]
             {
-                "Chào {name}! Ta là Đội Trưởng Liên Minh. Quầy này nhận đơn gia nhập và nhiệm vụ bang.",
-                "Hệ thống bang hội đang được dựng: lập bang, cống hiến và nhiệm vụ bang sẽ mở tại đây.",
+                "Chào {name}! Ta là Đội Trưởng Liên Minh. Lập bang, xin vào bang hay quản lý bang đều ở quầy này.",
                 "Bảng xếp hạng bang ở bên phải. Ngai Bang Chủ dành cho người dẫn dắt cả liên minh!",
+                "Trong sảnh này, các thành viên cùng bang thấy nhau ở khu sinh hoạt riêng của bang.",
             });
+            if (captainActor) captainActor.gameObject.AddComponent<GuildCaptain>().Bind(captainTalk);
 
             HallLighting(new Color(0.62f, 0.66f, 0.82f), new Color(0.66f, 0.62f, 0.6f), new Color(0.36f, 0.32f, 0.3f), new Color(0.14f, 0.16f, 0.24f),
                 new[] { (-11f, 4f, 0.5f, new Color(1f, 0.82f, 0.6f)), (3.5f, 4.5f, 0.5f, new Color(0.7f, 0.95f, 1f)), (17.5f, 4.5f, 0.5f, new Color(1f, 0.85f, 0.6f)) }, art);
@@ -329,6 +330,9 @@ namespace AdventureKing.ArtPipeline
             cso.FindProperty("petals").objectReferenceValue = petals;
             cso.FindProperty("glassMaterial").objectReferenceValue = Mat("ceremony_glass", new Color(1f, 0.86f, 0.45f), new Color(0.3f, 0.2f, 0.05f)); // gilded goblet: reads against the pale walls
             cso.FindProperty("wineMaterial").objectReferenceValue = Mat("ceremony_wine", new Color(0.78f, 0.12f, 0.24f), new Color(0.2f, 0.02f, 0.05f));
+            cso.FindProperty("goldMaterial").objectReferenceValue = Mat("wedding_ring_gold", new Color(1f, 0.82f, 0.36f), new Color(0.35f, 0.24f, 0.05f));
+            cso.FindProperty("steelMaterial").objectReferenceValue = Mat("ceremony_steel", new Color(0.86f, 0.9f, 0.96f), new Color(0.15f, 0.17f, 0.2f));
+            cso.FindProperty("cakeMaterial").objectReferenceValue = Mat("ceremony_cake", new Color(1f, 0.93f, 0.9f), new Color(0.12f, 0.08f, 0.08f));
             cso.ApplyModifiedPropertiesWithoutUndo();
 
             HallLighting(new Color(0.86f, 0.78f, 0.84f), new Color(0.8f, 0.72f, 0.7f), new Color(0.46f, 0.4f, 0.38f), new Color(0.24f, 0.18f, 0.24f),

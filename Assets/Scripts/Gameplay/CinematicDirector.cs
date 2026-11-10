@@ -92,6 +92,10 @@ namespace AdventureKing.Gameplay
 
         public void Skip() => skipRequested = true;
 
+        private int cue = -1;
+        /// <summary>Jumps to this shot now (an outside clock, e.g. the server's ceremony steps, keeps the camera in step).</summary>
+        public void Cue(int shotIndex) => cue = shotIndex;
+
         /// <summary>Plays the shots; <paramref name="done"/> runs after the camera is handed back.</summary>
         public void Play(IList<Shot> shots, Action done = null)
         {
@@ -105,6 +109,7 @@ namespace AdventureKing.Gameplay
         {
             Playing = true;
             skipRequested = false;
+            cue = -1;
             BuildOverlay();
             Camera cam = Camera.main;
             var follow = cam ? cam.GetComponent<CameraFollow2D>() : null;
@@ -139,22 +144,24 @@ namespace AdventureKing.Gameplay
             for (int i = 0; i < overlays.Count; i++) if (overlays[i]) { overlays[i].alpha = 0f; overlays[i].blocksRaycasts = false; }
             for (int i = 0; i < shots.Count && !skipRequested; i++)
             {
+                if (cue > i) i = Mathf.Min(cue, shots.Count - 1);
                 ShotIndex = i;
                 ShotStarted?.Invoke(i);
                 Shot s = shots[i];
                 captionText.text = s.caption ?? "";
                 Vector3 fromP = cam.transform.position; Quaternion fromR = cam.transform.rotation; float fromF = cam.fieldOfView;
                 Quaternion toR = Quaternion.LookRotation(s.lookAt - s.position, Vector3.up);
-                for (float k = 0f; k < 1f && !skipRequested; k += Time.deltaTime / Mathf.Max(0.01f, s.move))
+                for (float k = 0f; k < 1f && !skipRequested && cue <= i; k += Time.deltaTime / Mathf.Max(0.01f, s.move))
                 {
                     float e = Ease(Mathf.Clamp01(k));
                     cam.transform.SetPositionAndRotation(Vector3.Lerp(fromP, s.position, e), Quaternion.Slerp(fromR, toR, e));
                     cam.fieldOfView = Mathf.Lerp(fromF, s.fov, e);
                     yield return null;
                 }
+                if (cue > i) { i--; continue; } // cued ahead mid-move: glide on to the cued shot from here, never snap
                 cam.transform.SetPositionAndRotation(s.position, toR);
                 cam.fieldOfView = s.fov;
-                for (float t = 0f; t < s.hold && !skipRequested; t += Time.deltaTime) yield return null;
+                for (float t = 0f; t < s.hold && !skipRequested && cue <= i; t += Time.deltaTime) yield return null;
             }
             ShotIndex = -1;
             captionText.text = "";

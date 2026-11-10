@@ -115,7 +115,7 @@ public sealed class PresenceService
     public const float MaxSpeed = 14f, Slack = 2.5f;
     public const long PeerTimeoutMs = 6000, OnlineTimeoutMs = 15000;
     public static readonly HashSet<string> Anims = new() { "idle", "run", "jump", "fall", "climb", "attack", "skill", "hit", "dead", "emote" };
-    public static readonly HashSet<string> Emotes = new() { "", "Kneel", "Toast", "Cheer", "Celebrate", "Bow", "Wave" };
+    public static readonly HashSet<string> Emotes = new() { "", "Kneel", "Toast", "Cheer", "Celebrate", "Bow", "Wave", "Heart", "Sway" };
 
     private readonly Dictionary<string, Entry> entries = new();
     private readonly object gate = new();

@@ -139,6 +139,20 @@ namespace AdventureKing.Gameplay
             return b;
         }
 
+        /// <summary>Text input on a light field (mobile keyboard opens on tap).</summary>
+        protected InputField Field(Transform p, string name, Vector2 anchor, Vector2 pos, Vector2 size, string placeholder, int limit, int fontSize = 24)
+        {
+            Image bg = Make<Image>(p, name, anchor, pos, size);
+            bg.sprite = cellSprite; bg.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple; bg.color = new Color(0.95f, 0.92f, 0.84f, 1f);
+            Text ph = Txt(bg.transform, "Placeholder", placeholder, fontSize, new Color(0.45f, 0.4f, 0.35f, 0.8f), new Vector2(0.5f, 0.5f), Vector2.zero, size - new Vector2(24f, 8f), TextAnchor.MiddleLeft);
+            ph.fontStyle = FontStyle.Italic;
+            Text tx = Txt(bg.transform, "Text", "", fontSize, new Color(0.2f, 0.13f, 0.07f), new Vector2(0.5f, 0.5f), Vector2.zero, size - new Vector2(24f, 8f), TextAnchor.MiddleLeft);
+            tx.resizeTextForBestFit = false; tx.supportRichText = false;
+            var f = bg.gameObject.AddComponent<InputField>();
+            f.targetGraphic = bg; f.textComponent = tx; f.placeholder = ph; f.characterLimit = limit;
+            return f;
+        }
+
         protected static void SetBtn(Button b, string label, Color tint, bool interactable)
         {
             b.interactable = interactable;
