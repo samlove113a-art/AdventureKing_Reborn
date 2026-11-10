@@ -1,0 +1,32 @@
+{
+  "_note": "Guilds, marriage, chat. STATUS: DRAFT. Every Gold/KC amount below is a PROPOSAL pending owner approval: while pricesApproved=false NO fee is charged (create guild, ring) and while economyEnabled=false guild contributions and guild-quest rewards are closed. The server refuses to start if a DRAFT turns either flag on. social.dev.json enables them for automated tests only.",
+  "status": "DRAFT",
+  "pricesApproved": false,
+  "economyEnabled": false,
+  "guild": {
+    "createFeeGold": 10000,
+    "minLevelToCreate": 1,
+    "maxVice": 2,
+    "levelExp": [0, 2000, 6000, 15000, 40000],
+    "maxMembers": [20, 25, 30, 40, 50],
+    "contributionGold": [1000, 5000, 20000],
+    "devotionPerGold": 0.1,
+    "expPerGold": 0.1,
+    "emblems": ["bell", "sword", "lotus", "dragon", "phoenix", "crown"],
+    "quests": [
+      { "id": "gq_hunt", "event": "kill:any", "need": 200, "text": "Cả bang hạ 200 quái", "rewardExp": 300, "rewardDevotion": 30 },
+      { "id": "gq_gold", "event": "pickup:gold", "need": 150, "text": "Cả bang nhặt Vàng 150 lần", "rewardExp": 200, "rewardDevotion": 20 },
+      { "id": "gq_skill", "event": "skill:any", "need": 150, "text": "Cả bang dùng kỹ năng 150 lần", "rewardExp": 200, "rewardDevotion": 20 }
+    ]
+  },
+  "marriage": {
+    "minLevel": 1,
+    "ringPriceGold": 5000,
+    "requireFriends": true,
+    "ceremony": { "inviteSeconds": 60, "leadInMs": 2500, "steps": [
+      { "id": "intro", "ms": 4000 }, { "id": "vows", "ms": 5000 }, { "id": "rings", "ms": 5500 }, { "id": "cake", "ms": 5000 },
+      { "id": "toast", "ms": 5000 }, { "id": "kiss", "ms": 4500 }, { "id": "finale", "ms": 4500 } ] },
+    "gifts": ["wed_pearl_crown", "wed_satin_gloves", "wed_white_cape"]
+  },
+  "chat": { "maxLength": 120, "minIntervalMs": 1200, "burstCount": 8, "burstWindowMs": 30000, "historyOnJoin": 30 }
+}

@@ -141,6 +141,14 @@ public sealed class Database
             Exec(c, tx, Schema.V10);
             Exec(c, tx, "PRAGMA user_version=10;");
             tx.Commit();
+            version = 10;
+        }
+        if (version < 11)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V11);
+            Exec(c, tx, "PRAGMA user_version=11;");
+            tx.Commit();
         }
     }
 
@@ -173,7 +181,87 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 10;
+    public const int Current = 11;
+
+    // V11: social layer — friends, blocks, chat, guilds, marriage (all server-side; positions/online state are memory only).
+    public const string V11 = """
+    CREATE TABLE friend_requests (
+        from_id    TEXT NOT NULL REFERENCES characters(id),
+        to_id      TEXT NOT NULL REFERENCES characters(id),
+        created_ms INTEGER NOT NULL,
+        PRIMARY KEY (from_id, to_id)
+    );
+    CREATE TABLE friends (
+        a_id       TEXT NOT NULL REFERENCES characters(id),
+        b_id       TEXT NOT NULL REFERENCES characters(id),
+        since_ms   INTEGER NOT NULL,
+        PRIMARY KEY (a_id, b_id)
+    );
+    CREATE TABLE blocks (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        blocked_id   TEXT NOT NULL REFERENCES characters(id),
+        created_ms   INTEGER NOT NULL,
+        PRIMARY KEY (character_id, blocked_id)
+    );
+    CREATE TABLE chat_messages (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        channel     TEXT NOT NULL,
+        sender_id   TEXT NOT NULL,
+        sender_name TEXT NOT NULL,
+        to_id       TEXT,
+        text        TEXT NOT NULL,
+        created_ms  INTEGER NOT NULL
+    );
+    CREATE INDEX ix_chat_channel ON chat_messages(channel, id);
+    CREATE TABLE guilds (
+        id           TEXT PRIMARY KEY,
+        name         TEXT NOT NULL,
+        name_key     TEXT NOT NULL UNIQUE,
+        emblem       TEXT NOT NULL,
+        notice       TEXT NOT NULL DEFAULT '',
+        level        INTEGER NOT NULL DEFAULT 1,
+        exp          INTEGER NOT NULL DEFAULT 0 CHECK (exp >= 0),
+        fund_gold    INTEGER NOT NULL DEFAULT 0 CHECK (fund_gold >= 0),
+        created_ms   INTEGER NOT NULL
+    );
+    CREATE TABLE guild_members (
+        character_id TEXT PRIMARY KEY REFERENCES characters(id),
+        guild_id     TEXT NOT NULL REFERENCES guilds(id),
+        role         TEXT NOT NULL CHECK (role IN ('leader','vice','member')),
+        devotion     INTEGER NOT NULL DEFAULT 0 CHECK (devotion >= 0),
+        joined_ms    INTEGER NOT NULL
+    );
+    CREATE INDEX ix_guild_members ON guild_members(guild_id);
+    CREATE TABLE guild_requests (
+        guild_id     TEXT NOT NULL REFERENCES guilds(id),
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        kind         TEXT NOT NULL CHECK (kind IN ('invite','apply')),
+        by_id        TEXT NOT NULL,
+        created_ms   INTEGER NOT NULL,
+        PRIMARY KEY (guild_id, character_id, kind)
+    );
+    CREATE TABLE guild_quest_progress (
+        guild_id  TEXT NOT NULL REFERENCES guilds(id),
+        vn_day    TEXT NOT NULL,
+        quest_id  TEXT NOT NULL,
+        count     INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (guild_id, vn_day, quest_id)
+    );
+    CREATE TABLE marriages (
+        id          TEXT PRIMARY KEY,
+        a_id        TEXT NOT NULL UNIQUE REFERENCES characters(id),
+        b_id        TEXT NOT NULL UNIQUE REFERENCES characters(id),
+        status      TEXT NOT NULL CHECK (status IN ('engaged','married')),
+        engaged_ms  INTEGER NOT NULL,
+        wed_ms      INTEGER
+    );
+    CREATE TABLE proposals (
+        from_id    TEXT NOT NULL REFERENCES characters(id),
+        to_id      TEXT NOT NULL REFERENCES characters(id),
+        created_ms INTEGER NOT NULL,
+        PRIMARY KEY (from_id, to_id)
+    );
+    """;
 
     // V10: pet auto-potion settings per character (the server decides every drink; the client only stores settings).
     public const string V10 = """

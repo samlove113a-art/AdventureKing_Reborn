@@ -246,6 +246,19 @@ public sealed class CosmeticShop
         return new OutfitDto { set = outfit.set, slots = slots };
     }
 
+    /// <summary>Server-granted cosmetic (e.g. wedding attire): owned once by this character, never sold, idempotent.</summary>
+    public static bool GrantGift(SqliteConnection c, SqliteTransaction tx, string accountId, string characterId, string itemId, string source)
+    {
+        if (Owns(c, tx, accountId, characterId, itemId)) return false;
+        Database.Exec(c, tx, """
+            INSERT INTO owned_items(id, account_id, character_id, item_id, kind, quantity, source, acquired_ms)
+            VALUES($id,$a,$c,$i,$k,1,$s,$t)
+            """, ("$id", Crypto.NewId("own")), ("$a", accountId), ("$c", characterId), ("$i", itemId), ("$k", ItemKinds.Cosmetic),
+            ("$s", source), ("$t", Database.NowMs()));
+        AccountService.Audit(c, tx, accountId, "cosmetic_gift", $"{characterId} {itemId} {source}");
+        return true;
+    }
+
     private static bool Owns(SqliteConnection c, SqliteTransaction? tx, string accountId, string characterId, string itemId) =>
         Database.Scalar<long>(c, tx, """
             SELECT COUNT(*) FROM owned_items WHERE account_id=$a AND item_id=$i AND (character_id IS NULL OR character_id=$c)

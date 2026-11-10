@@ -37,6 +37,37 @@ public class BackupRestoreTests : IDisposable
     }
 
     [Fact]
+    public void A_v10_database_migrates_to_v11_keeping_data_and_social_rows_survive_backup_restore()
+    {
+        var accounts = new AccountService(t.Db);
+        var chars = new CharacterService(t.Db, new NameRules());
+        string acc = accounts.Register("migrate01", "migrate-pass-01").AccountId;
+        string id = chars.Create(acc, "Di Trú", 0, 0).characterId;
+        // turn this database back into a v10 one (drop the v11 tables)
+        using (var c = t.Db.Open())
+        {
+            foreach (string tbl in new[] { "friend_requests", "friends", "blocks", "chat_messages", "guild_quest_progress", "guild_requests", "guild_members", "guilds", "proposals", "marriages" })
+                Database.Exec(c, null, $"DROP TABLE {tbl}");
+            Database.Exec(c, null, "PRAGMA user_version=10;");
+        }
+        SqliteConnection.ClearAllPools();
+        var db = new Database(t.Path_); // opening migrates
+        using (var c = db.Open())
+        {
+            Assert.Equal(11L, Database.Scalar<long>(c, null, "PRAGMA user_version"));
+            Assert.Equal("Di Trú", Database.Scalar<string>(c, null, "SELECT name FROM characters WHERE id=$c", ("$c", id)));
+            Database.Exec(c, null, "INSERT INTO guilds(id, name, name_key, emblem, created_ms) VALUES('g1','Lưu Bang','luubang','bell',1)");
+            Database.Exec(c, null, "INSERT INTO guild_members(character_id, guild_id, role, joined_ms) VALUES($c,'g1','leader',1)", ("$c", id));
+        }
+        string backup = BackupService.Backup(db, Path.Combine(t.Dir, "backups"));
+        using (var c = db.Open()) Database.Exec(c, null, "DELETE FROM guild_members"); // disaster
+        SqliteConnection.ClearAllPools();
+        BackupService.Restore(backup, t.Path_);
+        using (var c = new Database(t.Path_).Open())
+            Assert.Equal("leader", Database.Scalar<string>(c, null, "SELECT role FROM guild_members WHERE character_id=$c", ("$c", id)));
+    }
+
+    [Fact]
     public void Corrupt_Backup_Is_Refused()
     {
         string bad = Path.Combine(t.Dir, "bad.db");

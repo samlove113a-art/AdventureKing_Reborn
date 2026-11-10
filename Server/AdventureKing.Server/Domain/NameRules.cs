@@ -126,6 +126,27 @@ public sealed class NameRules
         return new NameCheck(true, "ok", "", name, UniqueKey(name));
     }
 
+    /// <summary>
+    /// Chat filter: each word that hits the profanity lists (same folding as names) is replaced by asterisks.
+    /// Control / format characters are removed and whitespace collapsed. Returns the cleaned text.
+    /// </summary>
+    public string MaskChat(string? raw)
+    {
+        string text = new string((raw ?? "").Normalize(NormalizationForm.FormC)
+            .Where(ch => !char.IsControl(ch) && CharUnicodeInfo.GetUnicodeCategory(ch) != UnicodeCategory.Format).ToArray());
+        string[] words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < words.Length; i++)
+        {
+            string sk = Skeleton(words[i], collapseRepeats: true), skRaw = Skeleton(words[i], collapseRepeats: false);
+            string acc = words[i].ToLowerInvariant();
+            bool bad = sk.Length > 0 && (ProfanityContains.Any(sk.Contains) || extraSkeleton.Any(sk.Contains) ||
+                       ProfanityAffix.Any(a => sk.StartsWith(a) || sk.EndsWith(a)) || ProfanityWord.Contains(skRaw) ||
+                       ProfanityAccented.Any(acc.Contains));
+            if (bad) words[i] = new string('*', Math.Max(3, new StringInfo(words[i]).LengthInTextElements));
+        }
+        return string.Join(' ', words);
+    }
+
     /// <summary>Uniqueness key: diacritics kept, case/spaces/leet look-alikes folded.</summary>
     public static string UniqueKey(string name)
     {

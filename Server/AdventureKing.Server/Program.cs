@@ -68,6 +68,15 @@ builder.Services.AddSingleton(sp => new MailService(sp.GetRequiredService<Databa
 builder.Services.AddSingleton(sp => new GiftcodeService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
 builder.Services.AddSingleton(sp => new RankingService(sp.GetRequiredService<Database>(), sp.GetRequiredService<FarmService>()));
 builder.Services.AddSingleton(sp => new TitleService(sp.GetRequiredService<Database>()));
+// Social layer (Phase D): production = DRAFT (no fees charged, guild economy closed); tests use social.dev.json.
+string socialPath = Path.Combine(contentRoot, cfg["SocialConfigPath"] ?? "config/social.json");
+builder.Services.AddSingleton(sp => SocialConfig.Load(socialPath, sp.GetRequiredService<CosmeticShop>().Catalog));
+builder.Services.AddSingleton(_ => new PresenceService());
+builder.Services.AddSingleton(sp => new FriendService(sp.GetRequiredService<Database>(), sp.GetRequiredService<PresenceService>()));
+builder.Services.AddSingleton(sp => new ChatService(sp.GetRequiredService<Database>(), sp.GetRequiredService<SocialConfig>(), sp.GetRequiredService<NameRules>()));
+builder.Services.AddSingleton(sp => new GuildService(sp.GetRequiredService<Database>(), sp.GetRequiredService<SocialConfig>(), sp.GetRequiredService<NameRules>(), sp.GetRequiredService<PresenceService>()));
+builder.Services.AddSingleton(sp => new MarriageService(sp.GetRequiredService<Database>(), sp.GetRequiredService<SocialConfig>(), sp.GetRequiredService<PresenceService>()));
+builder.Services.AddSingleton(sp => new SyncService(sp.GetRequiredService<Database>(), sp.GetRequiredService<PresenceService>(), sp.GetRequiredService<ChatService>(), sp.GetRequiredService<MarriageService>()));
 builder.Services.AddKeyedSingleton("login", new AttemptLimiter(10, TimeSpan.FromMinutes(5)));
 builder.Services.AddKeyedSingleton("register", new AttemptLimiter(5, TimeSpan.FromHours(1)));
 
@@ -77,11 +86,14 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
     // quest progress comes from server events only (plus the small client allowlist in QuestService.ClientEvent)
     var quests = app.Services.GetRequiredService<QuestService>();
     var events = app.Services.GetRequiredService<EventService>();
+    var guilds = app.Services.GetRequiredService<GuildService>();
     Action<string, string, string, int> record = (a, c, e, n) =>
     {
         quests.Record(a, c, e, n);
         try { events.Record(a, c, e, n); } catch (Exception ex) { Console.Error.WriteLine("event hook: " + ex.Message); }
+        try { guilds.Record(a, c, e, n); } catch (Exception ex) { Console.Error.WriteLine("guild hook: " + ex.Message); }
     };
+    app.Services.GetRequiredService<RankingService>().GuildBoard = guilds.Ranking;
     app.Services.GetRequiredService<FarmService>().QuestEvent = record;
     app.Services.GetRequiredService<InventoryService>().QuestEvent = record;
     app.Services.GetRequiredService<ShopService>().QuestEvent = record;
@@ -235,6 +247,41 @@ api.MapGet("/characters/{id}/mail", (string id, HttpContext ctx, AccountService 
 api.MapPost("/characters/{id}/mail/read", (string id, MailIdDto body, HttpContext ctx, AccountService accounts, MailService mail) => mail.Read(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/mail/claim", (string id, MailIdDto body, HttpContext ctx, AccountService accounts, MailService mail) => mail.Claim(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/giftcode", (string id, GiftcodeDto body, HttpContext ctx, AccountService accounts, GiftcodeService codes) => codes.Redeem(accounts.Authenticate(Bearer(ctx)), id, body));
+
+// ---------------------------------------------------------------- multiplayer heartbeat, friends, chat
+api.MapPost("/characters/{id}/sync", (string id, SyncRequestDto body, HttpContext ctx, AccountService accounts, SyncService sync) => sync.Sync(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapGet("/characters/{id}/friends", (string id, HttpContext ctx, AccountService accounts, FriendService f) => f.Get(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/friends/request", (string id, NameDto body, HttpContext ctx, AccountService accounts, FriendService f) => f.Request(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/friends/accept", (string id, IdDto body, HttpContext ctx, AccountService accounts, FriendService f) => f.Respond(accounts.Authenticate(Bearer(ctx)), id, body, true));
+api.MapPost("/characters/{id}/friends/decline", (string id, IdDto body, HttpContext ctx, AccountService accounts, FriendService f) => f.Respond(accounts.Authenticate(Bearer(ctx)), id, body, false));
+api.MapPost("/characters/{id}/friends/remove", (string id, IdDto body, HttpContext ctx, AccountService accounts, FriendService f) => f.Remove(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/friends/block", (string id, NameDto body, HttpContext ctx, AccountService accounts, FriendService f) => f.Block(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/friends/unblock", (string id, IdDto body, HttpContext ctx, AccountService accounts, FriendService f) => f.Unblock(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/chat", (string id, ChatSendDto body, HttpContext ctx, AccountService accounts, ChatService chat) => chat.Send(accounts.Authenticate(Bearer(ctx)), id, body));
+
+// ---------------------------------------------------------------- guilds
+api.MapGet("/characters/{id}/guild", (string id, HttpContext ctx, AccountService accounts, GuildService g) => g.Get(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/guild/create", (string id, GuildCreateDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.Create(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/guild/apply", (string id, GuildTargetDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.Apply(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/guild/invite", (string id, GuildTargetDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.Invite(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/guild/invite/respond", (string id, GuildTargetDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.RespondInvite(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/guild/review", (string id, GuildTargetDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.Review(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/guild/leave", (string id, HttpContext ctx, AccountService accounts, GuildService g) => g.Leave(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/guild/disband", (string id, HttpContext ctx, AccountService accounts, GuildService g) => g.DisbandGuild(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/guild/kick", (string id, GuildTargetDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.Kick(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/guild/role", (string id, GuildTargetDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.SetRole(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/guild/notice", (string id, GuildNoticeDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.SetNotice(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/guild/contribute", (string id, GuildContributeDto body, HttpContext ctx, AccountService accounts, GuildService g) => g.Contribute(accounts.Authenticate(Bearer(ctx)), id, body));
+
+// ---------------------------------------------------------------- marriage + ceremony
+api.MapGet("/characters/{id}/marriage", (string id, HttpContext ctx, AccountService accounts, MarriageService m) => m.Get(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/marriage/propose", (string id, ProposeDto body, HttpContext ctx, AccountService accounts, MarriageService m) => m.Propose(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/marriage/respond", (string id, GuildTargetDto body, HttpContext ctx, AccountService accounts, MarriageService m) => m.Respond(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/marriage/cancel-proposal", (string id, GuildTargetDto body, HttpContext ctx, AccountService accounts, MarriageService m) => m.CancelProposal(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/marriage/divorce", (string id, HttpContext ctx, AccountService accounts, MarriageService m) => m.Divorce(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/marriage/ceremony/start", (string id, HttpContext ctx, AccountService accounts, MarriageService m) => m.StartCeremony(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/marriage/ceremony/confirm", (string id, HttpContext ctx, AccountService accounts, MarriageService m) => m.ConfirmCeremony(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/marriage/ceremony/cancel", (string id, HttpContext ctx, AccountService accounts, MarriageService m) => m.CancelCeremony(accounts.Authenticate(Bearer(ctx)), id));
 
 // ---------------------------------------------------------------- leaderboards + nameplate frames
 api.MapGet("/characters/{id}/rankings/{board}", (string id, string board, HttpContext ctx, AccountService accounts, RankingService ranks) => ranks.Get(accounts.Authenticate(Bearer(ctx)), id, board));

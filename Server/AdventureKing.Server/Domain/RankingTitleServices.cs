@@ -19,6 +19,8 @@ public sealed class RankingService
     public RankingService(Database db, FarmService farm) { this.db = db; this.farm = farm; }
 
     public static readonly string[] Boards = { "level", "power", "guild", "boss" };
+    /// <summary>Real guild ranking (GuildService.Ranking), wired at startup.</summary>
+    public Func<string, RankBoardDto>? GuildBoard { get; set; }
 
     public RankBoardDto Get(string accountId, string characterId, string board)
     {
@@ -46,7 +48,8 @@ public sealed class RankingService
         {
             "level" => new RankBoardDto { board = board, title = "Cấp Độ", valueLabel = "Cấp", rows = rows.Take(Top).ToArray(), mine = mine, total = rows.Count },
             "power" => new RankBoardDto { board = board, title = "Lực Chiến", valueLabel = "Lực chiến", rows = rows.Take(Top).ToArray(), mine = mine, total = rows.Count },
-            "guild" => new RankBoardDto { board = board, title = "Bang Hội", valueLabel = "Điểm", emptyReason = "Chưa có bang hội nào: hệ thống bang hội chưa được mở." },
+            "guild" => GuildBoard != null ? GuildBoard(characterId)
+                : new RankBoardDto { board = board, title = "Bang Hội", valueLabel = "Điểm", emptyReason = "Chưa có bang hội nào: hệ thống bang hội chưa được mở." },
             "boss" => new RankBoardDto { board = board, title = "Boss Hunter", valueLabel = "Điểm săn Boss", emptyReason = "Chưa có điểm săn Boss: Boss thế giới chưa được mở." },
             _ => throw new GameError("board_unknown", "Bảng xếp hạng không tồn tại.", 404),
         };
