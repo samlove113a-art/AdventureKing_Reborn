@@ -38,6 +38,8 @@ namespace AdventureKing.Gameplay
         private const int Columns = 8;
 
         private Sprite Icon(string name) => icons.FirstOrDefault(i => i.name == name).sprite;
+        /// <summary>Item icon by its server icon key (shared with the reward windows).</summary>
+        public Sprite IconSprite(string name) => Icon(name);
 
         private void Start() => Build();
 

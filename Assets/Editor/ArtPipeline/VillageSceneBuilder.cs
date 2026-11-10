@@ -2420,6 +2420,7 @@ namespace AdventureKing.ArtPipeline
                 so.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("item_cell");
                 so.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
                 so.FindProperty("font").objectReferenceValue = bold;
+                so.FindProperty("coinSprite").objectReferenceValue = HudArt.Get("coin");
                 so.ApplyModifiedPropertiesWithoutUndo();
                 return p;
             }

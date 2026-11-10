@@ -24,6 +24,7 @@ namespace AdventureKing.Gameplay
         private readonly Item[] items = new Item[ListCount];
         private Text letterTitle, letterMeta, letterBody, attach, empty;
         private Button claim;
+        private RewardStrip attachIcons;
         private float nextPoll;
 
         private void Start()
@@ -51,7 +52,7 @@ namespace AdventureKing.Gameplay
                 var it = new Item { Btn = b };
                 it.Title = Txt(bg.transform, "Title", "", 22, Gold, new Vector2(0f, 0.5f), new Vector2(240f, 16f), new Vector2(420f, 32f), TextAnchor.MiddleLeft, true);
                 it.Sub = Txt(bg.transform, "Sub", "", 17, Cream, new Vector2(0f, 0.5f), new Vector2(240f, -20f), new Vector2(420f, 28f), TextAnchor.MiddleLeft);
-                it.Unread = Box(bg.transform, "Unread", new Vector2(1f, 1f), new Vector2(-14f, -12f), new Vector2(20f, 20f), null, new Color(0.92f, 0.18f, 0.2f)).gameObject;
+                it.Unread = Dot(bg.transform, 22f);
                 items[i] = it;
             }
             empty = Txt(card, "Empty", "", 22, Cream, new Vector2(0f, 1f), new Vector2(330f, -300f), new Vector2(460f, 80f), TextAnchor.MiddleCenter);
@@ -62,7 +63,8 @@ namespace AdventureKing.Gameplay
             letterBody = Txt(card, "LetterBody", "", 23, Cream, new Vector2(0f, 1f), new Vector2(1010f, -420f), new Vector2(760f, 300f), TextAnchor.UpperLeft);
             letterBody.resizeTextForBestFit = false; letterBody.verticalOverflow = VerticalWrapMode.Truncate; letterBody.lineSpacing = 1.15f;
             attach = Txt(card, "Attach", "", 22, new Color(1f, 0.8f, 0.45f), new Vector2(0f, 1f), new Vector2(1010f, -600f), new Vector2(760f, 34f), TextAnchor.MiddleLeft, true);
-            claim = Btn(card, "Claim", "Nhận", new Vector2(0f, 1f), new Vector2(1010f, -690f), new Vector2(260f, 68f), Green, Claim);
+            attachIcons = MakeStrip(card, "AttachIcon", new Vector2(0f, 1f), new Vector2(650f, -668f), 5, 64f, 8f); // 618..970
+            claim = Btn(card, "Claim", "Nhận", new Vector2(0f, 1f), new Vector2(1250f, -668f), new Vector2(240f, 68f), Green, Claim);
         }
 
         public override void Open()
@@ -127,6 +129,7 @@ namespace AdventureKing.Gameplay
             letterMeta.text = sel == null ? "" : Kind(sel.kind) + " · " + DateTimeOffset.FromUnixTimeMilliseconds(sel.createdMs).ToOffset(TimeSpan.FromHours(7)).ToString("dd/MM/yyyy HH:mm");
             letterBody.text = sel?.body ?? (list.Length > 0 ? "Chọn một thư để đọc." : "");
             attach.text = sel != null && sel.hasAttachment ? "Đính kèm: " + sel.attachText : "";
+            FillStrip(attachIcons, sel != null && sel.hasAttachment ? sel.attachGold : 0, sel != null && sel.hasAttachment ? sel.items : null, sel != null && sel.claimed);
             claim.gameObject.SetActive(sel != null && sel.hasAttachment);
             if (sel != null && sel.hasAttachment) SetBtn(claim, sel.claimed ? "Đã nhận" : "Nhận", sel.claimed ? Grey : Green, !sel.claimed && !Busy);
         }

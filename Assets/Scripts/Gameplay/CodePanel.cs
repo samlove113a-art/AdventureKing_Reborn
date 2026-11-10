@@ -10,7 +10,53 @@ namespace AdventureKing.Gameplay
     /// </summary>
     public abstract class CodePanel : MonoBehaviour
     {
-        [SerializeField] protected Sprite panelSprite, cellSprite, buttonSprite;
+        [SerializeField] protected Sprite panelSprite, cellSprite, buttonSprite, coinSprite;
+
+        /// <summary>A row of reward icons (Gold coin first, then items) with quantities.</summary>
+        protected sealed class RewardStrip { public Image[] Cells, Icons; public Text[] Qty; }
+
+        protected RewardStrip MakeStrip(Transform p, string name, Vector2 anchor, Vector2 firstPos, int n, float size, float gap)
+        {
+            var s = new RewardStrip { Cells = new Image[n], Icons = new Image[n], Qty = new Text[n] };
+            for (int i = 0; i < n; i++)
+            {
+                Image cell = Box(p, name + i, anchor, firstPos + new Vector2(i * (size + gap), 0f), new Vector2(size, size), cellSprite, new Color(0.85f, 0.78f, 0.62f, 1f));
+                s.Cells[i] = cell;
+                s.Icons[i] = Box(cell.transform, "Icon", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(size * 0.8f, size * 0.8f), null, Color.white);
+                s.Icons[i].preserveAspect = true;
+                s.Qty[i] = Txt(cell.transform, "Qty", "", Mathf.RoundToInt(size * 0.36f), Color.white, new Vector2(1f, 0f), new Vector2(-size * 0.5f, size * 0.24f), new Vector2(size * 0.92f, size * 0.5f), TextAnchor.LowerRight, true);
+                s.Qty[i].resizeTextForBestFit = false;
+                s.Qty[i].verticalOverflow = VerticalWrapMode.Overflow; s.Qty[i].horizontalOverflow = HorizontalWrapMode.Overflow;
+                var o = s.Qty[i].gameObject.AddComponent<Outline>(); o.effectColor = new Color(0f, 0f, 0f, 0.9f); o.effectDistance = new Vector2(1.5f, -1.5f);
+            }
+            return s;
+        }
+
+        private InventoryPanel iconSource;
+        protected Sprite ItemIcon(string icon)
+        {
+            if (!iconSource) iconSource = FindAnyObjectByType<InventoryPanel>(FindObjectsInactive.Include);
+            return iconSource ? iconSource.IconSprite(icon) : null;
+        }
+
+        /// <summary>Shows the reward as icons; returns how many cells are used.</summary>
+        protected int FillStrip(RewardStrip s, long gold, RewardViewState[] items, bool dim = false)
+        {
+            int n = 0;
+            void Put(Sprite sp, string qty)
+            {
+                if (n >= s.Cells.Length) return;
+                s.Cells[n].gameObject.SetActive(true);
+                s.Icons[n].sprite = sp; s.Icons[n].enabled = sp;
+                s.Icons[n].color = dim ? new Color(1f, 1f, 1f, 0.45f) : Color.white;
+                s.Qty[n].text = qty;
+                n++;
+            }
+            if (gold > 0) Put(coinSprite, gold >= 1000 ? (gold / 1000f).ToString("0.#") + "K" : gold.ToString());
+            if (items != null) foreach (RewardViewState it in items) Put(ItemIcon(it.icon), "x" + it.qty);
+            for (int i = n; i < s.Cells.Length; i++) s.Cells[i].gameObject.SetActive(false);
+            return n;
+        }
         [SerializeField] protected Font font;
 
         protected static readonly Color Gold = new Color(1f, 0.85f, 0.45f), Cream = new Color(1f, 0.96f, 0.88f),
@@ -23,6 +69,37 @@ namespace AdventureKing.Gameplay
         public bool IsOpen => root && root.activeSelf;
         public bool Busy { get; protected set; }
         public string LastMessage { get; private set; } = "";
+
+        private static Sprite circle;
+        /// <summary>Soft-edged round sprite (notification dots).</summary>
+        protected static Sprite Circle
+        {
+            get
+            {
+                if (circle) return circle;
+                const int n = 64;
+                var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+                var px = new Color[n * n];
+                for (int y = 0; y < n; y++)
+                    for (int x = 0; x < n; x++)
+                    {
+                        float d = new Vector2(x - n / 2f + 0.5f, y - n / 2f + 0.5f).magnitude;
+                        float a = Mathf.Clamp01(n / 2f - 1f - d);                    // anti-aliased edge
+                        float rim = Mathf.Clamp01(d - (n / 2f - 7f)) * 0.35f;          // darker rim
+                        px[y * n + x] = new Color(1f - rim, 1f - rim, 1f - rim, a);
+                    }
+                tex.SetPixels(px); tex.Apply();
+                return circle = Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f));
+            }
+        }
+
+        /// <summary>Red notification dot (round) in the top-right corner of a parent.</summary>
+        protected GameObject Dot(Transform parent, float size = 24f)
+        {
+            Image d = Box(parent, "Dot", new Vector2(1f, 1f), new Vector2(-size * 0.55f, -size * 0.5f), new Vector2(size, size), null, new Color(0.92f, 0.18f, 0.2f));
+            d.sprite = Circle; d.type = Image.Type.Simple;
+            return d.gameObject;
+        }
 
         private static Sprite white;
         protected static Sprite White => white ? white : white = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 4, 4), Vector2.one * 0.5f);

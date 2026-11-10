@@ -201,10 +201,11 @@ namespace AdventureKing.Gameplay
     }
 
     // ---------------------------------------------------------------- events / welfare, mail, giftcode, rankings, titles
-    [Serializable] public sealed class RewardStepState { public string key, text, reward; public int have, need; public bool claimable, claimed; }
+    [Serializable] public sealed class RewardViewState { public string itemId, name, icon; public int qty; }
+    [Serializable] public sealed class RewardStepState { public string key, text, reward; public int have, need; public bool claimable, claimed; public long gold; public RewardViewState[] items = new RewardViewState[0]; }
     [Serializable] public sealed class WelfareTabState { public string id, title, banner, desc, period, lockedReason; public bool locked; public RewardStepState[] steps = new RewardStepState[0]; }
     [Serializable] public sealed class WelfareState { public bool rewardsEnabled, anyClaimable; public string status; public long gold; public WelfareTabState[] tabs = new WelfareTabState[0]; }
-    [Serializable] public sealed class MailState { public string id, kind, title, body, attachText; public long attachGold, createdMs; public bool hasAttachment, read, claimed; }
+    [Serializable] public sealed class MailState { public string id, kind, title, body, attachText; public long attachGold, createdMs; public bool hasAttachment, read, claimed; public RewardViewState[] items = new RewardViewState[0]; }
     [Serializable] public sealed class MailboxState { public MailState[] mails = new MailState[0]; public int unread, unclaimed; public long gold; }
     [Serializable] public sealed class GiftcodeResult { public string code, reward; public long gold, balance; }
     [Serializable] public sealed class RankRowState { public int rank, heroClass, level; public string characterId, name; public long value; public bool me; }

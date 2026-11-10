@@ -42,6 +42,10 @@ public static class Rewards
         if (!AllowedKinds.Contains(d.kind) || r.qty < 1 || r.qty > 99) throw new InvalidDataException("reward: not allowed " + r.itemId);
     }
 
+    /// <summary>Reward items with their display name and icon key (for icons in the windows).</summary>
+    public static RewardViewDto[] View(ItemConfig items, IEnumerable<RewardItem> list) =>
+        list.Select(i => { ItemDef? d = items.Get(i.itemId); return new RewardViewDto { itemId = i.itemId, name = d?.name ?? i.itemId, icon = d?.icon ?? "", qty = i.qty }; }).ToArray();
+
     public static string Text(ItemConfig items, long gold, IEnumerable<RewardItem> list)
     {
         var parts = new List<string>();
@@ -73,7 +77,8 @@ public static class Rewards
 }
 
 // ---------------------------------------------------------------- events + welfare
-public sealed class RewardStepDto { public string key { get; set; } = ""; public string text { get; set; } = ""; public int have { get; set; } public int need { get; set; } public string reward { get; set; } = ""; public bool claimable { get; set; } public bool claimed { get; set; } }
+public sealed class RewardViewDto { public string itemId { get; set; } = ""; public string name { get; set; } = ""; public string icon { get; set; } = ""; public int qty { get; set; } }
+public sealed class RewardStepDto { public string key { get; set; } = ""; public string text { get; set; } = ""; public int have { get; set; } public int need { get; set; } public string reward { get; set; } = ""; public bool claimable { get; set; } public bool claimed { get; set; } public long gold { get; set; } public RewardViewDto[] items { get; set; } = Array.Empty<RewardViewDto>(); }
 public sealed class WelfareTabDto { public string id { get; set; } = ""; public string title { get; set; } = ""; public string banner { get; set; } = ""; public string desc { get; set; } = ""; public string period { get; set; } = ""; public bool locked { get; set; } public string lockedReason { get; set; } = ""; public RewardStepDto[] steps { get; set; } = Array.Empty<RewardStepDto>(); }
 public sealed class WelfareDto { public bool rewardsEnabled { get; set; } public string status { get; set; } = ""; public WelfareTabDto[] tabs { get; set; } = Array.Empty<WelfareTabDto>(); public bool anyClaimable { get; set; } public long gold { get; set; } }
 public sealed class WelfareClaimDto { public string? key { get; set; } }
@@ -184,7 +189,9 @@ public sealed class EventService
     private RewardStepDto Step(SqliteConnection c, SqliteTransaction tx, string characterId, string key, string text, int have, int need, string reward, bool open)
     {
         bool claimed = Rewards.Claimed(c, tx, characterId, key);
-        return new RewardStepDto { key = key, text = text, have = Math.Min(have, need), need = need, reward = reward, claimed = claimed, claimable = Config.enabled && open && !claimed && have >= need };
+        (long gold, RewardItem[] items) = Lookup(key);
+        return new RewardStepDto { key = key, text = text, have = Math.Min(have, need), need = need, reward = reward, claimed = claimed, claimable = Config.enabled && open && !claimed && have >= need,
+            gold = gold, items = Rewards.View(inv.Config, items) };
     }
 
     public WelfareDto Claim(string accountId, string characterId, WelfareClaimDto? req)
@@ -211,7 +218,7 @@ public sealed class EventService
 }
 
 // ---------------------------------------------------------------- mail
-public sealed class MailDto { public string id { get; set; } = ""; public string kind { get; set; } = ""; public string title { get; set; } = ""; public string body { get; set; } = ""; public long attachGold { get; set; } public string attachText { get; set; } = ""; public bool hasAttachment { get; set; } public bool read { get; set; } public bool claimed { get; set; } public long createdMs { get; set; } }
+public sealed class MailDto { public string id { get; set; } = ""; public string kind { get; set; } = ""; public string title { get; set; } = ""; public string body { get; set; } = ""; public long attachGold { get; set; } public string attachText { get; set; } = ""; public bool hasAttachment { get; set; } public bool read { get; set; } public bool claimed { get; set; } public long createdMs { get; set; } public RewardViewDto[] items { get; set; } = Array.Empty<RewardViewDto>(); }
 public sealed class MailboxDto { public MailDto[] mails { get; set; } = Array.Empty<MailDto>(); public int unread { get; set; } public int unclaimed { get; set; } public long gold { get; set; } }
 public sealed class MailIdDto { public string? mailId { get; set; } }
 
@@ -266,7 +273,7 @@ public sealed class MailService
                     list.Add(new MailDto
                     {
                         id = r.GetString(0), kind = r.GetString(1), title = r.GetString(2), body = r.GetString(3), attachGold = gold,
-                        attachText = Rewards.Text(inv.Config, gold, items), hasAttachment = gold > 0 || items.Length > 0,
+                        attachText = Rewards.Text(inv.Config, gold, items), hasAttachment = gold > 0 || items.Length > 0, items = Rewards.View(inv.Config, items),
                         read = !r.IsDBNull(6), claimed = !r.IsDBNull(7), createdMs = r.GetInt64(8),
                     });
                 }
