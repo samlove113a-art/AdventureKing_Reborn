@@ -117,6 +117,14 @@ public sealed class Database
             Exec(c, tx, Schema.V7);
             Exec(c, tx, "PRAGMA user_version=7;");
             tx.Commit();
+            version = 7;
+        }
+        if (version < 8)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V8);
+            Exec(c, tx, "PRAGMA user_version=8;");
+            tx.Commit();
         }
     }
 
@@ -149,7 +157,59 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 7;
+    public const int Current = 8;
+
+    // V8: events / welfare / mail / giftcodes. Every reward has a one-row claim (primary key) so it pays once.
+    public const string V8 = """
+    CREATE TABLE event_progress (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        event_id     TEXT NOT NULL,
+        counts_json  TEXT NOT NULL DEFAULT '{}',
+        PRIMARY KEY (character_id, event_id)
+    );
+    CREATE TABLE reward_claims (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        claim_key    TEXT NOT NULL,
+        claimed_ms   INTEGER NOT NULL,
+        PRIMARY KEY (character_id, claim_key)
+    );
+    CREATE TABLE online_time (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        vn_day       TEXT NOT NULL,
+        ms           INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (character_id, vn_day)
+    );
+    CREATE TABLE mails (
+        id            TEXT PRIMARY KEY,
+        character_id  TEXT NOT NULL REFERENCES characters(id),
+        kind          TEXT NOT NULL CHECK (kind IN ('system','reward','notice','guild')),
+        title         TEXT NOT NULL,
+        body          TEXT NOT NULL,
+        attach_gold   INTEGER NOT NULL DEFAULT 0 CHECK (attach_gold >= 0),
+        attach_items  TEXT NOT NULL DEFAULT '[]',
+        created_ms    INTEGER NOT NULL,
+        read_ms       INTEGER,
+        claimed_ms    INTEGER
+    );
+    CREATE INDEX ix_mails_character ON mails(character_id, created_ms);
+    CREATE TABLE giftcodes (
+        code          TEXT PRIMARY KEY,
+        reward_gold   INTEGER NOT NULL DEFAULT 0 CHECK (reward_gold >= 0),
+        reward_items  TEXT NOT NULL DEFAULT '[]',
+        max_uses      INTEGER NOT NULL CHECK (max_uses >= 1),
+        used          INTEGER NOT NULL DEFAULT 0,
+        min_level     INTEGER NOT NULL DEFAULT 1,
+        expires_ms    INTEGER NOT NULL,
+        note          TEXT NOT NULL DEFAULT ''
+    );
+    CREATE TABLE giftcode_uses (
+        code          TEXT NOT NULL REFERENCES giftcodes(code),
+        account_id    TEXT NOT NULL REFERENCES accounts(id),
+        character_id  TEXT NOT NULL,
+        used_ms       INTEGER NOT NULL,
+        PRIMARY KEY (code, account_id)
+    );
+    """;
 
     // V7: pets owned by a character (one row per pet: buying twice is impossible), at most one summoned, satiety in
     // milliseconds of summoned activity left.

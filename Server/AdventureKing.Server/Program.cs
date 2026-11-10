@@ -60,6 +60,12 @@ builder.Services.AddSingleton(sp => new QuestService(sp.GetRequiredService<Datab
 // Production config = the owner's DRAFT (enabled=false) until rewards are approved; tests point this at welfare.dev.json.
 string welfarePath = Path.Combine(contentRoot, cfg["WelfareConfigPath"] ?? "config/welfare.json");
 builder.Services.AddSingleton(sp => new CheckinService(sp.GetRequiredService<Database>(), WelfareConfig.Load(welfarePath), sp.GetRequiredService<CosmeticShop>().Catalog));
+// Events / Phúc Lợi: production = DRAFT disabled (claims answer "chờ duyệt"); tests point EventConfigPath at events.dev.json.
+string eventsPath = Path.Combine(contentRoot, cfg["EventConfigPath"] ?? "config/events.json");
+builder.Services.AddSingleton(sp => new EventService(sp.GetRequiredService<Database>(),
+    EventConfig.Load(eventsPath, sp.GetRequiredService<InventoryService>().Config), sp.GetRequiredService<InventoryService>()));
+builder.Services.AddSingleton(sp => new MailService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
+builder.Services.AddSingleton(sp => new GiftcodeService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
 builder.Services.AddKeyedSingleton("login", new AttemptLimiter(10, TimeSpan.FromMinutes(5)));
 builder.Services.AddKeyedSingleton("register", new AttemptLimiter(5, TimeSpan.FromHours(1)));
 
@@ -68,7 +74,12 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
 {
     // quest progress comes from server events only (plus the small client allowlist in QuestService.ClientEvent)
     var quests = app.Services.GetRequiredService<QuestService>();
-    Action<string, string, string, int> record = (a, c, e, n) => quests.Record(a, c, e, n);
+    var events = app.Services.GetRequiredService<EventService>();
+    Action<string, string, string, int> record = (a, c, e, n) =>
+    {
+        quests.Record(a, c, e, n);
+        try { events.Record(a, c, e, n); } catch (Exception ex) { Console.Error.WriteLine("event hook: " + ex.Message); }
+    };
     app.Services.GetRequiredService<FarmService>().QuestEvent = record;
     app.Services.GetRequiredService<InventoryService>().QuestEvent = record;
     app.Services.GetRequiredService<ShopService>().QuestEvent = record;
@@ -207,6 +218,19 @@ api.MapPost("/characters/{id}/quests/event", (string id, QuestEventDto body, Htt
     quests.ClientEvent(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/inventory/unequip", (string id, UnequipRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
     inv.Unequip(accounts.Authenticate(Bearer(ctx)), id, body));
+
+// ---------------------------------------------------------------- events / welfare, mail, giftcode
+api.MapGet("/characters/{id}/welfare", (string id, HttpContext ctx, AccountService accounts, EventService ev) => ev.Get(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/welfare/claim", (string id, WelfareClaimDto body, HttpContext ctx, AccountService accounts, EventService ev) => ev.Claim(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/online/ping", (string id, HttpContext ctx, AccountService accounts, EventService ev) =>
+{
+    ev.Ping(accounts.Authenticate(Bearer(ctx)), id);
+    return Results.NoContent();
+});
+api.MapGet("/characters/{id}/mail", (string id, HttpContext ctx, AccountService accounts, MailService mail) => mail.List(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/mail/read", (string id, MailIdDto body, HttpContext ctx, AccountService accounts, MailService mail) => mail.Read(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/mail/claim", (string id, MailIdDto body, HttpContext ctx, AccountService accounts, MailService mail) => mail.Claim(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/giftcode", (string id, GiftcodeDto body, HttpContext ctx, AccountService accounts, GiftcodeService codes) => codes.Redeem(accounts.Authenticate(Bearer(ctx)), id, body));
 
 // ---------------------------------------------------------------- 7-day check-in (server clock, VN calendar day)
 api.MapGet("/characters/{id}/checkin", (string id, HttpContext ctx, AccountService accounts, CheckinService checkin) =>
