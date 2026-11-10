@@ -44,7 +44,7 @@ namespace AdventureKing.Gameplay
             if (!host) { host = new GameObject("SkillVfxDirector").AddComponent<SkillVfxDirector>(); DontDestroyOnLoad(host.gameObject); }
             casting[c.Hero] = Time.time + 2.6f;
             // frame the move: the camera leans toward the midpoint of hero and target (clear of the HUD clusters)
-            if (Mathf.Abs(c.Target.x - c.Hero.position.x) > 0.5f) CameraFollow2D.Focus((c.Hero.position.x + c.Target.x) * 0.5f, 2.4f);
+            if (Mathf.Abs(c.Target.x - Feet(c).x) > 0.5f) CameraFollow2D.Focus((Feet(c).x + c.Target.x) * 0.5f, 2.4f);
             Played++;
             LastSkill = c.Class + "_" + c.Slot;
             host.StartCoroutine(host.Run(c));
@@ -67,21 +67,109 @@ namespace AdventureKing.Gameplay
         private const float Front = -0.35f; // in front of the walking plane (z = 0)
 
         private static Vector3 P(Vector3 v, float dz = Front) => new Vector3(v.x, v.y, dz);
-        private static Vector3 Chest(SkillCast c) => P(c.Hero.position + Vector3.up * 1.05f);
+        /// <summary>Ground under the hero = bottom of its Collider2D. The gameplay root sits at the body CENTRE (measured
+        /// y 0.80 with feet at 0.00), so "root + 1.05 m" used to be above the head (1.61) — the cause of skills
+        /// appearing over the hero's head and of ground seals floating 0.8 m up.</summary>
+        private static Vector3 Feet(SkillCast c)
+        {
+            var col = c.Hero.GetComponent<Collider2D>();
+            return new Vector3(c.Hero.position.x, col ? col.bounds.min.y : c.Hero.position.y, 0f);
+        }
+
+        private static float BodyHeight(SkillCast c)
+        {
+            var col = c.Hero.GetComponent<Collider2D>();
+            return col ? Mathf.Max(0.5f, col.bounds.size.y) : 1.6f;
+        }
+
+        /// <summary>Chest height (55 % of the body), in front of the walking plane.</summary>
+        private static Vector3 Chest(SkillCast c) => P(Feet(c) + Vector3.up * 0.55f * BodyHeight(c));
+
+        /// <summary>Ground point under the target as the player SEES it (the monster's view position).</summary>
+        private static Vector3 TargetGround(SkillCast c) => P(c.Target, 0f);
+
+        /// <summary>Body centre of the target as the player sees it.</summary>
+        private static Vector3 TargetCenter(SkillCast c) => P(c.Target + Vector3.up * 0.62f, -0.45f);
         private static Vector3 Center(FarmMonsterView m) => P((Vector3)m.Position + Vector3.up * 0.65f, -0.45f);
+
+        /// <summary>The weapon hand (right, or left for the bow) as the skills use it (QA probe).</summary>
+        public static Transform HandOf(SkillCast c, bool left) => Socket(c, left ? "Socket_L" : "Socket_R");
 
         private static Transform Socket(SkillCast c, string name)
         {
+            // the hero rigs have no "Socket_R/L" empties at runtime: the weapon hand IS the bone (HeroArtPipeline
+            // weaponSocket = FindDeep(model, "RightHand"/"LeftHand")) — measured: the old lookup found nothing and
+            // every skill silently used the fallback point
             Transform root = c.Visual ? c.Visual.transform : c.Hero;
-            foreach (Transform t in root.GetComponentsInChildren<Transform>()) if (t.name.EndsWith(name)) return t;
-            return null;
+            string bone = name == "Socket_L" ? "LeftHand" : "RightHand";
+            Transform byBone = null;
+            foreach (Transform t in root.GetComponentsInChildren<Transform>())
+            {
+                if (t.name == name) return t;
+                if (!byBone && t.name.EndsWith(bone)) byBone = t;
+            }
+            return byBone;
         }
 
-        private static Vector3 Hand(SkillCast c, bool left = false)
+        /// <summary>The far end of the weapon held on <paramref name="socket"/> (staff head, blade tip, arrow rest):
+        /// exported weapons point along the socket's +Y (Tools/blender/export_character.py), so the tip is the weapon
+        /// mesh's farthest extent along socket.up. No weapon → the socket itself.</summary>
+        public static Vector3 WeaponTipOf(Transform hand)
         {
-            Transform s = Socket(c, left ? "Socket_L" : "Socket_R");
-            return s ? P(s.position) : Chest(c) + Vector3.right * c.Facing * 0.4f;
+            if (!hand) return Vector3.zero;
+            // the hero's weapons are skinned meshes bound to the hand bone (HeroArtPipeline), not children of it;
+            // props put in a hand (HoldInHand) are children — take both
+            var weapons = new List<Renderer>();
+            foreach (Renderer r in hand.GetComponentsInChildren<Renderer>())
+                if (!(r is ParticleSystemRenderer || r is TrailRenderer)) weapons.Add(r);
+            // HeroArtPipeline names them "Weapon_<item>"; the one in THIS hand is the nearest to it
+            SkinnedMeshRenderer held = null;
+            float nearest = 0.35f * 0.35f;
+            foreach (SkinnedMeshRenderer smr in hand.root.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                if (!smr.enabled || !smr.name.StartsWith("Weapon_")) continue;
+                float d = smr.bounds.SqrDistance(hand.position);
+                if (d <= nearest) { nearest = d; held = smr; }
+            }
+            if (held) weapons.Add(held);
+            Vector3 best = hand.position;
+            float far = 0f;
+            foreach (Renderer r in weapons)
+            {
+                Bounds b = r.bounds;
+                Vector3 dir = b.center - hand.position;
+                if (dir.sqrMagnitude < 1e-4f) dir = hand.up;
+                dir.Normalize();
+                float ext = 0f;
+                for (int i = 0; i < 8; i++)
+                {
+                    Vector3 corner = b.center + Vector3.Scale(b.extents, new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1));
+                    ext = Mathf.Max(ext, Vector3.Dot(corner - hand.position, dir));
+                }
+                if (ext > far) { far = ext; best = hand.position + dir * ext; }
+            }
+            return best;
         }
+
+        /// <summary>
+        /// Where a skill leaves the hero: the weapon socket (or the weapon's far end when <paramref name="tip"/>: staff
+        /// head), constrained by the hero's real body (Collider2D): never above the head or below the knees, never
+        /// behind the body, always on the gameplay plane in front of the hero. A missing socket falls back to the
+        /// collider (chest height, a little in front), never to the mesh pivot.
+        /// </summary>
+        public static Vector3 Muzzle(SkillCast c, bool left = false, bool tip = false)
+        {
+            var col = c.Hero.GetComponent<Collider2D>();
+            float bottom = col ? col.bounds.min.y : Feet(c).y, top = col ? col.bounds.max.y : Feet(c).y + 1.6f;
+            float cx = col ? col.bounds.center.x : Feet(c).x, h = Mathf.Max(0.5f, top - bottom);
+            Transform s = Socket(c, left ? "Socket_L" : "Socket_R");
+            Vector3 p = s ? (tip ? WeaponTipOf(s) : s.position) : new Vector3(cx + c.Facing * 0.3f * h, bottom + 0.58f * h, 0f);
+            p.y = Mathf.Clamp(p.y, bottom + 0.3f * h, top - 0.18f * h);
+            if ((p.x - cx) * c.Facing < 0.15f * h) p.x = cx + c.Facing * 0.15f * h;
+            return P(p);
+        }
+
+        private static Vector3 Hand(SkillCast c, bool left = false) => Muzzle(c, left);
 
         private static void Anim(SkillCast c, string state)
         {
@@ -116,13 +204,20 @@ namespace AdventureKing.Gameplay
             SkillVfxKit.Layer("ring", at, radius * 1.4f, core, edge, seconds).Billboard().Scale(1.2f, 0.35f, 1f).Spin(220f).Fade(0.25f, 0.85f, 0.7f);
         }
 
+        /// <summary>Impact light keeps the skill's hue: the core leans toward the edge colour (a near-white core under
+        /// bloom burned into a white disc that hid the shape and the target).</summary>
+        private static Color Hue(Color core, Color edge, float keep = 0.35f) => Color.Lerp(edge * 2.2f, core, keep);
+
         private static void Flash(Vector3 at, float size, Color core, Color edge, float life = 0.18f)
-            => SkillVfxKit.Layer("glow", at, Mathf.Min(3.2f, size * 0.5f), core, edge, life).Billboard().Scale(0.6f, 1.1f, 0.4f).Fade(0f, 0.25f, 0.8f);
+            => SkillVfxKit.Layer("glow", at, Mathf.Min(2.2f, size * 0.42f), Hue(core, edge), edge, life).Billboard().Scale(0.6f, 1.1f, 0.4f).Fade(0f, 0.25f, 0.6f);
 
         private static void Shock(Vector3 at, float radius, Color core, Color edge, float life = 0.4f, bool ground = true)
         {
-            SkillVfxKit.Layer("ring", at, radius * 2f, core, edge, life).Billboard().Scale(0.15f, 1f, 0.45f).Fade(0f, 0.35f).Noise(0.4f, new Vector2(3, 3), new Vector2(0.5f, 0.2f));
-            if (ground) SkillVfxKit.Layer("ring", P(at, 0f) - Vector3.up * (at.y - Mathf.Floor(at.y)) * 0f, radius * 2.4f, core, edge, life * 1.2f).Ground().Scale(0.1f, 1f, 0.4f).Fade(0f, 0.4f);
+            // thin bright ring that expands and thins out (not a filled disc)
+            SkillVfxKit.Layer("ring", at, radius * 2f, Hue(core, edge, 0.5f), edge, life).Billboard().Scale(0.15f, 1f, 0.45f).Fade(0f, 0.25f, 0.85f).Sharp(4f).Noise(0.55f, new Vector2(3, 3), new Vector2(0.5f, 0.2f));
+            // ground ring under the impact (impact points are body centres ≈ 0.62 m above the ground; it used to be
+            // drawn at the impact height and float)
+            if (ground) SkillVfxKit.Layer("ring", new Vector3(at.x, at.y - 0.62f, 0f), radius * 2.4f, Hue(core, edge, 0.5f), edge, life * 1.2f).Ground().Scale(0.1f, 1f, 0.4f).Fade(0f, 0.35f, 0.5f).Sharp(4f);
         }
 
         private static void Sparks(Vector3 at, int count, Color core, Color edge, Vector3 dir, float spread, float speed, float gravity = 1.2f, float size = 0.18f)
@@ -152,7 +247,7 @@ namespace AdventureKing.Gameplay
         private static void React(SkillCast c, float strength, Color tint, Vector3? from = null)
         {
             foreach (FarmMonsterView m in c.Victims)
-                if (m) m.React(tint, strength, m.Position.x - (from ?? c.Hero.position).x);
+                if (m) m.React(tint, strength, m.Position.x - (from ?? Feet(c)).x);
         }
 
         private static void ReactNear(SkillCast c, Vector3 at, float radius, float strength, Color tint)
@@ -168,6 +263,22 @@ namespace AdventureKing.Gameplay
                 .Dissolve(0f, 0.9f, 0.45f).Noise(0.45f, new Vector2(2f, 1f), new Vector2(-3f * facing, 0f)).NoiseTex("noise_streak").Sharp(3f);
         }
 
+        /// <summary>Explosion fire: long narrow tongues shooting outward along their own direction (upper half), stretching
+        /// as they fly and burning out through the noise (round flame quads read as flat blobs).</summary>
+        private static void FlameTongues(Vector3 at, int count, float length, float speed, Color core, Color edge, Color rim)
+        {
+            int n = Mathf.Max(4, Mathf.RoundToInt(count * (SkillVfxKit.Mobile ? 0.6f : 1f)));
+            for (int i = 0; i < n; i++)
+            {
+                float a = -85f + i * (170f / (n - 1)) + Rnd(-7f, 7f);
+                Vector3 d = Quaternion.Euler(0, 0, a) * Vector3.up;
+                float len = length * Rnd(0.7f, 1.15f);
+                SkillVfxKit.Layer("flame", at + d * 0.25f, len, Hue(core, edge, 0.55f), edge, Rnd(0.32f, 0.45f))
+                    .Rotate(Quaternion.Euler(0, 0, a)).Stretch(0.38f, 1f).Move(d * speed * Rnd(0.8f, 1.2f)).Scale(0.35f, 1.25f, 0.5f)
+                    .Noise(0.9f, new Vector2(1f, 1.5f), new Vector2(0, -4f)).Fade(0f, 0.3f).Dissolve(0f, 1f, 0.3f).Rim(rim);
+            }
+        }
+
         /// <summary>Sharp X cut on a victim (two crossing slim slashes).</summary>
         private static void XCut(Vector3 at, float size, Color core, Color edge)
         {
@@ -177,6 +288,21 @@ namespace AdventureKing.Gameplay
         }
 
         private static IEnumerator Wait(float s) { float end = Time.time + s; while (Time.time < end) yield return null; }
+
+        /// <summary>Waits for the clip's own contact frame (Animation Event OnAttackImpact / OnSkillImpact) so the
+        /// projectile leaves when the arm is really extended; <paramref name="fallback"/> seconds if the clip has none.
+        /// (A fixed 0.45 s wait released the fireball while the hand was still drawn back behind the body.)</summary>
+        private static IEnumerator WaitForContact(SkillCast c, bool skillEvent, float fallback)
+        {
+            var events = c.Visual ? c.Visual.GetComponentInChildren<CharacterAnimationEvents>() : null;
+            if (!events) { yield return Wait(fallback); yield break; }
+            bool hit = false;
+            System.Action on = () => hit = true;
+            if (skillEvent) events.SkillImpact += on; else events.AttackImpact += on;
+            float end = Time.time + fallback + 0.35f;
+            while (!hit && Time.time < end) yield return null;
+            if (skillEvent) events.SkillImpact -= on; else events.AttackImpact -= on;
+        }
 
         // =================================================================== Kiếm Sĩ — gió & thép (cyan / white / gold)
         private static readonly Color SwCore = new Color(2.2f, 2.6f, 2.5f), SwEdge = new Color(0.1f, 0.95f, 0.8f, 1f);
@@ -217,7 +343,7 @@ namespace AdventureKing.Gameplay
         {
             int f = c.Facing;
             float r = Mathf.Max(1.6f, c.Radius);
-            Vector3 feet = P(c.Hero.position + Vector3.up * 0.05f, 0f);
+            Vector3 feet = P(Feet(c) + Vector3.up * 0.05f, 0f);
             Anim(c, "Skill");
             Sfx("sw2_cast");
             SkillVfxKit.Layer("circle", feet, r * 2.1f, SwCore * 0.8f, SwEdge, 1.9f).Ground().Spin(-120f).Scale(0.6f, 1f, 0.3f).Fade(0.12f, 0.8f, 0.8f);
@@ -255,40 +381,47 @@ namespace AdventureKing.Gameplay
         private IEnumerator HeavenBlade(SkillCast c)
         {
             int f = c.Facing;
-            Vector3 tg = P(new Vector3(c.Target.x, c.Hero.position.y), 0f);
+            Vector3 tg = TargetGround(c);
             float r = Mathf.Max(1.6f, c.Radius);
             Anim(c, "Cheer");
             Sfx("sw3_cast");
             // hero aura + gathering light in the raised hands
-            SkillVfxKit.MeshLayer(SkillVfxKit.Band, "beam", P(c.Hero.position, 0f), 1f, GoldCore * 0.6f, GoldEdge, 1f).Stretch(1.3f, 2.4f, 0.5f).Spin(300f, Vector3.up).Noise(0.7f, new Vector2(3, 1), new Vector2(0, 1.2f)).NoiseTex("noise_streak").Fade(0.2f, 0.7f, 0.6f);
+            SkillVfxKit.MeshLayer(SkillVfxKit.Band, "beam", P(Feet(c), 0f), 1f, GoldCore * 0.6f, GoldEdge, 1f).Stretch(1.3f, 2.4f, 0.5f).Spin(300f, Vector3.up).Noise(0.7f, new Vector2(3, 1), new Vector2(0, 1.2f)).NoiseTex("noise_streak").Fade(0.2f, 0.7f, 0.6f);
             Charge(Chest(c) + Vector3.up * 0.9f, GoldCore, GoldEdge, 0.75f, 1.2f, 18);
             // seal over the target + sky shaft
-            SkillVfxKit.Layer("circle", tg + Vector3.up * 0.05f, r * 2.6f, GoldCore, GoldEdge, 1.45f).Ground().Spin(90f).Scale(0.3f, 1f, 0.35f).Fade(0.15f, 0.85f);
-            SkillVfxKit.Layer("circle", tg + Vector3.up * 0.06f, r * 1.7f, SwCore, SwEdge, 1.45f).Ground().Spin(-150f).Scale(0.2f, 1f, 0.5f).Fade(0.25f, 0.85f, 0.8f);
-            SkillVfxKit.Layer("beam", P(tg + Vector3.up * 5f), 1f, GoldCore * 0.5f, GoldEdge, 1.1f).Stretch(1.8f, 11f).Fade(0.5f, 0.85f, 0.55f).Noise(0.6f, new Vector2(1, 2), new Vector2(0, -1.5f));
-            yield return Wait(0.72f);
+            SkillVfxKit.Layer("circle", tg + Vector3.up * 0.05f, r * 2.6f, Hue(GoldCore, GoldEdge, 0.5f), GoldEdge, 1.75f).Ground().Spin(90f).Scale(0.3f, 1f, 0.35f).Fade(0.12f, 0.85f).Sharp(1.2f);
+            SkillVfxKit.Layer("circle", tg + Vector3.up * 0.06f, r * 1.7f, SwCore, SwEdge, 1.75f).Ground().Spin(-150f).Scale(0.2f, 1f, 0.5f).Fade(0.2f, 0.85f, 0.85f).Sharp(1.2f);
+            SkillVfxKit.Layer("ring", tg + Vector3.up * 0.07f, r * 2.9f, Hue(GoldCore, GoldEdge, 0.4f), GoldEdge, 1.75f).Ground().Spin(40f).Scale(0.6f, 1f, 0.5f).Fade(0.2f, 0.85f, 0.9f);
+            // the heavenly column: narrow, gold, clearly readable while the sword gathers
+            SkillVfxKit.Layer("beam", P(tg + Vector3.up * 4.5f), 1f, Hue(GoldCore, GoldEdge, 0.45f), GoldEdge, 1.35f).Stretch(1.1f, 9.5f).Fade(0.3f, 0.85f, 0.9f).Noise(0.55f, new Vector2(1, 2), new Vector2(0, -1.8f));
+            yield return Wait(0.4f);
+            // the sword appears high above the target and descends slowly, gathering light (visible in the frame)
+            Vector3 hover = P(tg + Vector3.up * 4.6f, -0.5f), low = P(tg + Vector3.up * 3.6f, -0.5f), hit = P(tg + Vector3.up * 0.9f, -0.5f);
+            float descend = 0.48f, fall = 0.14f;
+            var sword = SkillVfxKit.MeshLayer(SkillVfxKit.Blade, "beam", hover, 3.2f, GoldCore, new Color(1f, 0.66f, 0.2f, 1f), descend + fall + 0.55f)
+                .Rotate(Quaternion.Euler(0f, 25f, 180f)).Move((low - hover) / descend).Fade(0.12f, 0.8f).Dissolve(0f, 1f, 0.72f).Rim(new Color(3.2f, 2f, 0.7f)).Noise(0.5f, new Vector2(2, 4), new Vector2(0, 2));
+            var halo = SkillVfxKit.Layer("glow", hover, 2.2f, Hue(GoldCore, GoldEdge, 0.4f), GoldEdge, descend + fall).Billboard().Follow(sword.transform, new Vector3(0, -0.6f, 0)).Fade(0.2f, 0.9f, 0.55f);
+            _ = halo;
+            SkillVfxKit.Layer("star", hover, 2.4f, Hue(GoldCore, GoldEdge, 0.5f), GoldEdge, descend).Billboard().Spin(160f).Follow(sword.transform, new Vector3(0, 0.9f, -0.05f)).Fade(0.2f, 0.8f, 0.8f);
+            Charge(hover + Vector3.down * 0.4f, GoldCore, GoldEdge, descend, 1.6f, 14);
+            yield return Wait(descend - 0.12f);
             Anim(c, "Attack");
             yield return Wait(0.12f);
-            // the falling sword
-            float fall = 0.22f;
-            Vector3 top = P(tg + Vector3.up * 9f, -0.5f), hit = P(tg + Vector3.up * 0.9f, -0.5f);
-            var sword = SkillVfxKit.MeshLayer(SkillVfxKit.Blade, "beam", top, 3.4f, GoldCore, new Color(1f, 0.7f, 0.25f, 1f), fall + 0.6f)
-                .Rotate(Quaternion.Euler(0f, 25f, 180f)).Move((hit - top) / fall).Fade(0.05f, 0.75f).Dissolve(0f, 1f, 0.55f).Rim(new Color(4f, 2.6f, 1f)).Noise(0.5f, new Vector2(2, 4), new Vector2(0, 2));
-            SkillVfxKit.Trail(sword.gameObject, "beam", 1.5f, 0.12f, GoldCore, GoldEdge);
-            SkillVfxKit.Layer("glow", top, 3f, GoldCore, GoldEdge, fall + 0.05f).Billboard().Move((hit - top) / fall).Fade(0f, 0.8f, 0.8f);
+            sword.Move((hit - low) / fall);
+            SkillVfxKit.Trail(sword.gameObject, "beam", 1.2f, 0.16f, GoldCore, GoldEdge);
             yield return Wait(fall);
             sword.Move(Vector3.zero);
             // IMPACT
             Vector3 c0 = P(tg + Vector3.up * 0.6f);
-            Flash(c0, 7f, new Color(4f, 3.6f, 2.6f), GoldEdge, 0.22f);
+            Flash(c0, 5f, GoldCore, GoldEdge, 0.2f);
             Shock(c0, r * 1.5f, GoldCore, GoldEdge, 0.5f);
             Shock(c0, r * 2.1f, SwCore, SwEdge, 0.7f, false);
-            SkillVfxKit.Layer("beam", P(tg + Vector3.up * 4f), 1f, new Color(3f, 2.8f, 2f), GoldEdge, 0.6f).Stretch(2.6f, 9f).Scale(1.3f, 0.2f, 1.5f).Fade(0f, 0.3f);
+            SkillVfxKit.Layer("beam", P(tg + Vector3.up * 4f), 1f, Hue(GoldCore, GoldEdge, 0.5f), GoldEdge, 0.55f).Stretch(1.6f, 9f).Scale(1.3f, 0.25f, 1.5f).Fade(0f, 0.3f, 0.9f);
             SkillVfxKit.Layer("cracks", tg + Vector3.up * 0.04f, r * 2.6f, GoldCore, GoldEdge, 1.6f).Ground().Scale(0.6f, 1f, 0.2f).Fade(0f, 0.55f).Dissolve(0f, 1f, 0.5f);
             Sparks(c0, 40, GoldCore, GoldEdge, Vector3.up, 75f, 11f, 2f, 0.28f);
             Sparks(c0, 18, SwCore, SwEdge, Vector3.up, 160f, 7f, 1.5f, 0.2f);
             Smoke(P(tg + Vector3.up * 0.3f), 10, new Color(1.4f, 1.25f, 1f), new Color(0.75f, 0.62f, 0.45f, 0.55f), 1.4f, 1.2f, 1.1f);
-            foreach (FarmMonsterView m in c.Victims) if (m) Flash(Center(m), 1.6f, GoldCore, GoldEdge, 0.2f);
+            foreach (FarmMonsterView m in c.Victims) if (m) XCut(Center(m), 1.6f, GoldCore, GoldEdge);
             React(c, 1.5f, GoldEdge, tg);
             Sfx("sw3_hit");
             SkillVfxKit.Shake(0.3f, 0.5f);
@@ -317,34 +450,42 @@ namespace AdventureKing.Gameplay
         {
             Anim(c, "Attack");
             Sfx("mg1_cast");
-            Vector3 tip = Hand(c) + Vector3.up * 0.35f;
-            Charge(tip, FireCore, FireEdge, 0.42f, 0.7f, 12, Socket(c, "Socket_R"));
-            yield return Wait(0.45f);
-            Vector3 from = Hand(c) + Vector3.up * 0.35f, to = P(new Vector3(c.Target.x, c.Hero.position.y + 0.7f), -0.45f);
+            // the casting hand, constrained to the body (was: hand + 0.35 m world-up off a socket that was never found -> fallback above the head). The staff's far end is not used: in the cast pose it points down (measured y -0.50)
+            Charge(Muzzle(c), FireCore, FireEdge, 0.42f, 0.7f, 12);
+            yield return WaitForContact(c, false, 0.45f);
+            Vector3 from = Muzzle(c), to = TargetCenter(c);
             float travel = Mathf.Clamp((to - from).magnitude / 13f, 0.12f, 0.55f);
             var ball = FireBall(from, 0.9f, travel + 0.05f).Move((to - from) / travel);
+            SkillVfxProbe.Launched(c, from, ball.transform, (to - from) / travel);
             SkillVfxKit.Trail(ball.gameObject, "flame", 0.7f, 0.22f, FireCore, FireEdge, -3f);
             Flash(from, 1.2f, FireCore, FireEdge, 0.15f);
-            for (float t = 0f; t < travel; t += 0.035f)
+            // the fireball homes on the monster the player sees (its view hops / chases while the ball flies)
+            FarmMonsterView aim = c.Victims.Count > 0 ? c.Victims[0] : null;
+            float flown = 0f, ember = 0f;
+            while (flown < travel && ball)
             {
-                if (!ball) break;
-                SkillVfxKit.Layer("star", ball.transform.position + (Vector3)UnityEngine.Random.insideUnitCircle * 0.2f, Rnd(0.08f, 0.16f), FireCore, FireEdge, 0.45f)
-                    .Billboard().Move(new Vector3(Rnd(-0.4f, 0.4f), Rnd(0.2f, 0.8f), 0f), Vector3.down * 0.6f).Fade(0f, 0.4f);
-                yield return Wait(0.035f);
+                if (aim && aim.Alive) to = Center(aim);
+                ball.Move((to - ball.transform.position) / Mathf.Max(0.02f, travel - flown));
+                if ((ember -= Time.deltaTime) <= 0f)
+                {
+                    ember = 0.035f;
+                    SkillVfxKit.Layer("star", ball.transform.position + (Vector3)UnityEngine.Random.insideUnitCircle * 0.2f, Rnd(0.08f, 0.16f), FireCore, FireEdge, 0.45f)
+                        .Billboard().Move(new Vector3(Rnd(-0.4f, 0.4f), Rnd(0.2f, 0.8f), 0f), Vector3.down * 0.6f).Fade(0f, 0.4f);
+                }
+                flown += Time.deltaTime;
+                yield return null;
             }
             // EXPLOSION
-            Flash(to, 3f, new Color(4f, 3f, 1.6f), FireEdge, 0.18f);
-            for (int i = 0; i < 7; i++)
-            {
-                float a = i / 7f * 360f + Rnd(-12f, 12f);
-                Vector3 d = Quaternion.Euler(0, 0, a) * Vector3.up;
-                SkillVfxKit.Layer("flame", to + d * 0.2f, Rnd(1f, 1.5f), FireCore, FireEdge, 0.45f).Rotate(Quaternion.Euler(0, 0, a)).Move(d * 2.6f).Scale(0.4f, 1.2f, 0.4f)
-                    .Noise(0.8f, Vector2.one, new Vector2(0, -3f)).Fade(0f, 0.35f).Dissolve(0f, 0.9f, 0.4f).Rim(new Color(3f, 1.2f, 0.3f));
-            }
+            Flash(to, 3f, FireCore, FireEdge, 0.18f);
+            FlameTongues(to, 8, 1.4f, 2.8f, FireCore, FireEdge, new Color(3f, 1.2f, 0.3f));
             Shock(to, 1.2f, FireCore, FireEdge, 0.35f);
             Sparks(to, 20, FireCore, FireEdge, Vector3.up, 120f, 7f, 1.8f);
-            Smoke(to + Vector3.up * 0.2f, 7, new Color(0.35f, 0.3f, 0.3f), new Color(0.12f, 0.1f, 0.1f, 0.7f), 1.1f, 1.1f, 1.2f);
-            SkillVfxKit.Layer("cracks", P(new Vector3(to.x, c.Hero.position.y + 0.03f), 0f), 2f, new Color(1.6f, 0.6f, 0.1f), new Color(0.35f, 0.08f, 0.02f, 1f), 1.4f).Ground().Fade(0f, 0.5f).Dissolve(0f, 1f, 0.4f);
+            Smoke(to + Vector3.up * 0.5f, 5, new Color(1f, 0.75f, 0.6f), new Color(0.45f, 0.3f, 0.28f, 0.4f), 0.9f, 1.2f, 1f);
+            SkillVfxKit.Layer("cracks", TargetGround(c), 2f, new Color(1.6f, 0.6f, 0.1f), new Color(0.35f, 0.08f, 0.02f, 1f), 1.4f).Ground().Fade(0f, 0.5f).Dissolve(0f, 1f, 0.4f);
+            // arrival: the loop ends one frame before the ball's last move — a homing projectile arrives ON the body
+            if (aim && aim.Alive) to = Center(aim);
+            if (ball) { ball.Move(Vector3.zero); ball.transform.position = to; }
+            SkillVfxProbe.Impacted(ball ? ball.transform.position : to, aim ? Center(aim) : to);
             ReactNear(c, to, Mathf.Max(1.2f, c.Radius) + 0.4f, 0.8f, FireEdge);
             React(c, 0.2f, FireEdge, from);
             Sfx("mg1_hit");
@@ -359,7 +500,7 @@ namespace AdventureKing.Gameplay
         {
             Anim(c, "Cheer");
             Sfx("mg2_cast");
-            Vector3 tg = P(new Vector3(c.Target.x, c.Hero.position.y), 0f);
+            Vector3 tg = TargetGround(c);
             float r = Mathf.Max(1.6f, c.Radius);
             Charge(Chest(c) + Vector3.up * 0.8f, IceCore, IceEdge, 0.45f, 1f, 12);
             SkillVfxKit.Layer("circle", tg + Vector3.up * 0.05f, r * 2.3f, IceCore, IceEdge, 1.7f).Ground().Spin(70f).Scale(0.3f, 1f, 0.3f).Fade(0.15f, 0.82f);
@@ -411,10 +552,10 @@ namespace AdventureKing.Gameplay
             int f = c.Facing;
             Anim(c, "Skill");
             Sfx("mg3_cast");
-            Vector3 tg = P(new Vector3(c.Target.x, c.Hero.position.y), 0f);
+            Vector3 tg = TargetGround(c);
             float r = Mathf.Max(2f, c.Radius);
-            Charge(Hand(c) + Vector3.up * 0.4f, ArcCore, ArcEdge, 1.2f, 1.1f, 20, Socket(c, "Socket_R"));
-            SkillVfxKit.MeshLayer(SkillVfxKit.Band, "beam", P(c.Hero.position, 0f), 1f, ArcCore * 0.5f, ArcEdge, 1.3f).Stretch(1.4f, 2.2f, 0.5f).Spin(-260f, Vector3.up).Noise(0.8f, new Vector2(3, 1), new Vector2(0, 1.4f)).NoiseTex("noise_streak").Fade(0.25f, 0.75f, 0.35f);
+            Charge(Muzzle(c), ArcCore, ArcEdge, 1.2f, 1.1f, 20);
+            SkillVfxKit.MeshLayer(SkillVfxKit.Band, "beam", P(Feet(c), 0f), 1f, ArcCore * 0.5f, ArcEdge, 1.3f).Stretch(1.4f, 2.2f, 0.5f).Spin(-260f, Vector3.up).Noise(0.8f, new Vector2(3, 1), new Vector2(0, 1.4f)).NoiseTex("noise_streak").Fade(0.25f, 0.75f, 0.35f);
             SkillVfxKit.Layer("circle", tg + Vector3.up * 0.05f, r * 2.5f, ArcCore, ArcEdge, 1.9f).Ground().Spin(80f).Scale(0.2f, 1f, 0.3f).Fade(0.15f, 0.85f);
             SkillVfxKit.Layer("circle", tg + Vector3.up * 0.06f, r * 1.5f, FireCore, FireEdge, 1.9f).Ground().Spin(-130f).Scale(0.2f, 1f, 0.5f).Fade(0.3f, 0.85f, 0.8f);
             yield return Wait(0.62f);
@@ -432,26 +573,20 @@ namespace AdventureKing.Gameplay
             float t0 = Time.time;
             while (Time.time - t0 < fall && rock)
             {
-                SkillVfxKit.Layer("smoke", rock.transform.position, Rnd(0.8f, 1.3f), new Color(0.4f, 0.3f, 0.35f), new Color(0.12f, 0.08f, 0.12f, 0.6f), 0.7f, false).Billboard().Spin(Rnd(-90, 90)).Scale(0.6f, 1.4f, 0.6f).Fade(0.1f, 0.3f, 0.8f);
+                SkillVfxKit.Layer("smoke", rock.transform.position, Rnd(0.7f, 1.1f), new Color(1f, 0.7f, 0.6f), new Color(0.42f, 0.26f, 0.3f, 0.42f), 0.6f, false).Billboard().Spin(Rnd(-90, 90)).Scale(0.6f, 1.4f, 0.6f).Fade(0.1f, 0.3f, 0.7f);
                 yield return Wait(0.04f);
             }
             // IMPACT
-            Flash(hit, 9f, new Color(4f, 3f, 2.4f), FireEdge, 0.25f);
+            Flash(hit, 6f, FireCore, FireEdge, 0.22f);
             Shock(hit, r * 1.5f, FireCore, FireEdge, 0.55f);
             Shock(hit, r * 2.2f, ArcCore, ArcEdge, 0.8f, false);
-            SkillVfxKit.Layer("beam", P(tg + Vector3.up * 3.5f), 1f, FireCore, FireEdge, 0.7f).Stretch(3.2f, 8f).Scale(1.2f, 0.3f, 1.5f).Noise(0.8f, new Vector2(1, 2), new Vector2(0, -3f)).Fade(0f, 0.3f);
-            for (int i = 0; i < 10; i++)
-            {
-                float a = -80f + i * 16f + Rnd(-6, 6);
-                Vector3 d = Quaternion.Euler(0, 0, a) * Vector3.up;
-                SkillVfxKit.Layer("flame", hit + d * 0.3f, Rnd(1.6f, 2.4f), FireCore, FireEdge, 0.6f).Rotate(Quaternion.Euler(0, 0, a)).Move(d * 3.5f).Scale(0.4f, 1.3f, 0.4f)
-                    .Noise(0.85f, Vector2.one, new Vector2(0, -3f)).Fade(0f, 0.35f).Dissolve(0f, 1f, 0.35f).Rim(new Color(3f, 1.2f, 2f));
-            }
+            SkillVfxKit.Layer("beam", P(tg + Vector3.up * 3.5f), 1f, Hue(FireCore, FireEdge, 0.5f), FireEdge, 0.6f).Stretch(2f, 8f).Scale(1.2f, 0.3f, 1.5f).Noise(0.8f, new Vector2(1, 2), new Vector2(0, -3f)).Fade(0f, 0.3f, 0.85f);
+            FlameTongues(hit, 12, 2.4f, 4f, FireCore, FireEdge, new Color(2.4f, 0.9f, 1.6f));
             for (int i = 0; i < (SkillVfxKit.Mobile ? 4 : 8); i++)
                 SkillVfxKit.MeshLayer(SkillVfxKit.Rock, "white", hit, Rnd(0.2f, 0.45f), new Color(1.6f, 0.6f, 0.2f), new Color(0.15f, 0.08f, 0.06f, 1f), 1.1f, false)
                     .Move(new Vector3(Rnd(-5f, 5f), Rnd(4f, 8f), Rnd(-1.2f, 0f)), Vector3.down * 16f).Spin(Rnd(200, 500), UnityEngine.Random.onUnitSphere).Noise(0.9f, Vector2.one * 2, Vector2.zero).Sharp(5f).Fade(0f, 0.8f);
             Sparks(hit, 46, FireCore, FireEdge, Vector3.up, 85f, 12f, 2.2f, 0.3f);
-            Smoke(P(tg + Vector3.up * 0.4f), 14, new Color(0.45f, 0.35f, 0.4f), new Color(0.12f, 0.08f, 0.1f, 0.75f), 1.8f, 1.6f, 1.6f);
+            Smoke(P(tg + Vector3.up * 0.4f), 10, new Color(1f, 0.72f, 0.62f), new Color(0.45f, 0.28f, 0.3f, 0.45f), 1.5f, 1.6f, 1.4f);
             SkillVfxKit.Layer("cracks", tg + Vector3.up * 0.04f, r * 2.4f, new Color(2.2f, 0.8f, 0.3f), new Color(0.3f, 0.05f, 0.1f, 1f), 2.2f).Ground().Scale(0.5f, 1f, 0.2f).Fade(0f, 0.6f).Dissolve(0f, 1f, 0.55f);
             React(c, 1.6f, FireEdge, tg);
             Sfx("mg3_hit");
@@ -492,7 +627,7 @@ namespace AdventureKing.Gameplay
             Smoke(Hand(c), 3, Ink, InkEdge, 0.5f, 0.4f, 0.5f);
             yield return Wait(0.2f);
             Vector3 from = Hand(c);
-            Vector3 to = P(new Vector3(c.Target.x, c.Hero.position.y + 0.7f), -0.45f);
+            Vector3 to = TargetCenter(c);
             float dist = Mathf.Max(1f, Mathf.Abs(to.x - from.x)), speed = 17f, travel = dist / speed;
             for (int i = -1; i <= 1; i++)
             {
@@ -527,7 +662,7 @@ namespace AdventureKing.Gameplay
             int f = c.Facing;
             Anim(c, "Skill");
             Sfx("as2_cast");
-            Vector3 feet = P(c.Hero.position, 0f);
+            Vector3 feet = P(Feet(c), 0f);
             Smoke(feet + Vector3.up * 0.4f, 8, Ink, InkEdge, 1.1f, 0.6f, 0.9f);
             SkillVfxKit.Layer("circle", feet + Vector3.up * 0.04f, c.Radius * 2.2f, ShCore, ShEdge, 1.5f).Ground().Spin(-160f).Scale(0.4f, 1f, 0.3f).Fade(0.1f, 0.8f, 0.7f);
             yield return Wait(0.12f);
@@ -558,7 +693,7 @@ namespace AdventureKing.Gameplay
             int f = c.Facing;
             Anim(c, "Dodge");
             Sfx("as3_cast");
-            Vector3 tg = P(new Vector3(c.Target.x, c.Hero.position.y + 0.7f), -0.45f);
+            Vector3 tg = TargetCenter(c);
             for (int i = 0; i < 4; i++)
             {
                 Afterimage(c, new Vector3(-f * i * 0.3f, 0f, 0.15f), new Vector3(f * 1.5f, 0f, 0f), 0.5f, ShCore, ShEdge);
@@ -612,7 +747,7 @@ namespace AdventureKing.Gameplay
             Charge(Hand(c, true), LeafCore, LeafEdge, 0.38f, 0.6f, 10, Socket(c, "Socket_L"));
             yield return Wait(0.4f);
             Vector3 from = Hand(c, true);
-            from.y = c.Hero.position.y + 1f;
+            from.y = Mathf.Min(from.y, Chest(c).y);
             float range = Mathf.Max(3f, c.Range), speed = 24f, travel = range / speed;
             var arrow = SkillVfxKit.MeshLayer(SkillVfxKit.Dart, "white", from, 1.15f, LeafCore, LeafEdge, travel + 0.05f)
                 .Rotate(Quaternion.LookRotation(Vector3.right * f, Vector3.up)).Move(Vector3.right * f * speed).Fade(0f, 0.9f);
@@ -651,12 +786,12 @@ namespace AdventureKing.Gameplay
             int f = c.Facing;
             Anim(c, "Attack");
             Sfx("ar2_cast");
-            Vector3 tg = P(new Vector3(c.Target.x, c.Hero.position.y), 0f);
+            Vector3 tg = TargetGround(c);
             float r = Mathf.Max(1.6f, c.Radius);
             SkillVfxKit.Layer("circle", tg + Vector3.up * 0.05f, r * 2.2f, LeafCore, LeafEdge, 1.9f).Ground().Spin(60f).Scale(0.3f, 1f, 0.3f).Fade(0.15f, 0.85f, 0.85f);
             yield return Wait(0.4f);
             Vector3 bow = Hand(c, true);
-            Vector3 sky = P(new Vector3((bow.x + tg.x) * 0.5f, c.Hero.position.y + 7.5f));
+            Vector3 sky = P(new Vector3((bow.x + tg.x) * 0.5f, Feet(c).y + 7.5f));
             var up = SkillVfxKit.MeshLayer(SkillVfxKit.Dart, "white", bow, 1f, LeafCore, LeafEdge, 0.3f)
                 .Rotate(Quaternion.LookRotation((sky - bow).normalized, Vector3.right)).Move((sky - bow) / 0.3f).Fade(0f, 0.9f);
             SkillVfxKit.Trail(up.gameObject, "spark", 0.35f, 0.2f, LeafCore, LeafEdge);
@@ -701,7 +836,7 @@ namespace AdventureKing.Gameplay
             var body = SkillVfxKit.Layer("flame", at, 1.1f, PhCore, PhEdge, life).Rotate(Quaternion.Euler(0, 0, -90f)).Stretch(0.7f, 1.6f).Noise(0.8f, Vector2.one, new Vector2(0, -3f)).Parent(root).Fade(0.1f, 0.85f);
             body.transform.localPosition = new Vector3(-0.3f, 0f, 0f);
             body.transform.localRotation = Quaternion.Euler(0, 0, 90f);
-            var head = SkillVfxKit.Layer("glow", at, 0.7f, new Color(4f, 3.4f, 2f), PhEdge, life).Parent(root).Fade(0.1f, 0.85f);
+            var head = SkillVfxKit.Layer("glow", at, 0.7f, Hue(PhCore, PhEdge, 0.6f), PhEdge, life).Parent(root).Fade(0.1f, 0.85f);
             head.transform.localPosition = new Vector3(0.45f, 0.1f, -0.05f);
             foreach (int side in new[] { 1, -1 })
             {
@@ -712,7 +847,7 @@ namespace AdventureKing.Gameplay
                 for (int k = 0; k < 7; k++)
                 {
                     float ang = 95f + k * 14f; // fan backwards-up
-                    var fea = SkillVfxKit.Layer("feather", at, 1.1f + k * 0.08f, Color.Lerp(PhCore, new Color(3.2f, 1.4f, 0.4f), k / 7f), PhEdge, life)
+                    var fea = SkillVfxKit.Layer("feather", at, 1.1f + k * 0.08f, Hue(Color.Lerp(PhCore, new Color(3.2f, 1.4f, 0.4f), k / 7f), PhEdge, 0.45f), PhEdge, life)
                         .Noise(0.55f, new Vector2(1, 2), new Vector2(0, -2f)).Fade(0.1f, 0.85f, 0.65f).Parent(wing);
                     fea.transform.localRotation = Quaternion.Euler(0f, 0f, side > 0 ? ang - 90f : -(ang - 90f) - 180f);
                     fea.transform.localPosition = fea.transform.localRotation * Vector3.up * 0.55f;
@@ -732,13 +867,13 @@ namespace AdventureKing.Gameplay
             // wings behind the hero (presentation of the charge)
             Transform wings = BuildPhoenix(Chest(c) + new Vector3(-f * 0.2f, 0.25f, 0.35f), -f, 1.15f, 1.15f);
             foreach (Transform t in wings) if (t.name == "fx_flame" || t.name == "fx_glow") t.gameObject.SetActive(false);
-            SkillVfxKit.MeshLayer(SkillVfxKit.Band, "beam", P(c.Hero.position, 0f), 1f, PhCore * 0.5f, PhEdge, 1.15f).Stretch(1.3f, 2.2f, 0.5f).Spin(320f, Vector3.up).Noise(0.8f, new Vector2(3, 1), new Vector2(0, 1.6f)).NoiseTex("noise_streak").Fade(0.25f, 0.8f, 0.6f);
+            SkillVfxKit.MeshLayer(SkillVfxKit.Band, "beam", P(Feet(c), 0f), 1f, PhCore * 0.5f, PhEdge, 1.15f).Stretch(1.3f, 2.2f, 0.5f).Spin(320f, Vector3.up).Noise(0.8f, new Vector2(3, 1), new Vector2(0, 1.6f)).NoiseTex("noise_streak").Fade(0.25f, 0.8f, 0.6f);
             Charge(Hand(c, true), PhCore, PhEdge, 1.05f, 0.9f, 18, Socket(c, "Socket_L"));
-            Embers(P(c.Hero.position + Vector3.up * 0.5f), 16, PhCore, PhEdge, 0.9f, 1.4f);
+            Embers(P(Feet(c) + Vector3.up * 0.5f), 16, PhCore, PhEdge, 0.9f, 1.4f);
             yield return Wait(1.12f);
             if (wings) Destroy(wings.gameObject);
             Vector3 from = Hand(c, true);
-            from.y = c.Hero.position.y + 1.15f;
+            from.y = Mathf.Min(from.y, Chest(c).y);
             float range = Mathf.Max(4f, c.Range), speed = 13f, travel = range / speed;
             Transform bird = BuildPhoenix(from, f, travel + 0.1f, 1.25f);
             var mover = bird.gameObject.AddComponent<Mover>();
@@ -761,11 +896,7 @@ namespace AdventureKing.Gameplay
                         hit.Add(m);
                         Vector3 at = Center(m);
                         Flash(at, 2.2f, PhCore, PhEdge, 0.2f);
-                        for (int i = 0; i < 5; i++)
-                        {
-                            float a = i * 72f + Rnd(-10, 10);
-                            SkillVfxKit.Layer("flame", at, 1.2f, PhCore, PhEdge, 0.4f).Rotate(Quaternion.Euler(0, 0, a)).Move(Quaternion.Euler(0, 0, a) * Vector3.up * 2.2f).Scale(0.4f, 1.1f, 0.4f).Noise(0.8f, Vector2.one, new Vector2(0, -3)).Fade(0f, 0.35f);
-                        }
+                        FlameTongues(at, 6, 1.4f, 3f, PhCore, PhEdge, new Color(3f, 1.4f, 0.3f));
                         Sparks(at, 18, PhCore, PhEdge, Vector3.right * f, 60f, 9f, 1.2f, 0.24f);
                         m.React(PhEdge, 1.1f, f);
                         Sfx("ar3_hit");

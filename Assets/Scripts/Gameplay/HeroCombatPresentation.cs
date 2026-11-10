@@ -55,10 +55,49 @@ namespace AdventureKing.Gameplay
             events.SkillImpact -= OnSkill;
         }
 
+        /// <summary>
+        /// Gameplay direction of the attack. The visual root is turned ±110° so the face shows to the camera, so its
+        /// forward has a large component TOWARD the camera (measured: (0.94, 0, -0.34)) — projectiles used to fly
+        /// diagonally into the screen. In play the hero faces ±X: use the pure side direction. Only when the visual
+        /// faces the camera (selection hall) the turned forward is kept.
+        /// </summary>
+        private Vector3 Dir()
+        {
+            Vector3 f = facing.forward;
+            return Mathf.Abs(f.x) > 0.2f ? new Vector3(Mathf.Sign(f.x), 0f, 0f) : Flat(f);
+        }
+
         private Vector3 Point(Vector3 offset)
         {
-            Vector3 fwd = Flat(facing.forward);
-            return facing.position + Vector3.up * offset.y * Scale + fwd * offset.z * Scale;
+            Vector3 p = facing.position + Vector3.up * offset.y * Scale + Dir() * offset.z * Scale;
+            return Clamp(p);
+        }
+
+        /// <summary>Emitter of a projectile: the weapon socket (staff head / bow grip / blade) when there is one,
+        /// else the offset point; both constrained to the hero's real body.</summary>
+        private Vector3 Muzzle(Vector3 offset)
+        {
+            if (!weaponSocket) return Point(offset);
+            Vector3 tip = heroClass == HeroClass.Archer ? weaponSocket.position : SkillVfxDirector.WeaponTipOf(weaponSocket);
+            return Clamp(tip);
+        }
+
+        private Collider2D body;
+        private bool bodyLooked;
+
+        /// <summary>Keeps an emitter inside the hero's body height (not above the head, not in the ground), in front of
+        /// the body and on the gameplay plane — using the Collider2D, never the mesh pivot.</summary>
+        private Vector3 Clamp(Vector3 p)
+        {
+            if (!bodyLooked) { body = GetComponentInParent<Collider2D>(); bodyLooked = true; }
+            Vector3 d = Dir();
+            if (!body || Mathf.Abs(d.x) < 0.5f) return p; // selection hall: no gameplay body
+            Bounds b = body.bounds;
+            float h = Mathf.Max(0.5f, b.size.y);
+            p.y = Mathf.Clamp(p.y, b.min.y + 0.3f * h, b.max.y - 0.18f * h);
+            if ((p.x - b.center.x) * d.x < 0.15f * h) p.x = b.center.x + d.x * 0.15f * h;
+            p.z = facing.position.z;
+            return p;
         }
 
         private float Scale => Mathf.Abs(facing.lossyScale.y);
@@ -69,7 +108,7 @@ namespace AdventureKing.Gameplay
             return v.sqrMagnitude > 1e-4f ? v.normalized : Vector3.right;
         }
 
-        private Quaternion FacingRotation() => Quaternion.LookRotation(Flat(facing.forward), Vector3.up);
+        private Quaternion FacingRotation() => Quaternion.LookRotation(Dir(), Vector3.up);
 
         /// <summary>A class skill choreography owns this hero: the clip events it borrows must not add the old effects.</summary>
         private bool SkillShowing => SkillVfxDirector.IsCasting(transform) || (transform.parent && SkillVfxDirector.IsCasting(transform.parent)) || SkillVfxDirector.IsCasting(transform.root);
@@ -80,7 +119,7 @@ namespace AdventureKing.Gameplay
             Vector3 at = Point(attackOffset);
             if (attackEffect) Spawn(attackEffect, at, FacingRotation());
             if (attackProjectile)
-                Launch(attackProjectile, at, FacingRotation(), false);
+                Launch(attackProjectile, Muzzle(attackOffset), FacingRotation(), false);
             else
                 Impact(false);
         }
@@ -104,7 +143,7 @@ namespace AdventureKing.Gameplay
                 {
                     float t = skillProjectileCount == 1 ? 0f : i / (skillProjectileCount - 1f) - 0.5f;
                     Quaternion r = rot * Quaternion.Euler(-t * skillSpreadDegrees, 0f, 0f);
-                    Launch(skillProjectile, at, r, true);
+                    Launch(skillProjectile, Muzzle(skillOffset), r, true);
                 }
             }
             else

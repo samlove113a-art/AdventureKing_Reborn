@@ -2,6 +2,51 @@
 
 > **Chưa nghiệm thu.** Code chạy và test pass KHÔNG có nghĩa là đạt chất lượng hình ảnh. Tài liệu này để chủ dự án xem video/ảnh thật và quyết định sửa gì trước khi nhân rộng sang các map tiếp theo.
 
+## Sửa tận gốc lỗi VỊ TRÍ PHÁT SKILL (2026-11-11) — đo bằng số, không chỉnh offset mò
+**Không đọc được PR #5:** repo riêng tư, shell không có quyền GitHub, nhánh của PR chưa có trên máy. Vì vậy chưa đối chiếu được; nguyên nhân dưới đây xác định độc lập bằng probe đo trong game.
+
+Công cụ đo:
+- `SkillVfxProbe` ghi lại điểm phát, xương tay, đầu vũ khí, đỉnh đầu/chân (Collider2D), vận tốc đạn, điểm va chạm và vị trí quái tại lúc va chạm.
+- Test `SkillOriginTests` (Pháp Sư Skill 1, quay phải + quay trái, kèm đòn đánh thường) → ảnh và số liệu ở `QA/SkillOrigin/`.
+
+**Nguyên nhân thật (đều đã đo):**
+1. **Gốc của nhân vật nằm giữa thân, không ở chân:** gốc y = 0,80, chân y = 0,00, đỉnh đầu y = 1,61.
+   - `Chest()` = gốc + 1,05 ra y = 1,85, **cao hơn đỉnh đầu** → skill hiện trên đầu.
+   - Các ấn/vòng dưới đất lấy y của gốc nên lơ lửng 0,8 m.
+2. **Tìm socket sai:** director tìm empty `Socket_R/L`, nhưng rig thật không có các empty đó. Socket vũ khí chính là **xương tay** (`HeroArtPipeline`: `weaponSocket = FindDeep(model, "RightHand")`), còn vũ khí là `SkinnedMeshRenderer` tên `Weapon_*`.
+   - Probe báo tay = (0,0,0) → mọi skill âm thầm dùng điểm dự phòng.
+   - Cầu Lửa còn cộng thêm 0,35 m **theo trục dọc của thế giới**.
+3. **Hướng bắn của đường phát cũ** (`HeroCombatPresentation`, dùng cho đòn đánh thường, người chơi khác và sảnh) lấy `forward` của visual root đang xoay yaw ±110° để mặt hướng về camera.
+   - Đo được: hướng (0,94; 0; −0,34) → **đạn bay chéo vào camera**, điểm phát lệch z = −0,39.
+   - `weaponSocket` đã được gán nhưng **chưa từng được dùng**.
+4. **Lệch nhịp:** cầu lửa phóng sau 0,45 s cố định, lúc tay còn ở sau thân. Khung "tung" thật là sự kiện animation `OnAttackImpact`.
+5. **Nhắm sai mục tiêu:** skill nhắm vào điểm spawn mà server trả về, trong khi con quái đang hiển thị nhảy/đuổi quanh điểm đó (lệch tới 3,4 m). Thêm vào đó, vòng poll 1,5 s nhận "đã chết" từ server **trước khi** đạn tới → quái chết sớm, đạn trượt.
+
+**Cách sửa:**
+- `Feet()` = đáy collider; `Chest()` = 55% chiều cao thân.
+- `Muzzle()` lấy xương tay; nếu không có thì lấy theo collider, không bao giờ theo pivot. Điểm phát được kẹp trong khoảng 30–82% chiều cao thân, đặt trước thân và trên mặt phẳng chơi.
+- Đầu vũ khí lấy từ `Weapon_*` gần bàn tay nhất. Không dùng cho Pháp Sư: trong tư thế niệm chú, đầu xa của trượng chĩa xuống (đo được y = −0,50).
+- Hướng bắn = ±X thuần; chỉ khi nhân vật quay mặt ra camera (sảnh chọn nhân vật) mới giữ hướng cũ.
+- Đạn phóng theo sự kiện animation; nhắm và bám theo **vị trí quái đang hiển thị**.
+- Poll không áp trạng thái chết của quái khi skill đang bay tới nó.
+- Khung camera luôn dời về một phía (cụm HUD ở bên phải), nên quay trái không còn bị che.
+
+**Kết quả (Pháp Sư Skill 1):**
+
+| Hướng | Điểm phát → tay | So với đỉnh đầu | Hướng bay | Lệch về camera | Va chạm → quái |
+|---|---|---|---|---|---|
+| Phải | 0,30 m | thấp hơn 1,03 m | +X | 5% | 0,00 m |
+| Trái | 0,06 m | thấp hơn 1,03 m | −X | 4% | 0,00 m |
+
+- Đòn đánh thường: hướng (±1, 0, 0), thấp hơn đỉnh đầu 1,12 m.
+- Ảnh: `QA/SkillOrigin/{right,left}_{1_cast_start,2_leaves_staff,3_hits_monster,basic_attack}.jpg`.
+- Kiểm nhanh 4 nghề: `SkillVfxShowcaseTests` 4/4.
+- Regression liên quan: SkillCombat, Chapter1, FarmTests ×2 đều pass, 0 exception.
+
+**Còn lại:**
+- Người chơi khác vẫn thấy skill qua đường cũ (`RemoteAction("skill")` → một prefab chung cho cả 3 skill). Muốn đồng bộ đúng skill cho người xem cần gửi thêm nghề, ô skill và mục tiêu qua heartbeat. Việc này chưa làm.
+- Lưỡi lửa cuối vụ nổ đôi khi thành mảng vàng phẳng (lỗi mỹ thuật, không phải lỗi vị trí).
+
 ## Xem ở đâu
 - **Video Game View thật (30 fps, 1280×720, tốc độ thật):** `QA/SkillVfx/video/<nghề>_<skill>.mp4` — 12 skill + 4 bản điện thoại của skill 3 (`*_3_phone.mp4`).
 - **Ảnh 1920×1080 (JPG q90), 4 khoảnh khắc mỗi skill:** `QA/SkillVfx/<nghề>_<skill>_a_charge / b_release / c_impact / d_dissipate.jpg`; ảnh điện thoại: `*_3_phone_c_impact.jpg`.

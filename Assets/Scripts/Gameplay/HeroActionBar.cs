@@ -300,7 +300,9 @@ namespace AdventureKing.Gameplay
                 SkillVfxDirector.Play(new SkillCast
                 {
                     Class = Class, Slot = slot, Hero = world.Player.transform, Visual = visual, Facing = facing,
-                    Target = world.Player.transform.position + Vector3.right * facing * reach,
+                    // ground point ahead (the root is at the body centre: feet = bottom of the collider)
+                    Target = new Vector3(world.Player.transform.position.x + facing * reach,
+                        world.Player.GetComponent<Collider2D>() ? world.Player.GetComponent<Collider2D>().bounds.min.y : world.Player.transform.position.y, 0f),
                     Radius = practice == null ? 2f : Mathf.Max(1.4f, practice.radius), Range = practice == null ? 4f : Mathf.Min(5f, practice.range),
                 });
                 Say("Luyện tập kỹ năng (trong làng không gây sát thương — khu an toàn).");

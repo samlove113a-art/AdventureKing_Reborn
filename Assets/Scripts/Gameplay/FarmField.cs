@@ -239,7 +239,8 @@ namespace AdventureKing.Gameplay
                         v.Bind(s, font);
                         monsters[s.id] = v;
                     }
-                    else v.Apply(s);
+                    // a skill is still flying at it: its new HP / death is shown on the impact beat, not by the poll
+                    else if (!landing.Contains(s.id)) v.Apply(s);
                 }
                 var listed = new HashSet<string>(state.drops.Select(d => d.id));
                 foreach (FarmDropState d in state.drops) if (!drops.ContainsKey(d.id)) SpawnDrop(d, new Vector2(d.x, d.y));
@@ -389,6 +390,8 @@ namespace AdventureKing.Gameplay
         public int SkillsCast { get; private set; }
         public string LastSkillError { get; private set; }
         private bool skillBusy;
+        /// <summary>Monsters a skill choreography is still travelling to (SkillCast.Landed clears them).</summary>
+        private readonly HashSet<string> landing = new HashSet<string>();
 
         /// <summary>A monster the skill could hit from here (client-side guess; the server re-checks with its own rules).</summary>
         public FarmMonsterView SkillTarget(SkillDefDto s)
@@ -431,17 +434,18 @@ namespace AdventureKing.Gameplay
                 {
                     Class = world.Character.heroClass, Slot = slot, Hero = world.Player.transform, Visual = visual,
                     Facing = motor ? motor.Facing : 1, Radius = s.radius, Range = s.range,
-                    Target = s.shape == "self" ? world.Player.transform.position : new Vector3(r.cx, r.cy, 0f),
+                    // aim where the player SEES the monster (its view wanders / chases around the spawn point the server
+                    // reports in cx,cy — measured 3.4 m off): ground point under the targeted monster's view
+                    Target = s.shape == "self" ? HeroFeet() : (Vector3)target.Position,
                 };
-                if (s.shape == "target" || s.shape == "line")
-                    cast.Target = s.shape == "line" ? (Vector3)target.Position : new Vector3(r.cx, r.cy, 0f);
                 foreach (SkillHitState h in r.hits)
-                    if (h.monster != null && monsters.TryGetValue(h.monster.id, out FarmMonsterView hm) && hm) cast.Victims.Add(hm);
+                    if (h.monster != null && monsters.TryGetValue(h.monster.id, out FarmMonsterView hm) && hm) { cast.Victims.Add(hm); landing.Add(h.monster.id); }
                 var hits = r.hits;
                 cast.Landed = () =>
                 {
                     foreach (SkillHitState h in hits)
                     {
+                        if (h.monster != null) landing.Remove(h.monster.id);
                         if (h.monster == null || !monsters.TryGetValue(h.monster.id, out FarmMonsterView m) || !m) continue;
                         m.Apply(h.monster);
                         if (h.monster.alive) m.Chase = world.Player.transform;
@@ -453,6 +457,14 @@ namespace AdventureKing.Gameplay
                 ApplyHero(r.hero);
                 done?.Invoke(true, r.name);
             });
+        }
+
+        /// <summary>Ground under the hero (bottom of its collider; the gameplay root is at the body centre).</summary>
+        private Vector3 HeroFeet()
+        {
+            var col = world.Player.GetComponent<Collider2D>();
+            Vector3 p = world.Player.transform.position;
+            return new Vector3(p.x, col ? col.bounds.min.y : p.y, 0f);
         }
 
         /// <summary>Short message above the hero (e.g. "Không đủ MP").</summary>

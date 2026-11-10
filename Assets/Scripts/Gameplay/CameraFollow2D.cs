@@ -39,7 +39,9 @@ namespace AdventureKing.Gameplay
             if (!target) return;
             transform.position -= shakeOffset;
             // during a skill the action (hero ↔ target midpoint) sits left of centre, clear of the right-hand HUD cluster
-            float fx = Time.time < focusUntil ? focusX + 1.1f * Mathf.Sign(focusX - target.position.x) : target.position.x;
+            // (the HUD cluster is on the RIGHT whichever way the hero faces: always shift the framing the same way —
+            // a facing-based sign pushed a left-facing hero under the buttons)
+            float fx = Time.time < focusUntil ? focusX + 1.1f : target.position.x;
             Vector3 desired = new Vector3(fx + offset.x,
                 target.position.y + offset.y, transform.position.z);
             if (useBounds)

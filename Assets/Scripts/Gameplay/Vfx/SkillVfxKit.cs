@@ -325,7 +325,10 @@ namespace AdventureKing.Gameplay
         public FxLayer Move(Vector3 v, Vector3? g = null) { velocity = v; gravity = g ?? Vector3.zero; return this; }
         public FxLayer Billboard() { billboard = true; return this; }
         /// <summary>Lies on the ground (XZ plane), seen at the camera's shallow angle.</summary>
-        public FxLayer Ground() { transform.rotation = Quaternion.Euler(90f, 0f, 0f); transform.position += Vector3.up * 0.2f; return this; } // above the grass tufts
+        /// <summary>Lies on the ground (XZ plane) just above the grass; stretched in depth so the side camera's shallow
+        /// angle does not squash circles / seals into thin lines.</summary>
+        public FxLayer Ground() { transform.rotation = Quaternion.Euler(90f, 0f, 0f); transform.position += Vector3.up * 0.2f; depth = 2.2f; return this; }
+        private float depth = 1f;
         public FxLayer Rotate(Quaternion q) { transform.rotation = q; return this; }
         public FxLayer Follow(Transform target, Vector3 offset) { follow = target; followOffset = offset; return this; }
         public FxLayer Delay(float seconds) { delay = seconds; if (seconds > 0f) r.enabled = false; return this; }
@@ -359,7 +362,7 @@ namespace AdventureKing.Gameplay
         private void Apply(float k)
         {
             float s = size * Mathf.Lerp(scaleFrom, scaleTo, Mathf.Pow(k, scalePow));
-            transform.localScale = Vector3.Scale(stretch, Vector3.one * s);
+            transform.localScale = Vector3.Scale(stretch, new Vector3(s, s * depth, s));
             float a = (fadeIn > 0f ? Mathf.Clamp01(k / fadeIn) : 1f) * (k > fadeOutStart ? 1f - Mathf.SmoothStep(0f, 1f, (k - fadeOutStart) / Mathf.Max(0.01f, 1f - fadeOutStart)) : 1f);
             block.SetFloat("_Alpha", a * alphaMul);
             float dk = k < dissolveStart ? 0f : (k - dissolveStart) / Mathf.Max(0.01f, 1f - dissolveStart);
