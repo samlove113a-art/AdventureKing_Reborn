@@ -82,7 +82,7 @@ namespace AdventureKing.Tests
 
         public IEnumerator SyncOnce()
         {
-            var body = new AdventureServerConnection.SyncBody { x = X, y = Y, facing = Facing, anim = Anim, chatAfter = ChatCursor };
+            var body = new AdventureServerConnection.SyncBody { x = X, y = Y, facing = Facing, anim = Anim, chatAfter = ChatCursor, practiceSlot = PracticeSlot, practiceSeq = PracticeSeq };
             yield return Call("POST", $"/characters/{CharacterId}/sync", body, j =>
             {
                 LastSync = JsonUtility.FromJson<SyncState>(j);
@@ -99,6 +99,20 @@ namespace AdventureKing.Tests
                 yield return SyncOnce();
                 yield return new WaitForSecondsRealtime(0.16f);
             }
+        }
+
+        /// <summary>Practice cast in a safe zone (sent with the next heartbeats, like the game's action bar does).</summary>
+        public int PracticeSlot, PracticeSeq;
+        public void Practice(int slot) { PracticeSlot = slot; PracticeSeq++; }
+
+        [Serializable] private class Presence { public float x, y; }
+        [Serializable] private class SkillReq { public int slot, facing; public float x, y; public string spawnId; }
+
+        /// <summary>Casts a skill on a farm map through the real endpoints (position heartbeat first, as the game does).</summary>
+        public IEnumerator Skill(int slot, string spawnId)
+        {
+            yield return Call("POST", $"/characters/{CharacterId}/farm/presence", new Presence { x = X, y = Y }, null);
+            yield return Call("POST", $"/characters/{CharacterId}/farm/skill", new SkillReq { slot = slot, facing = Facing, x = X, y = Y, spawnId = spawnId }, null);
         }
 
         public IEnumerator Say(string channel, string to, string text) => Call("POST", $"/characters/{CharacterId}/chat", new Chat { channel = channel, to = to, text = text }, null);

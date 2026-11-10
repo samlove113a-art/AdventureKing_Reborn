@@ -43,8 +43,20 @@ Công cụ đo:
 - Kiểm nhanh 4 nghề: `SkillVfxShowcaseTests` 4/4.
 - Regression liên quan: SkillCombat, Chapter1, FarmTests ×2 đều pass, 0 exception.
 
+**Đồng bộ skill cho người chơi khác (2026-11-11, đã làm):**
+- **Bãi farm:** server tự ghi sự kiện mỗi khi **chính nó** chấp nhận skill (`FarmService.SkillCast` → `PresenceService.RecordCast`: ô skill, tâm, quái mục tiêu). Client không giả mạo được; trường luyện chiêu bị bỏ qua trên map có quái.
+- **Khu an toàn (thị trấn, sảnh):** client báo số đếm luyện chiêu qua heartbeat. Server chỉ nhận trên map không có quái, tối đa 1 lần mỗi 450 ms; chỉ để hiển thị.
+- Người xem nhận `castSeq/castSlot/castX/castY/castTarget/castAgeMs` trong `PeerDto`. `RemoteAvatar` phát lại **đúng biên đạo của skill đó** trên avatar từ xa:
+  - Nhắm vào con quái mà **người xem** đang thấy; quái đó có phản ứng.
+  - Đủ hiệu ứng và âm thanh, nhưng **không** rung camera, khựng hình hay zoom trên màn hình người xem, và không hiện số sát thương.
+  - Cast cũ không bị phát lại khi người chơi vừa xuất hiện trong tầm nhìn.
+- Test:
+  - Server `SkillSyncTests` 2/2 (tổng 163/163).
+  - PlayMode `SkillSyncMultiplayerTests` (2 client thật: game Unity + `SecondClient`) PASS: B luyện Thiên Thạch trong thị trấn → A thấy đúng Mage 3; B tung Cầu Lửa lên slime ở Đồng Cỏ Gió → A thấy đúng Mage 1 và slime trên máy A phản ứng.
+  - Ảnh `QA/SkillSync/`.
+- `MultiplayerSocialTests` (lễ cưới) hỏng ở phần **lễ cưới 180 s đang tạm dừng**: test bị sửa trong commit WIP `670f6f9`, chạy trọn lễ 180 s trong giới hạn test mặc định 180 s. Theo lệnh chủ dự án nên chưa sửa. Chưa chạy lại test này trên bản trước khi đồng bộ skill để đối chứng.
+
 **Còn lại:**
-- Người chơi khác vẫn thấy skill qua đường cũ (`RemoteAction("skill")` → một prefab chung cho cả 3 skill). Muốn đồng bộ đúng skill cho người xem cần gửi thêm nghề, ô skill và mục tiêu qua heartbeat. Việc này chưa làm.
 - Lưỡi lửa cuối vụ nổ đôi khi thành mảng vàng phẳng (lỗi mỹ thuật, không phải lỗi vị trí).
 
 ## Xem ở đâu

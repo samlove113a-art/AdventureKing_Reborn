@@ -106,13 +106,58 @@ namespace AdventureKing.Gameplay
             if (!string.IsNullOrEmpty(s.guild)) line += " <color=#ffd27a>[" + s.guild + "]</color>";
             if (!string.IsNullOrEmpty(s.partner)) line += " <color=#ff9fb8>♥ " + s.partner + "</color>";
             if (nameText) nameText.text = line;
+            // the exact skill this player cast (class + slot + target), replayed with the same choreography
+            if (lastCastSeq >= 0 && s.castSeq != lastCastSeq && s.castSlot is >= 1 and <= 3 && s.castAgeMs >= 0 && s.castAgeMs <= 2500 && overridePos == null)
+                PlayRemoteSkill(s);
+            lastCastSeq = s.castSeq;
             if (s.anim != lastAnim)
             {
-                if (s.anim is "attack" or "skill" or "hit") Visual.RemoteAction(s.anim);
+                // a replayed skill already drives the body: the generic one-shot "skill" would restart it
+                if (s.anim is "attack" or "hit" || s.anim == "skill" && !SkillVfxDirector.IsCasting(transform)) Visual.RemoteAction(s.anim);
                 lastAnim = s.anim;
             }
             if (s.emoteSeq != lastEmoteSeq && !string.IsNullOrEmpty(s.emote) && overridePos == null) Visual.PlayEmote(s.emote);
             lastEmoteSeq = s.emoteSeq;
+        }
+
+        private int lastCastSeq = -1; // -1: nothing seen yet (an old cast is not replayed when the player comes into view)
+        public int SkillsReplayed { get; private set; }
+
+        private void PlayRemoteSkill(PeerState s)
+        {
+            var cls = (HeroClass)s.heroClass;
+            SkillDefDto def = SkillBook.Skill(cls, s.castSlot);
+            string shape = def != null ? def.shape : "target";
+            float radius = def != null ? Mathf.Max(1.4f, def.radius) : 2f, range = def != null ? def.range : 4f;
+            var cast = new SkillCast
+            {
+                Class = cls, Slot = s.castSlot, Hero = transform, Visual = Visual, Facing = s.facing < 0 ? -1 : 1,
+                Radius = radius, Range = range, Remote = true,
+            };
+            FarmField farm = FarmField.Current;
+            FarmMonsterView main = null;
+            if (farm && !string.IsNullOrEmpty(s.castTarget)) farm.Monsters.TryGetValue(s.castTarget, out main);
+            float feet = transform.position.y - SkillVfxDirector.BodyCentreAboveFeet;
+            // aim where THIS viewer sees the monster; practice casts (no target) land on the ground ahead
+            cast.Target = shape == "self" ? new Vector3(transform.position.x, feet, 0f)
+                : main ? (Vector3)main.Position
+                : new Vector3(s.castX, string.IsNullOrEmpty(s.castTarget) ? feet : s.castY, 0f);
+            if (farm)
+            {
+                Vector3 centre = shape == "self" ? cast.Target : cast.Target;
+                float reach = shape == "line" ? range : radius;
+                foreach (FarmMonsterView m in farm.Monsters.Values)
+                {
+                    if (!m || !m.Alive) continue;
+                    bool hit = m == main
+                        || shape == "line" && (m.Position.x - transform.position.x) * cast.Facing >= -0.8f && Mathf.Abs(m.Position.x - transform.position.x) <= reach + 0.8f
+                        || shape != "line" && Mathf.Abs(m.Position.x - centre.x) <= reach + 0.8f;
+                    if (hit && Mathf.Abs(m.Position.y - feet) < 2.5f) cast.Victims.Add(m);
+                }
+                if (main) { cast.Victims.Remove(main); cast.Victims.Insert(0, main); }
+            }
+            SkillVfxDirector.Play(cast);
+            SkillsReplayed++;
         }
 
         /// <summary>A cutscene places this avatar (null: back to the server samples).</summary>

@@ -26,6 +26,12 @@ namespace AdventureKing.Gameplay
         public event Action<SyncState> Synced;
         public RemoteAvatar Nearest { get; private set; }
 
+        /// <summary>Practice skill cast in a safe zone (shown to the other players there): the last slot and a counter
+        /// that grows per cast. The server ignores it on farm maps (only its own accepted skills are shown there).</summary>
+        public static int PracticeSlot { get; private set; }
+        public static int PracticeSeq { get; private set; }
+        public static void ReportPractice(int slot) { PracticeSlot = slot; PracticeSeq++; }
+
         private bool busy;
         private float next, lastReceipt;
         private Transform avatarRoot;
@@ -53,6 +59,7 @@ namespace AdventureKing.Gameplay
             {
                 x = pos.x, y = pos.y, facing = world.Player.Facing, anim = v ? v.NetAnim() : "idle",
                 emote = v ? v.LastEmote ?? "" : "", emoteSeq = v ? v.EmoteSeq : 0, chatAfter = ChatCursor,
+                practiceSlot = PracticeSlot, practiceSeq = PracticeSeq,
             };
             net.Sync(world.Character.characterId, req, (ok, s, err) =>
             {

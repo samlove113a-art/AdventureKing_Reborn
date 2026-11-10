@@ -104,6 +104,10 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
     farmSvc.PetCanCollect = pets.CanCollect;
     farmSvc.PetReach = pets.Config.pickupReach;
     farmSvc.PetAutoPotion = pets.AutoPotion;
+    // skills the server accepted are replayed by the other players on the map (presentation sync)
+    var presenceSvc = app.Services.GetRequiredService<PresenceService>();
+    farmSvc.SkillCast = presenceSvc.RecordCast;
+    presenceSvc.IsSafeMap = map => !farmSvc.Config.spawns.Any(s => s.mapId == map);
 }
 
 app.Use(async (ctx, next) =>

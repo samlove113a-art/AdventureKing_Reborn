@@ -11,6 +11,11 @@ namespace AdventureKing.Gameplay
         public float x, y;
         public bool friend;
         public OutfitLoadout outfit = new OutfitLoadout();
+        /// <summary>Last skill this player cast (server-accepted on farm maps / practice in safe zones).</summary>
+        public int castSeq, castSlot;
+        public float castX, castY;
+        public string castTarget = "";
+        public long castAgeMs = -1; // -1 = never cast
     }
     [Serializable] public sealed class ChatMessageState { public long id, ms; public string channel, senderId, sender, toId, toName, text; }
     [Serializable] public sealed class BadgesState { public int friendRequests, guildInvites, guildApplications, proposals; public int Total => friendRequests + guildInvites + guildApplications + proposals; }

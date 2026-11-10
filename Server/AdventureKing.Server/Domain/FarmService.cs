@@ -554,6 +554,10 @@ public sealed class FarmService
     ///  - "line": monsters in front of the hero (facing) within range, nearest first.
     /// A cast that would hit nothing is refused without spending MP (no wasted MP, no free cooldown spam).
     /// </summary>
+    /// <summary>A skill the SERVER accepted (characterId, slot, centre x/y, main target spawn id): other players on the
+    /// map replay the same skill presentation from this (PresenceService.RecordCast → SyncDto peers).</summary>
+    public Action<string, int, float, float, string>? SkillCast { get; set; }
+
     public SkillResultDto Skill(string accountId, string characterId, SkillRequestDto? req)
     {
         var (heroClass, mapId, level) = Character(accountId, characterId);
@@ -611,6 +615,7 @@ public sealed class FarmService
             Fire(accountId, characterId, "skill:any");
             foreach (var (sp, h2) in targets.Zip(hits))
                 if (h2.killed) { Fire(accountId, characterId, "kill:" + sp.type); Fire(accountId, characterId, "kill:any"); }
+            try { SkillCast?.Invoke(characterId, sk.slot, cx, cy, targets[0].id); } catch (Exception e) { Console.Error.WriteLine("skill cast hook: " + e.Message); }
             return new SkillResultDto { slot = sk.slot, skillId = sk.id, name = sk.name, mpSpent = cost, cx = cx, cy = cy, hits = hits, hero = Drain(h, t) };
         }
     }

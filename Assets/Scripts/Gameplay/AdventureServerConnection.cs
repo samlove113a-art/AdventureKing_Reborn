@@ -321,7 +321,7 @@ namespace AdventureKing.Gameplay
         public void GetTitles(string characterId, Action<bool, TitlesState, string> completed) =>
             Send("GET", Ch(characterId) + "/titles", null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<TitlesState>(json) : null, err));
         // ------------------------------------------------------------------ multiplayer heartbeat + social (Phase D)
-        [Serializable] public sealed class SyncBody { public float x, y; public int facing = 1, emoteSeq; public string anim = "idle", emote = ""; public long chatAfter; }
+        [Serializable] public sealed class SyncBody { public float x, y; public int facing = 1, emoteSeq; public string anim = "idle", emote = ""; public long chatAfter; public int practiceSlot, practiceSeq; }
         [Serializable] private sealed class NameBody { public string name; }
         [Serializable] private sealed class IdBody { public string id; }
         [Serializable] private sealed class TargetBody { public string id, name, role; public bool accept; }

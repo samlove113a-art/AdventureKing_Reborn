@@ -16,6 +16,9 @@ namespace AdventureKing.Gameplay
         public Vector3 Target;           // ground point the skill aims at (main target or landing centre)
         public float Radius = 2f, Range = 3f;
         public List<FarmMonsterView> Victims = new List<FarmMonsterView>();
+        /// <summary>Another player's skill replayed from the sync: same effects and sounds, but no camera shake,
+        /// hit-stop, zoom or framing for the viewer, and no numbers (the caster's client shows those).</summary>
+        public bool Remote;
         /// <summary>Raised once, on the beat where the damage lands (popups, deaths, drops are shown then).</summary>
         public Action Landed;
         internal bool landedFired;
@@ -33,7 +36,14 @@ namespace AdventureKing.Gameplay
         private static SkillVfxDirector host;
         private static readonly Dictionary<Transform, float> casting = new Dictionary<Transform, float>();
         public static int Played { get; private set; }
+        public static int PlayedRemote { get; private set; }
         public static string LastSkill { get; private set; } = "";
+        public static string LastRemoteSkill { get; private set; } = "";
+
+        // camera / time feedback belongs to the caster's own screen only
+        private static void Shake(SkillCast c, float amp, float s) { if (!c.Remote) SkillVfxKit.Shake(amp, s); }
+        private static void Zoom(SkillCast c, float amount, float s) { if (!c.Remote) SkillVfxKit.ZoomPunch(amount, s); }
+        private static void Stop(SkillCast c, float s) { if (!c.Remote) SkillVfxKit.HitStop(s); }
 
         /// <summary>True while a skill choreography owns this hero (the old per-clip class effects stay quiet).</summary>
         public static bool IsCasting(Transform hero) => hero && casting.TryGetValue(hero, out float until) && Time.time < until;
@@ -44,9 +54,9 @@ namespace AdventureKing.Gameplay
             if (!host) { host = new GameObject("SkillVfxDirector").AddComponent<SkillVfxDirector>(); DontDestroyOnLoad(host.gameObject); }
             casting[c.Hero] = Time.time + 2.6f;
             // frame the move: the camera leans toward the midpoint of hero and target (clear of the HUD clusters)
-            if (Mathf.Abs(c.Target.x - Feet(c).x) > 0.5f) CameraFollow2D.Focus((Feet(c).x + c.Target.x) * 0.5f, 2.4f);
-            Played++;
-            LastSkill = c.Class + "_" + c.Slot;
+            if (!c.Remote && Mathf.Abs(c.Target.x - Feet(c).x) > 0.5f) CameraFollow2D.Focus((Feet(c).x + c.Target.x) * 0.5f, 2.4f);
+            if (c.Remote) { PlayedRemote++; LastRemoteSkill = c.Class + "_" + c.Slot; }
+            else { Played++; LastSkill = c.Class + "_" + c.Slot; }
             host.StartCoroutine(host.Run(c));
         }
 
@@ -70,17 +80,20 @@ namespace AdventureKing.Gameplay
         /// <summary>Ground under the hero = bottom of its Collider2D. The gameplay root sits at the body CENTRE (measured
         /// y 0.80 with feet at 0.00), so "root + 1.05 m" used to be above the head (1.61) — the cause of skills
         /// appearing over the hero's head and of ground seals floating 0.8 m up.</summary>
-        private static Vector3 Feet(SkillCast c)
-        {
-            var col = c.Hero.GetComponent<Collider2D>();
-            return new Vector3(c.Hero.position.x, col ? col.bounds.min.y : c.Hero.position.y, 0f);
-        }
+        private static Vector3 Feet(SkillCast c) { var (bottom, _, cx) = Body(c); return new Vector3(cx, bottom, 0f); }
 
-        private static float BodyHeight(SkillCast c)
+        private static float BodyHeight(SkillCast c) { var (bottom, top, _) = Body(c); return Mathf.Max(0.5f, top - bottom); }
+
+        /// <summary>Hero body (bottom, top, centre x): its Collider2D; without one (a remote player's avatar) the shared
+        /// convention — root at the body centre, feet 0.8 m below (RemoteAvatar mount), 1.6 m tall.</summary>
+        public static (float bottom, float top, float cx) Body(SkillCast c)
         {
             var col = c.Hero.GetComponent<Collider2D>();
-            return col ? Mathf.Max(0.5f, col.bounds.size.y) : 1.6f;
+            if (col) return (col.bounds.min.y, col.bounds.max.y, col.bounds.center.x);
+            float feet = c.Hero.position.y - BodyCentreAboveFeet;
+            return (feet, feet + 1.61f, c.Hero.position.x);
         }
+        public const float BodyCentreAboveFeet = 0.8f;
 
         /// <summary>Chest height (55 % of the body), in front of the walking plane.</summary>
         private static Vector3 Chest(SkillCast c) => P(Feet(c) + Vector3.up * 0.55f * BodyHeight(c));
@@ -159,9 +172,8 @@ namespace AdventureKing.Gameplay
         /// </summary>
         public static Vector3 Muzzle(SkillCast c, bool left = false, bool tip = false)
         {
-            var col = c.Hero.GetComponent<Collider2D>();
-            float bottom = col ? col.bounds.min.y : Feet(c).y, top = col ? col.bounds.max.y : Feet(c).y + 1.6f;
-            float cx = col ? col.bounds.center.x : Feet(c).x, h = Mathf.Max(0.5f, top - bottom);
+            var (bottom, top, cx) = Body(c);
+            float h = Mathf.Max(0.5f, top - bottom);
             Transform s = Socket(c, left ? "Socket_L" : "Socket_R");
             Vector3 p = s ? (tip ? WeaponTipOf(s) : s.position) : new Vector3(cx + c.Facing * 0.3f * h, bottom + 0.58f * h, 0f);
             p.y = Mathf.Clamp(p.y, bottom + 0.3f * h, top - 0.18f * h);
@@ -330,8 +342,8 @@ namespace AdventureKing.Gameplay
             foreach (FarmMonsterView m in c.Victims) if (m) { XCut(Center(m), 1.6f, SwCore, SwEdge); Sparks(Center(m), 14, SwCore, SwEdge, Vector3.right * f, 50f, 7f); }
             React(c, 0.7f, SwEdge);
             Sfx("sw1_hit");
-            SkillVfxKit.Shake(0.07f, 0.16f);
-            SkillVfxKit.HitStop(0.035f);
+            Shake(c, 0.07f, 0.16f);
+            Stop(c, 0.035f);
             c.Land();
             Vector3 end = P(new Vector3(o.x + f * range, o.y - 0.3f));
             Smoke(end, 5, new Color(1.1f, 1.2f, 1.2f), new Color(0.7f, 0.95f, 0.9f, 0.45f), 0.8f, 0.8f, 0.8f);
@@ -367,8 +379,8 @@ namespace AdventureKing.Gameplay
                 foreach (FarmMonsterView m in c.Victims) if (m) { Sparks(Center(m), last ? 16 : 8, SwCore, SwEdge, Vector3.up, 70f, last ? 7f : 5f); if (last) XCut(Center(m), 1.4f, SwCore, SwEdge); }
                 React(c, last ? 1f : 0.45f, SwEdge);
                 Sfx(last ? "sw2_hit" : "sw2_tick", last ? 1f : 0.7f);
-                SkillVfxKit.Shake(last ? 0.12f : 0.05f, last ? 0.25f : 0.12f);
-                if (last) { SkillVfxKit.HitStop(0.05f); Shock(Chest(c), r * 1.1f, SwCore, SwEdge, 0.45f); c.Land(); }
+                Shake(c, last ? 0.12f : 0.05f, last ? 0.25f : 0.12f);
+                if (last) { Stop(c, 0.05f); Shock(Chest(c), r * 1.1f, SwCore, SwEdge, 0.45f); c.Land(); }
             }
             Sparks(feet + Vector3.up * 0.5f, 18, SwCore * 0.8f, SwEdge, Vector3.up, 30f, 6f, -0.4f, 0.22f);
             Smoke(feet + Vector3.up * 0.3f, 6, new Color(1.1f, 1.2f, 1.2f), new Color(0.7f, 0.95f, 0.9f, 0.4f), 1f, 1f, 0.9f);
@@ -424,9 +436,9 @@ namespace AdventureKing.Gameplay
             foreach (FarmMonsterView m in c.Victims) if (m) XCut(Center(m), 1.6f, GoldCore, GoldEdge);
             React(c, 1.5f, GoldEdge, tg);
             Sfx("sw3_hit");
-            SkillVfxKit.Shake(0.3f, 0.5f);
-            SkillVfxKit.ZoomPunch(0.07f, 0.45f);
-            SkillVfxKit.HitStop(0.09f);
+            Shake(c, 0.3f, 0.5f);
+            Zoom(c, 0.07f, 0.45f);
+            Stop(c, 0.09f);
             c.Land();
             yield return Wait(0.3f);
             Embers(P(tg + Vector3.up * 0.5f), 26, GoldCore, GoldEdge, r, 1.8f);
@@ -489,8 +501,8 @@ namespace AdventureKing.Gameplay
             ReactNear(c, to, Mathf.Max(1.2f, c.Radius) + 0.4f, 0.8f, FireEdge);
             React(c, 0.2f, FireEdge, from);
             Sfx("mg1_hit");
-            SkillVfxKit.Shake(0.1f, 0.2f);
-            SkillVfxKit.HitStop(0.04f);
+            Shake(c, 0.1f, 0.2f);
+            Stop(c, 0.04f);
             c.Land();
             Embers(to, 10, FireCore, FireEdge, 0.5f, 1.2f);
         }
@@ -527,7 +539,7 @@ namespace AdventureKing.Gameplay
             Smoke(P(tg + Vector3.up * 0.2f), 9, new Color(1.6f, 1.9f, 2.2f), new Color(0.6f, 0.8f, 1f, 0.5f), 1.3f, 0.5f, 1.4f);
             React(c, 0.9f, IceEdge, tg);
             Sfx("mg2_hit");
-            SkillVfxKit.Shake(0.12f, 0.25f);
+            Shake(c, 0.12f, 0.25f);
             c.Land();
         }
 
@@ -542,7 +554,7 @@ namespace AdventureKing.Gameplay
             SkillVfxKit.Layer("ring", new Vector3(land.x, land.y, 0f), 1.4f, IceCore, IceEdge, 0.4f).Ground().Scale(0.2f, 1f, 0.4f).Fade(0f, 0.4f);
             ReactNear(c, at, 1.1f, 0.35f, IceEdge);
             Sfx("mg2_tick", 0.5f);
-            SkillVfxKit.Shake(0.035f, 0.08f);
+            Shake(c, 0.035f, 0.08f);
         }
 
         /// <summary>3 · Thiên Thạch: a crimson-violet seal opens, a burning meteor tears down from the sky — blast, fire
@@ -590,9 +602,9 @@ namespace AdventureKing.Gameplay
             SkillVfxKit.Layer("cracks", tg + Vector3.up * 0.04f, r * 2.4f, new Color(2.2f, 0.8f, 0.3f), new Color(0.3f, 0.05f, 0.1f, 1f), 2.2f).Ground().Scale(0.5f, 1f, 0.2f).Fade(0f, 0.6f).Dissolve(0f, 1f, 0.55f);
             React(c, 1.6f, FireEdge, tg);
             Sfx("mg3_hit");
-            SkillVfxKit.Shake(0.36f, 0.6f);
-            SkillVfxKit.ZoomPunch(0.08f, 0.5f);
-            SkillVfxKit.HitStop(0.1f);
+            Shake(c, 0.36f, 0.6f);
+            Zoom(c, 0.08f, 0.5f);
+            Stop(c, 0.1f);
             c.Land();
             yield return Wait(0.35f);
             Embers(P(tg + Vector3.up * 0.4f), 30, FireCore, ArcEdge, r, 2f);
@@ -652,7 +664,7 @@ namespace AdventureKing.Gameplay
                 }
                 Smoke(Center(m), 4, Ink, InkEdge, 0.7f, 0.5f, 0.6f);
             }
-            SkillVfxKit.Shake(0.06f, 0.14f);
+            Shake(c, 0.06f, 0.14f);
             c.Land();
         }
 
@@ -679,8 +691,8 @@ namespace AdventureKing.Gameplay
                 foreach (FarmMonsterView m in c.Victims) if (m) { XCut(Center(m), last ? 1.5f : 1.1f, last ? CrCore : ShCore, ShEdge); Sparks(Center(m), 8, ShCore, ShEdge, Vector3.up, 90f, 5f); }
                 React(c, last ? 0.9f : 0.4f, ShEdge);
                 Sfx(last ? "as2_hit" : "as2_tick", last ? 1f : 0.7f);
-                SkillVfxKit.Shake(last ? 0.1f : 0.045f, 0.14f);
-                if (last) { SkillVfxKit.HitStop(0.045f); c.Land(); }
+                Shake(c, last ? 0.1f : 0.045f, 0.14f);
+                if (last) { Stop(c, 0.045f); c.Land(); }
             }
             Smoke(feet + Vector3.up * 0.5f, 8, Ink, InkEdge, 1f, 0.8f, 1f);
             Embers(feet + Vector3.up * 0.6f, 10, ShCore, ShEdge, 1f, 1f);
@@ -712,7 +724,7 @@ namespace AdventureKing.Gameplay
                 Sparks(at, 5, ShCore, ShEdge, Quaternion.Euler(0, 0, a) * Vector3.right, 30f, 6f, 0.5f, 0.14f);
                 React(c, 0.3f, i % 2 == 0 ? ShEdge : CrEdge, tg + Vector3.right * (i % 2 == 0 ? -1 : 1));
                 Sfx("as3_tick", 0.6f);
-                SkillVfxKit.Shake(0.035f, 0.06f);
+                Shake(c, 0.035f, 0.06f);
                 yield return Wait(0.09f);
             }
             yield return Wait(0.12f);
@@ -725,9 +737,9 @@ namespace AdventureKing.Gameplay
             Sparks(tg, 30, CrCore, CrEdge, Vector3.up, 160f, 9f, 1.2f, 0.22f);
             React(c, 1.3f, CrEdge);
             Sfx("as3_hit");
-            SkillVfxKit.Shake(0.25f, 0.4f);
-            SkillVfxKit.ZoomPunch(0.06f, 0.35f);
-            SkillVfxKit.HitStop(0.09f);
+            Shake(c, 0.25f, 0.4f);
+            Zoom(c, 0.06f, 0.35f);
+            Stop(c, 0.09f);
             c.Land();
             yield return Wait(0.2f);
             Embers(tg, 14, ShCore, CrEdge, 0.8f, 1.2f);
@@ -770,8 +782,8 @@ namespace AdventureKing.Gameplay
                         SkillVfxKit.Layer("star", at, 1.4f, LeafCore, LeafEdge, 0.22f).Billboard().Scale(0.3f, 1f, 0.4f).Fade(0f, 0.3f);
                         m.React(LeafEdge, 0.7f, f);
                         Sfx("ar1_hit");
-                        SkillVfxKit.Shake(0.07f, 0.12f);
-                        if (hit.Count == 1) { SkillVfxKit.HitStop(0.035f); c.Land(); }
+                        Shake(c, 0.07f, 0.12f);
+                        if (hit.Count == 1) { Stop(c, 0.035f); c.Land(); }
                     }
                 yield return null;
             }
@@ -813,7 +825,7 @@ namespace AdventureKing.Gameplay
             yield return Wait(0.3f);
             React(c, 0.6f, LeafEdge, tg);
             Sfx("ar2_hit");
-            SkillVfxKit.Shake(0.1f, 0.2f);
+            Shake(c, 0.1f, 0.2f);
             c.Land();
         }
 
@@ -881,7 +893,7 @@ namespace AdventureKing.Gameplay
             var trailHost = new GameObject("trail"); trailHost.transform.SetParent(bird, false);
             SkillVfxKit.Trail(trailHost, "flame", 1.2f, 0.4f, PhCore, PhEdge, -4f);
             Flash(from, 2f, PhCore, PhEdge, 0.2f);
-            SkillVfxKit.Shake(0.06f, 0.15f);
+            Shake(c, 0.06f, 0.15f);
             var hit = new HashSet<FarmMonsterView>();
             float t0 = Time.time; int k = 0;
             while (Time.time - t0 < travel && bird)
@@ -900,8 +912,8 @@ namespace AdventureKing.Gameplay
                         Sparks(at, 18, PhCore, PhEdge, Vector3.right * f, 60f, 9f, 1.2f, 0.24f);
                         m.React(PhEdge, 1.1f, f);
                         Sfx("ar3_hit");
-                        SkillVfxKit.Shake(0.13f, 0.18f);
-                        if (hit.Count == 1) { SkillVfxKit.HitStop(0.06f); c.Land(); }
+                        Shake(c, 0.13f, 0.18f);
+                        if (hit.Count == 1) { Stop(c, 0.06f); c.Land(); }
                     }
                 yield return null;
             }
@@ -911,8 +923,8 @@ namespace AdventureKing.Gameplay
             for (int i = 0; i < (SkillVfxKit.Mobile ? 6 : 12); i++)
                 SkillVfxKit.Layer("feather", end, Rnd(0.4f, 0.7f), PhCore, PhEdge, 1.1f).Spin(Rnd(-240, 240)).Move((Vector3)UnityEngine.Random.insideUnitCircle * 3f + Vector3.up, Vector3.down * 1.5f).Fade(0f, 0.45f).Dissolve(0f, 1f, 0.5f);
             Embers(end, 18, PhCore, PhEdge, 0.8f, 1.5f);
-            SkillVfxKit.Shake(0.18f, 0.3f);
-            SkillVfxKit.ZoomPunch(0.05f, 0.35f);
+            Shake(c, 0.18f, 0.3f);
+            Zoom(c, 0.05f, 0.35f);
             c.Land();
         }
 

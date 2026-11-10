@@ -111,7 +111,15 @@ namespace AdventureKing.Gameplay
         private Quaternion FacingRotation() => Quaternion.LookRotation(Dir(), Vector3.up);
 
         /// <summary>A class skill choreography owns this hero: the clip events it borrows must not add the old effects.</summary>
-        private bool SkillShowing => SkillVfxDirector.IsCasting(transform) || (transform.parent && SkillVfxDirector.IsCasting(transform.parent)) || SkillVfxDirector.IsCasting(transform.root);
+        private bool SkillShowing
+        {
+            get
+            {
+                // the cast is keyed by the gameplay root (local player) or the RemoteAvatar root: any ancestor
+                for (Transform t = transform; t; t = t.parent) if (SkillVfxDirector.IsCasting(t)) return true;
+                return false;
+            }
+        }
 
         private void OnAttack()
         {

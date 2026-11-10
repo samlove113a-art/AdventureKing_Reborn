@@ -118,6 +118,28 @@ public sealed class PresenceService
         public float X, Y;
         public int Facing = 1, EmoteSeq;
         public long Ms;
+        // last skill cast seen by others (presentation only): a server-accepted skill on a farm map, or a practice
+        // cast in a safe zone (no monsters, no effect). CastSeq grows by one per cast.
+        public int CastSeq, CastSlot, PracticeSeq;
+        public float CastX, CastY;
+        public string CastTarget = "";
+        public long CastMs;
+    }
+
+    /// <summary>Map without monsters (hub, halls): practice casts reported by the client are shown to others there.</summary>
+    public Func<string, bool>? IsSafeMap { get; set; }
+    public const long PracticeGapMs = 450, CastShowMs = 3000;
+
+    /// <summary>A skill the farm server accepted: stored for the other players' heartbeats.</summary>
+    public void RecordCast(string id, int slot, float x, float y, string target)
+    {
+        lock (gate)
+            if (entries.TryGetValue(id, out var e)) SetCast(e, slot, x, y, target, Clock());
+    }
+
+    private static void SetCast(Entry e, int slot, float x, float y, string target, long t)
+    {
+        e.CastSeq++; e.CastSlot = Math.Clamp(slot, 1, 3); e.CastX = x; e.CastY = y; e.CastTarget = target ?? ""; e.CastMs = t;
     }
 
     public const float MaxSpeed = 14f, Slack = 2.5f;
@@ -136,12 +158,16 @@ public sealed class PresenceService
         lock (gate) return entries.TryGetValue(id, out var e) && e.Map == map && Clock() - e.Ms <= within;
     }
 
-    private static Entry Copy(Entry e) => new() { Id = e.Id, Map = e.Map, Instance = e.Instance, Anim = e.Anim, Emote = e.Emote, X = e.X, Y = e.Y, Facing = e.Facing, EmoteSeq = e.EmoteSeq, Ms = e.Ms };
+    private static Entry Copy(Entry e) => new()
+    {
+        Id = e.Id, Map = e.Map, Instance = e.Instance, Anim = e.Anim, Emote = e.Emote, X = e.X, Y = e.Y, Facing = e.Facing, EmoteSeq = e.EmoteSeq, Ms = e.Ms,
+        CastSeq = e.CastSeq, CastSlot = e.CastSlot, PracticeSeq = e.PracticeSeq, CastX = e.CastX, CastY = e.CastY, CastTarget = e.CastTarget, CastMs = e.CastMs,
+    };
 
     /// <summary>Moves the character (speed-checked against its previous heartbeat on the same map).
     /// Returns the accepted position and whether the client was corrected.</summary>
     public (float x, float y, bool corrected) Update(string id, string map, string instance, float x, float y, int facing, string? anim, string? emote, int emoteSeq,
-        CharacterService.WorldMap bounds, float savedX, float savedY)
+        CharacterService.WorldMap bounds, float savedX, float savedY, int practiceSlot = 0, int practiceSeq = 0)
     {
         long t = Clock();
         lock (gate)
@@ -166,6 +192,15 @@ public sealed class PresenceService
                 Anim = anim != null && Anims.Contains(anim) ? anim : "idle",
                 Emote = emote != null && Emotes.Contains(emote) ? emote : "", EmoteSeq = Math.Clamp(emoteSeq, 0, 1_000_000),
             };
+            if (prev != null && prev.Map == map)
+            {
+                e.CastSeq = prev.CastSeq; e.CastSlot = prev.CastSlot; e.CastX = prev.CastX; e.CastY = prev.CastY;
+                e.CastTarget = prev.CastTarget; e.CastMs = prev.CastMs; e.PracticeSeq = prev.PracticeSeq;
+            }
+            // practice cast (safe zone only, a new counter value, not faster than the global skill gap): shown to others
+            if (practiceSlot is >= 1 and <= 3 && prev != null && practiceSeq != prev.PracticeSeq && IsSafeMap?.Invoke(map) == true && t - e.CastMs >= PracticeGapMs)
+                SetCast(e, practiceSlot, x + e.Facing * 3f, y, "", t);
+            e.PracticeSeq = practiceSeq;
             entries[id] = e;
             return (x, y, corrected);
         }
@@ -384,9 +419,18 @@ public sealed class PeerDto
     public string emote { get; set; } = ""; public int emoteSeq { get; set; }
     public OutfitDto outfit { get; set; } = new(); public string guild { get; set; } = ""; public string guildEmblem { get; set; } = "";
     public string partner { get; set; } = ""; public string title { get; set; } = ""; public bool friend { get; set; }
+    /// <summary>Last skill cast (castSeq grows per cast; castAgeMs = how long ago; target = monster spawn id or "").</summary>
+    public int castSeq { get; set; } public int castSlot { get; set; } public float castX { get; set; } public float castY { get; set; }
+    public string castTarget { get; set; } = ""; public long castAgeMs { get; set; } = -1; // -1 = never cast
 }
 public sealed class BadgesDto { public int friendRequests { get; set; } public int guildInvites { get; set; } public int guildApplications { get; set; } public int proposals { get; set; } }
-public sealed class SyncRequestDto { public float x { get; set; } public float y { get; set; } public int facing { get; set; } = 1; public string? anim { get; set; } public string? emote { get; set; } public int emoteSeq { get; set; } public long chatAfter { get; set; } }
+public sealed class SyncRequestDto
+{
+    public float x { get; set; } public float y { get; set; } public int facing { get; set; } = 1; public string? anim { get; set; } public string? emote { get; set; } public int emoteSeq { get; set; } public long chatAfter { get; set; }
+    /// <summary>Practice cast in a safe zone (slot 1..3, counter): presentation for others only — ignored on farm maps,
+    /// where only the server's own accepted skills are shown.</summary>
+    public int practiceSlot { get; set; } public int practiceSeq { get; set; }
+}
 public sealed class SyncDto
 {
     public long serverMs { get; set; } public string mapId { get; set; } = ""; public bool corrected { get; set; } public float x { get; set; } public float y { get; set; }
@@ -418,7 +462,9 @@ public sealed class SyncService
         if (!CharacterService.Maps.TryGetValue(self.MapId, out var bounds)) throw new GameError("map_unknown", "Bản đồ không hợp lệ.");
         string? guild = SocialDb.GuildOf(c, null, me);
         string instance = self.MapId == GuildHall ? guild ?? "" : "";
-        var (x, y, corrected) = presence.Update(me, self.MapId, instance, req.x, req.y, req.facing, req.anim, req.emote, req.emoteSeq, bounds, self.X, self.Y);
+        var (x, y, corrected) = presence.Update(me, self.MapId, instance, req.x, req.y, req.facing, req.anim, req.emote, req.emoteSeq, bounds, self.X, self.Y,
+            req.practiceSlot, req.practiceSeq);
+        long nowMs = presence.Clock();
 
         var peers = new List<PeerDto>();
         foreach (var e in presence.On(self.MapId, instance, me))
@@ -439,6 +485,8 @@ public sealed class SyncService
                 guild = r.IsDBNull(4) ? "" : r.GetString(4), guildEmblem = r.IsDBNull(5) ? "" : r.GetString(5), title = r.IsDBNull(6) ? "" : r.GetString(6),
                 partner = r.IsDBNull(7) ? "" : r.GetString(7), friend = SocialDb.Friends(c, null, me, e.Id),
                 x = e.X, y = e.Y, facing = e.Facing, anim = e.Anim, emote = e.Emote, emoteSeq = e.EmoteSeq,
+                castSeq = e.CastSeq, castSlot = e.CastSlot, castX = e.CastX, castY = e.CastY, castTarget = e.CastTarget,
+                castAgeMs = e.CastSeq == 0 ? -1 : Math.Max(0, nowMs - e.CastMs),
             });
         }
         var (msgs, cursor) = chat.Since(c, null, me, req.chatAfter);

@@ -292,6 +292,7 @@ namespace AdventureKing.Gameplay
                 if (fromAuto) return;
                 var visual = world.Player.GetComponent<CharacterVisual3D>();
                 if (SkillVfxDirector.IsCasting(world.Player.transform)) return;
+                WorldSync.ReportPractice(slot); // the other players in the safe zone see this practice cast
                 // practice: the full skill effect plays at a point ahead (no monster, no damage)
                 var motor = world.Player.GetComponent<PlayerMotor2D>();
                 int facing = motor ? motor.Facing : 1;
