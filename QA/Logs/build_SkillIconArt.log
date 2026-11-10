@@ -1,0 +1,625 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 5132)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 16828)
+VBCSCompiler prewarm took 6.65 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-10T02:26:31Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 12752)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
+-batchmode
+-projectPath
+.
+-executeMethod
+AdventureKing.ArtPipeline.SkillIconArt.BuildFromCommandLine
+-logFile
+QA/Logs/build_SkillIconArt.log
+Successfully changed project path to: C:/AdventureKing_Reborn
+C:/AdventureKing_Reborn
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [4012]  Target information:
+
+Player connection [4012]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 3695736143 [EditorId] 3695736143 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [4012] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [4012] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-10T02:26:31.7341587Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 12752, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-16644" after 0.6 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              43a5fa335e1844779b412845b26a7ded
+  Correlation Id:          186ce85c779038deb9aeea6b70809ebd
+  External correlation Id: 8939731295425776984
+  Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.19s, handshake: 0.08s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-10T02:26:31.9954974Z"
+[Licensing::Module] Connected to LicensingClient (PId: 12752, launch time: 0.00, total connection time: 0.83s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968527504213-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.89s
+[Licensing::Module] Licensing is initialized (took 0.14s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/AdventureKing_RebornUnity Data Store running and initialised
+[Physics::Module] Selected backend (deferred post-plugins).
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.6.7f1 (b22767f04f04)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=262144, entitiesPerBlock=1024, blocksPerSlotPage=0, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/AdventureKing_Reborn/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+d3d12: failed to query info queue interface (0x80004002).
+Direct3D:
+    Version:         Direct3D 12 [level 12.1]
+    Renderer:        NVIDIA GeForce GTX 1050 Ti (ID=0x1c82)
+    Vendor:          NVIDIA
+    VRAM:            4004 MB
+    App VRAM Budget: 3403 MB
+    Driver:          32.0.15.7680
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56644
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.009286 seconds.
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.246 seconds
+Domain Reload Profiling: 2191ms
+	BeginReloadAssembly (219ms)
+		CreateAndSetChildDomain (35ms)
+	RebuildCommonClasses (8ms)
+	RebuildNativeTypeToScriptingClass (28ms)
+	initialDomainReloadingComplete (112ms)
+	LoadAllAssembliesAndSetupDomain (577ms)
+		LoadAssemblies (183ms)
+		TypeCache.Refresh (393ms)
+			TypeCache.ScanAssembly (370ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (1248ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (17ms)
+			BeforeProcessingInitializeOnLoad (176ms)
+			ProcessInitializeOnLoadAttributes (205ms)
+			ProcessInitializeOnLoadMethodAttributes (506ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 31 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.inputsystem@1.20.1 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.inputsystem@2436e68c60c4)
+    com.unity.searcher@4.9.5 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.profiling.core@1.0.3 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.sprite@752945c75a6f)
+    com.unity.2d.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.tilemap@f4c7bd71ac8a)
+    com.unity.render-pipelines.universal@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal@ffe395a3a1d1)
+    com.unity.test-framework@1.8.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework@ee3fe9477490)
+    com.unity.ugui@2.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ugui@eb824e41fbc7)
+    com.unity.modules.animation@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.audio@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.modules.physics@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.ext.nunit@2.1.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.render-pipelines.core@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.core@13460d8ea9e5)
+    com.unity.shadergraph@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.shadergraph@8b7e693cdbfe)
+    com.unity.render-pipelines.universal-config@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal-config@561422b74439)
+    com.unity.graph-authoring@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.graph-authoring@cfd2588851ee)
+    com.unity.burst@2.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.collections@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.collections@4920e8897b5a)
+    com.unity.test-framework.performance@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework.performance@e8b39e3ef3d9)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+DisplayProgressbar: Compiling Scripts
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\DotNetSdk\dotnet.exe "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 4 Duration: 0s961ms
+[620/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+*** Tundra requires additional run (0.92 seconds), 2 items updated, 779 evaluated
+ExitCode: 0 Duration: 1s503ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 0 Duration: 4s829ms
+Finished compiling graph: 807 nodes, 14176 flattened edges (12130 ToBuild, 120 ToUse), maximum node priority 901
+[390/804    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.rsp
+[471/804    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.rsp
+[620/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[780/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll (+2 others)
+Assets\Scripts\Gameplay\LoginBackdrop.cs(26,23): warning CS0414: The field 'LoginBackdrop.raysImg' is assigned but its value is never used
+[781/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll (+2 others)
+[782/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Gameplay.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll, with 148 defines and 280 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[783/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.pdb
+[784/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.dll
+[785/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll, with 148 defines and 279 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[786/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.dll
+[787/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.pdb
+[788/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll (+2 others)
+[789/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll, with 146 defines and 313 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[790/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.Editor.pdb
+[791/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.QA.Editor.dll
+[792/804    0s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.EditMode.dll (+2 others)
+[793/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.EditMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.EditMode.dll, with 146 defines and 310 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[794/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.EditMode.dll
+[795/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.EditMode.pdb
+[796/804    1s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll (+2 others)
+[797/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.PlayMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll, with 148 defines and 276 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[798/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll
+[799/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.pdb
+[800/804    2s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll (+2 others)
+Assets\Editor\ArtPipeline\HeroHandRig.cs(79,29): warning CS8321: The local function 'Pieces' is declared but never used
+
+Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
+[801/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.ArtPipeline.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll, with 146 defines and 314 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[802/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.pdb
+[803/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.ArtPipeline.Editor.dll
+*** Tundra build success (4.80 seconds), 27 items updated, 804 evaluated
+Assets\Scripts\Gameplay\LoginBackdrop.cs(26,23): warning CS0414: The field 'LoginBackdrop.raysImg' is assigned but its value is never used
+Assets\Editor\ArtPipeline\HeroHandRig.cs(79,29): warning CS8321: The local function 'Pieces' is declared but never used
+Assets\Editor\ArtPipeline\PlatformBuilds.cs(40,52): warning CS0618: 'AndroidSdkVersions.AndroidApiLevel24' is obsolete: 'Minimum supported Android API level is 26 (Android 8.0). Please use AndroidApiLevel26 or higher. This warning will become an error on a next release.'
+AssetDatabase: script compilation time: 7.999715s
+Begin MonoManager ReloadAssembly
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.543 seconds
+Domain Reload Profiling: 3464ms
+	BeginReloadAssembly (602ms)
+		DisableScriptedObjects (41ms)
+		CreateAndSetChildDomain (205ms)
+	RebuildCommonClasses (17ms)
+	RebuildNativeTypeToScriptingClass (44ms)
+	initialDomainReloadingComplete (106ms)
+	LoadAllAssembliesAndSetupDomain (1150ms)
+		LoadAssemblies (536ms)
+		TypeCache.Refresh (284ms)
+			TypeCache.ScanAssembly (256ms)
+		AnalyzeDomain (100ms)
+			BuildScriptInfoCaches (83ms)
+			ResolveRequiredComponents (14ms)
+	FinalizeReload (1544ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (6ms)
+			InitializePlatformSupportModulesInManaged (20ms)
+			BeforeProcessingInitializeOnLoad (257ms)
+			ProcessInitializeOnLoadAttributes (314ms)
+			ProcessInitializeOnLoadMethodAttributes (431ms)
+			AfterProcessingInitializeOnLoad (11ms)
+			EditorAssembliesLoaded (3ms)
+		AwakeInstancesAfterBackupRestoration (60ms)
+Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=fb56dcd2a3ab2f7499d41e8a9853329e): Total: 12.561 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2124 ms
+		Asset DB Callback time: managed=297 ms, native=30 ms
+		Scripting: domain reloads=1, domain reload time=2022 ms, compile time=8001 ms, other=83 ms
+		Project Asset Count: scripts=978, non-scripts=2592
+		Asset File Changes: new=3, changed=12, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 20.353ms
+	ApplyChangesToAssetFolders: 0.595ms
+	Scan: 98.866ms
+	Collect global state as custom dependencies: 36.097ms
+	OnSourceAssetsModified: 1.102ms
+	CategorizeScriptCompilationAssets: 25.835ms
+	ProcessAssetsWithTransientArtifactChanges: 112.083ms
+	CategorizeAssets: 83.814ms
+	CompileScripts: 8001.484ms
+	ImportOutOfDateAssets: 1559.181ms (1550.541ms without children)
+		UnloadImportedAssets: 3.464ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.356ms
+		ImportSchedulerStart: 3.775ms
+	PostProcessAllAssets: 298.980ms
+		VCAutoAddAssetPostprocess 1.690ms
+		VersionControlSettings.HiddenFilePostprocess 0.303ms
+		PostProcessCallbackCreateDeferredMaterials 0.207ms
+		XRBuildSystem.XRAssetImported 0.174ms
+		ShaderAssetModifiedCallback 0.093ms
+		MonoPostProcessAllAssets: 294.873ms
+			AssetPostprocessor.OnPostprocessAllAssets 159.679ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 28.756ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 23.815ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 14.770ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 4.620ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 4.291ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 3.994ms
+			AssetChangedListener.OnPostprocessAllAssets 3.106ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.851ms
+			SyncVS.PostprocessSyncProject 2.715ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.936ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.423ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.279ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 1.138ms
+			MaterialPostprocessor.OnPostprocessAllAssets 1.084ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.871ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.865ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.835ms
+			AssetProcessor.OnPostprocessAllAssets 0.728ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.644ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.559ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.548ms
+			PostProcessor.OnPostprocessAllAssets 0.532ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.486ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.411ms
+			AssetEvents.OnPostprocessAllAssets 0.396ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.396ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.320ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.289ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.271ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.253ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.225ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.199ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.142ms
+	PostAssetChangesProfiler: 10.037ms
+	UnloadStreamsBegin: 2.424ms
+	PersistCurrentRevisions: 0.210ms
+	GenerateScriptTypeHashes: 2.666ms
+	GenerateScriptTypeSerializationHashes: 4.966ms
+	Untracked: 2300.693ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 3.135ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Adventure King Reborn
+Unloading 66 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3964 unused Assets / (9.5 MB). Loaded Objects now: 4916.
+Memory consumption went from 350.6 MB to 341.1 MB.
+Total: 18.282400 ms (FindLiveObjects: 0.780400 ms CreateObjectMapping: 0.316200 ms MarkObjects: 11.352100 ms  DeleteObjects: 5.519500 ms)
+
+Curl error 35: Recv failure: Connection was reset
+Worker ready: AssetImportWorkerHW0 0
+Importing 'GUID: 1319a3ef7df3ac8448cf61bfde0643f7 - Path: Assets/Art/UI/Skills/skill_sword_wind_slash.png' with importer (TextureImporter)
+Imported 'GUID: 1319a3ef7df3ac8448cf61bfde0643f7' -> (Import Result ID: '4edf81c748d6c8f8c9548fe7233c49d0') in 0.073 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6261e5b096af20d5b0d2c2563c0df404 DependenciesID=a62fe038f7d6ae69d42bf3552ae60672 StaticDependenciesID=e7382e68a0ed7239192d249e9ac7b815 
+Asset Pipeline Refresh (id=c7b398688f63d314c962fdf8f55662a7): Total: 0.256 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 1319a3ef7df3ac8448cf61bfde0643f7 - Path: Assets/Art/UI/Skills/skill_sword_wind_slash.png' with importer (TextureImporter)
+Imported 'GUID: 1319a3ef7df3ac8448cf61bfde0643f7' -> (Import Result ID: '4edf81c748d6c8f8c9548fe7233c49d0') in 0.067 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6261e5b096af20d5b0d2c2563c0df404 DependenciesID=a62fe038f7d6ae69d42bf3552ae60672 StaticDependenciesID=e7382e68a0ed7239192d249e9ac7b815 
+Asset Pipeline Refresh (id=e645defe2955ec14da163ff007cf3ba8): Total: 0.089 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: f686e27adbbe9994cb9e074d04ecefb2 - Path: Assets/Art/UI/Skills/skill_sword_whirl.png' with importer (TextureImporter)
+Imported 'GUID: f686e27adbbe9994cb9e074d04ecefb2' -> (Import Result ID: '98111b22c6146e73081b034809fd6d01') in 0.059 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=14c09f5de726f4c48ecf1c39c8d939c6 DependenciesID=390bbfe63832f8997a9f7668eb8d5006 StaticDependenciesID=10f4eaf3fcfed82ad941bad94eff983f 
+Asset Pipeline Refresh (id=e33544faeb9aac245825864ec9445242): Total: 0.079 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: f686e27adbbe9994cb9e074d04ecefb2 - Path: Assets/Art/UI/Skills/skill_sword_whirl.png' with importer (TextureImporter)
+Imported 'GUID: f686e27adbbe9994cb9e074d04ecefb2' -> (Import Result ID: '98111b22c6146e73081b034809fd6d01') in 0.056 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=14c09f5de726f4c48ecf1c39c8d939c6 DependenciesID=390bbfe63832f8997a9f7668eb8d5006 StaticDependenciesID=10f4eaf3fcfed82ad941bad94eff983f 
+Asset Pipeline Refresh (id=0f32052ff49f36a42b64c3f84f4d169c): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: f56a3b099342bce48844fe5c7277ec2e - Path: Assets/Art/UI/Skills/skill_sword_heaven_blade.png' with importer (TextureImporter)
+Imported 'GUID: f56a3b099342bce48844fe5c7277ec2e' -> (Import Result ID: '168e726c5bd80bc4f3ff8fb5eddc48e4') in 0.061 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=45690921d260d753ce56fb9e35e7349a DependenciesID=5f911f39df4f06292c3b855ecbab1ee5 StaticDependenciesID=42a1a1e55b7d9ef06ef81dc51f8add1c 
+Asset Pipeline Refresh (id=8dbb3cb9d30c8a94b91163dc73de84a6): Total: 0.080 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: f56a3b099342bce48844fe5c7277ec2e - Path: Assets/Art/UI/Skills/skill_sword_heaven_blade.png' with importer (TextureImporter)
+Imported 'GUID: f56a3b099342bce48844fe5c7277ec2e' -> (Import Result ID: '168e726c5bd80bc4f3ff8fb5eddc48e4') in 0.056 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=45690921d260d753ce56fb9e35e7349a DependenciesID=5f911f39df4f06292c3b855ecbab1ee5 StaticDependenciesID=42a1a1e55b7d9ef06ef81dc51f8add1c 
+Asset Pipeline Refresh (id=b6bd8410ca6bb2641814b7fbe84a216b): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: ed01a0e314779274f9079c1e0e0bfdef - Path: Assets/Art/UI/Skills/skill_mage_fireball.png' with importer (TextureImporter)
+Imported 'GUID: ed01a0e314779274f9079c1e0e0bfdef' -> (Import Result ID: '396a16d390f8d898440d1e9351296e6d') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=273d3821aedb243316feaa33fe5aa6f0 DependenciesID=1addea3900fdf30e0edb1e76c7a8f463 StaticDependenciesID=c68968089c2a5987b8f1f5682ebb8ddd 
+Asset Pipeline Refresh (id=ac74e87963222c74fbf7f3b85949f07e): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: ed01a0e314779274f9079c1e0e0bfdef - Path: Assets/Art/UI/Skills/skill_mage_fireball.png' with importer (TextureImporter)
+Imported 'GUID: ed01a0e314779274f9079c1e0e0bfdef' -> (Import Result ID: '396a16d390f8d898440d1e9351296e6d') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=273d3821aedb243316feaa33fe5aa6f0 DependenciesID=1addea3900fdf30e0edb1e76c7a8f463 StaticDependenciesID=c68968089c2a5987b8f1f5682ebb8ddd 
+Asset Pipeline Refresh (id=1bbdea8ab079008449df88634215f0e8): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 4b09343f933694d45a59d402c24517a9 - Path: Assets/Art/UI/Skills/skill_mage_ice_storm.png' with importer (TextureImporter)
+Imported 'GUID: 4b09343f933694d45a59d402c24517a9' -> (Import Result ID: '1fb3006339f5d06db6ff232f8b9e1d7c') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=848ef3eb4a4e54e5f0c933384a887da8 DependenciesID=c648cf0989b2362c5107b08289eafcab StaticDependenciesID=c3125953c14ccdc3aa14612f67556db4 
+Asset Pipeline Refresh (id=cfa72a6ead7be094f87c4f061b4fce70): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 4b09343f933694d45a59d402c24517a9 - Path: Assets/Art/UI/Skills/skill_mage_ice_storm.png' with importer (TextureImporter)
+Imported 'GUID: 4b09343f933694d45a59d402c24517a9' -> (Import Result ID: '1fb3006339f5d06db6ff232f8b9e1d7c') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=848ef3eb4a4e54e5f0c933384a887da8 DependenciesID=c648cf0989b2362c5107b08289eafcab StaticDependenciesID=c3125953c14ccdc3aa14612f67556db4 
+Asset Pipeline Refresh (id=5e2c41be19830b0418d401341f3aacbb): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: f3148f91205d6a744945062b5afb0da7 - Path: Assets/Art/UI/Skills/skill_mage_meteor.png' with importer (TextureImporter)
+Imported 'GUID: f3148f91205d6a744945062b5afb0da7' -> (Import Result ID: '2b1fe4e0956e51f97d870290b9c3eba8') in 0.060 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=85495357ece87d6f7d3dde478f014e54 DependenciesID=18dd634b3ce4076146e7151e7ed920e3 StaticDependenciesID=f15cea0213d528f6af7752590ba55f29 
+Asset Pipeline Refresh (id=0709d5a015b8c854bb6353587fea646b): Total: 0.079 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: f3148f91205d6a744945062b5afb0da7 - Path: Assets/Art/UI/Skills/skill_mage_meteor.png' with importer (TextureImporter)
+Imported 'GUID: f3148f91205d6a744945062b5afb0da7' -> (Import Result ID: '2b1fe4e0956e51f97d870290b9c3eba8') in 0.058 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=85495357ece87d6f7d3dde478f014e54 DependenciesID=18dd634b3ce4076146e7151e7ed920e3 StaticDependenciesID=f15cea0213d528f6af7752590ba55f29 
+Asset Pipeline Refresh (id=42c1527405d26544dba0793c76e0a973): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: a921de929383ef24897433d084cbfb97 - Path: Assets/Art/UI/Skills/skill_assassin_dagger.png' with importer (TextureImporter)
+Imported 'GUID: a921de929383ef24897433d084cbfb97' -> (Import Result ID: '411b00aee59406c182ce4778b994de9d') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0caa2eeaae04171b9aec7c1133cdf9fd DependenciesID=38f8f8316a2b3377d922b5edef180e47 StaticDependenciesID=6c54e7998557389e9bd492c4824ac2cd 
+Asset Pipeline Refresh (id=dfc6932b6273afa4e8b3145bd679c14f): Total: 0.075 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: a921de929383ef24897433d084cbfb97 - Path: Assets/Art/UI/Skills/skill_assassin_dagger.png' with importer (TextureImporter)
+Imported 'GUID: a921de929383ef24897433d084cbfb97' -> (Import Result ID: '411b00aee59406c182ce4778b994de9d') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0caa2eeaae04171b9aec7c1133cdf9fd DependenciesID=38f8f8316a2b3377d922b5edef180e47 StaticDependenciesID=6c54e7998557389e9bd492c4824ac2cd 
+Asset Pipeline Refresh (id=949b4b8ef7c6eb94ea95e01808b3e6d3): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: b49644fc86616084e9e7fa37b73f3956 - Path: Assets/Art/UI/Skills/skill_assassin_clone.png' with importer (TextureImporter)
+Imported 'GUID: b49644fc86616084e9e7fa37b73f3956' -> (Import Result ID: 'b4939d8b565b4f45dbc283c5b100da6c') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=28ae8d525955fad0d0e48c02e0d46653 DependenciesID=a4ce9cf33f360563e2f6f8dc453705e4 StaticDependenciesID=1a1e9f9626744677d2255408613a715f 
+Asset Pipeline Refresh (id=714df2f5c90b45241ba6e470c336c25b): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: b49644fc86616084e9e7fa37b73f3956 - Path: Assets/Art/UI/Skills/skill_assassin_clone.png' with importer (TextureImporter)
+Imported 'GUID: b49644fc86616084e9e7fa37b73f3956' -> (Import Result ID: 'b4939d8b565b4f45dbc283c5b100da6c') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=28ae8d525955fad0d0e48c02e0d46653 DependenciesID=a4ce9cf33f360563e2f6f8dc453705e4 StaticDependenciesID=1a1e9f9626744677d2255408613a715f 
+Asset Pipeline Refresh (id=e01dea2a93112b54a92e5854dc254c5c): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 15a1c7672a86a4c4f95e2fa4c2c7f796 - Path: Assets/Art/UI/Skills/skill_assassin_combo.png' with importer (TextureImporter)
+Imported 'GUID: 15a1c7672a86a4c4f95e2fa4c2c7f796' -> (Import Result ID: 'ed9d96d5d01a0d1c00c9fd4b1327036f') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8a691cc1d5d907d126b5060a4f0f8fd7 DependenciesID=409d7f362afc2673b18a46c8bdf4b315 StaticDependenciesID=a5b98bf810d416ff9c2bd434b58d12a3 
+Asset Pipeline Refresh (id=df926a037cee7574a8da52cb64d0ce5b): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 15a1c7672a86a4c4f95e2fa4c2c7f796 - Path: Assets/Art/UI/Skills/skill_assassin_combo.png' with importer (TextureImporter)
+Imported 'GUID: 15a1c7672a86a4c4f95e2fa4c2c7f796' -> (Import Result ID: 'ed9d96d5d01a0d1c00c9fd4b1327036f') in 0.053 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8a691cc1d5d907d126b5060a4f0f8fd7 DependenciesID=409d7f362afc2673b18a46c8bdf4b315 StaticDependenciesID=a5b98bf810d416ff9c2bd434b58d12a3 
+Asset Pipeline Refresh (id=94b5c6815768bbf479c0ef7b8d1b8837): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 264460cec5d89124e93074d0dfb00aa3 - Path: Assets/Art/UI/Skills/skill_archer_pierce.png' with importer (TextureImporter)
+Imported 'GUID: 264460cec5d89124e93074d0dfb00aa3' -> (Import Result ID: '5e7c177624f930d13f17f9430b3377ae') in 0.056 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c7ccd5d759bad16d368cc10fc5f197ab DependenciesID=dfeb012508fe6bf16149eb3ff85ca19c StaticDependenciesID=1698b24344b87b5e75ffab27cb3d612a 
+Asset Pipeline Refresh (id=7f319262cdc099249b64726e9fa02de4): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 264460cec5d89124e93074d0dfb00aa3 - Path: Assets/Art/UI/Skills/skill_archer_pierce.png' with importer (TextureImporter)
+Imported 'GUID: 264460cec5d89124e93074d0dfb00aa3' -> (Import Result ID: '5e7c177624f930d13f17f9430b3377ae') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c7ccd5d759bad16d368cc10fc5f197ab DependenciesID=dfeb012508fe6bf16149eb3ff85ca19c StaticDependenciesID=1698b24344b87b5e75ffab27cb3d612a 
+Asset Pipeline Refresh (id=0a80e08d7229bd74cbeec33a529b5ea7): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: c72c9843e4df7904cb25ced14bc728f5 - Path: Assets/Art/UI/Skills/skill_archer_rain.png' with importer (TextureImporter)
+Imported 'GUID: c72c9843e4df7904cb25ced14bc728f5' -> (Import Result ID: '54fc273b06e3aa16a2c159624266e7ed') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bc3eba3fab610fd1a1ba2cb1caafa46c DependenciesID=47bcf47bd0e7f3b4ea77dc2c1cefdbf2 StaticDependenciesID=7f5b803efff12d5baf48af377bddb22a 
+Asset Pipeline Refresh (id=52fc9ee9165304243a79a69deb158255): Total: 0.075 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: c72c9843e4df7904cb25ced14bc728f5 - Path: Assets/Art/UI/Skills/skill_archer_rain.png' with importer (TextureImporter)
+Imported 'GUID: c72c9843e4df7904cb25ced14bc728f5' -> (Import Result ID: '54fc273b06e3aa16a2c159624266e7ed') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bc3eba3fab610fd1a1ba2cb1caafa46c DependenciesID=47bcf47bd0e7f3b4ea77dc2c1cefdbf2 StaticDependenciesID=7f5b803efff12d5baf48af377bddb22a 
+Asset Pipeline Refresh (id=8903c81185f59cb47b7379a572c946b9): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 0012283439003a94e9fb5c73b309b866 - Path: Assets/Art/UI/Skills/skill_archer_phoenix.png' with importer (TextureImporter)
+Imported 'GUID: 0012283439003a94e9fb5c73b309b866' -> (Import Result ID: '7cca7e874d084d8720bc7d7c80640b29') in 0.059 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fd74b4b81ba1add8c870f7f6ffca0035 DependenciesID=d1367cf137771e3a0bccc423ab190849 StaticDependenciesID=1d3385dbeefc4871c6c058baf7bdfa9d 
+Asset Pipeline Refresh (id=9bbde7340ec9c0c45982eec9100e502d): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 0012283439003a94e9fb5c73b309b866 - Path: Assets/Art/UI/Skills/skill_archer_phoenix.png' with importer (TextureImporter)
+Imported 'GUID: 0012283439003a94e9fb5c73b309b866' -> (Import Result ID: '7cca7e874d084d8720bc7d7c80640b29') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fd74b4b81ba1add8c870f7f6ffca0035 DependenciesID=d1367cf137771e3a0bccc423ab190849 StaticDependenciesID=1d3385dbeefc4871c6c058baf7bdfa9d 
+Asset Pipeline Refresh (id=34e44574f14edae479dd8c3ee2c55a5d): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 0f760c12a7e4b7a45b5f928bfa8a95d7 - Path: Assets/Art/UI/Skills/action_attack.png' with importer (TextureImporter)
+Imported 'GUID: 0f760c12a7e4b7a45b5f928bfa8a95d7' -> (Import Result ID: '74f98c7cd4bfddae50bf56c517f79b44') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7ae1bea30e95e60c5c192aac3656188b DependenciesID=507c3f1c545293412d4b69e656c2994a StaticDependenciesID=d75bc83587d1fc0ae7303c0c157e65e6 
+Asset Pipeline Refresh (id=94dca1b86ffc12a41b3195bfe28d484a): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 0f760c12a7e4b7a45b5f928bfa8a95d7 - Path: Assets/Art/UI/Skills/action_attack.png' with importer (TextureImporter)
+Imported 'GUID: 0f760c12a7e4b7a45b5f928bfa8a95d7' -> (Import Result ID: '74f98c7cd4bfddae50bf56c517f79b44') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7ae1bea30e95e60c5c192aac3656188b DependenciesID=507c3f1c545293412d4b69e656c2994a StaticDependenciesID=d75bc83587d1fc0ae7303c0c157e65e6 
+Asset Pipeline Refresh (id=0372e79d66172a94fb811f2356f8899e): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: b2bd8e8a4cfaf5840ae7e04b4a3d91cd - Path: Assets/Art/UI/Skills/action_auto.png' with importer (TextureImporter)
+Imported 'GUID: b2bd8e8a4cfaf5840ae7e04b4a3d91cd' -> (Import Result ID: 'f400b36636f8dbddc5ede99badedfd7f') in 0.060 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=38ffaf3e8109386128d591fc4d6b1ca3 DependenciesID=535ae9fba2b85b42a9b46558c9855807 StaticDependenciesID=bd5f3a254376d660f8ca39f46bac7b94 
+Asset Pipeline Refresh (id=06ac26f23e645304bb7776ea52dc2ec4): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: b2bd8e8a4cfaf5840ae7e04b4a3d91cd - Path: Assets/Art/UI/Skills/action_auto.png' with importer (TextureImporter)
+Imported 'GUID: b2bd8e8a4cfaf5840ae7e04b4a3d91cd' -> (Import Result ID: 'f400b36636f8dbddc5ede99badedfd7f') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=38ffaf3e8109386128d591fc4d6b1ca3 DependenciesID=535ae9fba2b85b42a9b46558c9855807 StaticDependenciesID=bd5f3a254376d660f8ca39f46bac7b94 
+Asset Pipeline Refresh (id=c0f8c2b3719575241bd2c07b50c7a938): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: df408b9bba9aa7c4e943babef763b365 - Path: Assets/Art/UI/Skills/action_pickup.png' with importer (TextureImporter)
+Imported 'GUID: df408b9bba9aa7c4e943babef763b365' -> (Import Result ID: '19998da3f946e9b2b346ec50309abbb2') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1b97c44ca1b806971fabf221759b8ae1 DependenciesID=6c3a3feafdec1c49aac46372d38cf6d3 StaticDependenciesID=c0e8ce96d8dfc39fba7fa17329a57183 
+Asset Pipeline Refresh (id=39545779ee12a2247beb44fd444c18ba): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: df408b9bba9aa7c4e943babef763b365 - Path: Assets/Art/UI/Skills/action_pickup.png' with importer (TextureImporter)
+Imported 'GUID: df408b9bba9aa7c4e943babef763b365' -> (Import Result ID: '19998da3f946e9b2b346ec50309abbb2') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=1b97c44ca1b806971fabf221759b8ae1 DependenciesID=6c3a3feafdec1c49aac46372d38cf6d3 StaticDependenciesID=c0e8ce96d8dfc39fba7fa17329a57183 
+Asset Pipeline Refresh (id=3c58741468091004991dd828587c03ab): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 08c7f7dad319a014c8ef480b5cfed71a - Path: Assets/Art/UI/Skills/action_potion_hp.png' with importer (TextureImporter)
+Imported 'GUID: 08c7f7dad319a014c8ef480b5cfed71a' -> (Import Result ID: 'fd172f357df286742b47567196bfbbc3') in 0.058 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5328833f7f5e9d65d3a49b672c2359ce DependenciesID=fe41a9e6dda91c0c875e8e89ccb20a09 StaticDependenciesID=ea258f432c9bc47e127caca7316432dd 
+Asset Pipeline Refresh (id=b256f4988ffa1c54e8ad4e6484a18bc7): Total: 0.081 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 08c7f7dad319a014c8ef480b5cfed71a - Path: Assets/Art/UI/Skills/action_potion_hp.png' with importer (TextureImporter)
+Imported 'GUID: 08c7f7dad319a014c8ef480b5cfed71a' -> (Import Result ID: 'fd172f357df286742b47567196bfbbc3') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5328833f7f5e9d65d3a49b672c2359ce DependenciesID=fe41a9e6dda91c0c875e8e89ccb20a09 StaticDependenciesID=ea258f432c9bc47e127caca7316432dd 
+Asset Pipeline Refresh (id=4e86a859dcaebeb499f44b65e767790b): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 50575cd3814130c4fb95512df92f4cf7 - Path: Assets/Art/UI/Skills/action_potion_mp.png' with importer (TextureImporter)
+Imported 'GUID: 50575cd3814130c4fb95512df92f4cf7' -> (Import Result ID: '18d475203c2bc60daa560709f10a41c1') in 0.056 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=71cf4cf7f7a5f96ce970bfe085c9982d DependenciesID=ea9f4fe6467c5eb218ee43c8caca7230 StaticDependenciesID=88040dabb2329c3805dfb98fa4c3e328 
+Asset Pipeline Refresh (id=2f38613118310384f99c6a1097224eab): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 50575cd3814130c4fb95512df92f4cf7 - Path: Assets/Art/UI/Skills/action_potion_mp.png' with importer (TextureImporter)
+Imported 'GUID: 50575cd3814130c4fb95512df92f4cf7' -> (Import Result ID: '18d475203c2bc60daa560709f10a41c1') in 0.052 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=71cf4cf7f7a5f96ce970bfe085c9982d DependenciesID=ea9f4fe6467c5eb218ee43c8caca7230 StaticDependenciesID=88040dabb2329c3805dfb98fa4c3e328 
+Asset Pipeline Refresh (id=f2b5776d074ad7842b876cbff7daf9bf): Total: 0.069 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 49c376a080c11c646b767ed0a489765e - Path: Assets/Art/UI/Skills/item_weapon_sword.png' with importer (TextureImporter)
+Imported 'GUID: 49c376a080c11c646b767ed0a489765e' -> (Import Result ID: 'ca9f0a2525b9a41e99777f11deb78474') in 0.059 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b6c8e9cda452a038e40370c1277de6ac DependenciesID=0ee99796180df811f39cfa85884db65e StaticDependenciesID=8504135496ff285a28c28bd6a8427e78 
+Asset Pipeline Refresh (id=1a7aa9e1e46ac264c82236d05fa24a81): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 49c376a080c11c646b767ed0a489765e - Path: Assets/Art/UI/Skills/item_weapon_sword.png' with importer (TextureImporter)
+Imported 'GUID: 49c376a080c11c646b767ed0a489765e' -> (Import Result ID: 'ca9f0a2525b9a41e99777f11deb78474') in 0.058 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b6c8e9cda452a038e40370c1277de6ac DependenciesID=0ee99796180df811f39cfa85884db65e StaticDependenciesID=8504135496ff285a28c28bd6a8427e78 
+Asset Pipeline Refresh (id=7f47a27bfb2eb3c4a881b20b939a7a0e): Total: 0.075 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: fa9dc5888d43ced45abd80898db44168 - Path: Assets/Art/UI/Skills/item_weapon_staff.png' with importer (TextureImporter)
+Imported 'GUID: fa9dc5888d43ced45abd80898db44168' -> (Import Result ID: '43e8fc968aed5c317e3e15b46778821d') in 0.058 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=59e782d1891a431d499603c7ed54744c DependenciesID=7b39adc7bdec6278c77f3c82ca53b280 StaticDependenciesID=8e04f36b0cdf96c317aecc29ecc52572 
+Asset Pipeline Refresh (id=89e08e21c0960704c95c879b9a7fb548): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: fa9dc5888d43ced45abd80898db44168 - Path: Assets/Art/UI/Skills/item_weapon_staff.png' with importer (TextureImporter)
+Imported 'GUID: fa9dc5888d43ced45abd80898db44168' -> (Import Result ID: '43e8fc968aed5c317e3e15b46778821d') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=59e782d1891a431d499603c7ed54744c DependenciesID=7b39adc7bdec6278c77f3c82ca53b280 StaticDependenciesID=8e04f36b0cdf96c317aecc29ecc52572 
+Asset Pipeline Refresh (id=9db7ec6fc1efed948a771047073740e4): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 644b3372e80dd7b4f805c78288b214ea - Path: Assets/Art/UI/Skills/item_weapon_dagger.png' with importer (TextureImporter)
+Imported 'GUID: 644b3372e80dd7b4f805c78288b214ea' -> (Import Result ID: '35454dd01607bd0e4c5c4ecd27c095e4') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0e8963cf5f58dcedbd1aa8d5baca8876 DependenciesID=4362741e4070e400f8a2bbddfddd44c1 StaticDependenciesID=e6942de66bc6a003437806ba63c0772a 
+Asset Pipeline Refresh (id=618f209099961c242b68f7fb4333a076): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 644b3372e80dd7b4f805c78288b214ea - Path: Assets/Art/UI/Skills/item_weapon_dagger.png' with importer (TextureImporter)
+Imported 'GUID: 644b3372e80dd7b4f805c78288b214ea' -> (Import Result ID: '35454dd01607bd0e4c5c4ecd27c095e4') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0e8963cf5f58dcedbd1aa8d5baca8876 DependenciesID=4362741e4070e400f8a2bbddfddd44c1 StaticDependenciesID=e6942de66bc6a003437806ba63c0772a 
+Asset Pipeline Refresh (id=af8865e9958667340901dc23053614c4): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 8e7ec2c39cc3c3148a8b922bf5f634c3 - Path: Assets/Art/UI/Skills/item_weapon_bow.png' with importer (TextureImporter)
+Imported 'GUID: 8e7ec2c39cc3c3148a8b922bf5f634c3' -> (Import Result ID: '7b452fd3e2c786375895b1864dc45836') in 0.056 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a470ac71c9488448601261b24cef8928 DependenciesID=a02a34b6da8280257aab6258138c2989 StaticDependenciesID=63cd4050e7edc4862b977e8791fe74b2 
+Asset Pipeline Refresh (id=a76b9152a6b19ac46b4ea86dae5c739f): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 8e7ec2c39cc3c3148a8b922bf5f634c3 - Path: Assets/Art/UI/Skills/item_weapon_bow.png' with importer (TextureImporter)
+Imported 'GUID: 8e7ec2c39cc3c3148a8b922bf5f634c3' -> (Import Result ID: '7b452fd3e2c786375895b1864dc45836') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a470ac71c9488448601261b24cef8928 DependenciesID=a02a34b6da8280257aab6258138c2989 StaticDependenciesID=63cd4050e7edc4862b977e8791fe74b2 
+Asset Pipeline Refresh (id=e46b48d8067d0884792225ba14fd795c): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 96730c7b02f311441b16cf027a9af5f5 - Path: Assets/Art/UI/Skills/item_armor_vest.png' with importer (TextureImporter)
+Imported 'GUID: 96730c7b02f311441b16cf027a9af5f5' -> (Import Result ID: '57eb61a982f452240ab5422582254726') in 0.056 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=040ba9d69c6fee9c45d036712dc32e7f DependenciesID=bc32cedd1f774aea30f8c9cc67abf0b0 StaticDependenciesID=e61f09c26af6798a22ecd727dcae9c95 
+Asset Pipeline Refresh (id=f770d416d91a854448fa9c064eeb3205): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 96730c7b02f311441b16cf027a9af5f5 - Path: Assets/Art/UI/Skills/item_armor_vest.png' with importer (TextureImporter)
+Imported 'GUID: 96730c7b02f311441b16cf027a9af5f5' -> (Import Result ID: '57eb61a982f452240ab5422582254726') in 0.053 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=040ba9d69c6fee9c45d036712dc32e7f DependenciesID=bc32cedd1f774aea30f8c9cc67abf0b0 StaticDependenciesID=e61f09c26af6798a22ecd727dcae9c95 
+Asset Pipeline Refresh (id=5539dc913b6e6e04bab85073a0ed4242): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e36f201fb55705440af62db73de14418 - Path: Assets/Art/UI/Skills/item_charm.png' with importer (TextureImporter)
+Imported 'GUID: e36f201fb55705440af62db73de14418' -> (Import Result ID: 'fb07ce0c5aa69ab78060f5adc85faf24') in 0.060 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=25e7a7c2e168753254c064da4945a33a DependenciesID=0815821fb043bce97ef32e462ba1e6fc StaticDependenciesID=501b4aca92e1b3c6c95e35b76be90106 
+Asset Pipeline Refresh (id=324b802a8618160428bfb936794443c1): Total: 0.079 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e36f201fb55705440af62db73de14418 - Path: Assets/Art/UI/Skills/item_charm.png' with importer (TextureImporter)
+Imported 'GUID: e36f201fb55705440af62db73de14418' -> (Import Result ID: 'fb07ce0c5aa69ab78060f5adc85faf24') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=25e7a7c2e168753254c064da4945a33a DependenciesID=0815821fb043bce97ef32e462ba1e6fc StaticDependenciesID=501b4aca92e1b3c6c95e35b76be90106 
+Asset Pipeline Refresh (id=0f5d5937f921400468fdd3a24d21b97a): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 1b199e02f53fa9846bc7552694e06523 - Path: Assets/Art/UI/Skills/item_ticket.png' with importer (TextureImporter)
+Imported 'GUID: 1b199e02f53fa9846bc7552694e06523' -> (Import Result ID: 'b94ee5e46fffcfd9208fe6639b9bbd89') in 0.055 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d9ec165c9234b375b103969414542cce DependenciesID=f2c105c1c663568d2cb8db75958b6c2e StaticDependenciesID=07ffc26b90267e470cbbd44cb9aae2f8 
+Asset Pipeline Refresh (id=334a8d2054a61b24f8026d835698c700): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 1b199e02f53fa9846bc7552694e06523 - Path: Assets/Art/UI/Skills/item_ticket.png' with importer (TextureImporter)
+Imported 'GUID: 1b199e02f53fa9846bc7552694e06523' -> (Import Result ID: 'b94ee5e46fffcfd9208fe6639b9bbd89') in 0.053 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d9ec165c9234b375b103969414542cce DependenciesID=f2c105c1c663568d2cb8db75958b6c2e StaticDependenciesID=07ffc26b90267e470cbbd44cb9aae2f8 
+Asset Pipeline Refresh (id=cb5cdc5fa4b1a8240aa965e21efee957): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2657a7744e1caa0468605435f7b4cacf - Path: Assets/Art/UI/Skills/item_petfood.png' with importer (TextureImporter)
+Imported 'GUID: 2657a7744e1caa0468605435f7b4cacf' -> (Import Result ID: '24bd81d579fa849264218bba02a97074') in 0.022 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2bf8fe4e2a3447bee3dc633daf137738 DependenciesID=84fe921ef94cf1c9951aaa786609f707 StaticDependenciesID=43c8d59ee19dbf474f82c4e757ca225d 
+Asset Pipeline Refresh (id=1b0c1d425a0d85046bf585dcba28c9ad): Total: 0.080 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2657a7744e1caa0468605435f7b4cacf - Path: Assets/Art/UI/Skills/item_petfood.png' with importer (TextureImporter)
+Imported 'GUID: 2657a7744e1caa0468605435f7b4cacf' -> (Import Result ID: 'fa0645031b165d7a96c9cae71f5de150') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e8e41ce7a2fe98f4e7e472efcbad7834 DependenciesID=be1528eeedeece5dbda66c115d82dc13 StaticDependenciesID=dcbd01ae87a4c5054692936fd25c917a 
+Asset Pipeline Refresh (id=6cdd99eb0c50cef46bb631a4d382123c): Total: 0.114 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 959232c611e064a40bf3a0942327c1e1 - Path: Assets/Art/UI/Skills/item_petfood_feast.png' with importer (TextureImporter)
+Imported 'GUID: 959232c611e064a40bf3a0942327c1e1' -> (Import Result ID: '9c22f8845d125a61cd574b1844651167') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cc1dca4857ee4d32279daa31449ed036 DependenciesID=0e27daf2e7315f869ded6d70b67f40b5 StaticDependenciesID=ceda9469cacbbcc91e57739e80e4d9a6 
+Asset Pipeline Refresh (id=232fd5358c27acf4f8e94123559b3aef): Total: 0.060 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 959232c611e064a40bf3a0942327c1e1 - Path: Assets/Art/UI/Skills/item_petfood_feast.png' with importer (TextureImporter)
+Imported 'GUID: 959232c611e064a40bf3a0942327c1e1' -> (Import Result ID: '9a4e091ec8ef14eee353d68013377f12') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=42423448992a2ea6f3e43fe0c75ada42 DependenciesID=98cd6ff461a416513b99dabe2bb9fd81 StaticDependenciesID=4cbb886f2d7b9698e65e33e5eb82424c 
+Asset Pipeline Refresh (id=c29c3c15ff062c74e8d32ab94111bb81): Total: 0.115 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5399e815f7e6ebe4e9428aa0355581db - Path: Assets/Art/UI/Skills/action_bag.png' with importer (TextureImporter)
+Imported 'GUID: 5399e815f7e6ebe4e9428aa0355581db' -> (Import Result ID: 'eab8caf5fda5233ccb5dc0c2acc8e73a') in 0.056 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f2f66cbf915e376854dddafa96061759 DependenciesID=8fef03fc0480ec4bce72e0f5a6bc9a8c StaticDependenciesID=11b1d5312ee8b54db8707f356994c3be 
+Asset Pipeline Refresh (id=cc1ae9b6b9e869945a172d735a290c19): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5399e815f7e6ebe4e9428aa0355581db - Path: Assets/Art/UI/Skills/action_bag.png' with importer (TextureImporter)
+Imported 'GUID: 5399e815f7e6ebe4e9428aa0355581db' -> (Import Result ID: 'eab8caf5fda5233ccb5dc0c2acc8e73a') in 0.053 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f2f66cbf915e376854dddafa96061759 DependenciesID=8fef03fc0480ec4bce72e0f5a6bc9a8c StaticDependenciesID=11b1d5312ee8b54db8707f356994c3be 
+Asset Pipeline Refresh (id=e3dadd71f0156c74596db1c90a90d730): Total: 0.069 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 34074063a95eac34cb762aae7c34f3c2 - Path: Assets/Art/UI/Skills/frame_skill.png' with importer (TextureImporter)
+Imported 'GUID: 34074063a95eac34cb762aae7c34f3c2' -> (Import Result ID: 'c633e99081cbc9ab4ccadacd8f0857b2') in 0.058 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3b15592808dff2a5ff73829fa304b7f1 DependenciesID=3502fe3775e3249be81742f16a594f89 StaticDependenciesID=9773d191e7dd09535a9bc9b10ca92581 
+Asset Pipeline Refresh (id=8846f897393597a4d8733c03978d976d): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 34074063a95eac34cb762aae7c34f3c2 - Path: Assets/Art/UI/Skills/frame_skill.png' with importer (TextureImporter)
+Imported 'GUID: 34074063a95eac34cb762aae7c34f3c2' -> (Import Result ID: 'c633e99081cbc9ab4ccadacd8f0857b2') in 0.054 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3b15592808dff2a5ff73829fa304b7f1 DependenciesID=3502fe3775e3249be81742f16a594f89 StaticDependenciesID=9773d191e7dd09535a9bc9b10ca92581 
+Asset Pipeline Refresh (id=f07629a7f09ee4f41983a86242899d0e): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 55c5fd471efa6454fa181bcfd1f7dd9d - Path: Assets/Art/UI/Skills/frame_skill_ultimate.png' with importer (TextureImporter)
+Imported 'GUID: 55c5fd471efa6454fa181bcfd1f7dd9d' -> (Import Result ID: 'b35de15b298491a80fdfd694a47058b7') in 0.057 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=78b7e2154d193445074327b0b5949580 DependenciesID=cd9ec71b00d4ba5acd625dec6f208456 StaticDependenciesID=1e6c1012ef999014226a9978c8a9115d 
+Asset Pipeline Refresh (id=16f0b1c6c2e4252489e25804ef45032c): Total: 0.075 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 55c5fd471efa6454fa181bcfd1f7dd9d - Path: Assets/Art/UI/Skills/frame_skill_ultimate.png' with importer (TextureImporter)
+Imported 'GUID: 55c5fd471efa6454fa181bcfd1f7dd9d' -> (Import Result ID: 'b35de15b298491a80fdfd694a47058b7') in 0.059 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=78b7e2154d193445074327b0b5949580 DependenciesID=cd9ec71b00d4ba5acd625dec6f208456 StaticDependenciesID=1e6c1012ef999014226a9978c8a9115d 
+Asset Pipeline Refresh (id=bbd2969008b2b784a9f48e994b39c9a4): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[SKILL ICONS] built 17 icons + 2 frames in Assets/Art/UI/Skills
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.SkillIconArt:BuildAll () (at Assets/Editor/ArtPipeline/SkillIconArt.cs:394)
+AdventureKing.ArtPipeline.SkillIconArt:BuildFromCommandLine () (at Assets/Editor/ArtPipeline/SkillIconArt.cs:459)
+
+(Filename: Assets/Editor/ArtPipeline/SkillIconArt.cs Line: 394)
+
+MonoPathRemapper: Attempts to remap: 8991; Successful remaps: 0
+[Licensing::Client] Successfully resolved entitlement details
+Serialized file version minimum: 23, current 23
+Curl error 42: Callback aborted
+Killing ADB server in 2.1052028 seconds.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-PC-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-PC channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794277758911,"processId":16644,"allocatedMemory":15445359,"memoryLabels":[{"Default":207366},{"Permanent":15516},{"NewDelete":81023},{"Thread":4179696},{"Manager":31709},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":839496},{"Material":132},{"GfxDevice":58008},{"Animation":952},{"Audio":1272},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":16576},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1258384},{"BaseObject":74896},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":4416},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":746202},{"StaticString":3808},{"Utility":2673718},{"Curl":2559},{"PoolAlloc":2264},{"AI":80},{"TypeTree":23229},{"ScriptManager":12656},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":7152},{"WebRequest":669},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":592},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":110517},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4482636},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40441},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3594},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

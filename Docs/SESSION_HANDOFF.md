@@ -6,6 +6,43 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★★★★★★★★★ GIAI ĐOẠN D — HOÀN THIỆN: Bang Hội, Kết Hôn, Bạn bè/Chat, Multiplayer (2026-11-10)
+**Chỉ ghi điều đã chạy và kiểm thử thật.** Chưa sang Chương 1 / Giai đoạn E — chờ chỉ thị của chủ dự án.
+
+### Kiểm thử nhiều client trên cùng một server (đã chạy thật)
+`Assets/Tests/PlayMode/MultiplayerSocialTests.cs`: **2 tài khoản thật** trên cùng server thử nghiệm — người chơi A là game Unity (bấm UI thật), người chơi B là client thứ hai độc lập (`SecondClient.cs`: phiên đăng nhập riêng, cùng các endpoint, nhịp đồng bộ 6 Hz riêng). Kết quả: **PASS**. Ảnh: `QA/Multiplayer/*.png`.
+1. Hai người thấy nhau trên cùng map; B di chuyển → A thấy B chạy mượt (nội suy 150 ms); server chặn dịch chuyển tức thời (kiểm tra tốc độ — đã xác nhận: B "nhảy" 4.9 m trong 1 nhịp bị server kéo lại).
+2. Chat Thế giới (B → A, hiện ở dòng chạy chữ), chat Riêng (A → B qua cửa sổ Xã hội).
+3. Đứng cạnh B → "E · Tương tác" → mở cửa sổ Xã hội cho B → **Kết bạn** (UI) → B đồng ý → trạng thái online lấy từ server.
+4. A **lập bang "Gió Chuông"** bằng UI (phí theo cấu hình dev) → B xin vào → A **Duyệt** trong tab Đơn xin vào → 2 thành viên → chat Bang.
+5. Cả hai vào **Sảnh Bang Hội — phiên bản riêng của bang** (người ngoài bang không thấy), tên bang hiện trên bảng tên.
+6. A **cầu hôn** (UI) → B đồng ý → cả hai sang **Sảnh Kết Hôn** → A bấm "Tổ chức lễ cưới" → B xác nhận → **lễ cưới hai người** chạy theo đồng hồ server: dẫn nhập, lời thề (cúi chào), trao nhẫn (quỳ + nhẫn), cắt bánh (dao + động tác cắt + miếng bánh), nâng ly (ly trên tay), **hôn** (nghiêng người vào nhau, mắt nhắm + má hồng, tim bay) → sau nụ hôn: cô dâu **làm hình trái tim**, chú rể **lắc lư vui** → kết (ăn mừng, cánh hoa).
+7. Server ghi **đã kết hôn**, tặng 3 món quà cưới; bảng tên hiện "♥ tên vợ/chồng".
+8. **Đăng nhập lại** (phiên mới) → vẫn đã kết hôn, đúng tên bạn đời, vẫn trong bang, vẫn sở hữu quà cưới.
+
+### Meshy — đợt này (chủ dự án cho phép tối đa 77 credit của tài khoản cũ)
+- Số dư thực tế kiểm tra trước khi dùng: **77**. Đã tiêu **27**: Swordsman 9 (3 clip) + Archer/Assassin/Mage 6 mỗi lớp (2 clip). **Số dư còn lại: 50** (kiểm tra lại qua API sau khi chạy).
+- Clip mới (thư viện animation Meshy, không tạo lại model): **Big Heart Gesture** (sau nụ hôn), **Happy Sway Standing** (vui mừng khi cắt bánh / sau nụ hôn). Thư viện **không có** clip hôn hay cắt bánh → nụ hôn và nhát cắt làm bằng tư thế thủ tục (`PoseOverlay`) + biểu cảm khuôn mặt (`HeroFace`). Đã thử "Charged Axe Chop" cho Swordsman (nằm trong 9 credit) → **không dùng** (bắt đầu bằng tư thế cúi rạp sát đất).
+- **Không dùng tài khoản Meshy mới (3.842 credit)** — dành cho Chương 1.
+
+### Đã sửa trong đợt này
+- Camera lễ cưới luôn theo đúng bước của server (trước đây trễ dần → cảnh hôn bị lệch khung).
+- Nhắc "E · Nói chuyện" của NPC không còn hiện trong lúc chiếu cinematic.
+- Động tác cắt bánh: vung tay trong mặt phẳng màn hình (trước đây xoay về phía ống kính nên gần như không thấy); chú rể đứng đúng cạnh bánh.
+- Cửa sổ Xã hội: mọi nút/ô nhập ≥ 40 px trên điện thoại và PC (UiAudit sạch); danh sách thành viên bang có phân trang.
+- Quà cưới (vương miện ngọc trai, găng lụa, áo choàng trắng) trước đây **không có hình 3D** → đã dựng (biến thể thủ tục từ đồ thời trang có sẵn, 0 credit), mặc được trên cả 4 lớp nhân vật.
+- Ghi chú kỹ thuật: ảnh chụp trong chế độ `-batchmode` **không thể hiện** tư thế thủ tục (LateUpdate) — ảnh lễ cưới cuối cùng được chụp bằng trình chạy test có cửa sổ (`run_tests_windowed`), đúng như khung hình game thật.
+
+### Kết quả bộ test (lần chạy cuối)
+Server **155/155** · EditMode **4/4** · PlayMode **48 passed / 0 failed / 2 skipped** (2 test của gói Input System do Unity bỏ qua) · 0 exception. Gồm cả test đa client `MultiplayerSocialTests`, test sảnh `HallTravelTests`, thú cưng / sự kiện / thư / giftcode / VIP / BXH / cửa hàng thời trang (hồi quy A/B/C không lỗi). Server: migration v10→v11 + backup/restore + chống trùng (idempotency) có test riêng. Meshy: số dư xác nhận qua API sau đợt = **50**.
+
+### Còn lại / chưa kiểm chứng
+- **Thiết bị Android thật**: chưa có máy kết nối → chưa thử multiplayer trên điện thoại (bố cục cảm ứng đã kiểm bằng UiAudit ở tỉ lệ điện thoại).
+- Multiplayer dùng HTTP polling 6 Hz (đủ cho thị trấn/sảnh); chưa có WebSocket, chưa thử tải nhiều người (>2 client).
+- Giá/phí bang, nhẫn, quà, mức đóng góp vẫn là **DRAFT** (`config/social.json`: chưa duyệt → không thu phí, không mở đóng góp). Test dùng `social.dev.json`.
+- Động tác cắt bánh / nụ hôn là tư thế thủ tục, không phải clip motion-capture (thư viện Meshy không có).
+
+---
 ## ★★★★★★★★★★★★★★★ GIAI ĐOẠN D: Sảnh Bang Hội & Sảnh Kết Hôn bằng Meshy (2026-11-10)
 **Trạng thái:** hai sảnh đã có scene 3D thật, đi lại và tương tác được, có kiểm thử. **Chưa phải bản nghiệm thu cuối**: chủ dự án cần duyệt đồ họa; một số hạng mục còn thiếu (xem cuối mục).
 

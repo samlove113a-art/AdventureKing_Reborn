@@ -142,6 +142,10 @@ namespace AdventureKing.Tests
             StringAssert.Contains("Đội Trưởng Liên Minh", captain.Said);
             yield return new WaitForSeconds(0.6f);
             yield return Shot("02b_guild_captain");
+            // the captain opens the guild window (create / browse guilds); close it to walk on
+            Assert.IsTrue(SocialPanel.Instance && SocialPanel.Instance.IsOpen && SocialPanel.Instance.Tab == "guild", "captain opens the guild tab");
+            SocialPanel.Instance.Close();
+            yield return new WaitForSeconds(0.3f);
             foreach (var (x, name) in new[] { (-4f, "03_guild_ranking"), (3.5f, "04_guild_council"), (10.5f, "04b_guild_altar"), (17f, "05_guild_throne") })
             {
                 yield return WalkTo(x);
@@ -173,6 +177,9 @@ namespace AdventureKing.Tests
             until = Time.time + 3f;
             while (!officiant.PlayerNear && Time.time < until) yield return null;
             yield return Tap(PlayerInput2D.TouchAction.Interact);
+            // the officiant first asks the server whether this hero is engaged (real ceremony) — not engaged: rehearsal
+            until = Time.time + 3f;
+            while (ceremony.Played == 0 && Time.time < until) yield return null;
             Assert.AreEqual(1, ceremony.Played, "talking to the officiant starts the rehearsal");
             Assert.IsTrue(director.Playing);
             Assert.IsFalse(follow.enabled, "cinematic camera has the camera");

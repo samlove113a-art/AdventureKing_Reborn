@@ -41,7 +41,7 @@ namespace AdventureKing.Tests
             if (!File.Exists(Dll)) Assert.Ignore("Server not built: run `dotnet build Server/AdventureKing.Server` first.");
             var psi = new ProcessStartInfo("dotnet", $"\"{Dll}\" --urls http://127.0.0.1:{port} --AdventureKing:DatabasePath=\"{Path.Combine(dbDir, "test.db")}\"" +
                 (starterGold.HasValue ? $" --AdventureKing:StarterGold={starterGold.Value}" : "") +
-                (devWelfare ? " --AdventureKing:WelfareConfigPath=config/welfare.dev.json --AdventureKing:EventConfigPath=config/events.dev.json" : ""))
+                (devWelfare ? " --AdventureKing:WelfareConfigPath=config/welfare.dev.json --AdventureKing:EventConfigPath=config/events.dev.json --AdventureKing:SocialConfigPath=config/social.dev.json" : ""))
             {
                 WorkingDirectory = Path.GetDirectoryName(Dll), UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardOutput = true, RedirectStandardError = true,

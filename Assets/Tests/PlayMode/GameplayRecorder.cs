@@ -74,7 +74,12 @@ namespace AdventureKing.Tests
                 c.planeDistance = cam.nearClipPlane + 0.05f;
             }
             Canvas.ForceUpdateCanvases();
+            // batchmode has no regular frame render: skin with the bones as they are NOW (after LateUpdate poses such
+            // as PoseOverlay's cake cut / kiss lean), not a matrix palette cached from the Animator pass
+            var skins = FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Exclude);
+            foreach (var s in skins) s.forceMatrixRecalculationPerRender = true;
             cam.Render();
+            foreach (var s in skins) if (s) s.forceMatrixRecalculationPerRender = false;
             foreach (Canvas c in overlays) c.renderMode = RenderMode.ScreenSpaceOverlay;
             cam.cullingMask = mask;
             cam.targetTexture = null;
