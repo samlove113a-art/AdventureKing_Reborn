@@ -50,6 +50,59 @@ namespace AdventureKing.Gameplay
             }
         }
 
+        /// <summary>
+        /// Emote gestures (wedding ceremony): Kneel (ring on one knee), Toast, Cheer, Celebrate, Bow — with a matching
+        /// expression. Returns false when this hero's animator has no such state (older builds) or the hero is down.
+        /// </summary>
+        public bool PlayEmote(string state, HeroFace.Expression expression = HeroFace.Expression.Happy, float expressionSeconds = 2.5f)
+        {
+            if (!animator || (health && health.IsDead)) return false;
+            int hash = Animator.StringToHash(state);
+            if (!animator.HasState(0, hash)) return false;
+            animator.CrossFadeInFixedTime(hash, 0.2f, 0);
+            if (face) face.Pulse(expression, expressionSeconds);
+            LastEmote = state;
+            return true;
+        }
+
+        public string LastEmote { get; private set; }
+
+        /// <summary>Shows / hides the class weapon meshes (renderers "Weapon_*"): put away for ceremonies.</summary>
+        public void SetWeaponsVisible(bool visible)
+        {
+            foreach (Renderer r in GetComponentsInChildren<Renderer>(true))
+                if (r.name.StartsWith("Weapon_")) r.enabled = visible;
+            WeaponsVisible = visible;
+        }
+
+        public bool WeaponsVisible { get; private set; } = true;
+
+        /// <summary>Puts a prop in the right hand (null removes it). The prop's origin is the grip, +Y up out of the fist.</summary>
+        public void HoldInRightHand(GameObject prop) => HoldInHand(prop, false);
+
+        /// <summary>Puts a prop in the left or right hand (null removes it).</summary>
+        public void HoldInHand(GameObject prop, bool left)
+        {
+            if (held) Destroy(held);
+            held = prop;
+            if (!prop) return;
+            Transform hand = null;
+            string socket = left ? "Socket_L" : "Socket_R", bone = left ? "LeftHand" : "RightHand";
+            foreach (Transform t in GetComponentsInChildren<Transform>(true))
+                if (t.name == socket) { hand = t; break; }
+            if (!hand) foreach (Transform t in GetComponentsInChildren<Transform>(true)) if (t.name.EndsWith(bone)) { hand = t; break; }
+            if (!hand) { Destroy(prop); held = null; return; }
+            prop.transform.SetParent(hand, false);
+            prop.transform.localPosition = Vector3.zero;
+            prop.transform.localRotation = Quaternion.identity;
+            // world size stays the authored size whatever the bone scale
+            Vector3 s = hand.lossyScale;
+            prop.transform.localScale = new Vector3(1f / Mathf.Max(1e-4f, s.x), 1f / Mathf.Max(1e-4f, s.y), 1f / Mathf.Max(1e-4f, s.z));
+        }
+
+        private GameObject held;
+        public GameObject Held => held;
+
         private HeroFace face;
         private static readonly int ClimbPhaseId = Animator.StringToHash("ClimbPhase");
         private bool hasClimbPhase, hasBaseLocal;

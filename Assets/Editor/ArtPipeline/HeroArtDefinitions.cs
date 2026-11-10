@@ -45,6 +45,14 @@ namespace AdventureKing.ArtPipeline
             new Clip("Climb", "Ladder_Climb_Loop", 1, 48, true) { BakeY = true },
             new Clip("Hit", "Hit_Reaction", 0, 30) { Speed = 1.5f },
             new Clip("Death", "dying_backwards", 0, 53),
+            // Wedding ceremony gestures (Meshy library batch, 2026-11-10, 15 credits per class): ring on one knee,
+            // toast, cheer, bow, celebration.
+            new Clip("Kneel", "Kneel_on_One_Knee_and_Stand", 0, 60) { Speed = 0.7f }, // held longer: the ring moment
+            // hand rises from frame ~54, at the mouth 96-114, down by ~144 (measured): the idle lead-in is cut
+            new Clip("Toast", "Stand_and_Drink", 50, 150),
+            new Clip("Cheer", "Cheer_with_Both_Hands_Up", 0, 44),
+            new Clip("Celebrate", "Cheer_with_Both_Hands", 0, 70),
+            new Clip("Bow", "Formal_Bow", 0, 184) { Speed = 1.5f },
         };
 
         private static Clip[] With(Clip[] shared, params Clip[] extra)

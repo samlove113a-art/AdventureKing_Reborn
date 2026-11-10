@@ -10,7 +10,7 @@
 **Trạng thái:** hai sảnh đã có scene 3D thật, đi lại và tương tác được, có kiểm thử. **Chưa phải bản nghiệm thu cuối**: chủ dự án cần duyệt đồ họa; một số hạng mục còn thiếu (xem cuối mục).
 
 ### Meshy (chủ dự án cho phép; không mua credit, không nâng gói, không tự đổi hạn mức)
-- **Credit:** 931 → **137**, tiêu 794 credit:
+- **Credit:** 931 → 137 cho hai sảnh, rồi **−60 cho động tác nghi lễ (chủ dự án duyệt) → còn 77**. Chi tiết hai sảnh (794 credit):
 
   | Hạng mục | Credit |
   |---|---|
@@ -71,10 +71,19 @@
   - đèn điểm không có tác dụng: URP của dự án tắt đèn phụ ở mọi mức đồ họa, nên đã gỡ.
 
 ### CHƯA ĐẠT / CẦN DUYỆT (không tự nhận là hoàn thiện)
-- **Animation trao nhẫn, cắt bánh, nâng ly, hôn cho nhân vật người chơi: CHƯA CÓ.**
-  - Anh hùng chỉ có clip chiến đấu và di chuyển.
-  - Thư viện Meshy có quỳ gối, uống/nâng ly, cổ vũ, cúi chào, vỗ tay: **khoảng 60 credit** cho 4 nghề. Cần chủ dự án duyệt, vì vượt ngân sách và đụng phần giữ cho Chương 1.
-  - **Không có** clip hôn hay cắt bánh: phải dựng trong Unity.
+- **Động tác nghi lễ cho nhân vật người chơi (chủ dự án duyệt 60 credit, đã dùng đúng 60; còn 77):**
+  - 4 nghề có thêm 5 clip Meshy: **Kneel** (quỳ một gối trao nhẫn), **Toast** (nâng ly), **Cheer**, **Celebrate**, **Bow**.
+  - Trong buổi diễn tập, nhân vật của người chơi:
+    - cúi chào khi Chủ Hôn đọc lời thề;
+    - quỳ trao nhẫn trước sân khấu;
+    - ăn mừng bên bánh cưới;
+    - nâng ly ở bàn tiệc (cầm ly vàng ở tay trái, đúng tay mà clip đưa lên miệng);
+    - cổ vũ ở cảnh cuối.
+  - Vũ khí được cất khi diễn tập và trả lại khi xong. Clip nâng ly được cắt bỏ đoạn đứng yên đầu (đo độ cao tay trong Blender).
+  - Bản FBX cũ của 4 anh hùng được sao lưu ở `ArtSource/Backup/heroes_before_ceremony_2026-11-10/`.
+  - **Còn thiếu:**
+    - **hôn** và **cắt bánh bằng dao**: thư viện Meshy không có, cần một cặp người chơi (hệ thống kết hôn);
+    - ly nâng còn nhỏ, hơi khuất trong bàn tay chibi.
 - **Lễ cưới thật cho 2 người chơi:** cần hệ thống kết hôn trên server (cầu hôn, bạn đời, nhẫn là vật phẩm). Chưa làm; hiện chỉ có **diễn tập**, phụ đề nói rõ.
 - **Hệ thống bang hội** (lập bang, cống hiến, nhiệm vụ bang, BXH bang): chưa làm. Sảnh và NPC đã sẵn.
 - **Chất lượng:**

@@ -1,12 +1,39 @@
 ﻿{
- "name": "Assassin",
- "glbs": ["ArtSource/Meshy/raw/assassin_anim_a/animation_glb_url.glb", "ArtSource/Meshy/raw/assassin_anim_b/animation_glb_url.glb"],
- "out": "Assets/Art/Characters/Assassin/Assassin.fbx",
- "weapons": [
-  {"name": "Dagger_Starter", "glb": "ArtSource/Meshy/raw/dagger_model/glb.glb", "axis": "x", "tip": "-", "grip": 0.78,
-   "length_m": 0.36, "bone": "RightHand", "socket": "Socket_R", "out": "Assets/Art/Weapons/Dagger_Starter.fbx"},
-  {"name": "Dagger_Starter_L", "glb": "ArtSource/Meshy/raw/dagger_model/glb.glb", "axis": "x", "tip": "-", "grip": 0.78,
-   "length_m": 0.36, "bone": "LeftHand", "socket": "Socket_L", "export": false}
- ],
- "qa_actions": ["Combat_Stance", "Double_Combo_Attack", "Double_Blade_Spin", "Run_02"]
+    "name":  "Assassin",
+    "glbs":  [
+                 "ArtSource/Meshy/raw/assassin_anim_a/animation_glb_url.glb",
+                 "ArtSource/Meshy/raw/assassin_anim_b/animation_glb_url.glb",
+                 "ArtSource/Meshy/raw/assassin_anim_ceremony/animation_glb_url.glb"
+             ],
+    "out":  "Assets/Art/Characters/Assassin/Assassin.fbx",
+    "weapons":  [
+                    {
+                        "name":  "Dagger_Starter",
+                        "glb":  "ArtSource/Meshy/raw/dagger_model/glb.glb",
+                        "axis":  "x",
+                        "tip":  "-",
+                        "grip":  0.78,
+                        "length_m":  0.36,
+                        "bone":  "RightHand",
+                        "socket":  "Socket_R",
+                        "out":  "Assets/Art/Weapons/Dagger_Starter.fbx"
+                    },
+                    {
+                        "name":  "Dagger_Starter_L",
+                        "glb":  "ArtSource/Meshy/raw/dagger_model/glb.glb",
+                        "axis":  "x",
+                        "tip":  "-",
+                        "grip":  0.78,
+                        "length_m":  0.36,
+                        "bone":  "LeftHand",
+                        "socket":  "Socket_L",
+                        "export":  false
+                    }
+                ],
+    "qa_actions":  [
+                       "Combat_Stance",
+                       "Double_Combo_Attack",
+                       "Double_Blade_Spin",
+                       "Run_02"
+                   ]
 }

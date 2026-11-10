@@ -37,6 +37,8 @@ namespace AdventureKing.Gameplay
         private int facing = 1;
 
         public int Facing => facing;
+        /// <summary>Turns the hero (scripted moments: cinematics). Input changes it again as soon as the player moves.</summary>
+        public void FaceTowards(int direction) { if (direction != 0) facing = direction > 0 ? 1 : -1; }
         public bool IsClimbing => climbing;
         /// <summary>The ladder/rope zone the player is in (null outside), for climb visuals.</summary>
         public LadderZone2D Ladder => ladder;

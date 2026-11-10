@@ -192,6 +192,7 @@ namespace AdventureKing.Tests
             Assert.IsFalse(director.Playing, "ceremony finished");
             Assert.GreaterOrEqual(taken, 6, "captured the ceremony shots");
             Assert.GreaterOrEqual(petals.Bursts, 3, "petal showers at the rings, cake, toast and finale");
+            CollectionAssert.AreEqual(new[] { "Bow", "Kneel", "Celebrate", "Toast", "Cheer" }, ceremony.HeroGestures, "the hero's ceremony gestures (Meshy clips) all played");
             Assert.IsTrue(follow.enabled, "camera handed back to the follow camera");
             Assert.IsTrue(input.enabled, "input back");
             yield return TakePortal(TownLayout.WeddingHall.Portals[0].X, TownLayout.Hub.Scene);

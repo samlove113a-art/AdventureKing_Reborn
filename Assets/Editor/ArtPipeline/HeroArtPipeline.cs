@@ -272,6 +272,9 @@ namespace AdventureKing.ArtPipeline
                 AnyLink(sm, dodge, 0.05f, false, ("Dodge", AnimatorConditionMode.If, 0), ("Dead", AnimatorConditionMode.IfNot, 0));
                 ExitTo(dodge, idle, 0.9f, 0.1f);
             }
+            // Emotes (wedding ceremony gestures): entered by name (CharacterVisual3D.PlayEmote), back to Idle at the end.
+            foreach (string n in new[] { "Kneel", "Toast", "Cheer", "Celebrate", "Bow" })
+                if (states.TryGetValue(n, out AnimatorState emote)) ExitTo(emote, idle, 0.95f, 0.2f);
             EditorUtility.SetDirty(ctrl);
             return ctrl;
         }

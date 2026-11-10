@@ -327,6 +327,8 @@ namespace AdventureKing.ArtPipeline
             cso.FindProperty("officiant").objectReferenceValue = officiant;
             cso.FindProperty("musician").objectReferenceValue = musician;
             cso.FindProperty("petals").objectReferenceValue = petals;
+            cso.FindProperty("glassMaterial").objectReferenceValue = Mat("ceremony_glass", new Color(1f, 0.86f, 0.45f), new Color(0.3f, 0.2f, 0.05f)); // gilded goblet: reads against the pale walls
+            cso.FindProperty("wineMaterial").objectReferenceValue = Mat("ceremony_wine", new Color(0.78f, 0.12f, 0.24f), new Color(0.2f, 0.02f, 0.05f));
             cso.ApplyModifiedPropertiesWithoutUndo();
 
             HallLighting(new Color(0.86f, 0.78f, 0.84f), new Color(0.8f, 0.72f, 0.7f), new Color(0.46f, 0.4f, 0.38f), new Color(0.24f, 0.18f, 0.24f),
