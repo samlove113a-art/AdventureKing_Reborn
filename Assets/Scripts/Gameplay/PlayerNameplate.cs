@@ -5,20 +5,55 @@ namespace AdventureKing.Gameplay
 {
     /// <summary>
     /// Name plate above the hero's head: the character's REAL name from the server snapshot (never the album avatar).
-    /// A VIP / Boss Hunter frame row will sit above the name only once the server reports an earned + equipped frame;
-    /// no such server data exists yet, so no frame is shown (no fake "VIP 5").
+    /// The VIP / Boss Hunter / special frame row sits above the name only when the server reports an owned AND equipped
+    /// frame (/titles). Frames are granted only by server code from valid data — today nobody owns one (payments off,
+    /// no world boss), so no frame is shown (no fake "VIP 5"). Frames never change Lực Chiến.
     /// </summary>
     public sealed class PlayerNameplate : MonoBehaviour
     {
         [SerializeField] private Font font;
         [SerializeField] private Sprite plateSprite;
         [SerializeField] private float aboveHead = 0.62f;
+        [SerializeField] private Sprite[] frames = new Sprite[0]; // sprite name = server title id (VIP_01, BossHunter_03, Special_Event …)
 
         private Text label;
         private Transform head;
         private RectTransform plate;
+        private Image frame;
 
         public string Shown => label ? label.text : "";
+        public string EquippedTitle { get; private set; }
+        public bool TitlesLoaded { get; private set; }
+        public bool FrameShown => frame && frame.gameObject.activeSelf;
+        public int FrameCount => frames.Length;
+
+        /// <summary>Show the frame for a server-reported equipped title id (null/empty or unknown sprite = none).</summary>
+        public void ShowTitle(string titleId)
+        {
+            EquippedTitle = string.IsNullOrEmpty(titleId) ? null : titleId;
+            Sprite s = null;
+            if (EquippedTitle != null) foreach (Sprite f in frames) if (f && f.name == EquippedTitle) { s = f; break; }
+            if (!frame) return;
+            frame.sprite = s;
+            frame.gameObject.SetActive(s);
+            if (s)
+            {
+                float h = 92f;
+                frame.rectTransform.sizeDelta = new Vector2(h * s.rect.width / s.rect.height, h);
+            }
+        }
+
+        private void LoadTitles()
+        {
+            AdventureWorldSession w = AdventureWorldSession.Current;
+            var net = AdventureServerConnection.Instance;
+            if (!w || w.Character == null || !net) return;
+            net.GetTitles(w.Character.characterId, (ok, t, err) =>
+            {
+                TitlesLoaded = ok;
+                ShowTitle(ok && t != null ? t.equipped : null); // offline / error: no frame
+            });
+        }
 
         private void Start()
         {
@@ -47,6 +82,14 @@ namespace AdventureKing.Gameplay
             label.raycastTarget = false;
             var o = label.gameObject.AddComponent<Outline>(); o.effectColor = new Color(0f, 0f, 0f, 0.75f); o.effectDistance = new Vector2(1.5f, -1.5f);
             label.text = "";
+            frame = new GameObject("TitleFrame", typeof(RectTransform)).AddComponent<Image>();
+            frame.transform.SetParent(plate, false);
+            frame.rectTransform.anchorMin = frame.rectTransform.anchorMax = new Vector2(0.5f, 1f);
+            frame.rectTransform.pivot = new Vector2(0.5f, 0f);
+            frame.rectTransform.anchoredPosition = new Vector2(0f, 4f);
+            frame.preserveAspect = true; frame.raycastTarget = false;
+            frame.gameObject.SetActive(false);
+            Invoke(nameof(LoadTitles), 1f);
         }
 
         private void LateUpdate()

@@ -105,11 +105,14 @@ namespace AdventureKing.Tests
             audio.SetMusicOn(wasMusicOn);
             audio.SetAllMuted(wasMuted);
             menu.Close();
-            var mail = Object.FindObjectsByType<HudFeatureButton>(FindObjectsInactive.Exclude).First(b => b.Title == "Hộp Thư");
-            mail.Open();
+            var vipButton = Object.FindObjectsByType<HudFeatureButton>(FindObjectsInactive.Include).First(b => b.Title == "VIP");
+            vipButton.Open();
             var popup = Object.FindAnyObjectByType<HudPopup>();
             Assert.IsTrue(popup.IsOpen, "shortcut popup");
-            StringAssert.Contains("chưa được mở", popup.Message, "unbuilt features say so honestly");
+            until = Time.realtimeSinceStartup + 5f;
+            while (!popup.Message.Contains("khung tên") && Time.realtimeSinceStartup < until) yield return null;
+            StringAssert.Contains("VIP hiện tại: 0", popup.Message, "VIP from the server (no verified payments)");
+            StringAssert.Contains("Chưa sở hữu khung tên", popup.Message, "no frame owned: says so honestly");
             yield return UiAudit.Screen(Dir, "02c_shortcut_popup", problems);
             popup.Hide();
 
@@ -155,6 +158,10 @@ namespace AdventureKing.Tests
             var plate = Object.FindAnyObjectByType<PlayerNameplate>();
             Assert.IsNotNull(plate, "player nameplate");
             Assert.AreEqual("Cung Thủ Sớm", plate.Shown, "server character name above the head");
+            until = Time.realtimeSinceStartup + 5f;
+            while (!plate.TitlesLoaded && Time.realtimeSinceStartup < until) yield return null;
+            Assert.IsTrue(plate.TitlesLoaded, "frames asked from the server");
+            Assert.IsFalse(plate.FrameShown, "no frame owned -> none shown");
 
             // ---- fold arrow: the whole icon block folds away and back (PC too), minimap untouched
             var bar = Object.FindAnyObjectByType<HudShortcutBar>();

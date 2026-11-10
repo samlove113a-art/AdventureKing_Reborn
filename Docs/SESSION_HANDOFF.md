@@ -6,6 +6,80 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★★★★★★★ GIAI ĐOẠN C: Pet, sự kiện / phúc lợi, hộp thư, giftcode, BXH, khung tên (2026-11-10)
+**Trạng thái:** đã làm và kiểm thử (chi tiết test bên dưới). Commit: pet server `5fb42c3`, pet client `780655d`, sự kiện/thư/giftcode server `ce69124`, BXH/khung tên server `8e49dda`, client: xem `git log`.
+Không tiêu Meshy (số dư vẫn 931), không mua gì, không bật thanh toán, **không phát Kim Cương hay vật phẩm cao cấp ở bất kỳ đâu**. Mọi giá, phần thưởng và mốc là ĐỀ XUẤT.
+
+### Pet
+- 4 pet dựng trong engine (0 credit): Mèo Mây 3.000 Vàng, Gà Bông 2.500 Vàng, Rồng Ngọc (VIP) 180 KC, Cáo Lửa (VIP) 240 KC.
+  - Mua một lần, chỉ triệu hồi một con. Pet VIP cần Kim Cương, mà thanh toán đang tắt, nên server từ chối và nói rõ lý do.
+- No 60 phút. Chỉ giảm khi pet đang đi theo và người chơi đang farm thật (giới hạn 5 giây mỗi lần cập nhật, nên AFK hay offline không bị trừ).
+- Thức ăn bán ở tab "Thức Ăn Pet" của Mộc Linh: 20 và 150 Vàng (đề xuất). Pet đã no thì từ chối ăn, không mất thức ăn.
+- **Pet nhặt Vàng:** chỉ nhặt drop của chính chủ, trong tầm 8 m, khi pet còn no. Server trả tiền một lần cho drop đó, giống nhặt tay.
+- Cửa sổ Pet (phím P hoặc nút Pet): mua (có xác nhận), triệu hồi / thu hồi, cho ăn, thanh no.
+- Test: `PetServiceTests` (server), `PetTests` (Play Mode, ảnh `QA/Pets/*`).
+- ⚠ Model pet là khối cơ bản dựng trong engine, **cần art thương mại** (cần duyệt).
+
+### Sự Kiện / Phúc Lợi (server `EventService`, DB v8)
+- Cửa sổ lớn, tab bên trái lấy từ server:
+  - **Sự Kiện Mới** "Săn Nấm Lễ Hội" (01/11 → 31/12/2026, giờ VN): hạ 30 quái, nhặt Vàng 20 lần, dùng kỹ năng 25 lần. Tiến độ đếm từ **sự kiện server** (cùng nguồn với nhiệm vụ), chỉ trong thời gian diễn ra.
+  - **Đăng Nhập:** mở bảng Điểm Danh 7 ngày đã có.
+  - **Nạp Đầu:** **khóa**, vì thanh toán thật chưa bật.
+  - **Phúc Lợi Online:** 10 / 30 / 60 phút mỗi ngày. Client gửi heartbeat 30 giây một lần; server chỉ cộng tối đa 40 giây mỗi lần (thoát game hay AFK ngoài sảnh không được cộng). Làm mới lúc 00:00 giờ VN.
+  - **Quà Tân Thủ:** hiển thị "Đã nhận" sau khi gói tân thủ được phát lần đầu mở túi.
+  - **Quà Lên Cấp:** cấp 2 / 5 / 10.
+- Mỗi phần thưởng có một dòng claim (khóa chính), nên **chỉ trả một lần**. Server kiểm tra túi đủ chỗ trước khi trả; túi đầy thì từ chối và không trừ gì.
+- **Chỉ Vàng và vật phẩm thường** (thuốc, thức ăn pet, vé). Server **từ chối khởi động** nếu cấu hình có trang bị hay vật phẩm khác.
+- **Production:** `config/events.json` là **DRAFT `enabled:false`**. Nhận thưởng trả về "Chờ duyệt"; nút hiện "Chờ duyệt" khi đã đủ điều kiện. Server **từ chối khởi động** nếu ai đó bật một bản DRAFT.
+  - Chỉ test dùng `events.dev.json` (`DRAFT_DEV_TEST_ONLY`, có thêm quà cấp 1 làm fixture cho test client).
+- Chấm đỏ trên icon Sự kiện / Phúc lợi chỉ hiện khi server trả `anyClaimable`.
+
+### Hộp Thư (`MailService`)
+- Loại thư: hệ thống / phần thưởng / thông báo (thư bang hội khi có bang hội).
+- Thư **chỉ do code server tạo**, không có API cho client tạo thư. Thư chào mừng được gửi một lần khi mở hộp thư lần đầu.
+- Mở thư thì đánh dấu đã đọc. Vật phẩm đính kèm (Vàng và đồ thường) **nhận một lần**, cùng transaction với việc trả thưởng. Túi đầy thì thư vẫn còn quà để nhận sau.
+- Chấm đỏ chỉ hiện khi có thư chưa đọc hoặc quà chưa nhận.
+- **Phần thưởng VIP / Boss Hunter gửi vào thư:** đường ống đã sẵn (`MailService.Send` từ server), nhưng **chưa có gì gửi**, vì chưa có VIP hợp lệ và chưa có Boss.
+
+### Giftcode (`GiftcodeService`)
+- Không có endpoint tạo mã; chỉ code server hoặc người vận hành tạo được. **Production không có mã nào.**
+- Khi đổi, server kiểm tra lần lượt: mã tồn tại → chưa hết hạn → còn lượt → đủ cấp → **mỗi tài khoản một lần** (mọi nhân vật trong tài khoản dùng chung một lượt).
+- Mã không phân biệt hoa thường; khoảng trắng và gạch ngang được bỏ qua. Giới hạn 20 lần thử trong 10 phút để chống đoán mã.
+- Cửa sổ có ô nhập và nút Đổi Quà; kết quả là câu trả lời của server.
+
+### Bảng Xếp Hạng (`RankingService`) — chỉ dữ liệu thật
+- **Cấp Độ:** xếp theo cấp, rồi EXP, rồi ai đạt trước.
+- **Lực Chiến:** tính từ chính chỉ số chiến đấu của server: sát thương/giây (nghề cộng trang bị), HP, phòng thủ, cấp. **Công thức là đề xuất.** Khung tên không cộng lực chiến.
+- **Bang Hội** và **Boss Hunter:** trống, có ghi rõ lý do (chưa có bang hội, chưa có Boss thế giới). Không có tên giả hay bot.
+- Hiện top 10 và dòng "hạng của bạn".
+
+### Khung tên VIP / Boss Hunter / đặc biệt (`TitleService`, DB v9)
+- Danh mục: 15 VIP, 10 Boss Hunter, 8 đặc biệt, đúng tên file của bộ PNG chủ dự án gửi.
+- Quyền sở hữu **chỉ do code server cấp** từ dữ liệu hợp lệ; không có API cấp khung. Mỗi lúc trang bị một khung. Bỏ trang bị vẫn giữ quyền sở hữu.
+- **Hiện không ai sở hữu khung nào**, nên trên đầu nhân vật chỉ có tên. Popup VIP nói rõ điều này.
+- 33 PNG đã chép vào `Assets/Art/Nameplates/` và gắn vào nameplate.
+  - Ảnh QA "nếu trang bị thì trông thế nào" (chỉ xem trước phía client, không cấp gì): `QA/UI/welfare/qa_frame_preview_*.png`.
+  - ⚠ Đây là bộ hình khởi tạo (theo README của gói): ảnh VIP nhỏ (~180×85), một số khung còn lỗi cắt viền (đã ghi trong `ART_ASSET_PROVENANCE.md`). **Cần art QA hoặc vẽ lại trước khi phát hành.**
+
+### Kiểm thử
+- Server: `WelfareServicesTests` (7), `RankingTitleTests` (2). **Server 140/140.**
+- Play Mode `WelfareMailTests` (server thật, qua icon HUD thật):
+  - chấm đỏ theo server, heartbeat online đã gửi;
+  - Sự kiện có 3 nhiệm vụ ở 0/…; Nạp Đầu khóa; nhận quà cấp 1 qua nút (bấm đúp chỉ trả một lần, Vàng HUD khớp server), sau đó chấm đỏ tắt;
+  - thư chào mừng được đánh dấu đã đọc trên server;
+  - giftcode lạ bị từ chối;
+  - BXH có nhân vật của mình, Lực Chiến > 0, Boss trống có lý do;
+  - nameplate không hiện khung.
+  - UI audit 5 độ phân giải → `QA/UI/welfare/*`.
+- `UiTownScreensTests` cập nhật: popup VIP lấy dữ liệu server và khung tên; nameplate không hiện khung.
+- **Chạy toàn bộ:** server 140/140; EditMode 4/4; **PlayMode 48 test, 46 qua, 2 bỏ qua (như trước), 0 lỗi, 0 exception.** UI audit `QA/UI/welfare/report.txt`: không có vấn đề.
+- Lỗi thật đã sửa nhờ xem ảnh (audit tự động không bắt được): chữ thư nâu đậm trên nền tối không đọc được → đổi sang chữ sáng; tiêu đề cột BXH bị lệch → dựng lại thành hàng tiêu đề thật.
+
+### Chờ chủ dự án duyệt
+- Giá pet và thức ăn; mọi phần thưởng sự kiện, online, lên cấp (đang DRAFT tắt); công thức Lực Chiến; ngưỡng VIP 1–14; mốc điểm Boss Hunter.
+- Art: model pet thương mại, QA bộ khung tên.
+
+---
 ## ★★★★★★★★★★★★★ GIAI ĐOẠN B — đợt 2: Dược Sư Mộc Linh, vé dịch chuyển, nhiệm vụ, đăng nhập về sảnh (2026-11-10)
 **Trạng thái:** đã làm và kiểm thử. Server commit `fa31b37`, client: xem `git log`. Với phần này, **Giai đoạn B đã đủ hạng mục** theo chỉ thị.
 Không tiêu Meshy, không mua gì, không bật thanh toán. Giá, quà và chỉ số vẫn là ĐỀ XUẤT.

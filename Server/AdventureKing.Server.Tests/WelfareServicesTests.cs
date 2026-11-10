@@ -133,13 +133,13 @@ public sealed class WelfareServicesTests : IDisposable
         ev.Claim(acc, id, new WelfareClaimDto { key = "level:5" });
         Assert.Equal(5000 + 50 + 150, Gold(id));
         Assert.Equal(hp + 5, Count(id, "potion_hp_m"));
-        Assert.False(ev.Get(acc, id).tabs.Single(x => x.id == "levelup").steps[2].claimable);
+        Assert.False(ev.Get(acc, id).tabs.Single(x => x.id == "levelup").steps.Single(s => s.key == "level:10").claimable);
         // full bag: refused, nothing paid, still claimable later
         SetLevel(id, 10);
         FillBag(id);
         Assert.Equal("bag_full", Assert.Throws<GameError>(() => ev.Claim(acc, id, new WelfareClaimDto { key = "level:10" })).Code);
         Assert.Equal(5200, Gold(id));
-        Assert.True(ev.Get(acc, id).tabs.Single(x => x.id == "levelup").steps[2].claimable);
+        Assert.True(ev.Get(acc, id).tabs.Single(x => x.id == "levelup").steps.Single(s => s.key == "level:10").claimable);
     }
 
     [Fact]

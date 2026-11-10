@@ -75,7 +75,7 @@ public static class Rewards
 // ---------------------------------------------------------------- events + welfare
 public sealed class RewardStepDto { public string key { get; set; } = ""; public string text { get; set; } = ""; public int have { get; set; } public int need { get; set; } public string reward { get; set; } = ""; public bool claimable { get; set; } public bool claimed { get; set; } }
 public sealed class WelfareTabDto { public string id { get; set; } = ""; public string title { get; set; } = ""; public string banner { get; set; } = ""; public string desc { get; set; } = ""; public string period { get; set; } = ""; public bool locked { get; set; } public string lockedReason { get; set; } = ""; public RewardStepDto[] steps { get; set; } = Array.Empty<RewardStepDto>(); }
-public sealed class WelfareDto { public bool rewardsEnabled { get; set; } public string status { get; set; } = ""; public WelfareTabDto[] tabs { get; set; } = Array.Empty<WelfareTabDto>(); public bool anyClaimable { get; set; } }
+public sealed class WelfareDto { public bool rewardsEnabled { get; set; } public string status { get; set; } = ""; public WelfareTabDto[] tabs { get; set; } = Array.Empty<WelfareTabDto>(); public bool anyClaimable { get; set; } public long gold { get; set; } }
 public sealed class WelfareClaimDto { public string? key { get; set; } }
 
 /// <summary>
@@ -177,7 +177,8 @@ public sealed class EventService
             id = "levelup", title = "Quà Lên Cấp", desc = "Đạt cấp để nhận quà.",
             steps = Config.levelGifts.Select(g => Step(c, tx, characterId, $"level:{g.level}", $"Đạt cấp {g.level}", Math.Min(level, g.level), g.level, Rewards.Text(inv.Config, g.rewardGold, g.rewardItems), true)).ToArray(),
         });
-        return new WelfareDto { rewardsEnabled = Config.enabled, status = Config.status, tabs = tabs.ToArray(), anyClaimable = tabs.Any(t => t.steps.Any(s => s.claimable)) };
+        return new WelfareDto { rewardsEnabled = Config.enabled, status = Config.status, tabs = tabs.ToArray(), anyClaimable = tabs.Any(t => t.steps.Any(s => s.claimable)),
+            gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)) };
     });
 
     private RewardStepDto Step(SqliteConnection c, SqliteTransaction tx, string characterId, string key, string text, int have, int need, string reward, bool open)
@@ -211,7 +212,7 @@ public sealed class EventService
 
 // ---------------------------------------------------------------- mail
 public sealed class MailDto { public string id { get; set; } = ""; public string kind { get; set; } = ""; public string title { get; set; } = ""; public string body { get; set; } = ""; public long attachGold { get; set; } public string attachText { get; set; } = ""; public bool hasAttachment { get; set; } public bool read { get; set; } public bool claimed { get; set; } public long createdMs { get; set; } }
-public sealed class MailboxDto { public MailDto[] mails { get; set; } = Array.Empty<MailDto>(); public int unread { get; set; } public int unclaimed { get; set; } }
+public sealed class MailboxDto { public MailDto[] mails { get; set; } = Array.Empty<MailDto>(); public int unread { get; set; } public int unclaimed { get; set; } public long gold { get; set; } }
 public sealed class MailIdDto { public string? mailId { get; set; } }
 
 /// <summary>
@@ -269,7 +270,8 @@ public sealed class MailService
                         read = !r.IsDBNull(6), claimed = !r.IsDBNull(7), createdMs = r.GetInt64(8),
                     });
                 }
-            return new MailboxDto { mails = list.ToArray(), unread = list.Count(m => !m.read), unclaimed = list.Count(m => m.hasAttachment && !m.claimed) };
+            return new MailboxDto { mails = list.ToArray(), unread = list.Count(m => !m.read), unclaimed = list.Count(m => m.hasAttachment && !m.claimed),
+                gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)) };
         });
     }
 

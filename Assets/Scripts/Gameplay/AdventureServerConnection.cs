@@ -298,6 +298,30 @@ namespace AdventureKing.Gameplay
                 JsonUtility.ToJson(new PickupBody { dropId = dropId, x = heroPosition.x, y = heroPosition.y }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<FarmPickupResult>(json) : null, err));
         [Serializable] private sealed class PetBody { public string petId, requestId; public int slot; }
 
+        // events / welfare, mail, giftcode, rankings, titles (server decides and pays everything)
+        private static string Ch(string id) => "/characters/" + UnityWebRequest.EscapeURL(id);
+        public void GetWelfare(string characterId, Action<bool, WelfareState, string> completed) =>
+            Send("GET", Ch(characterId) + "/welfare", null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<WelfareState>(json) : null, err));
+        public void ClaimWelfare(string characterId, string key, Action<bool, WelfareState, string> completed) =>
+            Send("POST", Ch(characterId) + "/welfare/claim", JsonUtility.ToJson(new KeyBody { key = key }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<WelfareState>(json) : null, err));
+        public void OnlinePing(string characterId, Action<bool, string> completed) =>
+            Send("POST", Ch(characterId) + "/online/ping", "{}", true, (ok, json, err) => completed(ok, err));
+        public void GetMail(string characterId, Action<bool, MailboxState, string> completed) =>
+            Send("GET", Ch(characterId) + "/mail", null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<MailboxState>(json) : null, err));
+        public void ReadMail(string characterId, string mailId, Action<bool, MailboxState, string> completed) =>
+            Send("POST", Ch(characterId) + "/mail/read", JsonUtility.ToJson(new MailBody { mailId = mailId }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<MailboxState>(json) : null, err));
+        public void ClaimMail(string characterId, string mailId, Action<bool, MailboxState, string> completed) =>
+            Send("POST", Ch(characterId) + "/mail/claim", JsonUtility.ToJson(new MailBody { mailId = mailId }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<MailboxState>(json) : null, err));
+        public void RedeemGiftcode(string characterId, string code, Action<bool, GiftcodeResult, string> completed) =>
+            Send("POST", Ch(characterId) + "/giftcode", JsonUtility.ToJson(new CodeBody { code = code }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<GiftcodeResult>(json) : null, err));
+        public void GetRanking(string characterId, string board, Action<bool, RankBoardState, string> completed) =>
+            Send("GET", Ch(characterId) + "/rankings/" + UnityWebRequest.EscapeURL(board), null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<RankBoardState>(json) : null, err));
+        public void GetTitles(string characterId, Action<bool, TitlesState, string> completed) =>
+            Send("GET", Ch(characterId) + "/titles", null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<TitlesState>(json) : null, err));
+        [Serializable] private sealed class KeyBody { public string key; }
+        [Serializable] private sealed class MailBody { public string mailId; }
+        [Serializable] private sealed class CodeBody { public string code; }
+
         [Serializable] private sealed class BuyBody { public string shopId, itemId, requestId; public int qty; }
         [Serializable] private sealed class QuestBody { public string questId; }
         [Serializable] private sealed class SkillBody { public int slot; public string spawnId; public float x, y; public int facing; }

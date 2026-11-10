@@ -189,6 +189,18 @@ namespace AdventureKing.Gameplay
         public float pickupReach;
     }
 
+    // ---------------------------------------------------------------- events / welfare, mail, giftcode, rankings, titles
+    [Serializable] public sealed class RewardStepState { public string key, text, reward; public int have, need; public bool claimable, claimed; }
+    [Serializable] public sealed class WelfareTabState { public string id, title, banner, desc, period, lockedReason; public bool locked; public RewardStepState[] steps = new RewardStepState[0]; }
+    [Serializable] public sealed class WelfareState { public bool rewardsEnabled, anyClaimable; public string status; public long gold; public WelfareTabState[] tabs = new WelfareTabState[0]; }
+    [Serializable] public sealed class MailState { public string id, kind, title, body, attachText; public long attachGold, createdMs; public bool hasAttachment, read, claimed; }
+    [Serializable] public sealed class MailboxState { public MailState[] mails = new MailState[0]; public int unread, unclaimed; public long gold; }
+    [Serializable] public sealed class GiftcodeResult { public string code, reward; public long gold, balance; }
+    [Serializable] public sealed class RankRowState { public int rank, heroClass, level; public string characterId, name; public long value; public bool me; }
+    [Serializable] public sealed class RankBoardState { public string board, title, valueLabel, emptyReason; public RankRowState[] rows = new RankRowState[0]; public RankRowState mine; public int total; }
+    [Serializable] public sealed class TitleState { public string id, category, name, source; public int level; }
+    [Serializable] public sealed class TitlesState { public TitleState[] owned = new TitleState[0]; public string equipped, note; }
+
     // ---------------------------------------------------------------- quests
     [Serializable] public sealed class QuestObjectiveState { public string text; public int have, need; }
     [Serializable]

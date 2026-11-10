@@ -108,7 +108,7 @@ public sealed class TitleService
         return new TitlesDto
         {
             owned = owned.ToArray(), equipped = eq,
-            note = owned.Count == 0 ? "Chưa sở hữu khung tên nào. Khung VIP cần nạp hợp lệ (thanh toán chưa mở); khung Boss Hunter cần điểm săn Boss (Boss chưa mở)." : "",
+            note = owned.Count == 0 ? "Chưa sở hữu khung tên nào (khung VIP cần nạp hợp lệ, khung Boss Hunter cần săn Boss: cả hai chưa mở)." : "",
         };
     });
 

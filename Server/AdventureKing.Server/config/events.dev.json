@@ -18,6 +18,7 @@
     { "minutes": 60, "rewardGold": 60, "rewardItems": [ { "itemId": "potion_mp_s", "qty": 3 } ] }
   ],
   "levelGifts": [
+    { "level": 1, "rewardGold": 10, "rewardItems": [], "_test": "dev-only fixture so client tests can claim at once; not in events.json" },
     { "level": 2, "rewardGold": 50, "rewardItems": [ { "itemId": "potion_hp_s", "qty": 5 } ] },
     { "level": 5, "rewardGold": 150, "rewardItems": [ { "itemId": "potion_hp_m", "qty": 5 }, { "itemId": "potion_mp_m", "qty": 5 } ] },
     { "level": 10, "rewardGold": 400, "rewardItems": [ { "itemId": "petfood_feast", "qty": 2 } ] }

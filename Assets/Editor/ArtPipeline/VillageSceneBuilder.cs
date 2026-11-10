@@ -1915,6 +1915,10 @@ namespace AdventureKing.ArtPipeline
             var plateSo = new SerializedObject(go.AddComponent<PlayerNameplate>());
             plateSo.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
             plateSo.FindProperty("plateSprite").objectReferenceValue = FrameArt.Get("chip");
+            Sprite[] frameSprites = NameplateFrames();
+            var fp = plateSo.FindProperty("frames");
+            fp.arraySize = frameSprites.Length;
+            for (int i = 0; i < frameSprites.Length; i++) fp.GetArrayElementAtIndex(i).objectReferenceValue = frameSprites[i];
             plateSo.ApplyModifiedPropertiesWithoutUndo();
 
             var probe = new GameObject("GroundProbe").transform;
@@ -2118,13 +2122,13 @@ namespace AdventureKing.ArtPipeline
 
             // popup used by every shortcut
             var popupGo = EntrySceneBuilder.Panel(canvasGo.transform, "HudPopup", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.45f), null);
-            var popupCard = EntrySceneBuilder.Panel(popupGo.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 390f), ink, EntrySceneBuilder.PanelSprite);
+            var popupCard = EntrySceneBuilder.Panel(popupGo.transform, "Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(800f, 450f), ink, EntrySceneBuilder.PanelSprite);
             if (!EntrySceneBuilder.Skin(popupCard, "popup_card")) EntrySceneBuilder.Frame(popupCard, 2.8f);
             RectTransform pc = EntrySceneBuilder.FramedContent(popupCard, 0f, topBand: 0f);
             pc.offsetMin = new Vector2(36f, 24f); pc.offsetMax = new Vector2(-36f, -7f); // title sits in the card's crest band (top 58)
             EntrySceneBuilder.VStack(pc, 14f, TextAnchor.UpperCenter);
             Text popTitle = EntrySceneBuilder.BlockLabel(pc, "PopupTitle", "", 32, gold, 44f, FontStyle.Bold);
-            Text popMsg = EntrySceneBuilder.BlockLabel(pc, "PopupMessage", "", 24, cream, 120f);
+            Text popMsg = EntrySceneBuilder.BlockLabel(pc, "PopupMessage", "", 24, cream, 180f);
             RectTransform popRow = EntrySceneBuilder.HRow(pc, "PopupButtons", 64f, 12f);
             Button popClose = EntrySceneBuilder.Btn(popRow, "PopupClose", "Đóng", Vector2.zero, new Vector2(220f, 64f), new Color(0.26f, 0.56f, 0.62f), Color.white);
             EntrySceneBuilder.Size(popClose, 64f, 220f);
@@ -2166,6 +2170,7 @@ namespace AdventureKing.ArtPipeline
             var secondaryIcons = new System.Collections.Generic.List<GameObject>();
             HudFeatureButton moreInfo = null;
             Button moreButton = null, checkinButton = null;
+            var realWindows = new System.Collections.Generic.Dictionary<string, Button>();
             foreach (var (icon, label, title, msg, vip) in shortcuts)
             {
                 Button b = IconButton(grid.transform, "Shortcut_" + icon.Replace("icon_", ""), icon, label, new Vector2(0.5f, 0.5f), Vector2.zero, 82f);
@@ -2178,7 +2183,9 @@ namespace AdventureKing.ArtPipeline
                 fso.ApplyModifiedPropertiesWithoutUndo();
                 if (icon == "icon_more") { moreInfo = fb; moreButton = b; continue; }
                 if (icon == "icon_checkin") { checkinButton = b; Object.DestroyImmediate(fb); continue; } // real server check-in panel (below)
-                UnityEventTools.AddPersistentListener(b.onClick, fb.Open);
+                if (icon is "icon_event" or "icon_welfare" or "icon_firsttopup" or "icon_mail" or "icon_giftcode" or "icon_ranking")
+                    { realWindows[icon] = b; Object.DestroyImmediate(fb); } // real server windows (below)
+                else UnityEventTools.AddPersistentListener(b.onClick, fb.Open);
                 if (icon is "icon_welfare" or "icon_giftcode" or "icon_ranking" or "icon_vip") secondaryIcons.Add(b.gameObject); // phones: behind "Thêm"
             }
             var bar = grid.AddComponent<HudShortcutBar>();
@@ -2196,6 +2203,7 @@ namespace AdventureKing.ArtPipeline
             bso2.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(fold.onClick, bar.ToggleCollapsed);
             if (checkinButton) BuildCheckin(canvasGo.transform, checkinButton);
+            BuildServerWindows(canvasGo.transform, realWindows, canvasGo.GetComponent<CheckinPanel>());
 
             // system / settings menu (graphics, sound, save & exit)
             var menuGo = EntrySceneBuilder.Panel(canvasGo.transform, "SystemMenu", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0.45f), null);
@@ -2397,6 +2405,79 @@ namespace AdventureKing.ArtPipeline
         /// <summary>Round medallion icon button (procedural HUD art) with an optional caption underneath.</summary>
         /// <summary>"Điểm Danh 7 Ngày" popup (reference: AdventureKing_Checkin_Events_VisualReference.png): 3×2 day cells +
         /// a large day-7 milestone with outfit choices, Claim / Close, a red dot on the HUD icon (server-claimable only).</summary>
+        /// <summary>Sự kiện / Phúc lợi / Nạp đầu / Thư / Giftcode / BXH icons open real server windows (built in code at runtime).</summary>
+        private static void BuildServerWindows(Transform canvas, System.Collections.Generic.Dictionary<string, Button> buttons, CheckinPanel checkin)
+        {
+            Font bold = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            Sprite circle = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/ui_circle.png");
+            T Window<T>(string name) where T : CodePanel
+            {
+                var go = new GameObject(name, typeof(RectTransform)) { layer = 5 };
+                go.transform.SetParent(canvas, false);
+                var p = go.AddComponent<T>();
+                var so = new SerializedObject(p);
+                so.FindProperty("panelSprite").objectReferenceValue = FrameArt.Get("shop_window");
+                so.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("item_cell");
+                so.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
+                so.FindProperty("font").objectReferenceValue = bold;
+                so.ApplyModifiedPropertiesWithoutUndo();
+                return p;
+            }
+            GameObject Dot(Button b)
+            {
+                var dot = EntrySceneBuilder.Img(b.transform, "RedDot", new Vector2(1f, 1f), new Vector2(26f, 26f), new Color(0.92f, 0.18f, 0.2f), circle);
+                dot.type = Image.Type.Simple;
+                dot.rectTransform.anchoredPosition = new Vector2(-16f, -10f);
+                dot.gameObject.SetActive(false);
+                return dot.gameObject;
+            }
+            var welfare = Window<WelfarePanel>("WelfareWindow");
+            var wso = new SerializedObject(welfare);
+            wso.FindProperty("checkin").objectReferenceValue = checkin;
+            var dots = new System.Collections.Generic.List<GameObject>();
+            foreach (string k in new[] { "icon_event", "icon_welfare" }) if (buttons.TryGetValue(k, out Button b)) dots.Add(Dot(b));
+            var dp = wso.FindProperty("dots");
+            dp.arraySize = dots.Count;
+            for (int i = 0; i < dots.Count; i++) dp.GetArrayElementAtIndex(i).objectReferenceValue = dots[i];
+            wso.ApplyModifiedPropertiesWithoutUndo();
+            if (buttons.TryGetValue("icon_event", out Button ev)) UnityEventTools.AddStringPersistentListener(ev.onClick, welfare.OpenTab, "event");
+            if (buttons.TryGetValue("icon_welfare", out Button wf)) UnityEventTools.AddStringPersistentListener(wf.onClick, welfare.OpenTab, "online");
+            if (buttons.TryGetValue("icon_firsttopup", out Button ft)) UnityEventTools.AddStringPersistentListener(ft.onClick, welfare.OpenTab, "firsttopup");
+
+            var mail = Window<MailPanel>("MailWindow");
+            if (buttons.TryGetValue("icon_mail", out Button mb))
+            {
+                var mso = new SerializedObject(mail);
+                mso.FindProperty("dot").objectReferenceValue = Dot(mb);
+                mso.ApplyModifiedPropertiesWithoutUndo();
+                UnityEventTools.AddPersistentListener(mb.onClick, mail.Open);
+            }
+            var gift = Window<GiftcodePanel>("GiftcodeWindow");
+            if (buttons.TryGetValue("icon_giftcode", out Button gb)) UnityEventTools.AddPersistentListener(gb.onClick, gift.Open);
+            var rank = Window<RankingPanel>("RankingWindow");
+            if (buttons.TryGetValue("icon_ranking", out Button rb)) UnityEventTools.AddPersistentListener(rb.onClick, rank.Open);
+        }
+
+        /// <summary>Owner-provided nameplate frames (Assets/Art/Nameplates), imported as sprites; name = server title id.</summary>
+        public static Sprite[] NameplateFrames()
+        {
+            var list = new System.Collections.Generic.List<Sprite>();
+            foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { "Assets/Art/Nameplates" }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+                if (ti.textureType != TextureImporterType.Sprite || ti.alphaIsTransparency == false || ti.mipmapEnabled)
+                {
+                    ti.textureType = TextureImporterType.Sprite; ti.spriteImportMode = SpriteImportMode.Single;
+                    ti.alphaIsTransparency = true; ti.mipmapEnabled = false; ti.textureCompression = TextureImporterCompression.Uncompressed;
+                    ti.SaveAndReimport();
+                }
+                Sprite s = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (s) list.Add(s);
+            }
+            return list.ToArray();
+        }
+
         private static void BuildCheckin(Transform canvas, Button opener)
         {
             Color cream = new Color(1f, 0.97f, 0.9f), gold = new Color(1f, 0.84f, 0.48f), muted = new Color(0.78f, 0.82f, 0.92f);

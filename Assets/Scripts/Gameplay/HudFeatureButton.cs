@@ -26,9 +26,21 @@ namespace AdventureKing.Gameplay
             {
                 popup.Show(title, "Đang hỏi máy chủ...");
                 AdventureServerConnection.Instance.GetVip((ok, level, configured, err) =>
-                    popup.Show(title, !ok ? (err ?? "Không tải được VIP.")
+                {
+                    string vip = !ok ? (err ?? "Không tải được VIP.")
                         : !configured ? $"VIP hiện tại: {level}. Mốc nạp VIP 1–14 chưa được chủ dự án phê duyệt, nên chưa có cấp VIP nào được mở."
-                        : $"VIP hiện tại: {level}."));
+                        : $"VIP hiện tại: {level}.";
+                    popup.Show(title, vip);
+                    var w = AdventureWorldSession.Current;
+                    if (!ok || !w || w.Character == null) return;
+                    // nameplate frames the server says this character owns (VIP / Boss Hunter / special)
+                    AdventureServerConnection.Instance.GetTitles(w.Character.characterId, (tok, t, terr) =>
+                    {
+                        if (!tok || t == null || !popup.IsOpen) return;
+                        string frames = t.owned.Length == 0 ? t.note : "Khung tên: " + string.Join(", ", System.Array.ConvertAll(t.owned, o => o.name));
+                        popup.Show(title, vip + "\n" + frames);
+                    });
+                });
                 return;
             }
             popup.Show(title, message);
