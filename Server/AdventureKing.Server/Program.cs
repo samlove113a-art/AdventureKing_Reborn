@@ -66,6 +66,8 @@ builder.Services.AddSingleton(sp => new EventService(sp.GetRequiredService<Datab
     EventConfig.Load(eventsPath, sp.GetRequiredService<InventoryService>().Config), sp.GetRequiredService<InventoryService>()));
 builder.Services.AddSingleton(sp => new MailService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
 builder.Services.AddSingleton(sp => new GiftcodeService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
+builder.Services.AddSingleton(sp => new RankingService(sp.GetRequiredService<Database>(), sp.GetRequiredService<FarmService>()));
+builder.Services.AddSingleton(sp => new TitleService(sp.GetRequiredService<Database>()));
 builder.Services.AddKeyedSingleton("login", new AttemptLimiter(10, TimeSpan.FromMinutes(5)));
 builder.Services.AddKeyedSingleton("register", new AttemptLimiter(5, TimeSpan.FromHours(1)));
 
@@ -231,6 +233,11 @@ api.MapGet("/characters/{id}/mail", (string id, HttpContext ctx, AccountService 
 api.MapPost("/characters/{id}/mail/read", (string id, MailIdDto body, HttpContext ctx, AccountService accounts, MailService mail) => mail.Read(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/mail/claim", (string id, MailIdDto body, HttpContext ctx, AccountService accounts, MailService mail) => mail.Claim(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/giftcode", (string id, GiftcodeDto body, HttpContext ctx, AccountService accounts, GiftcodeService codes) => codes.Redeem(accounts.Authenticate(Bearer(ctx)), id, body));
+
+// ---------------------------------------------------------------- leaderboards + nameplate frames
+api.MapGet("/characters/{id}/rankings/{board}", (string id, string board, HttpContext ctx, AccountService accounts, RankingService ranks) => ranks.Get(accounts.Authenticate(Bearer(ctx)), id, board));
+api.MapGet("/characters/{id}/titles", (string id, HttpContext ctx, AccountService accounts, TitleService titles) => titles.Get(accounts.Authenticate(Bearer(ctx)), id));
+api.MapPost("/characters/{id}/titles/equip", (string id, TitleIdDto body, HttpContext ctx, AccountService accounts, TitleService titles) => titles.Equip(accounts.Authenticate(Bearer(ctx)), id, body));
 
 // ---------------------------------------------------------------- 7-day check-in (server clock, VN calendar day)
 api.MapGet("/characters/{id}/checkin", (string id, HttpContext ctx, AccountService accounts, CheckinService checkin) =>

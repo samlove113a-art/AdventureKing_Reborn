@@ -192,6 +192,18 @@ public sealed class PresenceRequestDto { public float x { get; set; } public flo
 public sealed class FarmService
 {
     // Mirrors the client's HeroClassCatalog (damage, seconds between swings, reach in metres, max HP, defence). Server copy wins.
+    /// <summary>
+    /// Lực Chiến from the same stats the server fights with: damage per second (class base + gear attack), max HP,
+    /// defence (class + gear) and level. Titles / nameplate frames never add power (owner rule).
+    /// </summary>
+    public int CombatPower(string characterId, int heroClass, int level)
+    {
+        var st = ClassStats[Math.Clamp(heroClass, 0, ClassStats.Length - 1)];
+        var (atk, def) = Bonus(characterId);
+        double dps = (st.damage + atk) / st.interval;
+        return (int)Math.Round(dps * 10 + st.maxHp + (st.defense + def) * 5 + level * 25);
+    }
+
     private static readonly (int damage, float interval, float range, int maxHp, int defense)[] ClassStats =
     {
         (18, 0.85f, 1.6f, 140, 12), // Kiếm Sĩ

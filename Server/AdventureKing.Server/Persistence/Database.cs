@@ -125,6 +125,14 @@ public sealed class Database
             Exec(c, tx, Schema.V8);
             Exec(c, tx, "PRAGMA user_version=8;");
             tx.Commit();
+            version = 8;
+        }
+        if (version < 9)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V9);
+            Exec(c, tx, "PRAGMA user_version=9;");
+            tx.Commit();
         }
     }
 
@@ -157,7 +165,22 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 8;
+    public const int Current = 9;
+
+    // V9: nameplate frames (VIP / Boss Hunter / special) — granted only by server code from valid data; one equipped.
+    public const string V9 = """
+    CREATE TABLE titles_owned (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        title_id     TEXT NOT NULL,
+        source       TEXT NOT NULL,
+        granted_ms   INTEGER NOT NULL,
+        PRIMARY KEY (character_id, title_id)
+    );
+    CREATE TABLE title_equipped (
+        character_id TEXT PRIMARY KEY REFERENCES characters(id),
+        title_id     TEXT NOT NULL
+    );
+    """;
 
     // V8: events / welfare / mail / giftcodes. Every reward has a one-row claim (primary key) so it pays once.
     public const string V8 = """
