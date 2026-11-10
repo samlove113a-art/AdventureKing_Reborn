@@ -92,6 +92,25 @@ namespace AdventureKing.Gameplay
         }
 
         public Text NameLabel { get; private set; }
+
+        /// <summary>Monster name opacity (fades while the hero stands on top of it, so the hero's own nameplate
+        /// stays readable; the HP bar always stays).</summary>
+        public float NameAlpha => NameLabel ? NameLabel.color.a : 0f;
+
+        private void LateUpdate()
+        {
+            if (!NameLabel) return;
+            var w = AdventureWorldSession.Current;
+            float want = 1f;
+            if (w && w.Player)
+            {
+                Vector3 h = w.Player.transform.position, m = transform.position;
+                if (Mathf.Abs(h.x - m.x) < 1.8f && Mathf.Abs(h.y - m.y) < 1.5f) want = 0f;
+            }
+            Color c = NameLabel.color;
+            c.a = Mathf.MoveTowards(c.a, want, Time.deltaTime * 6f);
+            NameLabel.color = c;
+        }
         /// <summary>Hero this monster is fighting (set when the hero hits it); it chases within its leash.</summary>
         public Transform Chase { get; set; }
         public float Leash { get; set; } = 3.5f;

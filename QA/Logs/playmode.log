@@ -1,15 +1,15 @@
-VBCSCompilerPreWarmer: watching VBCSCompiler (PID 10788)
-VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 17856)
-VBCSCompiler prewarm took 6.33 ms
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 11780)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 17728)
+VBCSCompiler prewarm took 6.05 ms
 [Licensing::Module] Trying to connect to existing licensing client channel...
-[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
 Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
 OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-11-10T03:03:12Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 16048)
+Date: 2026-11-10T03:45:21Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 12808)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
@@ -63,31 +63,31 @@ C:/AdventureKing_Reborn
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
 Logging is directed to a specific file, skipping project log.
-Player connection [16460]  Target information:
+Player connection [3256]  Target information:
 
-Player connection [16460]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 793768225 [EditorId] 793768225 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [3256]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 1028167622 [EditorId] 1028167622 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [16460] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [16460] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [3256] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [3256] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
 Starting IPC server.
 Waiting for clients to connect on \\.\pipe\Unity-LicenseClient-PC, press Ctrl-C to exit.
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-10T03:03:13.3855543Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 16048, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-10T03:45:22.1623316Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 12808, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
-[Package Manager] Connected to IPC stream "Upm-7532" after 0.5 seconds.
+[Package Manager] Connected to IPC stream "Upm-9204" after 0.5 seconds.
 [Licensing::Module] Licensing is not yet initialized.
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              90cbbd75c6bc4c9785b2ca407b4e9970
-  Correlation Id:          deb03460f3dda9baac6d39e573c668c4
-  External correlation Id: 7412999058634996915
+  Session Id:              dae8ab41e2ba488f860b0aef07a2596f
+  Correlation Id:          7faeb9dc68930eb79312e4e31fbcd631
+  External correlation Id: 8948668437051724066
   Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.07s, handshake: 0.07s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-10T03:03:13.5228425Z"
-[Licensing::Module] Connected to LicensingClient (PId: 16048, launch time: 0.00, total connection time: 0.70s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.07s, handshake: 0.06s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-10T03:45:22.2925355Z"
+[Licensing::Module] Connected to LicensingClient (PId: 12808, launch time: 0.00, total connection time: 0.70s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -134,7 +134,7 @@ Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
 Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56532
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56204
 CodeReloadManager initialized
 ImportWorker Server TCP listen port: 0
 AcceleratorClientConnectionCallback - disconnected - :0
@@ -146,7 +146,7 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/E
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.007761 seconds.
+Registered in 0.009062 seconds.
 [usbmuxd] Start listen thread
 [usbmuxd] Listen thread started
 Native extension for iOS target not found
@@ -156,24 +156,24 @@ Native extension for WebGL target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Scripting: successfully reloaded assembly
-- Finished resetting the current domain, in  1.350 seconds
-Domain Reload Profiling: 2208ms
-	BeginReloadAssembly (201ms)
-		CreateAndSetChildDomain (28ms)
-	RebuildCommonClasses (7ms)
-	RebuildNativeTypeToScriptingClass (27ms)
-	initialDomainReloadingComplete (99ms)
-	LoadAllAssembliesAndSetupDomain (522ms)
-		LoadAssemblies (171ms)
-		TypeCache.Refresh (349ms)
-			TypeCache.ScanAssembly (327ms)
+- Finished resetting the current domain, in  1.354 seconds
+Domain Reload Profiling: 2289ms
+	BeginReloadAssembly (220ms)
+		CreateAndSetChildDomain (33ms)
+	RebuildCommonClasses (8ms)
+	RebuildNativeTypeToScriptingClass (29ms)
+	initialDomainReloadingComplete (104ms)
+	LoadAllAssembliesAndSetupDomain (572ms)
+		LoadAssemblies (184ms)
+		TypeCache.Refresh (391ms)
+			TypeCache.ScanAssembly (369ms)
 		AnalyzeDomain (1ms)
-	FinalizeReload (1352ms)
+	FinalizeReload (1356ms)
 		SetupLoadedEditorAssemblies (0ms)
-			InitializePlatformSupportModulesInManaged (20ms)
-			BeforeProcessingInitializeOnLoad (187ms)
-			ProcessInitializeOnLoadAttributes (234ms)
-			ProcessInitializeOnLoadMethodAttributes (544ms)
+			InitializePlatformSupportModulesInManaged (17ms)
+			BeforeProcessingInitializeOnLoad (192ms)
+			ProcessInitializeOnLoadAttributes (233ms)
+			ProcessInitializeOnLoadMethodAttributes (530ms)
 [Licensing::Client] Successfully resolved entitlement details
 Application.AssetDatabase Initial Refresh Start
 [Package Manager] Restoring resolved packages state from cache
@@ -221,10 +221,10 @@ warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
 warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
       Assembly system.componentmodel.composition has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\System.ComponentModel.Composition.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ComponentModel.Composition.dll"
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 0s338ms
+ExitCode: 0 Duration: 0s360ms
 [626/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-*** Tundra build success (0.29 seconds), 1 items updated, 804 evaluated
-AssetDatabase: script compilation time: 1.066258s
+*** Tundra build success (0.32 seconds), 1 items updated, 804 evaluated
+AssetDatabase: script compilation time: 1.011793s
 Begin MonoManager ReloadAssembly
 'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
 'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
@@ -234,86 +234,86 @@ Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Scripting: successfully reloaded assembly
-- Finished resetting the current domain, in  1.395 seconds
-Domain Reload Profiling: 2905ms
-	BeginReloadAssembly (539ms)
-		DisableScriptedObjects (42ms)
-		CreateAndSetChildDomain (200ms)
+- Finished resetting the current domain, in  1.383 seconds
+Domain Reload Profiling: 2864ms
+	BeginReloadAssembly (544ms)
+		DisableScriptedObjects (43ms)
+		CreateAndSetChildDomain (175ms)
 	RebuildCommonClasses (16ms)
-	RebuildNativeTypeToScriptingClass (32ms)
-	initialDomainReloadingComplete (90ms)
-	LoadAllAssembliesAndSetupDomain (831ms)
-		LoadAssemblies (478ms)
+	RebuildNativeTypeToScriptingClass (41ms)
+	initialDomainReloadingComplete (87ms)
+	LoadAllAssembliesAndSetupDomain (791ms)
+		LoadAssemblies (480ms)
 		TypeCache.Refresh (190ms)
-			TypeCache.ScanAssembly (173ms)
-		AnalyzeDomain (70ms)
-			BuildScriptInfoCaches (57ms)
-			ResolveRequiredComponents (10ms)
-	FinalizeReload (1397ms)
+			TypeCache.ScanAssembly (174ms)
+		AnalyzeDomain (77ms)
+			BuildScriptInfoCaches (63ms)
+			ResolveRequiredComponents (11ms)
+	FinalizeReload (1385ms)
 		SetupLoadedEditorAssemblies (0ms)
-			LogAssemblyErrors (5ms)
-			InitializePlatformSupportModulesInManaged (16ms)
-			BeforeProcessingInitializeOnLoad (208ms)
-			ProcessInitializeOnLoadAttributes (251ms)
-			ProcessInitializeOnLoadMethodAttributes (414ms)
-			AfterProcessingInitializeOnLoad (12ms)
-		AwakeInstancesAfterBackupRestoration (44ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (18ms)
+			BeforeProcessingInitializeOnLoad (214ms)
+			ProcessInitializeOnLoadAttributes (254ms)
+			ProcessInitializeOnLoadMethodAttributes (407ms)
+			AfterProcessingInitializeOnLoad (14ms)
+			EditorAssembliesLoaded (3ms)
+		AwakeInstancesAfterBackupRestoration (52ms)
 Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
 
-Asset Pipeline Refresh (id=ed6b1f54afe756943a085f8b3d239352): Total: 4.725 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=fae9b5462ae478145a42bde67339ac33): Total: 4.735 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	(Values over 0.05ms)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=1908 ms
-		Asset DB Callback time: managed=70 ms, native=17 ms
-		Scripting: domain reloads=1, domain reload time=1580 ms, compile time=1069 ms, other=79 ms
+		Asset DB Process Time: managed=0 ms, native=1989 ms
+		Asset DB Callback time: managed=78 ms, native=19 ms
+		Scripting: domain reloads=1, domain reload time=1550 ms, compile time=1014 ms, other=82 ms
 		Project Asset Count: scripts=979, non-scripts=2627
 		Asset File Changes: new=0, changed=0, moved=0, deleted=0
 		Scan Filter Count: 0
-	InvokePackagesCallback: 19.661ms
-	ApplyChangesToAssetFolders: 0.612ms
-	Scan: 80.190ms
-	Collect global state as custom dependencies: 29.310ms
-	CategorizeScriptCompilationAssets: 25.224ms
-	ProcessAssetsWithTransientArtifactChanges: 77.525ms
-	CategorizeAssets: 73.087ms
-	CompileScripts: 1069.233ms
-	ImportOutOfDateAssets: 1410.580ms (1401.645ms without children)
-		ReloadNativeAssets: 0.053ms
-		UnloadImportedAssets: 3.371ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.425ms
-		ImportSchedulerStart: 4.081ms
-	PostProcessAllAssets: 70.161ms
-		MonoPostProcessAllAssets: 70.015ms
-			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 32.643ms
-			SyncVS.PostprocessSyncProject 4.022ms
-			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.681ms
-			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.581ms
-			EditModeScopePostprocessor.OnPostprocessAllAssets 1.288ms
-			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.074ms
-			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.775ms
-			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.453ms
-			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.420ms
-			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.305ms
-			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.284ms
-			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.254ms
-	UnloadStreamsBegin: 2.612ms
-	PersistCurrentRevisions: 0.169ms
-	GenerateScriptTypeHashes: 2.456ms
-	GenerateScriptTypeSerializationHashes: 4.669ms
-	Untracked: 1860.311ms
+	InvokePackagesCallback: 22.120ms
+	ApplyChangesToAssetFolders: 0.614ms
+	Scan: 165.418ms
+	Collect global state as custom dependencies: 34.093ms
+	CategorizeScriptCompilationAssets: 25.591ms
+	ProcessAssetsWithTransientArtifactChanges: 78.009ms
+	CategorizeAssets: 80.147ms
+	CompileScripts: 1014.091ms
+	ImportOutOfDateAssets: 1398.592ms (1388.779ms without children)
+		UnloadImportedAssets: 3.855ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.128ms
+		ImportSchedulerStart: 4.777ms
+	PostProcessAllAssets: 78.484ms
+		MonoPostProcessAllAssets: 78.400ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 46.168ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 3.811ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.901ms
+			SyncVS.PostprocessSyncProject 2.531ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.456ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.165ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.918ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.682ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.541ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.395ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.337ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.270ms
+	UnloadStreamsBegin: 2.467ms
+	PersistCurrentRevisions: 0.172ms
+	GenerateScriptTypeHashes: 3.304ms
+	GenerateScriptTypeSerializationHashes: 6.549ms
+	Untracked: 1829.228ms
 
 Application.AssetDatabase Initial Refresh End
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
-Scanning for USB devices : 2.672ms
+Scanning for USB devices : 2.728ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Adventure King Reborn
 Unloading 66 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 3970 unused Assets / (9.6 MB). Loaded Objects now: 4919.
-Memory consumption went from 343.2 MB to 333.5 MB.
-Total: 20.930000 ms (FindLiveObjects: 0.999500 ms CreateObjectMapping: 0.788700 ms MarkObjects: 12.454100 ms  DeleteObjects: 6.266900 ms)
+Unloading 3971 unused Assets / (10.8 MB). Loaded Objects now: 4920.
+Memory consumption went from 346.4 MB to 335.6 MB.
+Total: 17.071700 ms (FindLiveObjects: 0.890700 ms CreateObjectMapping: 0.539100 ms MarkObjects: 9.040800 ms  DeleteObjects: 6.272500 ms)
 
 Unity is not designed to run with Administrator privileges.
 
@@ -321,18 +321,18 @@ With elevated access, scripts in your project can modify system files, registry 
 This could make your system unstable or unbootable.
 
 Restart as a standard user for the safest experience.
-[Project] Loading completed in 9.338 seconds
-	Project init time: 				8.847 seconds
+[Project] Loading completed in 9.335 seconds
+	Project init time: 				8.886 seconds
 		Template init time: 		0.000 seconds
-		Package Manager init time: 		0.565 seconds
-		Asset Database init time: 		0.369 seconds
+		Package Manager init time: 		0.555 seconds
+		Asset Database init time: 		0.377 seconds
 		Global illumination init time: 	0.003 seconds
-		Assemblies load time: 			2.268 seconds
-		Unity extensions init time: 	0.033 seconds
-		Asset Database refresh time: 	4.726 seconds
-	Scene opening time: 			0.333 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1794279802140,"processId":7532,"projectLoad":9.3375752,"projectInit":8.8472232,"templateInit":0.0,"packageManagerInit":0.5653347,"assetDatabaseInit":0.3691143,"globalIlluminationInit":0.0027342,"assembliesLoad":2.2678384,"unityExtensionsInit":0.0329437,"assetDatabaseRefresh":4.7256635,"sceneOpening":0.3331143}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1794279802140,"processId":7532,"editorVersion":"6000.6.7f1 (b22767f04f04)","branch":"6000.6/staging","buildType":"Release","platform":"Windows"}
+		Assemblies load time: 			2.356 seconds
+		Unity extensions init time: 	0.031 seconds
+		Asset Database refresh time: 	4.735 seconds
+	Scene opening time: 			0.294 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1794282330913,"processId":9204,"projectLoad":9.334746599999999,"projectInit":8.8855546,"templateInit":0.0,"packageManagerInit":0.5546796,"assetDatabaseInit":0.376665,"globalIlluminationInit":0.0027366,"assembliesLoad":2.3559198,"unityExtensionsInit":0.0310044,"assetDatabaseRefresh":4.7351306,"sceneOpening":0.2942213}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1794282330913,"processId":9204,"editorVersion":"6000.6.7f1 (b22767f04f04)","branch":"6000.6/staging","buildType":"Release","platform":"Windows"}
 [Licensing::Client] Successfully resolved entitlement details
 Running tests for ExecutionSettings with details:
 targetPlatform = 
@@ -363,15 +363,15 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 Start Indexing on Editor startup
 [Indexing] Starting Initial Indexing for Assets
 [UnityConnectServicesConfig] config is NOT valid, switching to default
-Created GICache directory at C:/Users/PC/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.025s, timestamps: [9.342 - 9.368]
+Created GICache directory at C:/Users/PC/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.030s, timestamps: [9.339 - 9.369]
 Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 0 unused Assets / (Unknown). Loaded Objects now: 5073.
-Memory consumption went from 341.5 MB to 341.5 MB.
-Total: 11.861800 ms (FindLiveObjects: 0.501600 ms CreateObjectMapping: 0.238900 ms MarkObjects: 10.781900 ms  DeleteObjects: 0.024600 ms)
+Unloading 0 unused Assets / (Unknown). Loaded Objects now: 5074.
+Memory consumption went from 344.0 MB to 344.0 MB.
+Total: 11.382700 ms (FindLiveObjects: 0.531900 ms CreateObjectMapping: 0.244600 ms MarkObjects: 10.294100 ms  DeleteObjects: 0.017200 ms)
 
-Importing 'GUID: ed2c4f2e1c3a1234cb64f0a0f6cc1b57 - Path: Assets/InitTestSceneea5dda83-ae05-45e6-b4e7-8e385db68ae8.unity' with importer (DefaultImporter)
-Imported 'GUID: ed2c4f2e1c3a1234cb64f0a0f6cc1b57' -> (Import Result ID: 'f1f2e2eea358b6836030d9adeec825d9') in 0.010 seconds [static dependencies only]. Details - ImportResultOutputID=0402d17ab49c838700a25b6db3105e6c DependenciesID=ae090e7760eb4140acc366ae7a4a7215 StaticDependenciesID=f0a5bd599a94831be128f7bda3c21af0 
-Asset Pipeline Refresh (id=7df0ccacf5560264f82d5691aa4c9262): Total: 0.257 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2db768092395db640908bcf7d319f265 - Path: Assets/InitTestScene62941cd6-f30d-484d-8866-21b624c2f262.unity' with importer (DefaultImporter)
+Imported 'GUID: 2db768092395db640908bcf7d319f265' -> (Import Result ID: 'ed7e1554d5943625c5da43e3c941a4ea') in 0.008 seconds [static dependencies only]. Details - ImportResultOutputID=87de202929800e3ad1c3688cb2aff04a DependenciesID=19e2c03b7b6f9aab323b40cd15d47f87 StaticDependenciesID=cfc5adb0d5d0e893916455de03206a72 
+Asset Pipeline Refresh (id=bc2e30e3007af1146a51884c19cac893): Total: 0.276 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Executing IPrebuildSetup for: Unity.PerformanceTesting.Editor.TestRunBuilder.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -390,140 +390,139 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 Reloading assemblies for play mode.
 Reloading assemblies after forced synchronous recompile.
 Begin MonoManager ReloadAssembly
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
 Worker ready: AssetImportWorkerHW0 0
-'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
-'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Scripting: successfully reloaded assembly
-- Finished resetting the current domain, in  1.538 seconds
-Domain Reload Profiling: 2415ms
-	BeginReloadAssembly (409ms)
-		DisableScriptedObjects (41ms)
-		CreateAndSetChildDomain (124ms)
-	RebuildCommonClasses (18ms)
-	RebuildNativeTypeToScriptingClass (33ms)
-	initialDomainReloadingComplete (79ms)
-	LoadAllAssembliesAndSetupDomain (335ms)
+- Finished resetting the current domain, in  1.464 seconds
+Domain Reload Profiling: 2317ms
+	BeginReloadAssembly (413ms)
+		DisableScriptedObjects (43ms)
+		CreateAndSetChildDomain (114ms)
+	RebuildCommonClasses (15ms)
+	RebuildNativeTypeToScriptingClass (29ms)
+	initialDomainReloadingComplete (76ms)
+	LoadAllAssembliesAndSetupDomain (318ms)
 		LoadAssemblies (196ms)
-		TypeCache.Refresh (8ms)
+		TypeCache.Refresh (10ms)
 		AnalyzeDomain (46ms)
 			ResolveRequiredComponents (42ms)
-	FinalizeReload (1540ms)
+	FinalizeReload (1466ms)
 		SetupLoadedEditorAssemblies (0ms)
-			LogAssemblyErrors (3ms)
-			InitializePlatformSupportModulesInManaged (15ms)
-			BeforeProcessingInitializeOnLoad (195ms)
-			ProcessInitializeOnLoadAttributes (257ms)
-			ProcessInitializeOnLoadMethodAttributes (320ms)
+			InitializePlatformSupportModulesInManaged (16ms)
+			BeforeProcessingInitializeOnLoad (187ms)
+			ProcessInitializeOnLoadAttributes (230ms)
+			ProcessInitializeOnLoadMethodAttributes (314ms)
 			AfterProcessingInitializeOnLoad (11ms)
-		AwakeInstancesAfterBackupRestoration (114ms)
+		AwakeInstancesAfterBackupRestoration (94ms)
 No restricted APIs configured; Validation skipped.
 Checking 6 assemblies for restricted APIs found 0 usage(s) in 6 ms
 
-Asset Pipeline Refresh (id=f076c74f31108304f87ef2be603fd725): Total: 3.564 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+Asset Pipeline Refresh (id=78d5672c8a0ba784ca4ba2e71fbade1c): Total: 3.409 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
 	(Values over 0.05ms)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=1852 ms
-		Asset DB Callback time: managed=536 ms, native=236 ms
-		Scripting: domain reloads=1, domain reload time=935 ms, compile time=3 ms, other=0 ms
+		Asset DB Process Time: managed=0 ms, native=1766 ms
+		Asset DB Callback time: managed=517 ms, native=211 ms
+		Scripting: domain reloads=1, domain reload time=910 ms, compile time=3 ms, other=0 ms
 		Project Asset Count: scripts=979, non-scripts=2628
 		Asset File Changes: new=0, changed=0, moved=0, deleted=0
 		Scan Filter Count: 0
-	InvokePackagesCallback: 1.953ms
-	ApplyChangesToAssetFolders: 0.172ms
-	Collect global state as custom dependencies: 3.885ms
-	ProcessAssetsWithTransientArtifactChanges: 180.463ms
-	CategorizeAssets: 70.672ms
-	CompileScripts: 2.755ms
-	ImportOutOfDateAssets: 1546.224ms (1543.117ms without children)
-		CollectScriptTypesHashes: 2.670ms
-		ReloadNativeAssets: 1.523ms
-		UnloadImportedAssets: 0.267ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.048ms
-		ImportSchedulerStart: 0.247ms
-	PostProcessAllAssets: 770.544ms
-		PostProcessCallbackCreateDeferredMaterials 29.975ms
-		ShaderAssetModifiedCallback 23.258ms
-		AssemblyValidation.PostprocessAllAssets 14.002ms
-		RaytracingShaderImportPostprocess 10.354ms
-		SpeedTreeImporter.PostprocessAllAssets 8.589ms
-		ComputeShaderImportPostprocess 6.453ms
-		BlockShaderImporter.PostprocessAllAssets 4.393ms
-		LocalizationDatabase.AssetDatabasePostprocessCallback 3.607ms
-		XRBuildSystem.XRAssetImported 0.161ms
-		MonoPostProcessAllAssets: 535.327ms
-			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 176.230ms
-			PostProcessor.OnPostprocessAllAssets 42.227ms
-			MaterialPostprocessor.OnPostprocessAllAssets 36.292ms
-			AssetPostprocessor.OnPostprocessAllAssets 31.283ms
-			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 30.638ms
-			InputActionAssetPostprocessor.OnPostprocessAllAssets 29.481ms
-			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 25.403ms
-			StyleCatalogPostProcessor.OnPostprocessAllAssets 24.285ms
-			SpriteSlicePostprocessor.OnPostprocessAllAssets 17.116ms
-			TextAssetPostProcessor.OnPostprocessAllAssets 16.496ms
-			AssetChangedListener.OnPostprocessAllAssets 14.938ms
-			BuilderAssetPostprocessor.OnPostprocessAllAssets 9.082ms
-			SpeedTree9Postprocessor.OnPostprocessAllAssets 5.588ms
-			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 5.113ms
-			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 4.309ms
-			SyncVS.PostprocessSyncProject 2.710ms
-			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.666ms
-			ProjectSettingsPostprocessor.OnPostprocessAllAssets 1.475ms
-			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.813ms
-			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.785ms
-			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.679ms
-			ThemePostprocessor.OnPostprocessAllAssets 0.491ms
-			SpeedTreePostProcessor.OnPostprocessAllAssets 0.462ms
-			AudioMixerPostprocessor.OnPostprocessAllAssets 0.458ms
+	InvokePackagesCallback: 1.889ms
+	ApplyChangesToAssetFolders: 0.175ms
+	Collect global state as custom dependencies: 3.794ms
+	ProcessAssetsWithTransientArtifactChanges: 166.859ms
+	CategorizeAssets: 73.868ms
+	CompileScripts: 3.028ms
+	ImportOutOfDateAssets: 1472.176ms (1469.097ms without children)
+		CollectScriptTypesHashes: 2.624ms
+		ReloadNativeAssets: 1.512ms
+		UnloadImportedAssets: 0.256ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.012ms
+		ImportSchedulerStart: 0.276ms
+	PostProcessAllAssets: 726.711ms
+		PostProcessCallbackCreateDeferredMaterials 26.843ms
+		ShaderAssetModifiedCallback 14.758ms
+		AssemblyValidation.PostprocessAllAssets 12.179ms
+		RaytracingShaderImportPostprocess 6.441ms
+		ComputeShaderImportPostprocess 6.389ms
+		SpeedTreeImporter.PostprocessAllAssets 5.051ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 2.966ms
+		BlockShaderImporter.PostprocessAllAssets 2.804ms
+		XRBuildSystem.XRAssetImported 0.150ms
+		MonoPostProcessAllAssets: 516.190ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 165.812ms
+			PostProcessor.OnPostprocessAllAssets 41.930ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 31.771ms
+			AssetPostprocessor.OnPostprocessAllAssets 31.190ms
+			MaterialPostprocessor.OnPostprocessAllAssets 30.042ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 29.790ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 24.106ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 22.399ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 19.772ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 18.621ms
+			AssetChangedListener.OnPostprocessAllAssets 12.430ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 9.053ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 5.516ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 5.256ms
+			SyncVS.PostprocessSyncProject 2.667ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.636ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.539ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 1.204ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.789ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.781ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.659ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.510ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.466ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.452ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.440ms
 			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.418ms
-			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.410ms
-			EditModeScopePostprocessor.OnPostprocessAllAssets 0.397ms
-			AssetEvents.OnPostprocessAllAssets 0.355ms
-			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.277ms
-			ConfigAssetsTracker.OnPostprocessAllAssets 0.241ms
-			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.230ms
-			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.203ms
-			AudioContainerPostProcessor.OnPostprocessAllAssets 0.117ms
-			AssetProcessor.OnPostprocessAllAssets 0.089ms
-	PostAssetChangesProfiler: 1.952ms
-	GatherAllCurrentPrimaryImportResultRevisions: 0.213ms
-	UnloadStreamsBegin: 0.186ms
-	PersistCurrentRevisions: 0.185ms
-	GenerateScriptTypeHashes: 5.464ms
-	GenerateScriptTypeSerializationHashes: 9.290ms
-	Untracked: 977.394ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.408ms
+			AssetEvents.OnPostprocessAllAssets 0.368ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.269ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.229ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.228ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.188ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.122ms
+			AssetProcessor.OnPostprocessAllAssets 0.086ms
+	PostAssetChangesProfiler: 1.950ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.221ms
+	UnloadStreamsBegin: 0.190ms
+	PersistCurrentRevisions: 0.152ms
+	GenerateScriptTypeHashes: 5.233ms
+	GenerateScriptTypeSerializationHashes: 9.023ms
+	Untracked: 950.756ms
 
 Loaded scene 'Temp/__Backupscenes/0.backup'
-	Deserialize:            1.361 ms
-	Integration:            91.406 ms
-	Integration of assets:  0.003 ms
-	Thread Wait Time:       0.023 ms
-	Total Operation Time:   92.794 ms
+	Deserialize:            1.299 ms
+	Integration:            97.282 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.001 ms
+	Total Operation Time:   98.583 ms
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [Licensing::Client] Successfully resolved entitlement details
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            374.952 ms
-	Integration:            70.340 ms
-	Integration of assets:  68.744 ms
-	Thread Wait Time:       9.444 ms
-	Total Operation Time:   523.481 ms
+	Deserialize:            370.782 ms
+	Integration:            72.340 ms
+	Integration of assets:  84.447 ms
+	Thread Wait Time:       21.354 ms
+	Total Operation Time:   548.923 ms
 TrimDiskCacheJob: Current cache size 0mb
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            19.368 ms
-	Integration:            6.768 ms
+	Deserialize:            16.874 ms
+	Integration:            6.764 ms
 	Integration of assets:  0.002 ms
-	Thread Wait Time:       1.399 ms
-	Total Operation Time:   27.537 ms
-Curl error 7: Failed to connect to 127.0.0.1 port 9 after 2042 ms: Could not connect to server
-Curl error 7: Failed to connect to 127.0.0.1 port 9 after 2036 ms: Could not connect to server
-Curl error 7: Failed to connect to 127.0.0.1 port 9 after 2051 ms: Could not connect to server
+	Thread Wait Time:       1.363 ms
+	Total Operation Time:   25.003 ms
+Curl error 7: Failed to connect to 127.0.0.1 port 9 after 2048 ms: Could not connect to server
+Curl error 7: Failed to connect to 127.0.0.1 port 9 after 2045 ms: Could not connect to server
+Curl error 7: Failed to connect to 127.0.0.1 port 9 after 2034 ms: Could not connect to server
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -552,7 +551,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_c43132257c9d4c6fb8334d99ad0c45fe\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_cc9a84b34bbf4ed9a05b0fc81abbd828\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -805,40 +804,40 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 122 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 1.067100 ms
+UnloadTime: 1.051300 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            16.510 ms
-	Integration:            17.799 ms
+	Deserialize:            16.732 ms
+	Integration:            19.065 ms
 	Integration of assets:  0.002 ms
-	Thread Wait Time:       1.846 ms
-	Total Operation Time:   36.157 ms
-Unloading 3481 unused Assets / (1.8 MB). Loaded Objects now: 7110.
-Memory consumption went from 473.6 MB to 471.9 MB.
-Total: 16.745000 ms (FindLiveObjects: 1.238700 ms CreateObjectMapping: 0.652600 ms MarkObjects: 11.802600 ms  DeleteObjects: 2.714200 ms)
+	Thread Wait Time:       1.854 ms
+	Total Operation Time:   37.653 ms
+Unloading 3482 unused Assets / (1.7 MB). Loaded Objects now: 7114.
+Memory consumption went from 475.9 MB to 474.2 MB.
+Total: 16.230700 ms (FindLiveObjects: 1.359500 ms CreateObjectMapping: 0.645100 ms MarkObjects: 11.573100 ms  DeleteObjects: 2.315600 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.560600 ms
+UnloadTime: 2.385300 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            349.994 ms
-	Integration:            66.707 ms
-	Integration of assets:  136.768 ms
-	Thread Wait Time:       -0.203 ms
-	Total Operation Time:   553.266 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11012.
-Memory consumption went from 0.62 GB to 0.61 GB.
-Total: 13.377900 ms (FindLiveObjects: 1.426000 ms CreateObjectMapping: 0.484600 ms MarkObjects: 10.641300 ms  DeleteObjects: 0.440000 ms)
+	Deserialize:            348.665 ms
+	Integration:            66.631 ms
+	Integration of assets:  180.392 ms
+	Thread Wait Time:       -0.110 ms
+	Total Operation Time:   595.579 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11016.
+Memory consumption went from 0.62 GB to 0.62 GB.
+Total: 13.958300 ms (FindLiveObjects: 1.340300 ms CreateObjectMapping: 0.247000 ms MarkObjects: 11.562300 ms  DeleteObjects: 0.408000 ms)
 
 Unloading 311 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 12.288200 ms
+UnloadTime: 12.014400 ms
 Loaded scene 'Assets/Scenes/AK_Meadow.unity'
-	Deserialize:            92.160 ms
-	Integration:            49.550 ms
-	Integration of assets:  1.613 ms
-	Thread Wait Time:       708.255 ms
-	Total Operation Time:   851.578 ms
-Unloading 207 unused Assets / (1.3 MB). Loaded Objects now: 11562.
+	Deserialize:            93.206 ms
+	Integration:            43.422 ms
+	Integration of assets:  1.510 ms
+	Thread Wait Time:       706.345 ms
+	Total Operation Time:   844.483 ms
+Unloading 207 unused Assets / (1.3 MB). Loaded Objects now: 11638.
 Memory consumption went from 0.65 GB to 0.65 GB.
-Total: 17.361500 ms (FindLiveObjects: 1.815800 ms CreateObjectMapping: 0.678400 ms MarkObjects: 13.960400 ms  DeleteObjects: 0.454800 ms)
+Total: 15.113200 ms (FindLiveObjects: 1.465800 ms CreateObjectMapping: 0.246600 ms MarkObjects: 12.540400 ms  DeleteObjects: 0.423200 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -868,7 +867,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_fcbc7cafd47f422b95e08f0f060501a3\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_c72ed12538504ba39c359bb6c7939ec4\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1121,40 +1120,40 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.214800 ms
+UnloadTime: 0.203600 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            21.205 ms
-	Integration:            20.129 ms
-	Integration of assets:  3.319 ms
-	Thread Wait Time:       1.174 ms
-	Total Operation Time:   45.829 ms
-Unloading 754 unused Assets / (90.3 MB). Loaded Objects now: 7401.
-Memory consumption went from 0.58 GB to 503.1 MB.
-Total: 15.910500 ms (FindLiveObjects: 1.073000 ms CreateObjectMapping: 0.494500 ms MarkObjects: 12.605800 ms  DeleteObjects: 1.290600 ms)
+	Deserialize:            21.358 ms
+	Integration:            18.308 ms
+	Integration of assets:  5.040 ms
+	Thread Wait Time:       1.826 ms
+	Total Operation Time:   46.532 ms
+Unloading 754 unused Assets / (90.1 MB). Loaded Objects now: 7405.
+Memory consumption went from 0.58 GB to 504.0 MB.
+Total: 14.585800 ms (FindLiveObjects: 1.134300 ms CreateObjectMapping: 0.223100 ms MarkObjects: 11.630400 ms  DeleteObjects: 1.159300 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.298400 ms
+UnloadTime: 2.414300 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            320.852 ms
-	Integration:            47.218 ms
-	Integration of assets:  167.597 ms
-	Thread Wait Time:       -0.158 ms
-	Total Operation Time:   535.509 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11298.
+	Deserialize:            319.334 ms
+	Integration:            50.239 ms
+	Integration of assets:  136.078 ms
+	Thread Wait Time:       -0.166 ms
+	Total Operation Time:   505.485 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11302.
 Memory consumption went from 0.65 GB to 0.65 GB.
-Total: 14.636200 ms (FindLiveObjects: 1.444000 ms CreateObjectMapping: 0.253900 ms MarkObjects: 12.099600 ms  DeleteObjects: 0.406100 ms)
+Total: 14.224500 ms (FindLiveObjects: 1.468000 ms CreateObjectMapping: 0.278500 ms MarkObjects: 11.628200 ms  DeleteObjects: 0.415300 ms)
 
 Unloading 40 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 9.521000 ms
+UnloadTime: 9.282100 ms
 Loaded scene 'Assets/Scenes/AK_Meadow.unity'
-	Deserialize:            95.782 ms
-	Integration:            41.187 ms
-	Integration of assets:  1.502 ms
-	Thread Wait Time:       703.653 ms
-	Total Operation Time:   842.124 ms
-Unloading 207 unused Assets / (1.3 MB). Loaded Objects now: 11562.
+	Deserialize:            91.319 ms
+	Integration:            40.233 ms
+	Integration of assets:  1.436 ms
+	Thread Wait Time:       708.533 ms
+	Total Operation Time:   841.521 ms
+Unloading 207 unused Assets / (1.3 MB). Loaded Objects now: 11638.
 Memory consumption went from 0.66 GB to 0.65 GB.
-Total: 17.037400 ms (FindLiveObjects: 1.684800 ms CreateObjectMapping: 0.518600 ms MarkObjects: 13.943100 ms  DeleteObjects: 0.440100 ms)
+Total: 15.855700 ms (FindLiveObjects: 1.586900 ms CreateObjectMapping: 0.495000 ms MarkObjects: 12.919300 ms  DeleteObjects: 0.421100 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1184,7 +1183,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_a47c62fdff1d4be8b4c4e68b83d769f2\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_bf6f80c7a7934a94a539783a4b08d13d\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1437,40 +1436,40 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.251700 ms
+UnloadTime: 0.241500 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            21.222 ms
-	Integration:            17.967 ms
-	Integration of assets:  3.603 ms
-	Thread Wait Time:       1.730 ms
-	Total Operation Time:   44.522 ms
-Unloading 847 unused Assets / (90.2 MB). Loaded Objects now: 7401.
-Memory consumption went from 0.59 GB to 510.9 MB.
-Total: 15.349900 ms (FindLiveObjects: 1.100400 ms CreateObjectMapping: 0.484900 ms MarkObjects: 11.783900 ms  DeleteObjects: 1.542000 ms)
+	Deserialize:            20.755 ms
+	Integration:            18.027 ms
+	Integration of assets:  4.767 ms
+	Thread Wait Time:       1.749 ms
+	Total Operation Time:   45.297 ms
+Unloading 847 unused Assets / (90.4 MB). Loaded Objects now: 7405.
+Memory consumption went from 0.58 GB to 507.6 MB.
+Total: 15.919100 ms (FindLiveObjects: 1.123400 ms CreateObjectMapping: 0.222200 ms MarkObjects: 12.622600 ms  DeleteObjects: 1.512200 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.375700 ms
+UnloadTime: 2.643500 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            295.241 ms
-	Integration:            49.433 ms
-	Integration of assets:  138.277 ms
-	Thread Wait Time:       -0.134 ms
-	Total Operation Time:   482.818 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11298.
+	Deserialize:            296.893 ms
+	Integration:            50.565 ms
+	Integration of assets:  150.829 ms
+	Thread Wait Time:       -0.112 ms
+	Total Operation Time:   498.175 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11302.
 Memory consumption went from 0.66 GB to 0.66 GB.
-Total: 13.830300 ms (FindLiveObjects: 1.508400 ms CreateObjectMapping: 0.316900 ms MarkObjects: 11.125800 ms  DeleteObjects: 0.440900 ms)
+Total: 13.582500 ms (FindLiveObjects: 1.464800 ms CreateObjectMapping: 0.229100 ms MarkObjects: 11.091100 ms  DeleteObjects: 0.400300 ms)
 
 Unloading 42 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 13.440300 ms
+UnloadTime: 9.640800 ms
 Loaded scene 'Assets/Scenes/AK_Meadow.unity'
-	Deserialize:            96.660 ms
-	Integration:            44.804 ms
-	Integration of assets:  1.588 ms
-	Thread Wait Time:       703.410 ms
-	Total Operation Time:   846.462 ms
-Unloading 210 unused Assets / (1.4 MB). Loaded Objects now: 11564.
+	Deserialize:            91.684 ms
+	Integration:            42.191 ms
+	Integration of assets:  1.508 ms
+	Thread Wait Time:       707.894 ms
+	Total Operation Time:   843.277 ms
+Unloading 210 unused Assets / (1.3 MB). Loaded Objects now: 11640.
 Memory consumption went from 0.66 GB to 0.66 GB.
-Total: 17.077100 ms (FindLiveObjects: 1.659500 ms CreateObjectMapping: 0.517600 ms MarkObjects: 13.637000 ms  DeleteObjects: 0.763800 ms)
+Total: 17.524400 ms (FindLiveObjects: 2.060700 ms CreateObjectMapping: 0.539700 ms MarkObjects: 14.040700 ms  DeleteObjects: 0.440200 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1500,7 +1499,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_21c6900334f34f44ab5d5d25d6c4371d\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_d2459908591045eea2a360f4596a4b78\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1753,41 +1752,41 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.216000 ms
+UnloadTime: 0.221100 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            20.216 ms
-	Integration:            24.540 ms
-	Integration of assets:  4.841 ms
-	Thread Wait Time:       1.689 ms
-	Total Operation Time:   51.287 ms
-Unloading 749 unused Assets / (90.2 MB). Loaded Objects now: 7405.
-Memory consumption went from 0.59 GB to 511.7 MB.
-Total: 16.055000 ms (FindLiveObjects: 1.102100 ms CreateObjectMapping: 0.643500 ms MarkObjects: 12.315100 ms  DeleteObjects: 1.560300 ms)
+	Deserialize:            20.904 ms
+	Integration:            22.391 ms
+	Integration of assets:  4.616 ms
+	Thread Wait Time:       1.698 ms
+	Total Operation Time:   49.609 ms
+Unloading 750 unused Assets / (90.3 MB). Loaded Objects now: 7409.
+Memory consumption went from 0.58 GB to 509.2 MB.
+Total: 15.517400 ms (FindLiveObjects: 1.115200 ms CreateObjectMapping: 0.237100 ms MarkObjects: 11.975100 ms  DeleteObjects: 1.709300 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.318700 ms
+UnloadTime: 2.338400 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            249.893 ms
-	Integration:            52.475 ms
-	Integration of assets:  137.882 ms
-	Thread Wait Time:       -0.085 ms
-	Total Operation Time:   440.165 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11302.
+	Deserialize:            314.389 ms
+	Integration:            58.549 ms
+	Integration of assets:  138.600 ms
+	Thread Wait Time:       -0.144 ms
+	Total Operation Time:   511.394 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11306.
 Memory consumption went from 0.66 GB to 0.66 GB.
-Total: 14.686300 ms (FindLiveObjects: 1.524600 ms CreateObjectMapping: 0.513200 ms MarkObjects: 11.797700 ms  DeleteObjects: 0.413100 ms)
+Total: 15.407700 ms (FindLiveObjects: 1.547700 ms CreateObjectMapping: 0.507100 ms MarkObjects: 12.457300 ms  DeleteObjects: 0.448200 ms)
 
 Loaded scene 'Assets/QA_Internal/Scenes/QA_GameplaySandbox.unity'
-	Deserialize:            10.990 ms
-	Integration:            4.561 ms
-	Integration of assets:  0.339 ms
-	Thread Wait Time:       1.041 ms
-	Total Operation Time:   16.931 ms
+	Deserialize:            5.315 ms
+	Integration:            2.180 ms
+	Integration of assets:  0.197 ms
+	Thread Wait Time:       0.511 ms
+	Total Operation Time:   8.203 ms
 Loaded scene 'Assets/QA_Internal/Scenes/QA_GameplaySandbox.unity'
-	Deserialize:            3.874 ms
-	Integration:            1.045 ms
+	Deserialize:            4.763 ms
+	Integration:            1.268 ms
 	Integration of assets:  0.002 ms
-	Thread Wait Time:       0.466 ms
-	Total Operation Time:   5.387 ms
+	Thread Wait Time:       0.740 ms
+	Total Operation Time:   6.773 ms
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -1816,7 +1815,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_cee15d84773b4a5c985413c8022b8ac9\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_fcf55e06e1a142b2bf7b1c6aaeaad01d\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2069,40 +2068,40 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 32 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.214500 ms
+UnloadTime: 0.231700 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            18.488 ms
-	Integration:            18.297 ms
-	Integration of assets:  1.798 ms
-	Thread Wait Time:       1.536 ms
-	Total Operation Time:   40.118 ms
-Unloading 859 unused Assets / (135.1 MB). Loaded Objects now: 7405.
-Memory consumption went from 0.66 GB to 0.52 GB.
-Total: 16.585600 ms (FindLiveObjects: 1.175200 ms CreateObjectMapping: 0.596900 ms MarkObjects: 12.917100 ms  DeleteObjects: 1.436700 ms)
+	Deserialize:            18.506 ms
+	Integration:            25.435 ms
+	Integration of assets:  1.599 ms
+	Thread Wait Time:       1.353 ms
+	Total Operation Time:   46.893 ms
+Unloading 859 unused Assets / (135.1 MB). Loaded Objects now: 7409.
+Memory consumption went from 0.65 GB to 0.52 GB.
+Total: 15.750000 ms (FindLiveObjects: 1.118900 ms CreateObjectMapping: 0.222500 ms MarkObjects: 12.563400 ms  DeleteObjects: 1.410800 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.297100 ms
+UnloadTime: 3.497100 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            294.092 ms
-	Integration:            51.389 ms
-	Integration of assets:  137.031 ms
-	Thread Wait Time:       -0.082 ms
-	Total Operation Time:   482.430 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11302.
+	Deserialize:            260.583 ms
+	Integration:            74.285 ms
+	Integration of assets:  141.245 ms
+	Thread Wait Time:       -0.056 ms
+	Total Operation Time:   476.058 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11306.
 Memory consumption went from 0.66 GB to 0.66 GB.
-Total: 15.091300 ms (FindLiveObjects: 1.474400 ms CreateObjectMapping: 0.266200 ms MarkObjects: 12.468400 ms  DeleteObjects: 0.439400 ms)
+Total: 15.549700 ms (FindLiveObjects: 1.567100 ms CreateObjectMapping: 0.522500 ms MarkObjects: 12.562000 ms  DeleteObjects: 0.451400 ms)
 
 Unloading 40 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 9.352700 ms
+UnloadTime: 9.503000 ms
 Loaded scene 'Assets/Scenes/AK_Meadow.unity'
-	Deserialize:            91.607 ms
-	Integration:            39.801 ms
-	Integration of assets:  1.449 ms
-	Thread Wait Time:       707.809 ms
-	Total Operation Time:   840.666 ms
-Unloading 211 unused Assets / (1.4 MB). Loaded Objects now: 11999.
-Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 16.931900 ms (FindLiveObjects: 1.596800 ms CreateObjectMapping: 0.511000 ms MarkObjects: 13.924500 ms  DeleteObjects: 0.462700 ms)
+	Deserialize:            91.650 ms
+	Integration:            41.032 ms
+	Integration of assets:  1.517 ms
+	Thread Wait Time:       707.435 ms
+	Total Operation Time:   841.634 ms
+Unloading 211 unused Assets / (1.4 MB). Loaded Objects now: 12075.
+Memory consumption went from 0.67 GB to 0.66 GB.
+Total: 15.955800 ms (FindLiveObjects: 1.691400 ms CreateObjectMapping: 0.511900 ms MarkObjects: 12.840000 ms  DeleteObjects: 0.471400 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -2132,7 +2131,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/ServerEndToEndTests.cs Line: 48)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_e2e_66248b70375949c083fc62597af8125e\e2e.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_e2e_69221aded4fc45898e071740d55c8830\e2e.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2385,40 +2384,40 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/ServerEndToEndTests.cs Line: 48)
 
 Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.217100 ms
+UnloadTime: 0.256300 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            20.874 ms
-	Integration:            19.129 ms
-	Integration of assets:  4.717 ms
-	Thread Wait Time:       1.698 ms
-	Total Operation Time:   46.419 ms
-Unloading 750 unused Assets / (39.9 MB). Loaded Objects now: 7405.
-Memory consumption went from 0.59 GB to 0.55 GB.
-Total: 16.327900 ms (FindLiveObjects: 1.120700 ms CreateObjectMapping: 0.473000 ms MarkObjects: 13.040900 ms  DeleteObjects: 1.228900 ms)
+	Deserialize:            20.498 ms
+	Integration:            18.457 ms
+	Integration of assets:  4.573 ms
+	Thread Wait Time:       1.574 ms
+	Total Operation Time:   45.101 ms
+Unloading 750 unused Assets / (90.1 MB). Loaded Objects now: 7409.
+Memory consumption went from 0.59 GB to 0.50 GB.
+Total: 15.359600 ms (FindLiveObjects: 1.092700 ms CreateObjectMapping: 0.221000 ms MarkObjects: 12.421700 ms  DeleteObjects: 1.187200 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.413800 ms
+UnloadTime: 2.357600 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            246.472 ms
-	Integration:            53.381 ms
-	Integration of assets:  135.755 ms
-	Thread Wait Time:       -0.083 ms
-	Total Operation Time:   435.524 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11302.
-Memory consumption went from 0.67 GB to 0.66 GB.
-Total: 14.613000 ms (FindLiveObjects: 1.460700 ms CreateObjectMapping: 0.243700 ms MarkObjects: 12.060800 ms  DeleteObjects: 0.416000 ms)
+	Deserialize:            250.756 ms
+	Integration:            49.663 ms
+	Integration of assets:  186.952 ms
+	Thread Wait Time:       -0.144 ms
+	Total Operation Time:   487.227 ms
+Unloading 486 unused Assets / (1.6 MB). Loaded Objects now: 11306.
+Memory consumption went from 0.66 GB to 0.66 GB.
+Total: 14.246900 ms (FindLiveObjects: 1.489000 ms CreateObjectMapping: 0.248100 ms MarkObjects: 11.662000 ms  DeleteObjects: 0.412900 ms)
 
 Unloading 29 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 10.543600 ms
+UnloadTime: 13.150500 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            20.528 ms
-	Integration:            33.162 ms
-	Integration of assets:  1.770 ms
-	Thread Wait Time:       -0.003 ms
-	Total Operation Time:   55.458 ms
-Unloading 787 unused Assets / (23.3 MB). Loaded Objects now: 7364.
-Memory consumption went from 0.66 GB to 0.64 GB.
-Total: 16.492900 ms (FindLiveObjects: 1.196300 ms CreateObjectMapping: 0.667700 ms MarkObjects: 12.832200 ms  DeleteObjects: 1.350600 ms)
+	Deserialize:            19.711 ms
+	Integration:            46.263 ms
+	Integration of assets:  2.010 ms
+	Thread Wait Time:       -0.004 ms
+	Total Operation Time:   67.980 ms
+Unloading 787 unused Assets / (31.8 MB). Loaded Objects now: 7368.
+Memory consumption went from 0.66 GB to 0.62 GB.
+Total: 22.029100 ms (FindLiveObjects: 1.279400 ms CreateObjectMapping: 0.443700 ms MarkObjects: 18.626000 ms  DeleteObjects: 1.223300 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -2448,7 +2447,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/ServerEndToEndTests.cs Line: 48)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_e2e_66248b70375949c083fc62597af8125e\e2e.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_e2e_69221aded4fc45898e071740d55c8830\e2e.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2701,40 +2700,40 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/ServerEndToEndTests.cs Line: 48)
 
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.205400 ms
+UnloadTime: 0.204000 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            18.667 ms
-	Integration:            25.084 ms
+	Deserialize:            17.034 ms
+	Integration:            15.993 ms
 	Integration of assets:  0.003 ms
-	Thread Wait Time:       0.832 ms
-	Total Operation Time:   44.586 ms
-Unloading 5 unused Assets / (395.2 KB). Loaded Objects now: 7473.
+	Thread Wait Time:       0.709 ms
+	Total Operation Time:   33.739 ms
+Unloading 5 unused Assets / (395.2 KB). Loaded Objects now: 7477.
 Memory consumption went from 0.51 GB to 0.51 GB.
-Total: 15.529600 ms (FindLiveObjects: 1.369900 ms CreateObjectMapping: 0.660200 ms MarkObjects: 12.845000 ms  DeleteObjects: 0.078300 ms)
+Total: 13.226400 ms (FindLiveObjects: 1.005100 ms CreateObjectMapping: 0.200000 ms MarkObjects: 11.519700 ms  DeleteObjects: 0.061700 ms)
 
 Unloading 248 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.667100 ms
+UnloadTime: 2.318800 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            306.718 ms
-	Integration:            55.512 ms
-	Integration of assets:  126.796 ms
-	Thread Wait Time:       -0.575 ms
-	Total Operation Time:   488.450 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11304.
-Memory consumption went from 0.67 GB to 0.66 GB.
-Total: 16.292500 ms (FindLiveObjects: 1.566700 ms CreateObjectMapping: 0.483000 ms MarkObjects: 13.327700 ms  DeleteObjects: 0.454400 ms)
+	Deserialize:            239.718 ms
+	Integration:            50.893 ms
+	Integration of assets:  117.512 ms
+	Thread Wait Time:       -0.062 ms
+	Total Operation Time:   408.060 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11308.
+Memory consumption went from 0.66 GB to 0.66 GB.
+Total: 14.757100 ms (FindLiveObjects: 1.475200 ms CreateObjectMapping: 0.244700 ms MarkObjects: 12.191100 ms  DeleteObjects: 0.413100 ms)
 
 Unloading 29 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 9.364900 ms
+UnloadTime: 9.359100 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            19.812 ms
-	Integration:            29.808 ms
-	Integration of assets:  1.872 ms
-	Thread Wait Time:       -0.006 ms
-	Total Operation Time:   51.487 ms
-Unloading 789 unused Assets / (30.6 MB). Loaded Objects now: 7364.
+	Deserialize:            19.186 ms
+	Integration:            26.346 ms
+	Integration of assets:  1.930 ms
+	Thread Wait Time:       -0.002 ms
+	Total Operation Time:   47.460 ms
+Unloading 789 unused Assets / (30.9 MB). Loaded Objects now: 7368.
 Memory consumption went from 0.66 GB to 0.63 GB.
-Total: 15.077300 ms (FindLiveObjects: 1.110200 ms CreateObjectMapping: 0.498600 ms MarkObjects: 11.773900 ms  DeleteObjects: 1.254800 ms)
+Total: 14.425100 ms (FindLiveObjects: 1.070600 ms CreateObjectMapping: 0.222500 ms MarkObjects: 11.413700 ms  DeleteObjects: 1.279900 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -2764,7 +2763,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/ServerEndToEndTests.cs Line: 48)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_e2e_325eed77bbb2435993f76814c7b7ad45\e2e.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_e2e_f0d2fe6468694a9e936432ee621fc906\e2e.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -3017,28 +3016,28 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/ServerEndToEndTests.cs Line: 48)
 
 Unloading 248 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.305400 ms
+UnloadTime: 0.214200 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            262.988 ms
-	Integration:            58.584 ms
-	Integration of assets:  134.655 ms
-	Thread Wait Time:       32.383 ms
-	Total Operation Time:   488.611 ms
-Unloading 492 unused Assets / (2.8 MB). Loaded Objects now: 13356.
-Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 16.063000 ms (FindLiveObjects: 1.729400 ms CreateObjectMapping: 0.382400 ms MarkObjects: 13.030200 ms  DeleteObjects: 0.482700 ms)
+	Deserialize:            243.245 ms
+	Integration:            50.314 ms
+	Integration of assets:  88.233 ms
+	Thread Wait Time:       13.439 ms
+	Total Operation Time:   395.231 ms
+Unloading 492 unused Assets / (2.8 MB). Loaded Objects now: 13434.
+Memory consumption went from 0.67 GB to 0.66 GB.
+Total: 14.987800 ms (FindLiveObjects: 1.740800 ms CreateObjectMapping: 0.362100 ms MarkObjects: 12.009800 ms  DeleteObjects: 0.442500 ms)
 
 Unloading 31 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 7.686000 ms
+UnloadTime: 8.965800 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            20.929 ms
-	Integration:            23.573 ms
-	Integration of assets:  2.237 ms
-	Thread Wait Time:       0.622 ms
-	Total Operation Time:   47.360 ms
-Unloading 857 unused Assets / (135.1 MB). Loaded Objects now: 7290.
-Memory consumption went from 0.66 GB to 0.53 GB.
-Total: 14.829500 ms (FindLiveObjects: 1.072400 ms CreateObjectMapping: 0.230800 ms MarkObjects: 11.766100 ms  DeleteObjects: 1.321900 ms)
+	Deserialize:            20.253 ms
+	Integration:            22.993 ms
+	Integration of assets:  2.417 ms
+	Thread Wait Time:       0.608 ms
+	Total Operation Time:   46.272 ms
+Unloading 857 unused Assets / (135.1 MB). Loaded Objects now: 7294.
+Memory consumption went from 0.66 GB to 0.52 GB.
+Total: 15.026100 ms (FindLiveObjects: 1.071500 ms CreateObjectMapping: 0.222000 ms MarkObjects: 11.816300 ms  DeleteObjects: 1.473600 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -3068,7 +3067,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_07b79de9582a4876acbbcba54825210f\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_3210788f14fc4847a647c87c898d4400\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -3321,9 +3320,9 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 1177 unused Assets / (43.8 MB). Loaded Objects now: 5459.
-Memory consumption went from 0.50 GB to 471.8 MB.
-Total: 16.496500 ms (FindLiveObjects: 0.932800 ms CreateObjectMapping: 0.419300 ms MarkObjects: 13.233800 ms  DeleteObjects: 1.475400 ms)
+Unloading 1177 unused Assets / (43.6 MB). Loaded Objects now: 5463.
+Memory consumption went from 0.50 GB to 469.7 MB.
+Total: 16.052000 ms (FindLiveObjects: 0.929600 ms CreateObjectMapping: 0.439300 ms MarkObjects: 12.749200 ms  DeleteObjects: 1.497500 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -3353,7 +3352,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_667dd7a2804d45869bc74cfdcc5af44e\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_65237112be0342d3b775efe0e2d8fc9e\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -3606,28 +3605,28 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 113 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.182800 ms
+UnloadTime: 0.189700 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            347.194 ms
-	Integration:            19.370 ms
-	Integration of assets:  56.544 ms
-	Thread Wait Time:       8.067 ms
-	Total Operation Time:   431.175 ms
-Unloading 1 unused Assets / (2.8 KB). Loaded Objects now: 7403.
-Memory consumption went from 0.50 GB to 0.50 GB.
-Total: 15.951300 ms (FindLiveObjects: 1.055300 ms CreateObjectMapping: 0.421900 ms MarkObjects: 14.008300 ms  DeleteObjects: 0.030000 ms)
+	Deserialize:            328.653 ms
+	Integration:            17.595 ms
+	Integration of assets:  46.344 ms
+	Thread Wait Time:       8.624 ms
+	Total Operation Time:   401.217 ms
+Unloading 1 unused Assets / (2.8 KB). Loaded Objects now: 7407.
+Memory consumption went from 510.0 MB to 510.0 MB.
+Total: 14.131100 ms (FindLiveObjects: 1.027600 ms CreateObjectMapping: 0.200200 ms MarkObjects: 12.439700 ms  DeleteObjects: 0.028800 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.491100 ms
+UnloadTime: 2.350200 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            272.318 ms
-	Integration:            55.964 ms
-	Integration of assets:  132.024 ms
-	Thread Wait Time:       -0.100 ms
-	Total Operation Time:   460.206 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11302.
+	Deserialize:            252.048 ms
+	Integration:            55.933 ms
+	Integration of assets:  143.272 ms
+	Thread Wait Time:       -0.075 ms
+	Total Operation Time:   451.178 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11306.
 Memory consumption went from 0.66 GB to 0.66 GB.
-Total: 17.049700 ms (FindLiveObjects: 1.502500 ms CreateObjectMapping: 0.248000 ms MarkObjects: 14.386800 ms  DeleteObjects: 0.446100 ms)
+Total: 14.041800 ms (FindLiveObjects: 1.504700 ms CreateObjectMapping: 0.296500 ms MarkObjects: 11.390000 ms  DeleteObjects: 0.416400 ms)
 
 [SHOP-TEST] step 1
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -3890,16 +3889,16 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 (Filename: Assets/Tests/PlayMode/ShopFashionTests.cs Line: 280)
 
 Unloading 54 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 10.908300 ms
+UnloadTime: 8.296900 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            20.622 ms
-	Integration:            32.362 ms
-	Integration of assets:  1.705 ms
-	Thread Wait Time:       0.009 ms
-	Total Operation Time:   54.699 ms
-Unloading 753 unused Assets / (82.8 MB). Loaded Objects now: 7436.
-Memory consumption went from 0.66 GB to 0.58 GB.
-Total: 18.214100 ms (FindLiveObjects: 1.296200 ms CreateObjectMapping: 0.667100 ms MarkObjects: 14.578600 ms  DeleteObjects: 1.210200 ms)
+	Deserialize:            18.363 ms
+	Integration:            25.474 ms
+	Integration of assets:  2.154 ms
+	Thread Wait Time:       0.012 ms
+	Total Operation Time:   46.004 ms
+Unloading 753 unused Assets / (20.0 MB). Loaded Objects now: 7440.
+Memory consumption went from 0.66 GB to 0.64 GB.
+Total: 14.632000 ms (FindLiveObjects: 1.149000 ms CreateObjectMapping: 0.468900 ms MarkObjects: 11.546900 ms  DeleteObjects: 1.078700 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -3929,7 +3928,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_667dd7a2804d45869bc74cfdcc5af44e\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_65237112be0342d3b775efe0e2d8fc9e\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -4182,33 +4181,33 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.220400 ms
+UnloadTime: 0.205300 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            21.397 ms
-	Integration:            25.057 ms
-	Integration of assets:  0.004 ms
-	Thread Wait Time:       0.834 ms
-	Total Operation Time:   47.292 ms
-Unloading 5 unused Assets / (395.2 KB). Loaded Objects now: 7546.
+	Deserialize:            17.031 ms
+	Integration:            15.725 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       0.659 ms
+	Total Operation Time:   33.418 ms
+Unloading 5 unused Assets / (395.2 KB). Loaded Objects now: 7550.
 Memory consumption went from 0.52 GB to 0.52 GB.
-Total: 15.140100 ms (FindLiveObjects: 1.076700 ms CreateObjectMapping: 0.745700 ms MarkObjects: 12.811400 ms  DeleteObjects: 0.069700 ms)
+Total: 14.047200 ms (FindLiveObjects: 1.038500 ms CreateObjectMapping: 0.418600 ms MarkObjects: 12.083900 ms  DeleteObjects: 0.072100 ms)
 
 Unloading 225 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.706000 ms
+UnloadTime: 2.189000 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            309.181 ms
-	Integration:            59.564 ms
-	Integration of assets:  124.820 ms
-	Thread Wait Time:       -0.182 ms
-	Total Operation Time:   493.383 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11329.
-Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 18.824800 ms (FindLiveObjects: 2.003900 ms CreateObjectMapping: 0.653400 ms MarkObjects: 14.879100 ms  DeleteObjects: 0.766900 ms)
+	Deserialize:            273.495 ms
+	Integration:            51.482 ms
+	Integration of assets:  110.045 ms
+	Thread Wait Time:       -0.132 ms
+	Total Operation Time:   434.890 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11333.
+Memory consumption went from 0.67 GB to 0.66 GB.
+Total: 14.694400 ms (FindLiveObjects: 1.554800 ms CreateObjectMapping: 0.231700 ms MarkObjects: 12.061000 ms  DeleteObjects: 0.420200 ms)
 
 Unloading 21 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 3 unused Assets / (4.2 KB). Loaded Objects now: 13489.
-Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 30.160000 ms (FindLiveObjects: 2.899600 ms CreateObjectMapping: 0.887400 ms MarkObjects: 25.328700 ms  DeleteObjects: 0.098400 ms)
+Unloading 3 unused Assets / (4.3 KB). Loaded Objects now: 13567.
+Memory consumption went from 0.66 GB to 0.66 GB.
+Total: 14.823500 ms (FindLiveObjects: 1.850300 ms CreateObjectMapping: 0.585900 ms MarkObjects: 11.892000 ms  DeleteObjects: 0.063700 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -4238,7 +4237,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_51de0118990546cbba4eb2d0864e79db\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_e8e4fac4f5c9460190628e616ebfb530\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -4491,9 +4490,9 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 2148 unused Assets / (49.5 MB). Loaded Objects now: 5588.
+Unloading 2148 unused Assets / (49.6 MB). Loaded Objects now: 5592.
 Memory consumption went from 0.66 GB to 0.61 GB.
-Total: 18.125400 ms (FindLiveObjects: 1.250800 ms CreateObjectMapping: 0.230000 ms MarkObjects: 13.224600 ms  DeleteObjects: 2.981800 ms)
+Total: 21.021500 ms (FindLiveObjects: 1.088800 ms CreateObjectMapping: 0.487300 ms MarkObjects: 15.594000 ms  DeleteObjects: 3.408000 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -4523,7 +4522,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_97f16d645538440e8dc89cfc7f85de99\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_8382a35856124f7e900e9c80e9edb617\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -4776,40 +4775,40 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 103 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.225500 ms
+UnloadTime: 0.233000 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            309.156 ms
-	Integration:            22.971 ms
-	Integration of assets:  82.649 ms
-	Thread Wait Time:       21.999 ms
-	Total Operation Time:   436.775 ms
-Unloading 1 unused Assets / (2.8 KB). Loaded Objects now: 7436.
+	Deserialize:            310.234 ms
+	Integration:            23.245 ms
+	Integration of assets:  47.839 ms
+	Thread Wait Time:       9.434 ms
+	Total Operation Time:   390.753 ms
+Unloading 1 unused Assets / (2.8 KB). Loaded Objects now: 7440.
 Memory consumption went from 0.50 GB to 0.50 GB.
-Total: 14.601200 ms (FindLiveObjects: 1.041800 ms CreateObjectMapping: 0.210500 ms MarkObjects: 12.861700 ms  DeleteObjects: 0.038600 ms)
+Total: 14.684100 ms (FindLiveObjects: 1.279100 ms CreateObjectMapping: 0.639800 ms MarkObjects: 12.296000 ms  DeleteObjects: 0.028800 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.624300 ms
+UnloadTime: 2.706400 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            332.665 ms
-	Integration:            54.108 ms
-	Integration of assets:  136.685 ms
-	Thread Wait Time:       -0.182 ms
-	Total Operation Time:   523.276 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11333.
-Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 15.411300 ms (FindLiveObjects: 1.880300 ms CreateObjectMapping: 0.822800 ms MarkObjects: 11.841600 ms  DeleteObjects: 0.416200 ms)
+	Deserialize:            309.947 ms
+	Integration:            54.543 ms
+	Integration of assets:  132.880 ms
+	Thread Wait Time:       -0.190 ms
+	Total Operation Time:   497.180 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11337.
+Memory consumption went from 0.67 GB to 0.66 GB.
+Total: 14.845200 ms (FindLiveObjects: 1.546100 ms CreateObjectMapping: 0.305100 ms MarkObjects: 12.142600 ms  DeleteObjects: 0.415100 ms)
 
 Unloading 40 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 11.495600 ms
+UnloadTime: 11.246100 ms
 Loaded scene 'Assets/Scenes/AK_Meadow.unity'
-	Deserialize:            101.888 ms
-	Integration:            50.815 ms
-	Integration of assets:  1.574 ms
-	Thread Wait Time:       699.046 ms
-	Total Operation Time:   853.323 ms
-Unloading 207 unused Assets / (1.3 MB). Loaded Objects now: 11597.
+	Deserialize:            102.741 ms
+	Integration:            46.381 ms
+	Integration of assets:  1.575 ms
+	Thread Wait Time:       698.305 ms
+	Total Operation Time:   849.001 ms
+Unloading 207 unused Assets / (1.3 MB). Loaded Objects now: 11673.
 Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 20.143700 ms (FindLiveObjects: 1.892100 ms CreateObjectMapping: 0.691300 ms MarkObjects: 16.597100 ms  DeleteObjects: 0.493000 ms)
+Total: 17.646500 ms (FindLiveObjects: 1.639000 ms CreateObjectMapping: 0.402200 ms MarkObjects: 14.684700 ms  DeleteObjects: 0.471800 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -4839,7 +4838,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_c4b2d1abad22496cb4d1648f7878ad75\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_fa52ac1fe4bc4620bd6f7ea88573ea1c\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -5092,28 +5091,28 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.229500 ms
+UnloadTime: 0.216500 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            22.260 ms
-	Integration:            19.143 ms
-	Integration of assets:  4.839 ms
-	Thread Wait Time:       1.639 ms
-	Total Operation Time:   47.881 ms
-Unloading 752 unused Assets / (90.1 MB). Loaded Objects now: 7436.
-Memory consumption went from 0.60 GB to 0.51 GB.
-Total: 15.704100 ms (FindLiveObjects: 1.129600 ms CreateObjectMapping: 0.501600 ms MarkObjects: 12.352000 ms  DeleteObjects: 1.273000 ms)
+	Deserialize:            23.214 ms
+	Integration:            20.791 ms
+	Integration of assets:  3.950 ms
+	Thread Wait Time:       1.643 ms
+	Total Operation Time:   49.598 ms
+Unloading 752 unused Assets / (90.1 MB). Loaded Objects now: 7440.
+Memory consumption went from 0.59 GB to 0.51 GB.
+Total: 16.972600 ms (FindLiveObjects: 1.094600 ms CreateObjectMapping: 0.221800 ms MarkObjects: 13.919800 ms  DeleteObjects: 1.289900 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.359600 ms
+UnloadTime: 2.620600 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            258.746 ms
-	Integration:            54.522 ms
-	Integration of assets:  135.288 ms
-	Thread Wait Time:       -0.126 ms
-	Total Operation Time:   448.431 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11333.
+	Deserialize:            290.790 ms
+	Integration:            57.847 ms
+	Integration of assets:  148.816 ms
+	Thread Wait Time:       -0.306 ms
+	Total Operation Time:   497.147 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11337.
 Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 15.636700 ms (FindLiveObjects: 1.534000 ms CreateObjectMapping: 0.337000 ms MarkObjects: 12.854200 ms  DeleteObjects: 0.467700 ms)
+Total: 15.920800 ms (FindLiveObjects: 1.792700 ms CreateObjectMapping: 0.659000 ms MarkObjects: 12.588300 ms  DeleteObjects: 0.427400 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -5143,7 +5142,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_c7660a16a3454c55b874a43d43e94d56\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_574ccb210e684546b840b08a7cc9f785\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -5396,52 +5395,52 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 29 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.220800 ms
+UnloadTime: 0.209900 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            27.681 ms
-	Integration:            18.750 ms
-	Integration of assets:  1.710 ms
-	Thread Wait Time:       1.544 ms
-	Total Operation Time:   49.685 ms
-Unloading 853 unused Assets / (75.6 MB). Loaded Objects now: 7434.
-Memory consumption went from 0.66 GB to 0.59 GB.
-Total: 15.689600 ms (FindLiveObjects: 1.146700 ms CreateObjectMapping: 0.492800 ms MarkObjects: 12.031900 ms  DeleteObjects: 1.570300 ms)
+	Deserialize:            19.137 ms
+	Integration:            19.956 ms
+	Integration of assets:  1.705 ms
+	Thread Wait Time:       1.486 ms
+	Total Operation Time:   42.284 ms
+Unloading 853 unused Assets / (135.0 MB). Loaded Objects now: 7438.
+Memory consumption went from 0.66 GB to 0.53 GB.
+Total: 15.195500 ms (FindLiveObjects: 1.134800 ms CreateObjectMapping: 0.508000 ms MarkObjects: 11.623300 ms  DeleteObjects: 1.492000 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.332100 ms
+UnloadTime: 2.306400 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            244.891 ms
-	Integration:            52.083 ms
-	Integration of assets:  153.985 ms
-	Thread Wait Time:       -0.083 ms
-	Total Operation Time:   450.876 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11333.
+	Deserialize:            255.492 ms
+	Integration:            53.911 ms
+	Integration of assets:  137.484 ms
+	Thread Wait Time:       -0.070 ms
+	Total Operation Time:   446.816 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11337.
 Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 14.602600 ms (FindLiveObjects: 1.521600 ms CreateObjectMapping: 0.254800 ms MarkObjects: 11.937700 ms  DeleteObjects: 0.452800 ms)
+Total: 15.115900 ms (FindLiveObjects: 1.523300 ms CreateObjectMapping: 0.263700 ms MarkObjects: 12.472400 ms  DeleteObjects: 0.420800 ms)
 
 Unloading 40 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 7.705300 ms
+UnloadTime: 9.164400 ms
 Loaded scene 'Assets/Scenes/AK_Meadow.unity'
-	Deserialize:            88.249 ms
-	Integration:            37.803 ms
-	Integration of assets:  1.147 ms
-	Thread Wait Time:       761.664 ms
-	Total Operation Time:   888.864 ms
-Unloading 219 unused Assets / (1.4 MB). Loaded Objects now: 12038.
+	Deserialize:            89.749 ms
+	Integration:            40.365 ms
+	Integration of assets:  1.217 ms
+	Thread Wait Time:       749.112 ms
+	Total Operation Time:   880.443 ms
+Unloading 219 unused Assets / (1.4 MB). Loaded Objects now: 12114.
 Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 14.850700 ms (FindLiveObjects: 1.554600 ms CreateObjectMapping: 0.349200 ms MarkObjects: 12.085400 ms  DeleteObjects: 0.457800 ms)
+Total: 15.291500 ms (FindLiveObjects: 1.634200 ms CreateObjectMapping: 0.457900 ms MarkObjects: 12.320600 ms  DeleteObjects: 0.446700 ms)
 
 Unloading 97 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 7.139500 ms
+UnloadTime: 6.795000 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            192.986 ms
-	Integration:            106.472 ms
-	Integration of assets:  32.925 ms
-	Thread Wait Time:       618.277 ms
-	Total Operation Time:   950.661 ms
-Unloading 494 unused Assets / (3.4 MB). Loaded Objects now: 13481.
-Memory consumption went from 0.68 GB to 0.67 GB.
-Total: 16.181900 ms (FindLiveObjects: 1.747500 ms CreateObjectMapping: 0.668800 ms MarkObjects: 12.902900 ms  DeleteObjects: 0.463000 ms)
+	Deserialize:            192.517 ms
+	Integration:            41.993 ms
+	Integration of assets:  32.249 ms
+	Thread Wait Time:       613.880 ms
+	Total Operation Time:   880.639 ms
+Unloading 494 unused Assets / (3.5 MB). Loaded Objects now: 13559.
+Memory consumption went from 0.67 GB to 0.67 GB.
+Total: 16.272400 ms (FindLiveObjects: 1.795300 ms CreateObjectMapping: 0.383900 ms MarkObjects: 13.248700 ms  DeleteObjects: 0.437700 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -5471,7 +5470,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_217b1cef5b604a45b477ace3d0985897\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_06aff14a3e2f42fd85cdd24438d5b059\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -5751,7 +5750,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_aac9ce7fada84d6cb0c5d326bc2a42da\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_05ab6dd846ce44e58650552bf5a04225\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -6004,16 +6003,16 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 31 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.212900 ms
+UnloadTime: 0.218000 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            18.932 ms
-	Integration:            17.689 ms
-	Integration of assets:  3.603 ms
-	Thread Wait Time:       1.912 ms
-	Total Operation Time:   42.136 ms
-Unloading 857 unused Assets / (135.4 MB). Loaded Objects now: 7434.
-Memory consumption went from 0.67 GB to 0.53 GB.
-Total: 15.196700 ms (FindLiveObjects: 1.128300 ms CreateObjectMapping: 0.285700 ms MarkObjects: 11.914900 ms  DeleteObjects: 1.458600 ms)
+	Deserialize:            19.638 ms
+	Integration:            18.235 ms
+	Integration of assets:  3.267 ms
+	Thread Wait Time:       1.561 ms
+	Total Operation Time:   42.701 ms
+Unloading 857 unused Assets / (135.4 MB). Loaded Objects now: 7438.
+Memory consumption went from 0.66 GB to 0.53 GB.
+Total: 14.372700 ms (FindLiveObjects: 1.067600 ms CreateObjectMapping: 0.206200 ms MarkObjects: 11.318900 ms  DeleteObjects: 1.320300 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -6043,7 +6042,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_326a17df1bd845c7a1188d43e602bdbd\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_1c4436f5f6804731933015271ff319b2\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -6296,28 +6295,28 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.195500 ms
+UnloadTime: 0.210000 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            16.165 ms
-	Integration:            16.477 ms
-	Integration of assets:  0.003 ms
-	Thread Wait Time:       0.713 ms
-	Total Operation Time:   33.358 ms
-Unloading 5 unused Assets / (395.2 KB). Loaded Objects now: 7442.
+	Deserialize:            15.748 ms
+	Integration:            16.564 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.666 ms
+	Total Operation Time:   32.980 ms
+Unloading 5 unused Assets / (395.2 KB). Loaded Objects now: 7446.
 Memory consumption went from 0.51 GB to 0.51 GB.
-Total: 14.675700 ms (FindLiveObjects: 1.039200 ms CreateObjectMapping: 0.487300 ms MarkObjects: 12.668300 ms  DeleteObjects: 0.061000 ms)
+Total: 13.286800 ms (FindLiveObjects: 1.030600 ms CreateObjectMapping: 0.187200 ms MarkObjects: 11.611000 ms  DeleteObjects: 0.062500 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.223500 ms
+UnloadTime: 2.172600 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            278.217 ms
-	Integration:            50.930 ms
-	Integration of assets:  167.949 ms
-	Thread Wait Time:       -0.126 ms
-	Total Operation Time:   496.970 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11333.
+	Deserialize:            297.476 ms
+	Integration:            52.106 ms
+	Integration of assets:  132.251 ms
+	Thread Wait Time:       -0.160 ms
+	Total Operation Time:   481.673 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11337.
 Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 15.548500 ms (FindLiveObjects: 1.580200 ms CreateObjectMapping: 0.224900 ms MarkObjects: 12.910600 ms  DeleteObjects: 0.418600 ms)
+Total: 14.681500 ms (FindLiveObjects: 1.416800 ms CreateObjectMapping: 0.244100 ms MarkObjects: 12.062500 ms  DeleteObjects: 0.522200 ms)
 
 [server] info: AdventureKing.Server[0]
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -6347,7 +6346,7 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
-[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_650aa1b7d0a34e6bbea7f6a9fc6987ef\test.db
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_48ba3a49925542768e66f8529b00dbb0\test.db
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -6600,41 +6599,41 @@ System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
 (Filename: Assets/Tests/PlayMode/TestServer.cs Line: 51)
 
 Unloading 46 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.214600 ms
+UnloadTime: 0.237000 ms
 Loaded scene 'Assets/Scenes/AK_Entry.unity'
-	Deserialize:            18.554 ms
-	Integration:            18.049 ms
-	Integration of assets:  1.807 ms
-	Thread Wait Time:       12.006 ms
-	Total Operation Time:   50.417 ms
-Unloading 853 unused Assets / (135.1 MB). Loaded Objects now: 7461.
-Memory consumption went from 0.67 GB to 0.54 GB.
-Total: 16.748000 ms (FindLiveObjects: 1.153200 ms CreateObjectMapping: 0.466400 ms MarkObjects: 13.087900 ms  DeleteObjects: 1.563600 ms)
+	Deserialize:            18.540 ms
+	Integration:            18.106 ms
+	Integration of assets:  1.865 ms
+	Thread Wait Time:       12.075 ms
+	Total Operation Time:   50.586 ms
+Unloading 853 unused Assets / (135.1 MB). Loaded Objects now: 7465.
+Memory consumption went from 0.67 GB to 0.53 GB.
+Total: 16.422600 ms (FindLiveObjects: 1.156000 ms CreateObjectMapping: 0.201700 ms MarkObjects: 13.213000 ms  DeleteObjects: 1.451600 ms)
 
 Unloading 283 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 2.460000 ms
+UnloadTime: 2.630400 ms
 Loaded scene 'Assets/Scenes/AK_Village.unity'
-	Deserialize:            325.603 ms
-	Integration:            44.377 ms
-	Integration of assets:  132.931 ms
-	Thread Wait Time:       -0.176 ms
-	Total Operation Time:   502.734 ms
-Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11350.
+	Deserialize:            295.638 ms
+	Integration:            49.486 ms
+	Integration of assets:  242.431 ms
+	Thread Wait Time:       -0.232 ms
+	Total Operation Time:   587.323 ms
+Unloading 486 unused Assets / (1.7 MB). Loaded Objects now: 11354.
 Memory consumption went from 0.67 GB to 0.67 GB.
-Total: 15.733600 ms (FindLiveObjects: 1.629500 ms CreateObjectMapping: 0.533100 ms MarkObjects: 12.742200 ms  DeleteObjects: 0.427200 ms)
+Total: 14.698300 ms (FindLiveObjects: 1.546400 ms CreateObjectMapping: 0.243900 ms MarkObjects: 12.055900 ms  DeleteObjects: 0.423000 ms)
 
 Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
 Saving results to: QA/Results/playmode-results.xml
 Unloading 21 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Temp/__Backupscenes/0.backup'
-	Deserialize:            0.626 ms
-	Integration:            31.569 ms
+	Deserialize:            0.592 ms
+	Integration:            23.794 ms
 	Integration of assets:  0.002 ms
-	Thread Wait Time:       0.023 ms
-	Total Operation Time:   32.220 ms
-Unloading 735 unused Assets / (32.3 MB). Loaded Objects now: 6690.
-Memory consumption went from 0.67 GB to 0.63 GB.
-Total: 27.809300 ms (FindLiveObjects: 1.878100 ms CreateObjectMapping: 0.798500 ms MarkObjects: 22.889000 ms  DeleteObjects: 1.509100 ms)
+	Thread Wait Time:       0.022 ms
+	Total Operation Time:   24.410 ms
+Unloading 735 unused Assets / (13.0 MB). Loaded Objects now: 6694.
+Memory consumption went from 0.66 GB to 0.65 GB.
+Total: 16.648000 ms (FindLiveObjects: 0.957100 ms CreateObjectMapping: 0.197000 ms MarkObjects: 14.024500 ms  DeleteObjects: 1.049900 ms)
 
 [Licensing::Client] Successfully resolved entitlement details
 Executing IPostBuildCleanup for: Unity.PerformanceTesting.Editor.TestRunBuilder.
@@ -6653,11 +6652,11 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 (Filename: ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs Line: 48)
 
 Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 0 unused Assets / (Unknown). Loaded Objects now: 6695.
+Unloading 0 unused Assets / (Unknown). Loaded Objects now: 6699.
 Memory consumption went from 0.50 GB to 0.50 GB.
-Total: 17.670200 ms (FindLiveObjects: 1.075900 ms CreateObjectMapping: 0.391200 ms MarkObjects: 13.893700 ms  DeleteObjects: 1.839100 ms)
+Total: 17.336000 ms (FindLiveObjects: 0.900300 ms CreateObjectMapping: 0.214800 ms MarkObjects: 15.765300 ms  DeleteObjects: 0.014900 ms)
 
-Asset Pipeline Refresh (id=ece5d27309dbbd24180d26736778443a): Total: 0.063 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=db7429ed18ee4b64f987d777a8de751f): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 DisplayProgressbar: Undo
 Test run completed. Exiting with code 0 (Ok). Run completed.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -6672,12 +6671,12 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 
 (Filename: ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/CommandLineTest/Executer.cs Line: 81)
 
-MonoPathRemapper: Attempts to remap: 47133; Successful remaps: 17338
+MonoPathRemapper: Attempts to remap: 46764; Successful remaps: 17338
 Serialized file version minimum: 22, current 23
-Killing ADB server in 2.0983366 seconds.
+Killing ADB server in 2.1024076 seconds.
 Importing 'GUID: a65aa526cc03b1b4da33fb600328767e - Path: Assets/Art/UI/HeroPreview_RT.renderTexture' with importer (NativeFormatImporter)
-Imported 'GUID: a65aa526cc03b1b4da33fb600328767e' -> (Import Result ID: '09da229fa359b96bff6904dad090b18b') in 0.006 seconds [static dependencies only]. Details - ImportResultOutputID=e0bc215e6cea20144b937c48de542832 DependenciesID=ec0c460357f9cb0dcf133e781756169c StaticDependenciesID=c59ace39da21c4a433fb7d0e188f2fc0 
-Asset Pipeline Refresh (id=c89c25734969e9b47b2c524d7d640a47): Total: 0.029 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Imported 'GUID: a65aa526cc03b1b4da33fb600328767e' -> (Import Result ID: '09da229fa359b96bff6904dad090b18b') in 0.010 seconds [static dependencies only]. Details - ImportResultOutputID=e0bc215e6cea20144b937c48de542832 DependenciesID=ec0c460357f9cb0dcf133e781756169c StaticDependenciesID=c59ace39da21c4a433fb7d0e188f2fc0 
+Asset Pipeline Refresh (id=b874e27ee1ef3b048ae9d4aaf94b4f2a): Total: 0.036 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -6693,13 +6692,17 @@ Shut down UDS service system complete
 AcceleratorClientConnectionCallback - disconnected - :0
 Cleanup mono
 CodeReloadManager destroyed
-abort_threads: Failed aborting id: 0000000000000F0C, mono_thread_manage will ignore it
+abort_threads: Failed aborting id: 00000000000041A4, mono_thread_manage will ignore it
 
-abort_threads: Failed aborting id: 0000000000003218, mono_thread_manage will ignore it
+abort_threads: Failed aborting id: 0000000000003488, mono_thread_manage will ignore it
 
-abort_threads: Failed aborting id: 0000000000000F0C, mono_thread_manage will ignore it
+abort_threads: Failed aborting id: 0000000000002FAC, mono_thread_manage will ignore it
 
-abort_threads: Failed aborting id: 0000000000003218, mono_thread_manage will ignore it
+abort_threads: Failed aborting id: 00000000000041A4, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000003488, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000002FAC, mono_thread_manage will ignore it
 
 debugger-agent: Unable to listen on 4156
 [usbmuxd] Stop listen thread
@@ -6708,4 +6711,4 @@ VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794280477014,"processId":7532,"allocatedMemory":18373024,"memoryLabels":[{"Default":298781},{"Permanent":15516},{"NewDelete":82231},{"Thread":4141104},{"Manager":818796},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":839496},{"Material":132},{"GfxDevice":60648},{"Animation":44848},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":99424},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1274784},{"BaseObject":186656},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":25219},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":2733246},{"StaticString":3808},{"Utility":2673718},{"Curl":2676},{"PoolAlloc":2360},{"AI":80},{"TypeTree":23229},{"ScriptManager":18984},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"CloudService":432},{"WebRequest":592},{"VR":49650},{"SceneManager":608},{"Video":208},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":116205},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4482700},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40465},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3198},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794283003478,"processId":9204,"allocatedMemory":17849853,"memoryLabels":[{"Default":300631},{"Permanent":15516},{"NewDelete":82231},{"Thread":4138784},{"Manager":818796},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":839496},{"Material":132},{"GfxDevice":61128},{"Animation":44848},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":99424},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1274784},{"BaseObject":188976},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":25219},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":2207725},{"StaticString":3808},{"Utility":2673718},{"Curl":2696},{"PoolAlloc":2360},{"AI":80},{"TypeTree":23229},{"ScriptManager":18984},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"CloudService":432},{"WebRequest":592},{"VR":49650},{"SceneManager":608},{"Video":208},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":116205},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4482700},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40465},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3198},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

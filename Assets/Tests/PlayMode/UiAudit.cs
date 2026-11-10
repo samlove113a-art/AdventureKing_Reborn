@@ -301,6 +301,7 @@ namespace AdventureKing.Tests
             Canvas.ForceUpdateCanvases();
             foreach (Canvas c in overlays) LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)c.transform);
             Canvas.ForceUpdateCanvases();
+            SettleFontAtlas();
             Report rep = Run(safeInset, 40f);
             cam.Render();
             RenderTexture.active = rt;
@@ -318,6 +319,28 @@ namespace AdventureKing.Tests
             rt.Release();
             Object.Destroy(rt);
             return rep;
+        }
+
+        /// <summary>
+        /// The whole re-layout happens inside one frame; new font sizes rebuild the dynamic font atlas part-way, and
+        /// labels generated before that keep UVs into the old atlas (eroded, half-transparent letters in the capture).
+        /// Regenerate every label until a pass completes without an atlas rebuild.
+        /// </summary>
+        private static void SettleFontAtlas()
+        {
+            bool rebuilt = true;
+            void Mark(Font f) => rebuilt = true;
+            Font.textureRebuilt += Mark;
+            try
+            {
+                for (int pass = 0; pass < 5 && rebuilt; pass++)
+                {
+                    rebuilt = false;
+                    foreach (Text t in Object.FindObjectsByType<Text>(FindObjectsInactive.Exclude)) t.SetVerticesDirty();
+                    Canvas.ForceUpdateCanvases();
+                }
+            }
+            finally { Font.textureRebuilt -= Mark; }
         }
 
         public static readonly (string name, int w, int h, float safe)[] Resolutions =

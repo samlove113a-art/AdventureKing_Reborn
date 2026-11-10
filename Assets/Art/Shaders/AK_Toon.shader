@@ -150,7 +150,8 @@ Shader "AdventureKing/Toon"
                 float aa = max(fwidth(m.y), 1e-4) * 1.25;
                 float ry = max(_MouthRect.w / hw * 1.7, 0.42);
                 float coverReg = SuperEllipse(float2(m.x / 1.22, m.y / ry));
-                col = lerp(col, _FaceSkin.rgb, 1.0 - smoothstep(0.9, 1.0, coverReg));
+                // Feathered edge: a hard-edged skin patch showed as a pale rounded box against shaded cheeks.
+                col = lerp(col, _FaceSkin.rgb, 1.0 - smoothstep(0.6, 1.05, coverReg));
                 float W = lerp(0.55, 1.0, wide);
                 float xn = m.x / W;
                 float inX = saturate((1.0 - abs(xn)) * 9.0);
@@ -235,17 +236,26 @@ Shader "AdventureKing/Toon"
             #pragma fragment frag
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
-            struct Attributes { float4 positionOS : POSITION; float3 normalOS : NORMAL; UNITY_VERTEX_INPUT_INSTANCE_ID };
+            struct Attributes { float4 positionOS : POSITION; float3 normalOS : NORMAL; float4 face : TEXCOORD3; UNITY_VERTEX_INPUT_INSTANCE_ID };
             struct Varyings { float4 positionCS : SV_POSITION; half fog : TEXCOORD0; };
 
             Varyings vert(Attributes v)
             {
                 Varyings o;
                 UNITY_SETUP_INSTANCE_ID(v);
+                // Hero face (UV3.z > 0.5): the hull's back faces showed through the shallow eye/mouth dips as black
+                // slivers. Thin the outline there and push it slightly away from the camera so the face surface
+                // hides it; the cheek/chin silhouette keeps a thin line. Meshes without UV3 read 0 = unchanged.
+                float faceMask = saturate((v.face.z - 0.5) * 4.0);
                 float3 posWS = TransformObjectToWorld(v.positionOS.xyz);
                 float3 nWS = normalize(TransformObjectToWorldNormal(v.normalOS));
-                posWS += nWS * _OutlineWidth;
+                posWS += nWS * _OutlineWidth * lerp(1.0, 0.25, faceMask);
                 o.positionCS = TransformWorldToHClip(posWS);
+            #if UNITY_REVERSED_Z
+                o.positionCS.z -= faceMask * 0.0015 * o.positionCS.w;
+            #else
+                o.positionCS.z += faceMask * 0.0015 * o.positionCS.w;
+            #endif
                 o.fog = ComputeFogFactor(o.positionCS.z);
                 return o;
             }

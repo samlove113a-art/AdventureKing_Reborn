@@ -204,8 +204,8 @@ namespace AdventureKing.Gameplay
             autoGlow = Img(auto.transform, "AutoGlow", Circle(), Vector2.zero, 96f, new Color(0.45f, 0.95f, 1f, 0.45f));
             autoGlow.raycastTarget = false;
             autoGlow.transform.SetAsFirstSibling();
-            autoLabel = Label(auto.transform, "AutoLabel", "AUTO", 18, Color.white, new Vector2(0f, 58f), new Vector2(120f, 30f));
-            orderLabel = Label(auto.transform, "Order", "", 16, new Color(1f, 0.92f, 0.65f), new Vector2(0f, 84f), new Vector2(120f, 28f));
+            autoLabel = Label(auto.transform, "AutoLabel", "AUTO", 20, Color.white, new Vector2(0f, 60f), new Vector2(140f, 30f));
+            orderLabel = Label(auto.transform, "Order", "", 19, new Color(1f, 0.92f, 0.65f), new Vector2(0f, 88f), new Vector2(140f, 30f));
             auto.Down = ToggleAuto;
             // tapping the order line cycles the priority (3›2›1 → 1›2›3 → …)
             orderLabel.raycastTarget = true; // the text itself is the tap target (one Graphic per GameObject)
@@ -338,7 +338,7 @@ namespace AdventureKing.Gameplay
         private void RefreshAutoUi()
         {
             if (autoGlow) autoGlow.enabled = Auto;
-            if (autoLabel) { autoLabel.text = Auto ? "AUTO: BẬT" : "AUTO: TẮT"; autoLabel.color = Auto ? new Color(0.6f, 1f, 0.95f) : new Color(0.85f, 0.85f, 0.9f); }
+            if (autoLabel) { autoLabel.text = Auto ? "AUTO: BẬT" : "AUTO: TẮT"; autoLabel.color = Auto ? new Color(0.6f, 1f, 0.95f) : new Color(0.96f, 0.96f, 1f); }
             if (orderLabel) orderLabel.text = string.Join(" › ", AutoOrder);
         }
 
