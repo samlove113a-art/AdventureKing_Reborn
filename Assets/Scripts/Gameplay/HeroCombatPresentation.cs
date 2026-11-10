@@ -15,6 +15,8 @@ namespace AdventureKing.Gameplay
         [Tooltip("Facing reference (the visual root). Effects spawn along its forward axis.")]
         [SerializeField] private Transform facing;
         [SerializeField] private Transform weaponSocket;
+        [Tooltip("Optional fixed skill release point. If absent, use a stable chest-height point from the character collider (not the animated head/pivot).")]
+        [SerializeField] private Transform skillMuzzle;
 
         [Header("Basic attack")]
         [SerializeField] private GameObject attackEffect;
@@ -61,6 +63,26 @@ namespace AdventureKing.Gameplay
             return facing.position + Vector3.up * offset.y * Scale + fwd * offset.z * Scale;
         }
 
+        /// <summary>Stable projectile spawn. Animated visual pivots may sit above the head.</summary>
+        private Vector3 SkillPoint()
+        {
+            if (skillMuzzle && skillMuzzle.gameObject.activeInHierarchy)
+                return skillMuzzle.position;
+
+            Collider2D body = GetComponentInParent<Collider2D>();
+            if (body && body.enabled && body.bounds.size.y > 0.1f)
+            {
+                Bounds bounds = body.bounds;
+                float heightFraction = Mathf.Clamp(skillOffset.y, 0.35f, 0.70f);
+                float forward = Mathf.Clamp(skillOffset.z * Mathf.Min(Scale, 1.5f), 0.1f, 1.2f);
+                return new Vector3(bounds.center.x, bounds.min.y + bounds.size.y * heightFraction, facing.position.z)
+                    + Flat(facing.forward) * forward;
+            }
+
+            // Previews can have no physics collider.
+            return Point(skillOffset);
+        }
+
         private float Scale => Mathf.Abs(facing.lossyScale.y);
 
         private static Vector3 Flat(Vector3 v)
@@ -81,6 +103,17 @@ namespace AdventureKing.Gameplay
                 Impact(false);
         }
 
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            if (!facing) return;
+            Vector3 at = SkillPoint();
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(at, 0.12f);
+            Gizmos.DrawRay(at, Flat(facing.forward) * 0.6f);
+        }
+#endif
+
         private void OnSkillCast()
         {
             if (skillCastEffect) Spawn(skillCastEffect, facing.position + Vector3.up * 0.02f, FacingRotation());
@@ -89,7 +122,7 @@ namespace AdventureKing.Gameplay
 
         private void OnSkill()
         {
-            Vector3 at = Point(skillOffset);
+            Vector3 at = SkillPoint();
             Quaternion rot = FacingRotation();
             if (skillEffect) Spawn(skillEffect, at, rot);
             if (skillProjectile)
