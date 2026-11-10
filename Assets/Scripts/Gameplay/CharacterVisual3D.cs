@@ -39,6 +39,11 @@ namespace AdventureKing.Gameplay
         private bool hasRunPlayback, hasClimbPlayback;
 
         public Animator Animator => animator;
+        public Transform VisualRoot => visualRoot;
+
+        /// <summary>A cinematic owns this body: no yaw / animator parameters from the motor or the network
+        /// (the cinematic sets the facing and cross-fades states itself). Off = normal gameplay.</summary>
+        public bool Cinematic { get; set; }
 
         /// <summary>Starts the class skill animation; contact frames raise CharacterAnimationEvents.</summary>
         public void PlaySkill()
@@ -86,6 +91,7 @@ namespace AdventureKing.Gameplay
         /// <summary>Remote players: drive the animator from the synced state (no local motor).</summary>
         public void DriveRemote(Vector2 velocity, string anim, int facing, bool turn = true)
         {
+            if (Cinematic) return;
             if (visualRoot && turn)
             {
                 float yaw = anim == "climb" ? climbingYaw : facing < 0 ? -rightFacingYaw : rightFacingYaw;
@@ -229,7 +235,7 @@ namespace AdventureKing.Gameplay
 
         private void LateUpdate()
         {
-            if (!motor) return;
+            if (!motor || Cinematic) return;
 
             if (visualRoot)
             {

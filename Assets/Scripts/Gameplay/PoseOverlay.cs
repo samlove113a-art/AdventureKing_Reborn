@@ -8,6 +8,7 @@ namespace AdventureKing.Gameplay
     /// <b>Cut</b> raises the right arm forward and brings it down twice (cutting the cake; positive = forward for a hanging arm, measured in Game View). Eased in and out, so the body never
     /// snaps; uses the Meshy skeleton bone names (Spine01/Spine02/neck/Head, RightArm/RightForeArm).
     /// </summary>
+    [DefaultExecutionOrder(100)] // after the Animator and the body yaw, before ArmIK (150)
     public sealed class PoseOverlay : MonoBehaviour
     {
         private Transform spine1, spine2, neck, head, arm, foreArm, model;

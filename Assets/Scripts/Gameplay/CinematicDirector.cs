@@ -90,7 +90,133 @@ namespace AdventureKing.Gameplay
             go.SetActive(false);
         }
 
-        public void Skip() => skipRequested = true;
+        public void Skip()
+        {
+            skipRequested = true;
+            if (External) Skipped?.Invoke();
+        }
+
+        // ------------------------------------------------------------------ external mode (timeline-driven camera)
+        /// <summary>True while an outside timeline (the 180 s wedding) drives the camera every frame.</summary>
+        public bool External { get; private set; }
+        /// <summary>The viewer pressed "Bỏ qua" during an external cinematic (the owner decides what to stop).</summary>
+        public event Action Skipped;
+        private bool externalEnd;
+        private Vector3 extPos; private Quaternion extRot = Quaternion.identity; private float extFov = 35f; private bool extSet;
+        private Text bannerText;
+        private float bannerUntil;
+        public string Caption => captionText ? captionText.text : "";
+        public string Banner => bannerText && bannerText.gameObject.activeSelf ? bannerText.text : "";
+
+        /// <summary>Takes the camera, hides HUD / world labels, shows the letterbox; the caller then sets the camera
+        /// every frame (<see cref="SetCamera"/>) until <see cref="EndExternal"/> glides it back.</summary>
+        public void BeginExternal()
+        {
+            if (Playing) return;
+            External = true;
+            externalEnd = false;
+            extSet = false;
+            StartCoroutine(RunExternal());
+        }
+
+        public void SetCamera(Vector3 position, Quaternion rotation, float fov) { extPos = position; extRot = rotation; extFov = fov; extSet = true; }
+        public void SetCaption(string text) { if (captionText) captionText.text = text ?? ""; }
+        public void EndExternal() => externalEnd = true;
+
+        /// <summary>A large centred title for a few seconds (e.g. "married" once the server confirms).</summary>
+        public void ShowBanner(string text, float seconds)
+        {
+            BuildOverlay();
+            if (!bannerText)
+            {
+                bannerText = new GameObject("Banner", typeof(RectTransform)).AddComponent<Text>();
+                bannerText.transform.SetParent(barTop.parent, false);
+                var r = bannerText.rectTransform;
+                r.anchorMin = new Vector2(0.1f, 0.62f); r.anchorMax = new Vector2(0.9f, 0.86f); r.offsetMin = r.offsetMax = Vector2.zero;
+                bannerText.font = captionText.font; bannerText.fontSize = 64; bannerText.alignment = TextAnchor.MiddleCenter;
+                bannerText.color = new Color(1f, 0.9f, 0.62f);
+                bannerText.resizeTextForBestFit = true; bannerText.resizeTextMinSize = 30; bannerText.resizeTextMaxSize = 64;
+                var o = bannerText.gameObject.AddComponent<Outline>(); o.effectColor = new Color(0.35f, 0.08f, 0.16f, 0.9f); o.effectDistance = new Vector2(3f, -3f);
+            }
+            bannerText.text = text;
+            bannerText.gameObject.SetActive(true);
+            bannerUntil = Time.time + seconds;
+        }
+
+        private void Update()
+        {
+            if (bannerText && bannerText.gameObject.activeSelf && Time.time > bannerUntil) bannerText.gameObject.SetActive(false);
+        }
+
+        private IEnumerator RunExternal()
+        {
+            Playing = true;
+            skipRequested = false;
+            BuildOverlay();
+            Camera cam = Camera.main;
+            var follow = cam ? cam.GetComponent<CameraFollow2D>() : null;
+            if (follow) follow.enabled = false;
+            var world = AdventureWorldSession.Current;
+            var input = world && world.Player ? world.Player.GetComponent<PlayerInput2D>() : null;
+            if (input) input.enabled = false;
+            var overlays = new List<CanvasGroup>();
+            var worldLabels = new List<Canvas>();
+            Canvas mine = barTop.GetComponentInParent<Canvas>();
+            foreach (Canvas c in FindObjectsByType<Canvas>(FindObjectsInactive.Exclude))
+            {
+                if (c == mine || !c.isRootCanvas) continue;
+                if (c.renderMode == RenderMode.WorldSpace) { if (c.enabled) { c.enabled = false; worldLabels.Add(c); } continue; }
+                var g = c.GetComponent<CanvasGroup>();
+                if (!g) g = c.gameObject.AddComponent<CanvasGroup>();
+                overlays.Add(g);
+            }
+            float[] alpha0 = overlays.ConvertAll(g => g.alpha).ToArray();
+            Vector3 p0 = cam.transform.position; Quaternion r0 = cam.transform.rotation; float f0 = cam.fieldOfView;
+            barTop.parent.gameObject.SetActive(true);
+            captionText.text = "";
+            for (float k = 0f; k < 1f; k += Time.deltaTime / 0.6f)
+            {
+                float e = Ease(Mathf.Clamp01(k));
+                barTop.sizeDelta = barBottom.sizeDelta = new Vector2(0f, 120f * e);
+                for (int i = 0; i < overlays.Count; i++) if (overlays[i]) overlays[i].alpha = alpha0[i] * (1f - e);
+                if (extSet) // first frames: glide from the gameplay camera into the timeline's camera
+                {
+                    cam.transform.SetPositionAndRotation(Vector3.Lerp(p0, extPos, e), Quaternion.Slerp(r0, extRot, e));
+                    cam.fieldOfView = Mathf.Lerp(f0, extFov, e);
+                }
+                yield return null;
+            }
+            for (int i = 0; i < overlays.Count; i++) if (overlays[i]) { overlays[i].alpha = 0f; overlays[i].blocksRaycasts = false; }
+            while (!externalEnd)
+            {
+                if (extSet) { cam.transform.SetPositionAndRotation(extPos, extRot); cam.fieldOfView = extFov; }
+                // world-space labels that appeared meanwhile (a late-joining guest's name plate) stay hidden too
+                foreach (Canvas c in FindObjectsByType<Canvas>(FindObjectsInactive.Exclude))
+                    if (c.isRootCanvas && c.renderMode == RenderMode.WorldSpace && c.enabled && !worldLabels.Contains(c)) { c.enabled = false; worldLabels.Add(c); }
+                yield return null;
+            }
+            captionText.text = "";
+            Vector3 endP = cam.transform.position; Quaternion endR = cam.transform.rotation; float endF = cam.fieldOfView;
+            Vector3 backP = follow ? follow.transform.position : p0;
+            for (float k = 0f; k < 1f; k += Time.deltaTime / 1.2f)
+            {
+                float e = Ease(Mathf.Clamp01(k));
+                cam.transform.SetPositionAndRotation(Vector3.Lerp(endP, p0, e), Quaternion.Slerp(endR, r0, e));
+                cam.fieldOfView = Mathf.Lerp(endF, f0, e);
+                barTop.sizeDelta = barBottom.sizeDelta = new Vector2(0f, 120f * (1f - e));
+                for (int i = 0; i < overlays.Count; i++) if (overlays[i]) overlays[i].alpha = alpha0[i] * e;
+                yield return null;
+            }
+            cam.transform.SetPositionAndRotation(p0, r0);
+            cam.fieldOfView = f0;
+            for (int i = 0; i < overlays.Count; i++) if (overlays[i]) { overlays[i].alpha = alpha0[i]; overlays[i].blocksRaycasts = true; }
+            foreach (Canvas c in worldLabels) if (c) c.enabled = true;
+            barTop.parent.gameObject.SetActive(false);
+            if (follow) follow.enabled = true;
+            if (input) input.enabled = true;
+            External = false;
+            Playing = false;
+        }
 
         private int cue = -1;
         /// <summary>Jumps to this shot now (an outside clock, e.g. the server's ceremony steps, keeps the camera in step).</summary>

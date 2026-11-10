@@ -11,6 +11,8 @@ namespace AdventureKing.Gameplay
     {
         [Tooltip("Backward speed of the planted foot in the Run clip at 1x (m/s, model scale 1).")]
         public float runStrideSpeed = 1.4f;
+        [Tooltip("Backward speed of the planted foot in the Walk clip at 1x (m/s, model scale 1; cinematic walks).")]
+        public float walkStrideSpeed = 0.28f;
         [Tooltip("Seconds per full Climb cycle at 1x (two hand-over-hand pulls).")]
         public float climbCycleSeconds = 1.27f;
         [Tooltip("Ladder height gained by one full climb cycle (two rungs).")]

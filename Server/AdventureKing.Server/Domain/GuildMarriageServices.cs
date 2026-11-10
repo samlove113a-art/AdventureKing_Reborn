@@ -395,8 +395,22 @@ public sealed class MarriageService
     {
         public string Id = "", MarriageId = "", A = "", B = "", AName = "", BName = "", InvitedBy = "", State = "invited";
         public int AClass, BClass;
-        public long InviteExpires, Start, End, DoneMs;
+        public long InviteExpires, Start, End, DoneMs, SilentSince;
     }
+
+    private enum Whereabouts { Here, Silent, Elsewhere }
+
+    /// <summary>Here = heartbeating in the Wedding Hall; Silent = no heartbeat for a few seconds (a drop: may come
+    /// back); Elsewhere = the last heartbeat came from another map (left on purpose).</summary>
+    private Whereabouts Where(string id)
+    {
+        PresenceService.Entry? e = presence.Get(id);
+        if (e == null) return Whereabouts.Silent;
+        if (e.Map != SyncService.WeddingHall) return Whereabouts.Elsewhere;
+        return Clock() - e.Ms > SilentAfterMs ? Whereabouts.Silent : Whereabouts.Here;
+    }
+
+    private const long SilentAfterMs = 4000;
 
     public MarriageService(Database db, SocialConfig cfg, PresenceService presence) { this.db = db; this.cfg = cfg; this.presence = presence; }
     private MarriageConfig M => cfg.marriage;
@@ -528,7 +542,9 @@ public sealed class MarriageService
         return View(c, tx, me);
     });
 
-    /// <summary>Advances the ceremony: invite timeout, a partner leaving the hall cancels, the end finalizes the marriage.</summary>
+    /// <summary>Advances the ceremony: invite timeout; a partner leaving for another map cancels at once; a partner
+    /// whose connection drops has <see cref="CeremonyConfig.absentGraceMs"/> to come back (the timeline keeps
+    /// running); the marriage is finalized only when the end is reached with BOTH partners present.</summary>
     public void Tick()
     {
         Ceremony? finish = null;
@@ -539,8 +555,18 @@ public sealed class MarriageService
             if (current.State == "invited" && t > current.InviteExpires) { current.State = "expired"; current.DoneMs = t; }
             else if (current.State == "running")
             {
-                if (!BothPresent(current.A, current.B)) { current.State = "cancelled"; current.DoneMs = t; }
-                else if (t >= current.End) { current.State = "done"; current.DoneMs = t; finish = current; }
+                Whereabouts a = Where(current.A), b = Where(current.B);
+                if (a == Whereabouts.Elsewhere || b == Whereabouts.Elsewhere) { current.State = "cancelled"; current.DoneMs = t; }
+                else if (a == Whereabouts.Silent || b == Whereabouts.Silent)
+                {
+                    if (current.SilentSince == 0) current.SilentSince = t;
+                    if (t - current.SilentSince > M.ceremony.absentGraceMs) { current.State = "cancelled"; current.DoneMs = t; }
+                }
+                else
+                {
+                    current.SilentSince = 0;
+                    if (t >= current.End) { current.State = "done"; current.DoneMs = t; finish = current; }
+                }
             }
             if (current.State is "done" or "cancelled" or "expired" && t - current.DoneMs > 30000) current = null; // shown 30 s, then cleared
         }

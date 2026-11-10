@@ -23,9 +23,9 @@
     "minLevel": 1,
     "ringPriceGold": 5000,
     "requireFriends": true,
-    "ceremony": { "inviteSeconds": 60, "leadInMs": 2500, "steps": [
-      { "id": "intro", "ms": 4000 }, { "id": "vows", "ms": 5000 }, { "id": "rings", "ms": 5500 }, { "id": "cake", "ms": 5000 },
-      { "id": "toast", "ms": 5000 }, { "id": "kiss", "ms": 4500 }, { "id": "finale", "ms": 4500 } ] },
+    "ceremony": { "inviteSeconds": 60, "leadInMs": 3000, "absentGraceMs": 15000, "steps": [
+      { "id": "entrance", "ms": 20000 }, { "id": "opening", "ms": 25000 }, { "id": "vows", "ms": 25000 }, { "id": "rings", "ms": 30000 },
+      { "id": "kiss", "ms": 20000 }, { "id": "cake", "ms": 25000 }, { "id": "toast", "ms": 20000 }, { "id": "finale", "ms": 15000 } ] },
     "gifts": ["wed_pearl_crown", "wed_satin_gloves", "wed_white_cape"]
   },
   "chat": { "maxLength": 120, "minIntervalMs": 1200, "burstCount": 8, "burstWindowMs": 30000, "historyOnJoin": 30 }

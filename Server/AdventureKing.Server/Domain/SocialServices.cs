@@ -22,7 +22,15 @@ public sealed class GuildConfig
     public GuildQuestDef[] quests { get; set; } = Array.Empty<GuildQuestDef>();
 }
 public sealed class CeremonyStepDef { public string id { get; set; } = ""; public int ms { get; set; } }
-public sealed class CeremonyConfig { public int inviteSeconds { get; set; } = 60; public int leadInMs { get; set; } = 2500; public CeremonyStepDef[] steps { get; set; } = Array.Empty<CeremonyStepDef>(); }
+public sealed class CeremonyConfig
+{
+    public int inviteSeconds { get; set; } = 60;
+    public int leadInMs { get; set; } = 2500;
+    /// <summary>A partner whose heartbeat goes silent (network drop) may come back within this time; the ceremony
+    /// keeps running meanwhile and only finalizes once both are back. Leaving for another map cancels at once.</summary>
+    public int absentGraceMs { get; set; } = 15000;
+    public CeremonyStepDef[] steps { get; set; } = Array.Empty<CeremonyStepDef>();
+}
 public sealed class MarriageConfig
 {
     public int minLevel { get; set; } = 1;

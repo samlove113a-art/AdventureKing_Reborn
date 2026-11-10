@@ -92,7 +92,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 324faf1ff990f994885192b9987c79ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.HeroMotionProfile
-  runStrideSpeed: 1.5192707
+  runStrideSpeed: 1.5192714
+  walkStrideSpeed: 0.21669304
   climbCycleSeconds: 1.5666668
   climbAdvancePerCycle: 0.18618432
   climbPhaseDriven: 1
@@ -136,9 +137,9 @@ MonoBehaviour:
     - {x: 8.040921e-10, y: -0.0000000025128695, z: -0.000000005380249, w: 1}
     - {x: 8.040921e-10, y: -0.0000000025128695, z: -0.000000005380249, w: 1}
     curlAxisLocal:
-    - {x: 0.75622666, y: -0.3213142, z: 0.56998134}
-    - {x: 0.75622666, y: -0.3213142, z: 0.56998134}
-    - {x: 0.75622666, y: -0.3213142, z: 0.56998134}
+    - {x: 0.75622606, y: -0.32131425, z: 0.5699821}
+    - {x: 0.75622606, y: -0.32131425, z: 0.5699821}
+    - {x: 0.75622606, y: -0.32131425, z: 0.5699821}
     weaponGrip: 0.7000001
     current: 0
   animator: {fileID: 1271485866481506766}
@@ -172,6 +173,14 @@ PrefabInstance:
     - target: {fileID: -9110753843485467867, guid: ebd91ef8c7c69fe4990a6b973286ee50, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.00000004013228
+      objectReference: {fileID: 0}
+    - target: {fileID: -9110753843485467867, guid: ebd91ef8c7c69fe4990a6b973286ee50, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.720266
+      objectReference: {fileID: 0}
+    - target: {fileID: -9110753843485467867, guid: ebd91ef8c7c69fe4990a6b973286ee50, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.69352597
       objectReference: {fileID: 0}
     - target: {fileID: -9110753843485467867, guid: ebd91ef8c7c69fe4990a6b973286ee50, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

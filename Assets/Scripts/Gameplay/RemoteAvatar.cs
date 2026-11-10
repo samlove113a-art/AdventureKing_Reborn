@@ -119,6 +119,23 @@ namespace AdventureKing.Gameplay
         public void Override(Vector3? worldFeetPos, int facing = 1) { overridePos = worldFeetPos; overrideFacing = facing; }
         public bool Overridden => overridePos != null;
 
+        /// <summary>A cinematic places the feet exactly this frame (no easing: hands meeting a partner's hands must
+        /// line up to the centimetre). Null hands the avatar back to the server samples.</summary>
+        public void Pin(Vector3? worldFeetPos)
+        {
+            overridePos = worldFeetPos;
+            if (worldFeetPos == null) return;
+            shown = lastShown = new Vector2(worldFeetPos.Value.x, worldFeetPos.Value.y + 0.8f);
+            transform.position = new Vector3(shown.x, shown.y, worldFeetPos.Value.z);
+        }
+
+        /// <summary>Hides this player while someone else's ceremony plays (viewers never get in the way).</summary>
+        public void SetHidden(bool hidden)
+        {
+            foreach (Renderer r in GetComponentsInChildren<Renderer>(true)) r.enabled = !hidden;
+            foreach (Canvas c in GetComponentsInChildren<Canvas>(true)) c.enabled = !hidden;
+        }
+
         private void Update()
         {
             if (State == null) return;
@@ -137,8 +154,8 @@ namespace AdventureKing.Gameplay
                     }
             }
             lastShown = shown;
-            // ease toward the target: never pops, even when a sample comes late
-            shown = Vector2.Lerp(shown, target, 1f - Mathf.Exp(-18f * Time.deltaTime));
+            // ease toward the target: never pops, even when a sample comes late (a cinematic pins it exactly)
+            shown = Visual && Visual.Cinematic ? target : Vector2.Lerp(shown, target, 1f - Mathf.Exp(-18f * Time.deltaTime));
             transform.position = new Vector3(shown.x, shown.y, overridePos != null ? overridePos.Value.z : 0f);
             Vector2 vel = (shown - lastShown) / Mathf.Max(Time.deltaTime, 1e-4f);
             string anim = overridePos != null ? "idle" : State.anim;

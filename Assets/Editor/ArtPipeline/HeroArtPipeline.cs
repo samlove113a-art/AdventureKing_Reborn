@@ -167,7 +167,8 @@ namespace AdventureKing.ArtPipeline
             var list = new List<ModelImporterClipAnimation>();
             foreach (HeroArtDefinitions.Clip c in clips)
             {
-                TakeInfo take = takes.FirstOrDefault(t => t.name == c.Take || t.name.EndsWith("|" + c.Take));
+                // exact / "Rig|Take", or a Meshy long name such as "Rig|Armature|Casual_Walk|baselayer"
+                TakeInfo take = takes.FirstOrDefault(t => t.name == c.Take || t.name.EndsWith("|" + c.Take) || t.name.Contains("|" + c.Take + "|"));
                 if (string.IsNullOrEmpty(take.name))
                     throw new System.InvalidOperationException($"Take '{c.Take}' missing in {fbx}: " +
                         string.Join(", ", takes.Select(t => t.name)));
@@ -531,6 +532,8 @@ namespace AdventureKing.ArtPipeline
             AnimationClip runClip = controller.animationClips.First(c => c.name == "Run");
             AnimationClip climbClip = controller.animationClips.First(c => c.name == "Climb");
             motion.runStrideSpeed = MeasureStrideSpeed(model, runClip);
+            AnimationClip walkClip = controller.animationClips.FirstOrDefault(c => c.name == "Walk");
+            if (walkClip) motion.walkStrideSpeed = MeasureStrideSpeed(model, walkClip);
             HeroArtDefinitions.Clip climbDef = h.Clips.First(c => c.Name == "Climb");
             motion.climbCycleSeconds = climbClip.length / Mathf.Max(0.05f, climbDef.Speed);
             // In-place climb: remove the take's steady hip rise so the loop closes; that rise is exactly how far one

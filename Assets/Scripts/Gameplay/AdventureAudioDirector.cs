@@ -73,6 +73,8 @@ namespace AdventureKing.Gameplay
         public bool MusicOn => musicOn;
         public AdventureMusicStage CurrentStage => currentStage;
         public AudioClip CurrentMusic => musicSource ? musicSource.clip : null;
+        /// <summary>The music source (cinematics duck it while they play their own score).</summary>
+        public AudioSource MusicSource => musicSource;
         public bool MusicAudible => musicSource && musicSource.isPlaying && !musicSource.mute && musicSource.volume > 0.01f;
         public float MusicSourceVolume => musicSource ? musicSource.volume : 0f;
 

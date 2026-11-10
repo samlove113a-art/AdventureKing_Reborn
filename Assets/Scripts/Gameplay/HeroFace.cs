@@ -10,7 +10,7 @@ namespace AdventureKing.Gameplay
     [DisallowMultipleComponent]
     public sealed class HeroFace : MonoBehaviour
     {
-        public enum Expression { Neutral, Happy, Sad, Surprised, Angry, Hurt }
+        public enum Expression { Neutral, Happy, Sad, Surprised, Angry, Hurt, Kiss, Shy, Tender }
 
         [SerializeField] private Renderer body;
         [Tooltip("Head bone and the face's forward / up axes in its local space (from the bind pose, set by the art pipeline).")]
@@ -79,6 +79,11 @@ namespace AdventureKing.Gameplay
         /// <summary>Forces a blink now (QA / cutscenes).</summary>
         public void Blink() => blinkStart = Time.time;
 
+        private float speakUntil = -1f;
+        /// <summary>Talking mouth (syllable-like open/close) for this many seconds, on top of the expression.</summary>
+        public void Speak(float seconds) => speakUntil = Time.time + seconds;
+        public bool Speaking => Time.time < speakUntil;
+
         public void Bind(Renderer bodyRenderer) => body = bodyRenderer;
 
         private Pose Target(Expression e)
@@ -90,6 +95,12 @@ namespace AdventureKing.Gameplay
                 case Expression.Surprised: return new Pose { open = 1f, curve = 0f, mouthOpen = 0.8f, wide = 0.35f };
                 case Expression.Angry: return new Pose { open = 0.82f, tilt = 0.75f, squint = 0.18f, curve = -0.45f, mouthOpen = 0.15f, wide = 0.55f };
                 case Expression.Hurt: return new Pose { open = 0f, hurt = 1f, curve = -0.35f, mouthOpen = 0.3f, wide = 0.6f };
+                // wedding: eyes softly closed, small pursed lips, full blush
+                case Expression.Kiss: return new Pose { open = 0f, bend = -0.3f, curve = 0.25f, mouthOpen = 0.04f, wide = 0.22f, blush = 1f };
+                // after the kiss: eyes half-lowered, bashful smile, full blush
+                case Expression.Shy: return new Pose { open = 0.5f, bend = 0.45f, tilt = -0.25f, squint = 0.3f, curve = 0.8f, mouthOpen = 0.08f, wide = 0.42f, blush = 1f };
+                // vows: warm open eyes, gentle smile, light blush
+                case Expression.Tender: return new Pose { open = 0.85f, bend = 0.2f, squint = 0.25f, curve = 0.7f, mouthOpen = 0.1f, wide = 0.5f, blush = 0.45f };
                 default: return new Pose { open = 1f, curve = neutralSmile, wide = 0.5f };
             }
         }
@@ -148,7 +159,14 @@ namespace AdventureKing.Gameplay
             float bend = Mathf.Lerp(current.bend, -0.35f, BlinkAmount * current.open); // a plain blink closes as a soft ∪ line
             body.GetPropertyBlock(block);
             block.SetVector(EyesId, new Vector4(open, bend, current.tilt * (1f - BlinkAmount), current.squint));
-            block.SetVector(MouthId, new Vector4(current.curve, current.mouthOpen, current.wide, current.blush));
+            float mouth = current.mouthOpen;
+            if (Speaking)
+            {
+                // syllables: two detuned rhythms, closed briefly between words
+                float s = Mathf.Abs(Mathf.Sin(now * 10.5f)) * (0.55f + 0.45f * Mathf.Sin(now * 3.1f + 1.3f));
+                mouth = Mathf.Max(mouth, Mathf.Clamp01(s) * 0.7f);
+            }
+            block.SetVector(MouthId, new Vector4(current.curve, mouth, current.wide, current.blush));
             block.SetVector(FxId, new Vector4(current.hurt, current.tear, 0f, 0f));
             body.SetPropertyBlock(block);
         }

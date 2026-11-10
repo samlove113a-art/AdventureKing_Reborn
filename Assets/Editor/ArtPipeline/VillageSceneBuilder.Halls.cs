@@ -333,6 +333,30 @@ namespace AdventureKing.ArtPipeline
             cso.FindProperty("goldMaterial").objectReferenceValue = Mat("wedding_ring_gold", new Color(1f, 0.82f, 0.36f), new Color(0.35f, 0.24f, 0.05f));
             cso.FindProperty("steelMaterial").objectReferenceValue = Mat("ceremony_steel", new Color(0.86f, 0.9f, 0.96f), new Color(0.15f, 0.17f, 0.2f));
             cso.FindProperty("cakeMaterial").objectReferenceValue = Mat("ceremony_cake", new Color(1f, 0.93f, 0.9f), new Color(0.12f, 0.08f, 0.08f));
+            // 180 s cinematic wedding: townsfolk come as guests (existing Meshy NPCs), original score + effects.
+            // The 3-minute score streams (Vorbis) instead of decompressing ~12 MB into memory on phones.
+            if (AssetImporter.GetAtPath("Assets/Audio/Wedding/BGM_Wedding_Ceremony_180s.wav") is AudioImporter ai)
+            {
+                AudioImporterSampleSettings ss = ai.defaultSampleSettings;
+                if (ss.loadType != AudioClipLoadType.Streaming)
+                {
+                    ss.loadType = AudioClipLoadType.Streaming; ss.compressionFormat = AudioCompressionFormat.Vorbis; ss.quality = 0.62f;
+                    ai.defaultSampleSettings = ss;
+                    ai.SaveAndReimport();
+                }
+            }
+            string[] guestNames = { "NpcElder", "NpcSmith", "NpcStorekeeper", "NpcCaptain" };
+            SerializedProperty gp = cso.FindProperty("guestPrefabs");
+            gp.arraySize = guestNames.Length;
+            for (int i = 0; i < guestNames.Length; i++)
+                gp.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<GameObject>(NpcArtPipeline.PrefabPath(guestNames[i]));
+            foreach (var (prop, file) in new[]
+            {
+                ("weddingMusic", "BGM_Wedding_Ceremony_180s"), ("footstep", "SFX_Wedding_Footstep"), ("chime", "SFX_Wedding_RingChime"),
+                ("sparkle", "SFX_Wedding_KissSparkle"), ("knifeCut", "SFX_Wedding_KnifeCut"), ("clink", "SFX_Wedding_GlassClink"),
+                ("applause", "SFX_Wedding_Applause"), ("cheer", "SFX_Wedding_Cheer"),
+            })
+                cso.FindProperty(prop).objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Wedding/{file}.wav");
             cso.ApplyModifiedPropertiesWithoutUndo();
 
             HallLighting(new Color(0.86f, 0.78f, 0.84f), new Color(0.8f, 0.72f, 0.7f), new Color(0.46f, 0.4f, 0.38f), new Color(0.24f, 0.18f, 0.24f),

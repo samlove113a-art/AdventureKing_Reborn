@@ -54,191 +54,43 @@ namespace AdventureKing.Gameplay
             });
         }
 
+        [Header("180 s cinematic wedding")]
+        [SerializeField] private GameObject[] guestPrefabs = new GameObject[0];
+        [SerializeField] private AudioClip weddingMusic, footstep, chime, sparkle, knifeCut, clink, applause, cheer;
+
+        /// <summary>The running two-player wedding (null when none).</summary>
+        public WeddingCinematic Cinematic { get; private set; }
+
         private void Update()
         {
+            if (Cinematic)
+            {
+                RealStep = Cinematic.Running ? Cinematic.SceneId : Cinematic.Finished ? "done" : "stopped";
+                RealPlaying = Cinematic.Running;
+                if (!Cinematic.Running && !Playing) Cinematic = null;
+                return;
+            }
             CeremonyState c = WorldSync.Current && WorldSync.Current.Last != null ? WorldSync.Current.Last.ceremony : null;
             if (c == null || !c.Valid || c.state != "running" || c.id == playedId) return;
-            if (WorldSync.Current.ServerNowMs > c.endMs - 2000) return; // too late to join
-            if (Participant(c.aId, out _, out _) && Participant(c.bId, out _, out _))
-            {
-                playedId = c.id;
-                StartCoroutine(Real(c));
-            }
+            if (WorldSync.Current.ServerNowMs > c.endMs - 4000) return; // too late to join
+            if (Playing) return; // a rehearsal is on screen: wait for it to finish
+            WeddingCinematic.Actor a = WeddingCinematic.Wrap(c.aId, c.aName), b = WeddingCinematic.Wrap(c.bId, c.bName);
+            if (a == null || b == null) return; // both bodies must be in the hall (a remote one appears with the next sync)
+            playedId = c.id;
+            RealPlayed++;
+            Cinematic = WeddingCinematic.Play(gameObject, Setup(c), a, b);
         }
+
+        /// <summary>The hall's props, guests and sounds for a cinematic (also used by the QA preview).</summary>
+        public WeddingCinematic.Setup Setup(CeremonyState c) => new WeddingCinematic.Setup
+        {
+            Ceremony = c, Officiant = officiant, Musician = musician, Petals = petals, Template = cakeMaterial,
+            GuestPrefabs = guestPrefabs, Music = weddingMusic, Footstep = footstep, Chime = chime, Sparkle = sparkle,
+            KnifeCut = knifeCut, Clink = clink, Applause = applause, Cheer = cheer,
+        };
 
         // ================================================================== real wedding (server timeline)
         private string playedId = "";
-
-        /// <summary>The local hero or a remote avatar for this character id.</summary>
-        private bool Participant(string id, out CharacterVisual3D visual, out PoseOverlay pose)
-        {
-            visual = null; pose = null;
-            var world = AdventureWorldSession.Current;
-            if (world && world.Character != null && world.Character.characterId == id)
-            {
-                visual = world.PlayerVisual;
-                if (world.HeroModel)
-                {
-                    pose = world.HeroModel.GetComponent<PoseOverlay>();
-                    if (!pose) { pose = world.HeroModel.AddComponent<PoseOverlay>(); pose.Bind(world.HeroModel.transform); }
-                }
-                return visual;
-            }
-            RemoteAvatar a = WorldSync.Current ? WorldSync.Current.Avatar(id) : null;
-            if (!a) return false;
-            visual = a.Visual; pose = a.Pose;
-            return visual;
-        }
-
-        /// <summary>Places a participant (feet on the walking line at x), facing ±1.</summary>
-        private void Place(string id, float x, int facing)
-        {
-            var world = AdventureWorldSession.Current;
-            if (world && world.Character != null && world.Character.characterId == id)
-            {
-                var rb = world.Player.GetComponent<Rigidbody2D>();
-                if (rb) { rb.position = new Vector2(x, rb.position.y); rb.linearVelocity = Vector2.zero; }
-                world.Player.transform.position = new Vector3(x, world.Player.transform.position.y, world.Player.transform.position.z);
-                world.Player.FaceTowards(facing);
-                return;
-            }
-            RemoteAvatar a = WorldSync.Current ? WorldSync.Current.Avatar(id) : null;
-            if (a) a.Override(new Vector3(x, 0f, 0f), facing);
-        }
-
-        private void Emote(string who, CharacterVisual3D v, string state, HeroFace.Expression e = HeroFace.Expression.Happy)
-        {
-            if (v && v.PlayEmote(state, e, 3f)) HeroGestures.Add(who + ":" + state);
-        }
-
-        private List<CinematicDirector.Shot> RealShots(CeremonyState c, int fromStep)
-        {
-            float s = stage.x;
-            var all = new List<CinematicDirector.Shot>();
-            foreach (CeremonyStepState st in c.steps)
-            {
-                float secs = st.ms / 1000f, move = Mathf.Min(1.4f, secs * 0.35f);
-                CinematicDirector.Shot shot = st.id switch
-                {
-                    "intro" => new CinematicDirector.Shot(new Vector3(s, 4.6f, -14f), new Vector3(s, 2.4f, 2.5f), 40f, move, secs - move, $"Lễ thành hôn của {c.aName} và {c.bName}"),
-                    "vows" => new CinematicDirector.Shot(new Vector3(s, 2.3f, -7.8f), new Vector3(s, 1.5f, 1.8f), 32f, move, secs - move, "Chủ Hôn: “Hai con có nguyện cùng nhau đi hết mọi hành trình?”"),
-                    "rings" => new CinematicDirector.Shot(new Vector3(s - 0.2f, 1.5f, -5.6f), new Vector3(s, 0.95f, 1.2f), 30f, move, secs - move, "Trao nhẫn cưới"),
-                    "cake" => new CinematicDirector.Shot(new Vector3(cake.x - 0.4f, 1.9f, -6.0f), new Vector3(cake.x - 0.4f, 1.15f, 1.4f), 32f, move, secs - move, "Cùng nhau cắt bánh cưới"),
-                    "toast" => new CinematicDirector.Shot(new Vector3(banquet.x, 1.9f, -6.2f), new Vector3(banquet.x, 1.2f, 1.2f), 30f, move, secs - move, "Nâng ly chúc mừng"),
-                    "kiss" => new CinematicDirector.Shot(new Vector3(s, 1.7f, -5.0f), new Vector3(s, 1.15f, 0.8f), 26f, move, secs - move, "♥"),
-                    _ => new CinematicDirector.Shot(new Vector3(s + 1f, 3.6f, -12f), new Vector3(s + 1f, 2.6f, 2f), 42f, move, secs - move, $"Chúc mừng {c.aName} ♥ {c.bName}!"),
-                };
-                all.Add(shot);
-            }
-            return all.Skip(fromStep).ToList();
-        }
-
-        /// <summary>The pose that cuts the cake in the real ceremony (tests).</summary>
-        public PoseOverlay CutPose { get; private set; }
-
-        private IEnumerator Real(CeremonyState c)
-        {
-            RealPlaying = true;
-            RealPlayed++;
-            var dir = CinematicDirector.Current;
-            long Now() => WorldSync.Current ? WorldSync.Current.ServerNowMs : c.startMs;
-            // wait for the server lead-in
-            while (Now() < c.startMs) yield return null;
-            int first = 0;
-            while (first < c.steps.Length - 1 && Now() >= c.steps[first].startMs + c.steps[first].ms) first++;
-            Participant(c.aId, out CharacterVisual3D va, out PoseOverlay pa);
-            Participant(c.bId, out CharacterVisual3D vb, out PoseOverlay pb);
-            foreach (var v in new[] { va, vb }) if (v) v.SetWeaponsVisible(false);
-            if (officiant) officiant.FaceFront();
-            if (dir) dir.Play(RealShots(c, first));
-            for (int i = first; i < c.steps.Length; i++)
-            {
-                CeremonyStepState st = c.steps[i];
-                while (Now() < st.startMs) yield return null;
-                RealStep = st.id;
-                if (dir) dir.Cue(i - first); // the camera follows the server's step clock, never lags behind it
-                float s = stage.x;
-                switch (st.id)
-                {
-                    case "intro":
-                        Place(c.aId, s - 0.85f, 1); Place(c.bId, s + 0.85f, -1);
-                        if (musician) StartCoroutine(musician.Gesture("Wave", 1.6f));
-                        break;
-                    case "vows":
-                        Place(c.aId, s - 0.85f, 1); Place(c.bId, s + 0.85f, -1);
-                        if (officiant) StartCoroutine(officiant.Gesture("Talk", 3f));
-                        Emote("A", va, "Bow"); Emote("B", vb, "Bow");
-                        break;
-                    case "rings":
-                        Place(c.aId, s - 0.75f, 1); Place(c.bId, s + 0.75f, -1);
-                        if (va) va.HoldInRightHand(Ring());
-                        Emote("A", va, "Kneel", HeroFace.Expression.Happy);
-                        Emote("B", vb, "Cheer", HeroFace.Expression.Surprised);
-                        if (petals) petals.Burst(new Vector3(s, 0f, 1f), 80);
-                        break;
-                    case "cake":
-                        if (va) va.HoldInRightHand(null);
-                        Place(c.aId, cake.x - 1.05f, 1); Place(c.bId, cake.x + 0.55f, -1); // flanking the cake, the knife reaches it
-                        if (va) va.HoldInRightHand(Knife());
-                        if (pa) pa.Cut(3.4f);
-                        CutPose = pa;
-                        if (va && va.Face) va.Face.Pulse(HeroFace.Expression.Happy, 3f);
-                        Emote("B", vb, "Sway"); // the partner sways happily beside the cake while it is cut
-                        StartCoroutine(After(3.3f, () => { ServeSlice(); if (petals) petals.Burst(cake, 60); }));
-                        break;
-                    case "toast":
-                        if (va) va.HoldInRightHand(null);
-                        // the drink take lifts the LEFT hand: each faces so that hand is toward the camera
-                        Place(c.aId, banquet.x + 0.75f, -1); Place(c.bId, banquet.x - 0.75f, 1);
-                        if (va) va.HoldInHand(WineGlass(), left: true);
-                        if (vb) vb.HoldInHand(WineGlass(), left: true);
-                        Emote("A", va, "Toast"); Emote("B", vb, "Toast");
-                        break;
-                    case "kiss":
-                        foreach (var v in new[] { va, vb }) if (v) v.HoldInRightHand(null);
-                        Place(c.aId, s - 0.36f, 1); Place(c.bId, s + 0.36f, -1);
-                        if (pa) pa.Lean(18f);
-                        if (pb) pb.Lean(18f);
-                        // eyes softly closed + blush during the kiss (the Happy face closes the eyes as ∪ arcs)
-                        foreach (var v in new[] { va, vb }) if (v && v.Face) v.Face.Pulse(HeroFace.Expression.Happy, 2.8f);
-                        StartCoroutine(HeartBurst(new Vector3(s, 2.0f, -0.2f)));
-                        StartCoroutine(After(2.6f, () =>
-                        {
-                            // after the kiss: step back a little, a heart over the head, the partner sways
-                            if (pa) pa.Lean(0f);
-                            if (pb) pb.Lean(0f);
-                            Place(c.aId, s - 0.6f, 1); Place(c.bId, s + 0.6f, -1);
-                            Emote("A", va, "Sway"); Emote("B", vb, "Heart"); // the clip turns the body: from the right-hand side the heart faces the camera
-                        }));
-                        break;
-                    default: // finale
-                        if (pa) pa.Lean(0f);
-                        if (pb) pb.Lean(0f);
-                        Place(c.aId, s - 0.85f, 1); Place(c.bId, s + 0.85f, -1);
-                        Emote("A", va, "Celebrate"); Emote("B", vb, "Celebrate");
-                        if (petals) petals.Burst(new Vector3(s, 0f, 2f), 160);
-                        if (musician) StartCoroutine(musician.Gesture("Bow", 1.8f));
-                        break;
-                }
-            }
-            while (Now() < c.endMs) yield return null;
-            // hand everything back
-            foreach (var (v, p) in new[] { (va, pa), (vb, pb) })
-            {
-                if (v) { v.HoldInRightHand(null); v.SetWeaponsVisible(true); }
-                if (p) p.Lean(0f);
-            }
-            foreach (string id in new[] { c.aId, c.bId })
-            {
-                RemoteAvatar a = WorldSync.Current ? WorldSync.Current.Avatar(id) : null;
-                if (a) a.Override(null);
-            }
-            while (dir && dir.Playing) yield return null;
-            RealStep = "done";
-            RealPlaying = false;
-            if (SocialPanel.Instance) SocialPanel.Instance.Refresh();
-        }
-
         // ---------------------------------------------------------------- props (generated, no Meshy credit)
         private GameObject slice;
 

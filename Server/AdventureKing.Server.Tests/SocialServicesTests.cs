@@ -263,8 +263,9 @@ public sealed class SocialServicesTests : IDisposable
         // a guest sees the same server timeline
         CeremonyDto seen = Beat(c, -14.1f).ceremony!;
         Assert.Equal("running", seen.state);
-        Assert.Equal(new[] { "intro", "vows", "rings", "cake", "toast", "kiss", "finale" }, seen.steps.Select(s => s.id));
+        Assert.Equal(new[] { "entrance", "opening", "vows", "rings", "kiss", "cake", "toast", "finale" }, seen.steps.Select(s => s.id));
         Assert.Equal(seen.endMs, seen.steps[^1].startMs + seen.steps[^1].ms);
+        Assert.Equal(180000, seen.endMs - seen.startMs); // the 3-minute cinematic ceremony
         // everyone keeps heartbeating through the ceremony
         while (clock < seen.endMs + 500) { Beat(a, -16f); Beat(b, -15f); Beat(c, -14f); clock += 1000; }
         Assert.Equal("done", Beat(c, -14.2f).ceremony!.state);
@@ -285,22 +286,75 @@ public sealed class SocialServicesTests : IDisposable
         Assert.Contains(cfg.marriage.gifts[0], new CosmeticShop(t.Db, catalog).Wardrobe(a.acc, a.id).owned);
     }
 
-    [Fact]
-    public void A_partner_leaving_the_hall_cancels_the_ceremony_and_they_stay_engaged()
+    /// <summary>An engaged couple in the Wedding Hall with a running ceremony.</summary>
+    private ((string acc, string id, string name) a, (string acc, string id, string name) b, CeremonyDto c) RunningCeremony(string tag)
     {
-        var a = Player("soc16", "Rời Sảnh Tâm");
-        var b = Player("soc17", "Ở Lại Vy");
-        friends.Request(a.acc, a.id, new NameDto { name = "Ở Lại Vy" });
+        var a = Player("soc" + tag + "a", "Lễ " + tag + " Tâm");
+        var b = Player("soc" + tag + "b", "Lễ " + tag + " Vy");
+        friends.Request(a.acc, a.id, new NameDto { name = b.name });
         friends.Respond(b.acc, b.id, new IdDto { id = a.id }, true);
-        marriage.Propose(a.acc, a.id, new ProposeDto { name = "Ở Lại Vy" });
+        marriage.Propose(a.acc, a.id, new ProposeDto { name = b.name });
         marriage.Respond(b.acc, b.id, new GuildTargetDto { id = a.id, accept = true });
         foreach (var p in new[] { a, b }) { clock += 2000; chars.Travel(p.acc, p.id, "hub_wedding_hall", -56f, 0f); }
         Beat(a, -16f); Beat(b, -15f);
         marriage.StartCeremony(b.acc, b.id);
         marriage.ConfirmCeremony(a.acc, a.id);
-        clock += 3000; Beat(b, -15f);
-        clock += 12000; // a went quiet (left / disconnected)
+        return (a, b, Beat(b, -15f).ceremony!);
+    }
+
+    [Fact]
+    public void A_partner_leaving_for_another_map_cancels_the_ceremony_at_once_and_they_stay_engaged()
+    {
+        var (a, b, _) = RunningCeremony("16");
+        clock += 5000; Beat(a, -16f); Beat(b, -15f);
+        chars.Travel(a.acc, a.id, "wedding_hall_hub", -21f, 0f); // walks out through the portal
+        Beat(a, 60f); // first heartbeat from the town
         Assert.Equal("cancelled", Beat(b, -15.1f).ceremony!.state);
         Assert.Equal("engaged", marriage.Get(a.acc, a.id).status);
+    }
+
+    [Fact]
+    public void A_dropped_connection_beyond_the_grace_cancels_safely_without_rewards()
+    {
+        var (a, b, _) = RunningCeremony("17");
+        clock += 3000; Beat(a, -16f); Beat(b, -15f);
+        // a goes silent; b keeps heartbeating for longer than the grace period
+        for (int i = 0; i < 25; i++) { clock += 1000; Beat(b, -15f); }
+        Assert.Equal("cancelled", Beat(b, -15.1f).ceremony!.state);
+        Assert.Equal("engaged", marriage.Get(a.acc, a.id).status);
+        Assert.DoesNotContain(cfg.marriage.gifts[0], new CosmeticShop(t.Db, catalog).Wardrobe(a.acc, a.id).owned);
+    }
+
+    [Fact]
+    public void A_short_drop_recovers_and_the_marriage_is_saved_once_with_gifts_once()
+    {
+        var (a, b, c) = RunningCeremony("18");
+        clock += 30000; Beat(a, -16f); Beat(b, -15f);
+        // a's connection drops for 9 s (silent for ~5 s beyond the heartbeat timeout), then comes back
+        for (int i = 0; i < 9; i++) { clock += 1000; Beat(b, -15f); }
+        Assert.Equal("running", Beat(b, -15f).ceremony!.state);
+        Beat(a, -16f);
+        while (clock < c.endMs + 500) { Beat(a, -16f); Beat(b, -15f); clock += 1000; }
+        Assert.Equal("done", Beat(b, -15f).ceremony!.state);
+        Assert.Equal("married", marriage.Get(a.acc, a.id).status);
+        // more ticks after the end never finalize twice
+        for (int i = 0; i < 5; i++) { marriage.Tick(); Beat(a, -16f); }
+        var shop = new CosmeticShop(t.Db, catalog);
+        foreach (string gift in cfg.marriage.gifts) Assert.Single(shop.Wardrobe(a.acc, a.id).owned, gift);
+        // and it cannot be started again
+        Assert.Equal("already_married", Assert.Throws<GameError>(() => marriage.StartCeremony(a.acc, a.id)).Code);
+    }
+
+    [Fact]
+    public void A_partner_silent_at_the_end_delays_the_marriage_until_they_return()
+    {
+        var (a, b, c) = RunningCeremony("19");
+        while (clock < c.endMs - 6000) { Beat(a, -16f); Beat(b, -15f); clock += 1000; }
+        for (int i = 0; i < 10; i++) { clock += 1000; Beat(b, -15f); } // a is silent across the end (within the grace)
+        Assert.Equal("running", Beat(b, -15f).ceremony!.state);
+        Assert.Equal("engaged", marriage.Get(b.acc, b.id).status); // no marriage, no gifts while a is missing
+        Beat(a, -16f);
+        Assert.Equal("done", Beat(b, -15f).ceremony!.state);
+        Assert.Equal("married", marriage.Get(b.acc, b.id).status);
     }
 }

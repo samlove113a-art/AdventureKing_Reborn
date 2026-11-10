@@ -57,6 +57,15 @@ namespace AdventureKing.ArtPipeline
             // a happy sway while the partner cuts the cake. Kiss itself = PoseOverlay lean (no library clip exists).
             new Clip("Heart", "Big_Heart_Gesture", 0, 148) { Speed = 1.15f },
             new Clip("Sway", "Happy_Sway_Standing", 0, 120),
+            // 180 s cinematic wedding (Meshy library Casual Walk, 3 credits per class): walking down the aisle.
+            // Two clean cycles (frames 0-68 close within 1 cm); playback matched to speed (HeroMotionProfile.walkStrideSpeed).
+            new Clip("Walk", "Casual_Walk", 0, 68, true),
+            // The kneel take STARTS on one knee (hips 0.25 m, frames 0-9) and rises by frame ~33 (measured):
+            // KneelHold loops the kneeling frames, KneelUp rises, KneelDown is the same rise played backwards.
+            // These states have no automatic exits: the ceremony cross-fades between them on its timeline.
+            new Clip("KneelHold", "Kneel_on_One_Knee_and_Stand", 0, 8, true),
+            new Clip("KneelUp", "Kneel_on_One_Knee_and_Stand", 8, 40) { Speed = 0.8f },
+            new Clip("KneelDown", "Kneel_on_One_Knee_and_Stand", 8, 40) { Speed = -0.8f },
         };
 
         private static Clip[] With(Clip[] shared, params Clip[] extra)

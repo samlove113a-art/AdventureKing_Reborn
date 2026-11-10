@@ -45,6 +45,8 @@ namespace AdventureKing.Tests
             server.Stop();
         }
 
+        /// <summary>Records the 180 s ceremony to QA video frames (set AK_RECORD_WEDDING=1; slower).</summary>
+        private static bool Record => System.Environment.GetEnvironmentVariable("AK_RECORD_WEDDING") == "1";
         private Vector2 Pos => motor.transform.position;
         private void Bind() { var w = AdventureWorldSession.Current; motor = w.Player; input = motor.GetComponent<PlayerInput2D>(); }
         private static string MyId => AdventureWorldSession.Current.Character.characterId;
@@ -98,8 +100,6 @@ namespace AdventureKing.Tests
             private void LateUpdate()
             {
                 if (Done) return;
-                var cut = FindAnyObjectByType<WeddingCeremony>()?.CutPose;
-                if (cut) Debug.Log($"[shot] {Name} frame={Time.frameCount} poseApplied={cut.AppliedFrame} cutting={cut.Cutting} armZ={cut.Arm.eulerAngles}");
                 Write(Name, W, H);
                 Done = true;
             }
@@ -288,37 +288,46 @@ namespace AdventureKing.Tests
             yield return bob.ConfirmCeremony();
             SocialPanel.Instance.Close();
 
-            // ---- the ceremony: same server timeline, both heroes staged, every step captured
+            // ---- the 180 s cinematic ceremony: both clients on the same server clock; 8 key moments captured
             var ceremony = Object.FindAnyObjectByType<WeddingCeremony>();
-            yield return Until(() => ceremony.RealPlaying, 8f, "two-player ceremony started");
-            var steps = new[] { "intro", "vows", "rings", "cake", "toast", "kiss", "finale" };
-            int shotIdx = 10;
-            foreach (string step in steps)
+            yield return Until(() => ceremony.Cinematic != null && ceremony.Cinematic.Running, 10f, "two-player cinematic started");
+            WeddingCinematic cin = ceremony.Cinematic;
+            CeremonyState onB = bob.LastSync.ceremony;
+            Assert.IsTrue(onB != null && onB.state == "running" && onB.steps.Length == 8, "the second client receives the same running ceremony");
+            Assert.AreEqual(WorldSync.Current.Last.ceremony.startMs, onB.startMs, "same server start time on both clients");
+            Assert.AreEqual(180000, onB.endMs - onB.startMs, "3-minute ceremony");
+            GameplayRecorder rec = Record ? GameplayRecorder.Begin("wedding180") : null;
+            float recordStartT = cin.T;
+            var moments = new (float t, string name)[]
             {
-                yield return Until(() => ceremony.RealStep == step, 12f, "ceremony step " + step);
-                yield return new WaitForSeconds(step == "cake" ? 1.2f : step == "toast" ? 2.2f : 1.7f);
-                yield return Shot($"{shotIdx++}_wedding_{step}");
-                if (step == "cake")
-                {
-                    var cp = ceremony.CutPose;
-                    Assert.IsNotNull(cp, "cake cut pose");
-                    Debug.Log($"[cut] arm={cp.HasArm} cutting={cp.Cutting} model={(cp.Model ? cp.Model.name : "-")} fwd={(cp.Model ? cp.Model.forward : Vector3.zero)} hero={AdventureWorldSession.Current.HeroModel?.name}");
-                    Assert.IsTrue(cp.HasArm && cp.Cutting, "cutting with the right arm");
-                    foreach (var smr in cp.Model.root.GetComponentsInChildren<SkinnedMeshRenderer>(true))
-                        Debug.Log($"[smr] {smr.name} verts={(smr.sharedMesh ? smr.sharedMesh.vertexCount : 0)} on={smr.enabled && smr.gameObject.activeInHierarchy} usesArm={System.Array.IndexOf(smr.bones, cp.Arm) >= 0} armsNamed={smr.bones.Count(b => b && b.name == "RightArm")} root={(smr.rootBone ? smr.rootBone.name : "-")} upd={smr.updateWhenOffscreen}");
-                    foreach (var smr in Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Exclude))
-                        if (smr.name.EndsWith("_Body")) Debug.Log($"[body] {smr.name} root={smr.transform.root.name} path={smr.transform.parent?.name} pos={smr.bounds.center} same={smr.transform.root == cp.Model.root}");
-                    var anim = cp.Model.GetComponentInChildren<Animator>(true);
-                    Debug.Log($"[anim] {anim?.name} mode={anim?.updateMode} cull={anim?.cullingMode} enabled={anim?.enabled} root={anim?.applyRootMotion}");
-                }
-                if (step == "cake") { yield return new WaitForSeconds(2.4f); yield return Shot("13b_wedding_cake_slice"); }
-                if (step == "kiss") { yield return new WaitForSeconds(1.6f); yield return Shot("15b_wedding_after_kiss"); }
+                (12f, "30_entrance_walk"), (47.8f, "31_vows_hand_in_hand"), (81.6f, "32_ring_sliding_on"), (83.2f, "32b_ring_on_finger"),
+                (109.2f, "33_kiss"), (132.9f, "34_knife_in_cake"), (138.6f, "34b_slice_cut"), (151.5f, "35_glasses_clink"),
+                (156.2f, "36_drinking"), (174f, "37_celebration"),
+            };
+            foreach (var (mt, name) in moments)
+            {
+                yield return Until(() => cin.T >= mt || !cin.Running, 400f, "ceremony reaches " + name);
+                Assert.IsTrue(cin.Running, $"ceremony still running at {name} ({cin.AbortReason})");
+                yield return Shot(name);
+                if (name == "32_ring_sliding_on") Assert.AreEqual("rings", cin.SceneId);
             }
-            yield return Until(() => ceremony.RealStep == "done", 20f, "ceremony finished");
-            foreach (string g2 in new[] { "A:Bow", "B:Bow", "A:Kneel", "B:Sway", "A:Toast", "B:Toast", "B:Heart", "A:Sway", "B:Celebrate", "A:Celebrate" })
-                Assert.Contains(g2, ceremony.HeroGestures, "gesture " + g2);
-            Assert.Greater(ceremony.Hearts, 0, "kiss hearts");
-            Assert.IsTrue(ceremony.SliceServed, "cake slice served");
+            yield return Until(() => !cin.Running, 60f, "ceremony finished");
+            if (rec) rec.End();
+            File.WriteAllLines($"{Dir}/wedding_events.txt", new[] { $"recordStartT={recordStartT:0.000}", $"frames={(rec ? rec.Frames : 0)}", $"framesDir={(rec ? rec.Directory : "")}" }.Concat(cin.Events));
+            Assert.IsTrue(cin.Finished, "cinematic played to the end: " + cin.AbortReason);
+            Assert.IsTrue(cin.Events.Contains("banner"), "married banner shown after the server confirmed");
+            Assert.IsTrue(cin.RingOnB && cin.RingOnA, "both rings went onto fingers");
+            Assert.Less(cin.RingToFingerB, 0.03f, "ring sits on the finger");
+            Assert.Greater(cin.KissHeldSeconds, 2f, $"faces met for the kiss (closest {cin.KissFaceDistanceMin:0.000} m)");
+            Assert.AreEqual(2, cin.Cuts, "two cuts into the cake");
+            Assert.Greater(cin.KnifeDepthMax, 0.05f, "the blade went into the cake");
+            Assert.IsTrue(cin.SliceOnPlate, "the slice was served on the plate");
+            Assert.IsTrue(cin.Clinked && cin.ClinkRimDistanceMin < 0.015f && cin.ClinkRimDistanceMin > -0.035f, $"the goblet rims touched (edge gap {cin.ClinkRimDistanceMin:0.000} m)");
+            Assert.Less(cin.WineLevelA, 0.6f, "A drank");
+            Assert.Less(cin.WineLevelB, 0.6f, "B drank");
+            Assert.Less(Mathf.Max(cin.GobletToMouthMinA, cin.GobletToMouthMinB), 0.08f, "goblets reached the lips");
+            Assert.Less(cin.GripErrorMax, 0.1f, "hands stayed on the props they hold");
+            yield return Until(() => !CinematicDirector.Current.Playing, 6f, "camera handed back");
             Assert.IsTrue(Camera.main.GetComponent<CameraFollow2D>().enabled, "camera handed back");
             Assert.IsTrue(input.enabled, "controls handed back");
 

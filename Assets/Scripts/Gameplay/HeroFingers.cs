@@ -44,8 +44,19 @@ namespace AdventureKing.Gameplay
 
         public float CurlOf(bool leftHand) => (leftHand ? left : right).current;
 
+        private float? leftOverride, rightOverride;
+        /// <summary>Cinematics: hold a hand at this curl (0 open .. 1 fist) — a grip on a knife or goblet, an open
+        /// hand receiving a ring. Null returns to the automatic curl.</summary>
+        public void Override(bool leftHand, float? curl) { if (leftHand) leftOverride = curl; else rightOverride = curl; }
+
+        /// <summary>The first finger joint of a hand (wedding ring goes here).</summary>
+        public Transform Knuckle(bool leftHand) { Hand h = leftHand ? left : right; return h != null && h.joints != null && h.joints.Length > 0 ? h.joints[0] : null; }
+        public Transform FingerTip(bool leftHand) { Hand h = leftHand ? left : right; return h != null && h.joints != null && h.joints.Length > 2 ? h.joints[2] : null; }
+
         private float Target(Hand h)
         {
+            float? o = h == left ? leftOverride : rightOverride;
+            if (o.HasValue) return o.Value;
             if (!animator) return h.weaponGrip >= 0f ? h.weaponGrip : relaxed;
             AnimatorStateInfo s = animator.GetCurrentAnimatorStateInfo(0);
             if (s.shortNameHash == ClimbState) return climbGrip;
