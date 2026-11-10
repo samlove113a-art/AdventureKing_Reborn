@@ -235,6 +235,11 @@ namespace AdventureKing.ArtPipeline
                     Put("set_little_dino", "set", () => DinoSet(h), "head", "back", "top");
                     Put("set_baby_shark", "set", () => SharkSet(h), "head", "back", "top");
                     Put("set_sweet_dream", "set", () => DreamSet(h), "head", "top");
+                    // wedding gifts (granted by the server after the ceremony, never sold): recoloured variants of the
+                    // shop pieces above, built procedurally (no Meshy credit)
+                    Put("wed_pearl_crown", "head", () => LotusCrown(h, pearl: true));
+                    Put("wed_satin_gloves", "gloves", () => Gloves(h, "wed_satin_gloves", "satin"));
+                    Put("wed_white_cape", "back", () => Cape(h, "wedding"));
                     Debug.Log($"[OUTFIT] {c}: built {arts.Count} items (H={h.H:0.0} mesh units)");
                 }
                 finally { Object.DestroyImmediate(h.Inst); }
@@ -477,7 +482,7 @@ namespace AdventureKing.ArtPipeline
             return Garment(h, id, r, ToonMat(matName, PatternTex(pattern), false, Color.black));
         }
 
-        private static OutfitPiece[] Gloves(Hero h)
+        private static OutfitPiece[] Gloves(Hero h, string id = "gloves_jade_silk", string pattern = "jade")
         {
             var hands = h.Set("LeftHand", "RightHand", "LeftHand_Fingers1", "LeftHand_Fingers2", "LeftHand_Fingers3",
                 "RightHand_Fingers1", "RightHand_Fingers2", "RightHand_Fingers3");
@@ -496,7 +501,7 @@ namespace AdventureKing.ArtPipeline
             }
             var r = Shell(h, Pred, 0.0045f * h.H, true, 2f, 0.06f * h.H, 0.011f * h.H, 0.014f * h.H,
                 new Color(0.82f, 0.86f, 0.9f), new Color(0.97f, 0.98f, 1f));
-            return Garment(h, "gloves_jade_silk", r, ToonMat("Gloves_JadeSilk", PatternTex("jade"), false, Color.black));
+            return Garment(h, id, r, ToonMat(pattern == "jade" ? "Gloves_JadeSilk" : "Gloves_WeddingSatin", PatternTex(pattern), false, Color.black));
         }
 
         private static OutfitPiece[] Boots(Hero h, string style)
@@ -617,7 +622,7 @@ namespace AdventureKing.ArtPipeline
             m.Orient(tc, p => p - (centre + axis * size * 0.12f));
         }
 
-        private static OutfitPiece[] LotusCrown(Hero h)
+        private static OutfitPiece[] LotusCrown(Hero h, bool pearl = false)
         {
             Ring ring = HeadRing(h, 0.004f, 0.025f);
             int head = h.B("Head");
@@ -626,7 +631,8 @@ namespace AdventureKing.ArtPipeline
             var path = Smooth(ring.Points, 3).ToList();
             int t0 = m.T.Count;
             m.Tube(path, Enumerable.Repeat(0.0065f * h.H, path.Count).ToList(), true, 8,
-                (k, a) => Color.Lerp(new Color(0.24f, 0.52f, 0.2f), new Color(0.45f, 0.72f, 0.3f), 0.5f + 0.5f * Mathf.Sin(k * 1.3f)), _ => w, Vector3.up);
+                (k, a) => pearl ? Color.Lerp(new Color(0.86f, 0.66f, 0.28f), new Color(1f, 0.88f, 0.52f), 0.5f + 0.5f * Mathf.Sin(a)) // gold band
+                    : Color.Lerp(new Color(0.24f, 0.52f, 0.2f), new Color(0.45f, 0.72f, 0.3f), 0.5f + 0.5f * Mathf.Sin(k * 1.3f)), _ => w, Vector3.up);
             m.Orient(t0, p => p - ClosestOnPath(path, p));
             // leaves around the vine
             for (int k = 0; k < 14; k++)
@@ -638,6 +644,15 @@ namespace AdventureKing.ArtPipeline
                 Quaternion q = Quaternion.LookRotation(o, dir);
                 Vector3 c = p + dir * 0.012f * h.H;
                 int tl = m.T.Count;
+                if (pearl)
+                {
+                    // a pearl instead of a leaf: round, pale, with a soft lustre gradient
+                    Vector3 pc = p + o * 0.006f * h.H + Vector3.up * 0.004f * h.H;
+                    m.Ellipsoid(Matrix4x4.TRS(pc, Quaternion.identity, Vector3.one * 0.0085f * h.H), 10, 6,
+                        l => Color.Lerp(new Color(0.86f, 0.84f, 0.88f), new Color(1f, 0.99f, 0.97f), (l.y + 1f) * 0.5f), w);
+                    m.Orient(tl, x => x - pc);
+                    continue;
+                }
                 m.Ellipsoid(Matrix4x4.TRS(c, q, new Vector3(0.008f * h.H, 0.016f * h.H, 0.0025f * h.H)), 8, 5,
                     l => Color.Lerp(new Color(0.2f, 0.5f, 0.2f), new Color(0.5f, 0.8f, 0.35f), (l.y + 1f) * 0.5f), w);
                 m.Orient(tl, x => x - c);
@@ -647,9 +662,10 @@ namespace AdventureKing.ArtPipeline
             {
                 Vector3 p = RingAt(ring, ang, out Vector3 o);
                 Vector3 axis = (o * 0.75f + Vector3.up * 0.65f).normalized;
-                Flower(m, p + o * 0.004f * h.H, axis, size * h.H, new Color(1f, 0.93f, 0.95f), new Color(0.95f, 0.45f, 0.62f), w);
+                Flower(m, p + o * 0.004f * h.H, axis, size * h.H, pearl ? new Color(1f, 0.99f, 0.97f) : new Color(1f, 0.93f, 0.95f),
+                    pearl ? new Color(0.96f, 0.8f, 0.42f) : new Color(0.95f, 0.45f, 0.62f), w);
             }
-            return new[] { Piece(h, "head_lotus_crown", m, vcMat) };
+            return new[] { Piece(h, pearl ? "wed_pearl_crown" : "head_lotus_crown", m, vcMat) };
         }
 
         private static Vector3 ClosestOnPath(IList<Vector3> path, Vector3 p)
@@ -901,7 +917,8 @@ namespace AdventureKing.ArtPipeline
             int n = m.Count;
             m.MakeDoubleSided(0.0025f * h.H);
             for (int i = n; i < m.Count; i++) m.UV[i] = new Vector2(0.75f, m.UV[i].y); // lining half of the atlas
-            Material mat = ToonMat(star ? "Mantle_Star" : "Cape_Wind", PatternTex(star ? "starcape" : "windcape"), false,
+            bool wed = style == "wedding";
+            Material mat = ToonMat(star ? "Mantle_Star" : wed ? "Cape_Wedding" : "Cape_Wind", PatternTex(star ? "starcape" : wed ? "weddingcape" : "windcape"), false,
                 star ? new Color(0.05f, 0.08f, 0.18f) : Color.black);
 
             // collar trim + clasps (vertex colour), riding the same chain
@@ -922,7 +939,7 @@ namespace AdventureKing.ArtPipeline
             trim.Tube(hemPts, Enumerable.Repeat(0.004f * h.H, hemPts.Count).ToList(), false, 6, (k, a) => tA, _ => OutfitMesh.Rigid(j2), Vector3.up);
             trim.Orient(t0, p => p - ClosestOnPath(hemPts, p));
 
-            string id = star ? "set_crystal_zephyr_mantle" : "back_wind_cape";
+            string id = star ? "set_crystal_zephyr_mantle" : wed ? "wed_white_cape" : "back_wind_cape";
             return new[]
             {
                 Piece(h, id, m, mat, extras, PieceMotion.CapeSway),
@@ -1091,7 +1108,7 @@ namespace AdventureKing.ArtPipeline
             Object.DestroyImmediate(t);
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
             var ti = (TextureImporter)AssetImporter.GetAtPath(path);
-            ti.wrapMode = kind is "windcape" or "starcape" or "skirt" or "wing" ? TextureWrapMode.Clamp : TextureWrapMode.Repeat;
+            ti.wrapMode = kind is "windcape" or "starcape" or "weddingcape" or "skirt" or "wing" ? TextureWrapMode.Clamp : TextureWrapMode.Repeat;
             if (kind == "skirt") { ti.wrapModeU = TextureWrapMode.Repeat; ti.wrapModeV = TextureWrapMode.Clamp; }
             ti.mipmapEnabled = true;
             ti.anisoLevel = 2;
@@ -1139,6 +1156,27 @@ namespace AdventureKing.ArtPipeline
                     float line = Mathf.Clamp01(1f - d / 0.012f);
                     float dots = Mathf.Clamp01(1f - (new Vector2(Mathf.Repeat(u * 8f, 1f) - 0.5f, Mathf.Repeat(v * 8f, 1f) - 0.5f).magnitude) / 0.08f);
                     return Color.Lerp(Color.Lerp(baseC, gold * 0.85f, dots * 0.6f), gold, line);
+                }
+                case "satin":
+                {
+                    // white wedding satin: soft sheen bands, fine weave, a gold stitch line
+                    float sheen = 0.5f + 0.5f * Mathf.Sin((u * 0.6f + v) * Mathf.PI * 5f);
+                    float weave = Mathf.Abs(Mathf.Sin(u * Mathf.PI * 64f)) * Mathf.Abs(Mathf.Sin(v * Mathf.PI * 64f));
+                    Color c = Color.Lerp(new Color(0.88f, 0.88f, 0.9f), new Color(1f, 0.99f, 0.98f), sheen * 0.6f + v * 0.2f) * (0.95f + 0.05f * weave);
+                    float stitch = Mathf.Repeat(u * 16f, 1f) < 0.55f && Mathf.Abs(Mathf.Repeat(v * 4f, 1f) - 0.5f) < 0.02f ? 1f : 0f;
+                    c.a = 1f;
+                    return Color.Lerp(c, new Color(0.95f, 0.78f, 0.4f), stitch * 0.8f);
+                }
+                case "weddingcape":
+                {
+                    if (u > 0.5f) return new Color(0.98f, 0.9f, 0.88f); // blush lining
+                    float uu = u * 2f;
+                    Color c = Color.Lerp(new Color(0.9f, 0.89f, 0.86f), new Color(1f, 0.99f, 0.96f), v * 0.7f + 0.3f * Noise(uu * 8f, v * 8f));
+                    float edge = Mathf.Min(uu, 1f - uu, v);
+                    if (edge < 0.035f) return new Color(0.93f, 0.76f, 0.38f);   // gold border
+                    float d = Curl(Mathf.Repeat(uu * 2f, 1f), Mathf.Repeat(v * 2f, 1f), 0.5f, 0.5f, 0.32f, 1.5f);
+                    float line = Mathf.Clamp01(1f - d / 0.02f);                   // gold cloud-curl embroidery
+                    return Color.Lerp(c, new Color(0.95f, 0.78f, 0.42f), line * 0.85f);
                 }
                 case "jade":
                 {
