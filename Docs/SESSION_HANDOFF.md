@@ -6,6 +6,85 @@
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
 
 ---
+## ★★★★★★★★★★★★★★★ GIAI ĐOẠN D: Sảnh Bang Hội & Sảnh Kết Hôn bằng Meshy (2026-11-10)
+**Trạng thái:** hai sảnh đã có scene 3D thật, đi lại và tương tác được, có kiểm thử. **Chưa phải bản nghiệm thu cuối**: chủ dự án cần duyệt đồ họa; một số hạng mục còn thiếu (xem cuối mục).
+
+### Meshy (chủ dự án cho phép; không mua credit, không nâng gói, không tự đổi hạn mức)
+- **Credit:** 931 → **137**, tiêu 794 credit:
+
+  | Hạng mục | Credit |
+  |---|---|
+  | 24 concept (1 vẽ lại vì Chủ Hôn nhắm mắt) | 144 |
+  | 16 model đạo cụ | 480 |
+  | 2 retexture | 20 |
+  | 3 NPC (model + rig + 5 animation) | 150 |
+
+- **Giữ 137 credit cho quái/Boss Chương 1** theo yêu cầu.
+- **Tiết kiệm:**
+  - Cột cẩm thạch và tường cửa sổ hoa hồng của Sảnh Kết Hôn là **retexture** từ cột/tường Sảnh Bang Hội: 10 credit thay vì 30.
+  - Nhẫn cưới, ánh sáng và cánh hoa làm bằng Unity, không dùng Meshy.
+- Có lúc API key bị chặn ("API key credit limit reached"). Khi bị chặn không gọi lặp; chỉ kiểm tra lại sau khi chủ dự án báo.
+- Mọi task ghi trong `ArtSource/Meshy/manifest.jsonl`. File gốc ở `ArtSource/Meshy/raw/`: thư mục này **không nằm trong git**, cần sao lưu.
+
+### Tài nguyên (Meshy → Blender → Unity, toon shader chung)
+- **Sảnh Bang Hội:** ngai Bang Chủ, bàn họp 6 ghế, cột chạm, tường kính màu, cờ hiệu có huy hiệu, bảng xếp hạng, bàn thờ cống hiến, quầy tiếp tân kèm bảng nhiệm vụ, lò lửa pha lê ×2, đèn chùm ×2, sàn đá Meshy.
+- **Sảnh Kết Hôn:**
+  - lễ đường riêng (scene riêng);
+  - cổng hoa ở lối vào, ghế khách 2 hàng ×3;
+  - sân khấu tròn có mái hoa, gối nhẫn và 2 nhẫn vàng;
+  - đàn hạc, 2 bàn tiệc, bánh cưới 4 tầng, đèn chùm ×2;
+  - thảm cưới (texture Meshy), cánh hoa rơi.
+- **Số tam giác:** mỗi model 5k–18k tam giác.
+  - Tường và cột lặp lại dùng model nhẹ (6–8k).
+  - Tầng tường phía trên chỉ để che trời trong cảnh quay cinematic. Camera chơi không thấy, nên bị cull khi chơi.
+- **NPC:**
+  - Đội Trưởng Liên Minh, Chủ Hôn, Nhạc Công: Idle / Walk / Wave / Talk / Bow.
+  - **Mặt động** (chớp mắt, biểu cảm) như anh hùng: Đội Trưởng đã có.
+  - Chủ Hôn và Nhạc Công **giữ mặt vẽ**: đo mặt tự động không ra kết quả hợp lệ (râu che miệng; mắt bị nhận sai). Công cụ có bước kiểm tra nên không áp mặt hỏng.
+- **Sửa chất lượng:**
+  - Sàn sân khấu Meshy bị tô gần đen → vẽ lại thành cẩm thạch (bản gốc giữ trong `ArtSource/Meshy/raw/wh_altar_stage_model/`).
+  - Lỗi viền đen trên mặt anh hùng đã sửa từ trước.
+
+### Chức năng
+- **Server:** 2 bản đồ an toàn (không quái), 4 cổng Thị trấn ↔ Sảnh, cổng kiểm tra vị trí. Hai cổng mới trong làng có biển chỉ đường; vào sảnh không hỏi xác nhận.
+- **Nói chuyện NPC:** E / ▲ hiện bong bóng thoại. Đội Trưởng nói rõ hệ thống bang hội **đang được xây dựng**.
+- **Diễn tập nghi thức cưới:** nói chuyện với Chủ Hôn sẽ chạy cinematic 7 cảnh:
+  - cảnh toàn → lối vào → lời thề (Chủ Hôn nói) → trao nhẫn (cận gối nhẫn) → cắt bánh → nâng ly → kết, có mưa cánh hoa;
+  - có thanh letterbox, phụ đề, nút Bỏ qua; ẩn HUD và nhãn nổi;
+  - trả camera và điều khiển khi xong.
+
+### Kiểm thử
+- Server: `HallTravelTests` (2): vào/ra hai sảnh, đứng xa bị từ chối, mọi cổng có cổng về.
+- Play Mode `HallTravelTests`:
+  - đi Thị trấn → Sảnh Bang Hội → Thị trấn → Sảnh Kết Hôn → Thị trấn qua server thật;
+  - không còn chỗ thiếu model, không Missing Script; HUD audit 5 độ phân giải;
+  - nói chuyện Đội Trưởng (có mặt động);
+  - chạy trọn nghi thức: camera chiếm quyền rồi trả lại, input khóa rồi mở, ≥3 lần mưa cánh hoa, chụp đủ 7 cảnh.
+- Ảnh: `QA/Halls/*.png`.
+- **Chạy toàn bộ:** server 146/146; EditMode 4/4; **PlayMode 49 test, 47 qua, 2 bỏ qua (như trước), 0 lỗi, 0 exception.**
+- Lỗi thật đã sửa nhờ xem ảnh:
+  - HUD và nhãn nổi vẫn hiện trong cinematic;
+  - sàn sân khấu đen;
+  - Chủ Hôn đứng sai chỗ;
+  - lộ bầu trời phía trên tường trong cảnh rộng;
+  - tên Đội Trưởng xuống 2 dòng đè nhãn "E · Nói chuyện";
+  - đèn điểm không có tác dụng: URP của dự án tắt đèn phụ ở mọi mức đồ họa, nên đã gỡ.
+
+### CHƯA ĐẠT / CẦN DUYỆT (không tự nhận là hoàn thiện)
+- **Animation trao nhẫn, cắt bánh, nâng ly, hôn cho nhân vật người chơi: CHƯA CÓ.**
+  - Anh hùng chỉ có clip chiến đấu và di chuyển.
+  - Thư viện Meshy có quỳ gối, uống/nâng ly, cổ vũ, cúi chào, vỗ tay: **khoảng 60 credit** cho 4 nghề. Cần chủ dự án duyệt, vì vượt ngân sách và đụng phần giữ cho Chương 1.
+  - **Không có** clip hôn hay cắt bánh: phải dựng trong Unity.
+- **Lễ cưới thật cho 2 người chơi:** cần hệ thống kết hôn trên server (cầu hôn, bạn đời, nhẫn là vật phẩm). Chưa làm; hiện chỉ có **diễn tập**, phụ đề nói rõ.
+- **Hệ thống bang hội** (lập bang, cống hiến, nhiệm vụ bang, BXH bang): chưa làm. Sảnh và NPC đã sẵn.
+- **Chất lượng:**
+  - Cận cảnh rất gần lộ giới hạn texture Meshy 2k; các cảnh quay đã đặt camera ở khoảng cách đẹp.
+  - Cột Sảnh Kết Hôn (retexture) không có vòng hoa như concept.
+  - Chủ Hôn và Nhạc Công chưa có mặt động.
+- **Android:** chưa thử trên máy thật (không có thiết bị kết nối). Xem `Docs/ANDROID_DEVICE_TEST.md`.
+- **Đồ họa cần chủ dự án xem và duyệt.**
+
+---
 ## ★★★★★★★★★★★★★★ GIAI ĐOẠN C: Pet, sự kiện / phúc lợi, hộp thư, giftcode, BXH, khung tên (2026-11-10)
 **Trạng thái:** đã làm và kiểm thử (chi tiết test bên dưới). Commit: pet server `5fb42c3`, pet client `780655d`, sự kiện/thư/giftcode server `ce69124`, BXH/khung tên server `8e49dda`, client: xem `git log`.
 Không tiêu Meshy (số dư vẫn 931), không mua gì, không bật thanh toán, **không phát Kim Cương hay vật phẩm cao cấp ở bất kỳ đâu**. Mọi giá, phần thưởng và mốc là ĐỀ XUẤT.

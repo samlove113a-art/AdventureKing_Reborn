@@ -19,7 +19,18 @@ namespace AdventureKing.ArtPipeline
         {
             public string Name, DisplayName;
             public Dictionary<string, (string take, bool loop)> Clips;
+            /// <summary>Animated face layer (blinks + expressions) like the heroes: UV3 at import (HeroFaceImport),
+            /// eyes/mouth measured from the painted texture. Off = the painted face only.</summary>
+            public bool Face;
         }
+
+        public static string FbxPath(string name) => $"Assets/Art/Characters/{name}/{name}.fbx";
+
+        private static Dictionary<string, (string, bool)> StandardClips(string wave) => new()
+        {
+            ["Idle"] = ("Idle", true), ["Walk"] = ("Casual_Walk", true), ["Wave"] = (wave, false),
+            ["Talk"] = ("Talk_with_Hands_Open", true), ["Bow"] = ("Formal_Bow", false),
+        };
 
         public static readonly Npc[] All =
         {
@@ -38,6 +49,10 @@ namespace AdventureKing.ArtPipeline
                 ["Idle"] = ("Idle", true), ["Walk"] = ("Casual_Walk", true), ["Wave"] = ("Wave_One_Hand", false),
                 ["Talk"] = ("Talk_with_Hands_Open", true), ["Bow"] = ("Formal_Bow", false),
             }},
+            // Phase D halls (Meshy, 2026-11-10): animated faces from the start
+            new Npc { Name = "NpcCaptain", DisplayName = "Đội Trưởng Liên Minh", Clips = StandardClips("Wave_One_Hand"), Face = true },
+            new Npc { Name = "NpcOfficiant", DisplayName = "Chủ Hôn", Clips = StandardClips("Big_Wave_Hello"), Face = true },
+            new Npc { Name = "NpcMusician", DisplayName = "Nhạc Công", Clips = StandardClips("Wave_One_Hand"), Face = true },
         };
 
         public static string PrefabPath(string name) => $"Assets/Prefabs/Npcs/{name}_Visual.prefab";
@@ -158,6 +173,32 @@ namespace AdventureKing.ArtPipeline
             if (!anim) anim = model.AddComponent<Animator>();
             anim.runtimeAnimatorController = ctrl;
             anim.applyRootMotion = false;
+            if (n.Face)
+            {
+                // Same face layer as the heroes: measured from this NPC's own painted face; skipped (painted face kept)
+                // if the measurement fails, never a broken face.
+                HeroFaceRig.FaceData fd = HeroFaceRig.Analyse(go, tex, out string faceError);
+                SkinnedMeshRenderer bodySmr = model.GetComponentsInChildren<SkinnedMeshRenderer>(true).First();
+                int headIdx = System.Array.FindIndex(bodySmr.bones, b => b && b.name == "Head");
+                // Plausibility: two eyes mirrored across the face centre at the same height, similar size, mouth centred
+                // below them. A lopsided measurement would draw eyelids in the wrong place — keep the painted face instead.
+                bool plausible = fd != null
+                    && Mathf.Abs(fd.EyeA.x + fd.EyeB.x) < 0.12f && Mathf.Abs(fd.EyeA.y - fd.EyeB.y) < 0.08f
+                    && Mathf.Min(fd.EyeA.z, fd.EyeB.z) > 0.07f && Mathf.Max(fd.EyeA.z, fd.EyeB.z) < 2f * Mathf.Min(fd.EyeA.z, fd.EyeB.z)
+                    && Mathf.Abs(fd.Mouth.x) < 0.08f && fd.Mouth.y < Mathf.Min(fd.EyeA.y, fd.EyeB.y) - 0.1f && fd.Mouth.z > 0.06f;
+                if (fd != null && !plausible) faceError = $"implausible measurement: eyes {fd.EyeA} {fd.EyeB}, mouth {fd.Mouth}";
+                if (!plausible || headIdx < 0) Debug.LogWarning($"[NPC] {n.Name}: animated face skipped ({faceError ?? "no Head bone"})");
+                else
+                {
+                    HeroFaceRig.Apply(m, fd);
+                    var face = model.AddComponent<HeroFace>();
+                    face.Bind(bodySmr);
+                    var (_, faceMesh, _, _, faceUp, faceFwd, _) = HeroFaceRig.Frame(go);
+                    Matrix4x4 meshToHead = faceMesh.bindposes[headIdx];
+                    face.BindHead(bodySmr.bones[headIdx], meshToHead.MultiplyVector(faceFwd).normalized, meshToHead.MultiplyVector(faceUp).normalized);
+                    Debug.Log($"[NPC] {n.Name}: animated face, eyes {fd.EyeA} {fd.EyeB}, mouth {fd.Mouth}");
+                }
+            }
             var actor = root.AddComponent<NpcActor>();
             var so = new SerializedObject(actor);
             so.FindProperty("animator").objectReferenceValue = anim;

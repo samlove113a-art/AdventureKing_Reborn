@@ -129,7 +129,20 @@ namespace AdventureKing.Tests
             Assert.Greater(GameObject.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude).Count(r => r.name.StartsWith("Prop_gh_")), 10, "Meshy hall models placed");
             yield return Shot("01_guild_arrival");
             yield return UiAudit.Screen(Dir, "02_guild_hud", problems);
-            foreach (var (x, name) in new[] { (-4f, "03_guild_ranking"), (3.5f, "04_guild_council"), (17f, "05_guild_throne") })
+            Assert.IsEmpty(Object.FindObjectsByType<Transform>(FindObjectsInactive.Include).Where(t => t.name.StartsWith("HallSpot_")).Select(t => t.name), "every hall model is generated (no empty spots)");
+            // Đội Trưởng Liên Minh: talk at the reception counter (Meshy NPC with an animated face)
+            var captain = Object.FindObjectsByType<NpcTalkSpot>(FindObjectsInactive.Exclude).First(s => s.name == "NpcCaptain");
+            Assert.IsNotNull(captain.GetComponentInChildren<HeroFace>(), "captain has the animated face layer");
+            yield return WalkTo(captain.transform.position.x + 1.2f);
+            until = Time.time + 3f;
+            while (!captain.PlayerNear && Time.time < until) yield return null;
+            Assert.IsTrue(captain.PlayerNear, "captain talk prompt");
+            yield return Tap(PlayerInput2D.TouchAction.Interact);
+            Assert.AreEqual(1, captain.Talks);
+            StringAssert.Contains("Đội Trưởng Liên Minh", captain.Said);
+            yield return new WaitForSeconds(0.6f);
+            yield return Shot("02b_guild_captain");
+            foreach (var (x, name) in new[] { (-4f, "03_guild_ranking"), (3.5f, "04_guild_council"), (10.5f, "04b_guild_altar"), (17f, "05_guild_throne") })
             {
                 yield return WalkTo(x);
                 Assert.AreEqual(0.8f, Pos.y, 0.3f, "standing on the hall floor (body centre ~0.8 m above it)");
@@ -142,9 +155,45 @@ namespace AdventureKing.Tests
             yield return TakePortal(TownLayout.Hub.Portals.First(p => p.Id == "hub_wedding_hall").X, TownLayout.WeddingHall.Scene, "00b_town_wedding_portal");
             Assert.AreEqual(TownLayout.WeddingHall.MapId, AdventureWorldSession.Current.Character.lastMapId, "server says: in the wedding hall");
             NoMissingScripts();
+            Assert.IsEmpty(Object.FindObjectsByType<Transform>(FindObjectsInactive.Include).Where(t => t.name.StartsWith("HallSpot_")).Select(t => t.name), "every wedding model is generated");
             yield return Shot("06_wedding_arrival");
-            yield return WalkTo(2f);
-            yield return Shot("07_wedding_centre");
+            yield return UiAudit.Screen(Dir, "06b_wedding_hud", problems);
+            foreach (var (x, name) in new[] { (-9f, "07_wedding_guests"), (8f, "08_wedding_musician"), (18f, "09_wedding_banquet") })
+            {
+                yield return WalkTo(x);
+                yield return Shot(name);
+            }
+            // Chủ Hôn → ceremony rehearsal cinematic (camera shots, captions, petals), then the camera comes back
+            var petals = Object.FindAnyObjectByType<PetalFall>();
+            var ceremony = Object.FindAnyObjectByType<WeddingCeremony>();
+            var director = CinematicDirector.Current;
+            var follow = Camera.main.GetComponent<CameraFollow2D>();
+            var officiant = Object.FindObjectsByType<NpcTalkSpot>(FindObjectsInactive.Exclude).First(s => s.name == "NpcOfficiant");
+            yield return WalkTo(officiant.transform.position.x + 1.2f);
+            until = Time.time + 3f;
+            while (!officiant.PlayerNear && Time.time < until) yield return null;
+            yield return Tap(PlayerInput2D.TouchAction.Interact);
+            Assert.AreEqual(1, ceremony.Played, "talking to the officiant starts the rehearsal");
+            Assert.IsTrue(director.Playing);
+            Assert.IsFalse(follow.enabled, "cinematic camera has the camera");
+            Assert.IsFalse(input.enabled, "input paused during the cinematic");
+            var shotNames = new[] { "10_ceremony_wide", "11_ceremony_entrance", "12_ceremony_vows", "13_ceremony_rings", "14_ceremony_cake", "15_ceremony_toast", "16_ceremony_finale" };
+            int taken = 0;
+            until = Time.time + 40f;
+            while (director.Playing && Time.time < until)
+            {
+                if (director.ShotIndex >= taken)
+                {
+                    yield return new WaitForSeconds(director.ShotIndex == 0 ? 1.6f : 2.0f); // after the move, during the hold
+                    if (director.ShotIndex >= taken && director.Playing) { yield return Shot(shotNames[Mathf.Min(taken, shotNames.Length - 1)]); taken++; }
+                }
+                yield return null;
+            }
+            Assert.IsFalse(director.Playing, "ceremony finished");
+            Assert.GreaterOrEqual(taken, 6, "captured the ceremony shots");
+            Assert.GreaterOrEqual(petals.Bursts, 3, "petal showers at the rings, cake, toast and finale");
+            Assert.IsTrue(follow.enabled, "camera handed back to the follow camera");
+            Assert.IsTrue(input.enabled, "input back");
             yield return TakePortal(TownLayout.WeddingHall.Portals[0].X, TownLayout.Hub.Scene);
             Assert.AreEqual(TownLayout.Hub.MapId, AdventureWorldSession.Current.Character.lastMapId, "back in town");
 

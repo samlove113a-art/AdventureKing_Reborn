@@ -302,6 +302,7 @@ namespace AdventureKing.ArtPipeline
                     foreach (var (nx, ny) in new[] { (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1) })
                     {
                         if (nx < lim.xMin || ny < lim.yMin || nx >= lim.xMax || ny >= lim.yMax) continue;
+                        if (nx < 0 || ny < 0 || nx >= R || ny >= R) continue; // eye near the raster edge (wide-faced NPCs)
                         int q = ny * R + nx;
                         if (seen.Contains(q) || !(nonSkin[q] || sclera[q])) continue;
                         seen.Add(q); st.Push(q);

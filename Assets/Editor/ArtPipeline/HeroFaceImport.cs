@@ -11,12 +11,26 @@ namespace AdventureKing.ArtPipeline
     /// </summary>
     public sealed class HeroFaceImport : AssetPostprocessor
     {
-        public override uint GetVersion() => 5; // bump to force re-import when the face mapping / finger rig changes
+        public override uint GetVersion() => 6; // bump to force re-import when the face mapping / finger rig changes
 
         private void OnPostprocessModel(GameObject g)
         {
             HeroArtDefinitions.Hero hero = HeroArtDefinitions.Heroes.FirstOrDefault(h => $"{h.Folder}/{h.Fbx}" == assetPath);
-            if (hero == null) return;
+            if (hero == null)
+            {
+                // NPCs flagged for an animated face get the same face-plane UV3 (no finger rig).
+                NpcArtPipeline.Npc npc = NpcArtPipeline.All.FirstOrDefault(n => n.Face && NpcArtPipeline.FbxPath(n.Name) == assetPath);
+                SkinnedMeshRenderer smr = npc != null ? g.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault() : null;
+                if (!smr || !smr.sharedMesh) return;
+                try
+                {
+                    Vector4[] nuv = HeroFaceRig.FaceCoordinates(g);
+                    smr.sharedMesh.SetUVs(3, new List<Vector4>(nuv));
+                    Debug.Log($"[FACE] {npc.Name}: face coordinates on {nuv.Count(u => u.z > 0.5f)}/{nuv.Length} vertices (UV3)");
+                }
+                catch (System.Exception e) { Debug.LogWarning($"[FACE] {npc.Name}: face coordinates skipped ({e.Message})"); }
+                return;
+            }
             SkinnedMeshRenderer body = g.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(s => !s.name.StartsWith("Weapon_"));
             if (!body || !body.sharedMesh) return;
             try

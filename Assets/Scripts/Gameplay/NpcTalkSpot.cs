@@ -45,18 +45,22 @@ namespace AdventureKing.Gameplay
             if (bubble && bubble.transform.parent.gameObject.activeSelf && Time.time > bubbleUntil) bubble.transform.parent.gameObject.SetActive(false);
         }
 
+        /// <summary>Raised after each conversation (e.g. the Officiant starts the ceremony rehearsal).</summary>
+        public event Action Talked;
+
         public void Talk()
         {
             var world = AdventureWorldSession.Current;
             if (!world || world.Character == null) return;
             Talks++;
-            QuestBook.Event(eventKey);
+            if (!string.IsNullOrEmpty(eventKey)) QuestBook.Event(eventKey); // hall NPCs have no quest event
             string text;
             QuestLog log = QuestBook.Log;
             if (log != null && log.turnInNpc == npcName) text = "Làm tốt lắm! Mở bảng Nhiệm vụ để nhận thưởng nhé.";
             else text = lines.Length > 0 ? lines[next++ % lines.Length].Replace("{name}", world.Character.characterName) : "Chào con!";
             if (bubble) { bubble.text = text; bubble.transform.parent.gameObject.SetActive(true); bubbleUntil = Time.time + 4.5f; }
             if (actor) StartCoroutine(actor.Gesture("Talk", 1.4f));
+            Talked?.Invoke();
         }
     }
 }

@@ -904,12 +904,13 @@ namespace AdventureKing.ArtPipeline
             canvasGo.AddComponent<CanvasGroup>().blocksRaycasts = false;
             canvasGo.AddComponent<NamePlateFade>(); // fades under the HUD corner clusters
             var rt = (RectTransform)canvasGo.transform;
-            rt.sizeDelta = new Vector2(300f, 54f);
+            float plateW = Mathf.Max(300f, displayName.Length * 17f + 40f); // long names ("Đội Trưởng Liên Minh") stay on one line
+            rt.sizeDelta = new Vector2(plateW, 54f);
             rt.localScale = Vector3.one * (0.0062f / HeroScale);
             var bg = EntrySceneBuilder.Panel(canvasGo.transform, "Plate", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero,
                 new Color(0.08f, 0.1f, 0.18f, 0.78f), EntrySceneBuilder.PanelSprite);
             EntrySceneBuilder.Label(bg.transform, "Name", displayName, 30, new Color(1f, 0.86f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero,
-                new Vector2(290f, 50f), FontStyle.Bold);
+                new Vector2(plateW - 10f, 50f), FontStyle.Bold);
             return npc;
         }
 
@@ -1141,7 +1142,9 @@ namespace AdventureKing.ArtPipeline
             ["planter"] = 1.1f,
             // Phase D halls (Tools/blender/export_prop.py heights; hero = 1.6 m)
             ["gh_throne"] = 2.8f, ["gh_council_set"] = 1.5f, ["gh_pillar"] = 7f, ["gh_wall_arch"] = 7.5f, ["gh_banner"] = 4.2f,
-            ["gh_ranking_board"] = 3.4f,
+            ["gh_ranking_board"] = 3.4f, ["gh_donation_altar"] = 3.2f, ["gh_reception_counter"] = 3.2f, ["gh_crystal_brazier"] = 3f,
+            ["hall_chandelier"] = 2.4f, ["wh_flower_arch"] = 4.4f, ["wh_altar_stage"] = 3.4f, ["wh_guest_bench"] = 1.3f,
+            ["wh_banquet_table"] = 1.4f, ["wh_wedding_cake"] = 2f, ["wh_harp"] = 2.6f, ["wh_marble_pillar"] = 7f, ["wh_wall_window"] = 7.5f,
         };
 
         /// <summary>
