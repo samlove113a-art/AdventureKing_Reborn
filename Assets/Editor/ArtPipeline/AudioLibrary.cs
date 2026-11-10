@@ -33,12 +33,13 @@ namespace AdventureKing.ArtPipeline
                 e.FindPropertyRelative("skillImpact").objectReferenceValue = Clip(c + "_SkillImpact");
             }
             // Stage music: original in-code compositions (MusicComposer, DRAFT until the owner approves by ear).
-            if (System.Array.Exists(MusicComposer.Tracks, t => !System.IO.File.Exists(MusicComposer.PathOf(t)))) MusicComposer.ComposeAll();
+            if (System.Array.Exists(MusicComposer.Tracks, t => !System.IO.File.Exists(MusicComposer.PathOf(t)))) MusicComposer.ComposeMissing();
             (AdventureMusicStage stage, string track)[] map =
             {
                 (AdventureMusicStage.Splash, "BGM_Login"), (AdventureMusicStage.Authentication, "BGM_Login"), (AdventureMusicStage.CharacterSelection, "BGM_Login"),
                 (AdventureMusicStage.Village, "BGM_Village_Day"), (AdventureMusicStage.VillageNight, "BGM_Village_Night"),
                 (AdventureMusicStage.Exploration, "BGM_Meadow"), (AdventureMusicStage.Boss, "BGM_Boss"), (AdventureMusicStage.Wedding, "BGM_Wedding"),
+                (AdventureMusicStage.MushroomKingdom, "BGM_Ch1_MushroomVillage"),
             };
             var music = so.FindProperty("soundtracks");
             music.arraySize = map.Length;

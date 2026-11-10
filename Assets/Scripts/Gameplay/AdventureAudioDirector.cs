@@ -13,7 +13,8 @@ namespace AdventureKing.Gameplay
         Exploration,
         Boss,
         VillageNight, // appended: keeps serialized indices of the stages above
-        Wedding
+        Wedding,
+        MushroomKingdom // Chương 1 field maps (appended)
     }
 
     [Serializable]
@@ -105,6 +106,11 @@ namespace AdventureKing.Gameplay
         {
             if (Instance && Instance != this)
             {
+                // A later scene (e.g. a new chapter map) may author stages the persistent director never had: adopt them.
+                var merged = new System.Collections.Generic.List<StageMusic>(Instance.soundtracks);
+                foreach (StageMusic s in soundtracks)
+                    if (s != null && s.music && !merged.Exists(m => m != null && m.stage == s.stage)) merged.Add(s);
+                Instance.soundtracks = merged.ToArray();
                 Destroy(gameObject);
                 return;
             }

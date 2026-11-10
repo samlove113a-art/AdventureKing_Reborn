@@ -60,7 +60,7 @@ namespace AdventureKing.ArtPipeline
         public static void RegisterBuildScenes()
         {
             var scenes = new List<EditorBuildSettingsScene> { new(EntrySceneBuilder.ScenePath, true) };
-            foreach (string p in new[] { ScenePath, MeadowScenePath, GuildHallScenePath, WeddingHallScenePath })
+            foreach (string p in new[] { ScenePath, MeadowScenePath, GuildHallScenePath, WeddingHallScenePath }.Concat(ChapterScenePaths))
                 if (File.Exists(p)) scenes.Add(new EditorBuildSettingsScene(p, true));
             EditorBuildSettings.scenes = scenes.ToArray();
         }
@@ -150,6 +150,7 @@ namespace AdventureKing.ArtPipeline
             Prop(art, "crates", 44f, 2.6f, 2f, true);
             Lantern(art, "lantern_post", -42.5f, 2f, 3.6f, false);
             Signboard(art, -33f, 2.6f, "Đồng Cỏ Gió\n←\nVề\nThị Trấn");
+            Signboard(art, 72.5f, 2.6f, "Chương 1\nLàng Nấm\n→"); // Cổng Pha Lê to Vương Quốc Nấm (meadow_east_ch1)
             foreach (var p in TownLayout.Meadow.Portals) Portal(play, p);
             FarmSetup(play); // server-authoritative monsters + Gold drops (the hub has none: safe zone)
 

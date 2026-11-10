@@ -76,7 +76,7 @@ namespace AdventureKing.Gameplay
         public static class Meadow
         {
             public const string MapId = "meadow_breeze", Scene = "AK_Meadow", DisplayName = "Đồng Cỏ Gió";
-            public const float MinX = -46f, MaxX = 84f;
+            public const float MinX = -46f, MaxX = 88f; // east end widened for the Chương 1 gate (x 78) so the camera can centre on it
             public static readonly Vector2 Spawn = new Vector2(-36f, 1f);
 
             public static readonly Deck[] Decks =
@@ -93,7 +93,46 @@ namespace AdventureKing.Gameplay
                 new Climb("ThangBoVuc", 54f, 0f, 5.3f, false),
             };
 
-            public static readonly PortalSpot[] Portals = { new PortalSpot("meadow_west_hub", -40f, "AK_Village", "Thị trấn Chuông Gió") };
+            public static readonly PortalSpot[] Portals =
+            {
+                new PortalSpot("meadow_west_hub", -40f, "AK_Village", "Thị trấn Chuông Gió"),
+                new PortalSpot("meadow_east_ch1", 78f, Ch1Village.Scene, Ch1Village.DisplayName), // Chương 1 gate (east end)
+            };
+        }
+
+        // ------------------------------------------------------------ Chương 1 · Map 1 Làng Nấm (Vương Quốc Nấm)
+        /// <summary>
+        /// Map 1 of Chapter 1 and the reference layout for maps 2–10: a safe village square in the west (portal, quest
+        /// NPC, fountain, houses) and the farm outskirts in the east (Nấm Non on the ground and on two raised tiers).
+        /// Server mirrors: CharacterService.Maps/Portals, FarmService.SafeZones/RespawnPoints, config/monsters.json.
+        /// </summary>
+        public static class Ch1Village
+        {
+            public const string MapId = "ch1_mushroom_village", Scene = "AK_C1_M01", DisplayName = "Làng Nấm";
+            public const int Chapter = 1, Index = 1;
+            public const float MinX = -46f, MaxX = 96f;
+            public static readonly Vector2 Spawn = new Vector2(-36f, 1f);
+            /// <summary>Village square: no monster can reach it (server-enforced).</summary>
+            public static readonly Vector2 SafeZone = new Vector2(-46f, 30f);
+            public static readonly Vector2 ElderSpot = new Vector2(-4f, 0f);
+
+            public static readonly Deck[] Decks =
+            {
+                new Deck("BanCongNhaNam", -28f, -16f, 4.5f),  // mushroom-house balcony (village)
+                new Deck("GacNamLon", 8f, 20f, 5f),           // giant-mushroom lookout (village)
+                new Deck("RuongNamCao", 54f, 62f, 5f),        // raised mushroom field (farm)
+                new Deck("GoReNam", 72f, 80f, 6f),            // root hill (farm)
+            };
+
+            public static readonly Climb[] Climbs =
+            {
+                new Climb("ThangNhaNam", -18f, 0f, 5.8f, false),
+                new Climb("DayLeoGacNam", 18f, 0f, 6.3f, true),
+                new Climb("ThangRuongNam", 55f, 0f, 6.3f, false),
+                new Climb("DayLeoGoRe", 79f, 0f, 7.3f, true),
+            };
+
+            public static readonly PortalSpot[] Portals = { new PortalSpot("ch1_village_west_meadow", -40f, Meadow.Scene, Meadow.DisplayName) };
         }
 
         // ------------------------------------------------------------ Sảnh Bang Hội (Phase D interior, safe zone)
@@ -127,6 +166,11 @@ namespace AdventureKing.Gameplay
             public Deck[] Decks;
             public Climb[] Climbs;
             public PortalSpot[] Portals;
+            /// <summary>x range of the safe zone ("Vùng an toàn"), zero when the map has none marked.</summary>
+            public Vector2 SafeZone;
+            /// <summary>Chapter subtitle shown with the area name on arrival ("" = none).</summary>
+            public string AreaTitle = "";
+            public bool InSafeZone(float x) => SafeZone != Vector2.zero && x >= SafeZone.x && x <= SafeZone.y;
         }
 
         public static readonly MapInfo[] Maps =
@@ -135,6 +179,7 @@ namespace AdventureKing.Gameplay
             new MapInfo { MapId = Meadow.MapId, Scene = Meadow.Scene, DisplayName = Meadow.DisplayName, MinX = Meadow.MinX, MaxX = Meadow.MaxX, Spawn = Meadow.Spawn, Decks = Meadow.Decks, Climbs = Meadow.Climbs, Portals = Meadow.Portals },
             new MapInfo { MapId = GuildHall.MapId, Scene = GuildHall.Scene, DisplayName = GuildHall.DisplayName, MinX = GuildHall.MinX, MaxX = GuildHall.MaxX, Spawn = GuildHall.Spawn, Decks = GuildHall.Decks, Climbs = GuildHall.Climbs, Portals = GuildHall.Portals },
             new MapInfo { MapId = WeddingHall.MapId, Scene = WeddingHall.Scene, DisplayName = WeddingHall.DisplayName, MinX = WeddingHall.MinX, MaxX = WeddingHall.MaxX, Spawn = WeddingHall.Spawn, Decks = WeddingHall.Decks, Climbs = WeddingHall.Climbs, Portals = WeddingHall.Portals },
+            new MapInfo { MapId = Ch1Village.MapId, Scene = Ch1Village.Scene, DisplayName = Ch1Village.DisplayName, MinX = Ch1Village.MinX, MaxX = Ch1Village.MaxX, Spawn = Ch1Village.Spawn, Decks = Ch1Village.Decks, Climbs = Ch1Village.Climbs, Portals = Ch1Village.Portals, SafeZone = Ch1Village.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
         };
 
         /// <summary>The map with this id (the hub when unknown).</summary>

@@ -34,6 +34,11 @@ namespace AdventureKing.Gameplay
             TownLayout.Climb[] climbs = map.Climbs;
             TownLayout.PortalSpot[] portals = map.Portals;
             Bar(minX, maxX, 0f, 3f, new Color(0.55f, 0.82f, 0.45f, 0.95f));
+            if (map.SafeZone != Vector2.zero) // "Vùng an toàn": soft band under the village square
+            {
+                Vector2 a = Map(map.SafeZone.x, -1.5f), b = Map(map.SafeZone.y, 9f);
+                Rect("SafeZone", (a + b) * 0.5f, new Vector2(b.x - a.x, b.y - a.y), new Color(0.45f, 0.95f, 0.8f, 0.16f)).transform.SetAsFirstSibling();
+            }
             foreach (TownLayout.Deck d in decks) Bar(d.XMin, d.XMax, d.Top, 2f, new Color(0.86f, 0.66f, 0.4f, 0.95f));
             foreach (TownLayout.Climb c in climbs) VBar(c.X, c.Bottom, c.VisualTop, c.Rope ? new Color(0.85f, 0.75f, 0.5f) : new Color(0.75f, 0.55f, 0.3f));
             if (mapTitle) mapTitle.text = map.DisplayName;

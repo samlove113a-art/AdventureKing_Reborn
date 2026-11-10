@@ -26,6 +26,13 @@
       "rewardItems": [ { "itemId": "potion_hp_m", "qty": 3 }, { "itemId": "potion_mp_m", "qty": 3 } ] },
     { "id": "main_10", "type": "main", "title": "Con đường phía trước", "desc": "Thử sức với Slime Rêu trên mỏm đá của Đồng Cỏ Gió. Các vùng đất mới sẽ mở khi được xây dựng.", "map": "meadow_breeze", "npc": "",
       "objectives": [ { "event": "kill:moss_slime", "need": 2, "text": "Hạ 2 Slime Rêu" } ], "rewardExp": 120, "rewardGold": 60 },
+    { "id": "ch1_01", "type": "main", "title": "Chương 1 · Lời mời từ Vương Quốc Nấm", "desc": "Đi hết Đồng Cỏ Gió về phía đông, qua cổng pha lê để tới Làng Nấm.", "map": "ch1_mushroom_village", "npc": "",
+      "objectives": [ { "event": "travel:ch1_mushroom_village", "need": 1, "text": "Tới Làng Nấm" } ], "rewardExp": 60, "rewardGold": 0 },
+    { "id": "ch1_02", "type": "main", "title": "Chương 1 · Gặp Trưởng Làng Nấm", "desc": "Trưởng Làng Nấm đứng cạnh đài phun pha lê giữa quảng trường.", "map": "ch1_mushroom_village", "npc": "Trưởng Làng Nấm",
+      "objectives": [ { "event": "talk:mushroom_elder", "need": 1, "text": "Nói chuyện với Trưởng Làng Nấm" } ], "rewardExp": 40, "rewardGold": 0 },
+    { "id": "ch1_03", "type": "main", "title": "Chương 1 · Nấm Non nghịch ngợm", "desc": "Nấm Non ngoài cổng đông đang quấy phá ruộng nấm. Hạ 5 con rồi báo lại Trưởng Làng Nấm.", "map": "ch1_mushroom_village", "npc": "Trưởng Làng Nấm",
+      "objectives": [ { "event": "kill:young_mushroom", "need": 5, "text": "Hạ 5 Nấm Non" } ], "rewardExp": 150, "rewardGold": 60,
+      "rewardItems": [ { "itemId": "potion_hp_m", "qty": 2 } ] },
 
     { "id": "side_tailor", "type": "side", "title": "Ghé Tiệm Lụa", "desc": "Chủ Tiệm Lụa ở Chợ Phiên có trang phục mới.", "map": "village_wind_bell", "npc": "Chủ Tiệm Lụa",
       "objectives": [ { "event": "talk:tailor", "need": 1, "text": "Nói chuyện với Chủ Tiệm Lụa" } ], "rewardExp": 20, "rewardGold": 0 },

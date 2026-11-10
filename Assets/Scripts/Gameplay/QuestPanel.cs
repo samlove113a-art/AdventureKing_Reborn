@@ -214,7 +214,8 @@ namespace AdventureKing.Gameplay
             var world = AdventureWorldSession.Current;
             string here = world && world.Character != null ? world.Character.lastMapId : "";
             string where = q.mapId == here ? "ngay trong bản đồ này" :
-                q.mapId == TownLayout.Meadow.MapId ? "Đồng Cỏ Gió — qua cổng rune phía đông làng (hoặc dùng vé)" : "Thị trấn Chuông Gió — qua cổng phía tây Đồng Cỏ";
+                q.mapId == TownLayout.Meadow.MapId ? "Đồng Cỏ Gió — qua cổng rune phía đông làng (hoặc dùng vé)" :
+                q.mapId == TownLayout.Ch1Village.MapId ? "Làng Nấm — qua cổng pha lê ở cuối phía đông Đồng Cỏ Gió" : "Thị trấn Chuông Gió — qua cổng phía tây Đồng Cỏ";
             hint.text = string.IsNullOrEmpty(q.npc) ? $"Đi tới: {where}" : $"Gặp {q.npc}: {where}";
             LastMessage = hint.text;
         }

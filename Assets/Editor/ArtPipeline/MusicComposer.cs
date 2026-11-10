@@ -18,7 +18,28 @@ namespace AdventureKing.ArtPipeline
         public const string Dir = "Assets/Audio/BGM";
         private const int SR = 32000;
 
-        public static readonly string[] Tracks = { "BGM_Login", "BGM_Village_Day", "BGM_Village_Night", "BGM_Meadow", "BGM_Boss", "BGM_Wedding" };
+        public static readonly string[] Tracks = { "BGM_Login", "BGM_Village_Day", "BGM_Village_Night", "BGM_Meadow", "BGM_Boss", "BGM_Wedding", "BGM_Ch1_MushroomVillage" };
+
+        /// <summary>Composes only the tracks that have no file yet (never rewrites approved / reviewed drafts).</summary>
+        public static void ComposeMissing()
+        {
+            Directory.CreateDirectory(Dir);
+            var made = new List<string>();
+            foreach (string t in Tracks) if (!File.Exists(PathOf(t))) { Compose(t); made.Add(t); }
+            AssetDatabase.Refresh();
+            foreach (string t in made)
+            {
+                var ai = (AudioImporter)AssetImporter.GetAtPath(PathOf(t));
+                if (!ai) continue;
+                var s = ai.defaultSampleSettings;
+                s.loadType = AudioClipLoadType.Streaming;
+                s.compressionFormat = AudioCompressionFormat.Vorbis;
+                s.quality = 0.6f;
+                ai.defaultSampleSettings = s;
+                ai.loadInBackground = true;
+                ai.SaveAndReimport();
+            }
+        }
         public static string PathOf(string track) => $"{Dir}/{track}_DRAFT.wav";
         public static readonly Dictionary<string, (float seconds, float rmsDb, float seam, float maxJump)> LastReport = new Dictionary<string, (float, float, float, float)>();
 
@@ -102,6 +123,10 @@ namespace AdventureKing.ArtPipeline
                     return new Song { Bpm = 96, Beats = 3, Root = 53, Scale = Major, Seed = 67, Reverb = 0.36f,
                         Chords = new[] { C(0), C(5), C(3), C(4), C(0), C(2), C(3), C(4), C(3), C(4), C(2), C(5), C(1), C(4), C(0), C(0) },
                         Arrange = (s, m) => { Waltz(s, m, 0.3f); Melody(s, m, Inst.Flute, 0.27f, 1, 1); Melody(s, m, Inst.Bell, 0.12f, 2, 4); Pad(s, m, 0.14f); } };
+                case "BGM_Ch1_MushroomVillage": // Chương 1 Vương Quốc Nấm: bouncy, cheeky, warm — Bb major, marimba + music box + light drums
+                    return new Song { Bpm = 116, Root = 58, Scale = Major, Seed = 101, Reverb = 0.24f,
+                        Chords = new[] { C(0), C(5), C(1), C(4), C(0), C(5), C(3), C(4), C(5), C(3), C(0), C(4), C(1), C(4), C(0), C(0) },
+                        Arrange = (s, m) => { Marimba(s, m, 0.32f); Melody(s, m, Inst.MusicBox, 0.26f, 1, 1); Bass(s, m, 0.36f, true); Drums(s, m, 0.24f, false); Chimes(s, m, 0.1f); Pad(s, m, 0.1f); } };
             }
             throw new ArgumentException(track);
         }

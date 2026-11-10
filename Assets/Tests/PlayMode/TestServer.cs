@@ -22,14 +22,20 @@ namespace AdventureKing.Tests
 
         /// <param name="starterGold">Test fixture override of the server's starter Gold (null = the real config value).</param>
         /// <param name="devWelfare">Use config/welfare.dev.json (check-in enabled for tests; production keeps the draft off).</param>
-        public TestServer(int port, long? starterGold = null, bool devWelfare = false)
+        public TestServer(int port, long? starterGold = null, bool devWelfare = false, string extraArgs = "")
         {
             this.port = port;
             this.starterGold = starterGold;
             this.devWelfare = devWelfare;
+            this.extraArgs = extraArgs;
             dbDir = Path.Combine(Path.GetTempPath(), "ak_srv_" + System.Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dbDir);
         }
+
+        private readonly string extraArgs;
+        /// <summary>Throw-away folder of this server (fixture configs can be written here).</summary>
+        public string DataDir => dbDir;
+        public static string ServerConfigDir => Path.Combine(Path.GetDirectoryName(Dll), "config");
 
         public string ApiUrl => $"http://127.0.0.1:{port}/api/v1";
 
@@ -41,7 +47,8 @@ namespace AdventureKing.Tests
             if (!File.Exists(Dll)) Assert.Ignore("Server not built: run `dotnet build Server/AdventureKing.Server` first.");
             var psi = new ProcessStartInfo("dotnet", $"\"{Dll}\" --urls http://127.0.0.1:{port} --AdventureKing:DatabasePath=\"{Path.Combine(dbDir, "test.db")}\"" +
                 (starterGold.HasValue ? $" --AdventureKing:StarterGold={starterGold.Value}" : "") +
-                (devWelfare ? " --AdventureKing:WelfareConfigPath=config/welfare.dev.json --AdventureKing:EventConfigPath=config/events.dev.json --AdventureKing:SocialConfigPath=config/social.dev.json" : ""))
+                (devWelfare ? " --AdventureKing:WelfareConfigPath=config/welfare.dev.json --AdventureKing:EventConfigPath=config/events.dev.json --AdventureKing:SocialConfigPath=config/social.dev.json" : "") +
+                (string.IsNullOrEmpty(extraArgs) ? "" : " " + extraArgs))
             {
                 WorkingDirectory = Path.GetDirectoryName(Dll), UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardOutput = true, RedirectStandardError = true,

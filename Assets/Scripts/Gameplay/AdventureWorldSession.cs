@@ -60,6 +60,7 @@ namespace AdventureKing.Gameplay
             ["meadow_breeze"] = "AK_Meadow",
             [TownLayout.GuildHall.MapId] = TownLayout.GuildHall.Scene,
             [TownLayout.WeddingHall.MapId] = TownLayout.WeddingHall.Scene,
+            [TownLayout.Ch1Village.MapId] = TownLayout.Ch1Village.Scene,
         };
 
         public static AdventureWorldSession Current { get; private set; }
@@ -339,7 +340,11 @@ namespace AdventureKing.Gameplay
             });
         }
 
-        private static string MapDisplayName(string mapId) => TownLayout.For(mapId).DisplayName;
+        private static string MapDisplayName(string mapId)
+        {
+            TownLayout.MapInfo m = TownLayout.For(mapId);
+            return string.IsNullOrEmpty(m.AreaTitle) ? m.DisplayName : m.DisplayName + " · " + m.AreaTitle; // "Làng Nấm · Chương 1 · Vương Quốc Nấm"
+        }
 
         private IEnumerator TravelAndLoad(string scene, string destination)
         {

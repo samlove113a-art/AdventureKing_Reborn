@@ -134,6 +134,8 @@ public sealed class CharacterService
         // Phase D interiors (safe zones: no monsters, no farming)
         ["guild_hall"] = new("guild_hall", "Sảnh Bang Hội", -28f, 28f, -4f, 20f),
         ["wedding_hall"] = new("wedding_hall", "Sảnh Kết Hôn", -30f, 30f, -4f, 20f),
+        // Chương 1 — Vương Quốc Nấm (Docs/CHAPTER01_PLAN.md §3)
+        ["ch1_mushroom_village"] = new("ch1_mushroom_village", "Làng Nấm", -50f, 100f, -8f, 30f),
     };
 
     public const string StartMap = "village_wind_bell";
@@ -152,6 +154,9 @@ public sealed class CharacterService
         ["guild_hall_hub"] = new("guild_hall_hub", "guild_hall", -19f, 0f, "village_wind_bell", 71f, 0.9f),
         ["hub_wedding_hall"] = new("hub_wedding_hall", "village_wind_bell", -56f, 0f, "wedding_hall", -16f, 0.9f),
         ["wedding_hall_hub"] = new("wedding_hall_hub", "wedding_hall", -21f, 0f, "village_wind_bell", -53f, 0.9f),
+        // Chương 1: east end of Đồng Cỏ Gió ⇄ west gate of Làng Nấm (Map 1)
+        ["meadow_east_ch1"] = new("meadow_east_ch1", "meadow_breeze", 78f, 0f, "ch1_mushroom_village", -36f, 0.9f),
+        ["ch1_village_west_meadow"] = new("ch1_village_west_meadow", "ch1_mushroom_village", -40f, 0f, "meadow_breeze", 74f, 0.9f),
     };
 
     public const float PortalReach = 3.5f;

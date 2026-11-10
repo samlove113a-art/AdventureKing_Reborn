@@ -16,6 +16,9 @@ namespace AdventureKing.Gameplay
     public sealed class FarmField : MonoBehaviour
     {
         [SerializeField] private FarmMonsterView puffTemplate, mossTemplate;
+        /// <summary>One view template per server monster type (Chương 1+). Unknown types fall back to the puff slime.</summary>
+        [System.Serializable] public struct TypedTemplate { public string type; public FarmMonsterView view; }
+        [SerializeField] private TypedTemplate[] typedTemplates = new TypedTemplate[0];
         [SerializeField] private GoldDropView coinTemplate;
         [SerializeField] private Font font;
         [SerializeField] private float pollSeconds = 1.5f;
@@ -53,6 +56,7 @@ namespace AdventureKing.Gameplay
         private IEnumerator Start()
         {
             foreach (var t in new Component[] { puffTemplate, mossTemplate, coinTemplate }) if (t) t.gameObject.SetActive(false);
+            foreach (var t in typedTemplates) if (t.view) t.view.gameObject.SetActive(false);
             float until = Time.time + 10f;
             while ((!(world = AdventureWorldSession.Current) || world.Character == null || !world.Player) && Time.time < until) yield return null;
             if (!world || world.Character == null) yield break;
@@ -151,7 +155,7 @@ namespace AdventureKing.Gameplay
                 reviving = false;
                 if (!ok || h == null) { LastError = err; return; }
                 var rb = world.Player.GetComponent<Rigidbody2D>();
-                Vector2 spot = TownLayout.Meadow.Spawn;
+                Vector2 spot = TownLayout.For(world.MapId).Spawn; // this map's arrival point (server RespawnPoints)
                 // move both: rb.position alone only syncs the transform at the next physics step
                 world.Player.transform.position = new Vector3(spot.x, spot.y + 0.2f, world.Player.transform.position.z);
                 if (rb) { rb.position = spot + Vector2.up * 0.2f; rb.linearVelocity = Vector2.zero; }
@@ -227,7 +231,8 @@ namespace AdventureKing.Gameplay
                 {
                     if (!monsters.TryGetValue(s.id, out FarmMonsterView v))
                     {
-                        FarmMonsterView tpl = s.type == "moss_slime" && mossTemplate ? mossTemplate : puffTemplate;
+                        FarmMonsterView tpl = typedTemplates.FirstOrDefault(x => x.type == s.type && x.view).view;
+                        if (!tpl) tpl = s.type == "moss_slime" && mossTemplate ? mossTemplate : puffTemplate;
                         v = Instantiate(tpl, transform);
                         v.name = "Monster_" + s.id;
                         v.gameObject.SetActive(true);

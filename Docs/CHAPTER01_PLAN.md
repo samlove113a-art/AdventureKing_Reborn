@@ -9,8 +9,8 @@
 | Sao lưu + nhánh Chương 1 | ✅ (push nhánh backup: chủ dự án bấm Publish trong GitHub Desktop — shell không có quyền GitHub) |
 | Đọc concept Chapter01 | ✅ (master board, 10 map, 9 creature crop, brief 14 quái) |
 | Số dư Meshy key đang cấu hình | ✅ 3.242 (3.232 monthly + 10 permanent), trần giai đoạn này **2.000** |
-| Map 1 chuẩn | ⏳ chưa bắt đầu |
-| Map 2–10, quest, Mini Boss, Boss, unlock Ch2 | ⏳ |
+| Map 1 chuẩn | ✅ nhóm 1 (2026-11-10): server map/cổng/quái/vùng an toàn/3 nhiệm vụ, Nấm Non (Meshy, rig + 5 clip), Trưởng Làng Nấm, 5 đạo cụ Meshy, nhạc gốc, minimap. Test: server 161/161, PlayMode `Chapter1Tests` PASS (cửa sổ), ảnh `QA/Chapter1/*.png` |
+| Map 2–10, quest, Mini Boss, Boss, unlock Ch2 | ⏳ (Map 2 tiếp theo — mẫu: `VillageSceneBuilder.Chapter1.cs` + `TownLayout.Ch1Village`) |
 | Server đóng gói + client Windows + Tailscale | ⏳ |
 | Lễ cưới 180 s | ⏸ WIP (`670f6f9`), tạm dừng theo lệnh chủ dự án — không sửa tiếp |
 
@@ -70,8 +70,21 @@ Quy tắc: làm **1 mẫu, kiểm tra, rồi mới làm loạt**; ghi credit t�
 | Ngày | Tác vụ | Credit | Số dư sau |
 |---|---|---|---|
 | 2026-11-10 | (kiểm tra số dư) | 0 | 3.242 |
+| 2026-11-10 | Concept Nấm Non + Trưởng Làng Nấm (text-to-image 2×6) | 12 | 3.230 |
+| 2026-11-10 | Nấm Non: model 30 + rig 5 + 5 clip (Idle/Walk/Right Jab/Hit Reaction/Dead) 15 | 50 | 3.180 |
+| 2026-11-10 | Trưởng Làng Nấm: model 30 + rig 5 + 5 clip (Idle/Wave/Talk/Bow/Walk) 15 | 50 | 3.130 |
+| 2026-11-10 | 5 concept đạo cụ Map 1 (nhà nấm, đài phun pha lê, đèn nấm, sạp chợ, cây nấm khổng lồ) | 30 | 3.100 |
+| 2026-11-10 | 5 model đạo cụ Map 1 (image-to-3D 5×30) | 150 | **2.950** (xác nhận qua API) |
+| | **Tổng giai đoạn này: 292 / trần 2.000** | | |
 
 ## 7. Nhật ký quyết định / lỗi
 - 2026-11-10: Mini Boss 3/6/9 (lệnh chủ dự án) thay vì 3/6/8 (concept).
 - 2026-11-10: hub + Đồng Cỏ Gió giữ nguyên; Chương 1 nối từ đông Đồng Cỏ Gió.
 - 2026-11-10: tiến trình shell giữ MESHY_API_KEY cũ (khác key User) → luôn nạp key từ biến môi trường User.
+- 2026-11-10 **Nhóm 1 — Map 1 Làng Nấm** (kiến trúc dùng lại cho Map 2–10):
+  - Server: map `ch1_mushroom_village` (−50…100), cổng `meadow_east_ch1` (Đồng Cỏ Gió x 78) ⇄ `ch1_village_west_meadow` (x −40); `FarmService.SafeZones` (x −46…30) — config bị từ chối khi tầm đuổi + tầm đánh của quái chạm vùng an toàn; `RespawnPoints`; quái `young_mushroom` "Nấm Non" (DRAFT: HP 110, Gold 8–14, hồi 45 s, đánh 15) ×6; nhiệm vụ chính `ch1_01` (tới Làng Nấm) → `ch1_02` (`talk:mushroom_elder`) → `ch1_03` (hạ 5 Nấm Non; DRAFT 150 EXP, 60 Vàng, 2 thuốc HP vừa). Test `Chapter1Tests` (server, 3).
+  - Client: `TownLayout.Ch1Village` (bệ/thang/cổng/vùng an toàn/chỗ NPC), `MapInfo.SafeZone/AreaTitle`; `FarmField.typedTemplates` (mẫu quái theo loại); `FarmMonsterView` hỗ trợ quái rig (Animator Idle/Walk/Attack/Hit/Death, đi bộ, quay 3/4); `NpcArtPipeline.Chapter1` (+ chế độ Monster); `VillageSceneBuilder.Chapter1.cs` (`BuildChapter1FromCommandLine`: dựng lại Đồng Cỏ Gió + Làng Nấm); nhạc `BGM_Ch1_MushroomVillage_DRAFT` (MusicComposer, nguyên bản; `ComposeMissing` không ghi đè nhạc cũ); director nhạc nhận thêm stage mới từ scene sau; minimap tô vùng an toàn; tiêu đề tải "Làng Nấm · Chương 1 · Vương Quốc Nấm".
+  - Lỗi thật sửa nhờ ảnh: cổng đông Đồng Cỏ Gió nằm ở biên camera → dòng "▲ / W · Đến Làng Nấm" bị nút cài đặt che → nới `Meadow.MaxX` 84→88.
+  - Kiểm thử PlayMode `Chapter1Tests` (cửa sổ, server thật): hub → Đồng Cỏ Gió → Làng Nấm, nhận/nộp 2 nhiệm vụ, nói chuyện NPC (dấu "!"), hạ 2 Nấm Non (thấy Attack/Hit/Death), tiến trình nhiệm vụ đọc lại từ server = 2/5, nhạc riêng, bệ có collider, không Missing Script. Fixture: bỏ chuỗi tân thủ main_01–10 khỏi config nhiệm vụ của test (thứ tự chuỗi do test server kiểm).
+  - Regression mục tiêu: FarmTests/TownHubTests/QuestHealerTests/HallTravelTests 5/6 — `FarmTests.Monster_Knocks_Out_Hero...` fail khi chạy chung, **PASS khi chạy riêng** (phụ thuộc thứ tự, chưa sửa; theo dõi ở regression cuối giai đoạn).
+  - Còn thiếu / chưa đạt (ghi thật): nền xa (parallax) vẫn là tranh ruộng bậc thang của thị trấn, chưa có nền riêng tông đỏ-cam; Trưởng Làng ở hub chưa có câu thoại giới thiệu Làng Nấm (hub giữ nguyên — chỉ chỉ đường qua bảng Nhiệm vụ); chưa có EXP theo quái (chỉ EXP nhiệm vụ); chưa có âm thanh môi trường riêng; thanh máu Nấm Non bị bảng tên anh hùng che khi đứng sát (giống slime cũ); Map 1 chưa có cổng sang Map 2 (biển "sắp mở").

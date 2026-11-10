@@ -12,6 +12,12 @@ namespace AdventureKing.Gameplay
     {
         [SerializeField] private Transform body;
         [SerializeField] private Renderer[] renderers = new Renderer[0];
+        /// <summary>Rigged monster (Meshy): states Idle / Walk / Attack / Hit / Death. Null = procedural slime.</summary>
+        [SerializeField] private Animator animator;
+        [SerializeField] private float hpBarHeight = 1.25f;
+        /// <summary>Animator state currently shown (tests / QA).</summary>
+        public string AnimState { get; private set; } = "";
+        private float oneShotUntil;
 
         public string SpawnId { get; private set; }
         public bool Alive { get; private set; }
@@ -41,7 +47,7 @@ namespace AdventureKing.Gameplay
         {
             var canvasGo = new GameObject("HpBar", typeof(RectTransform));
             canvasGo.transform.SetParent(transform, false);
-            canvasGo.transform.localPosition = new Vector3(0f, 1.25f, -0.2f);
+            canvasGo.transform.localPosition = new Vector3(0f, hpBarHeight, -0.2f);
             var canvas = canvasGo.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             canvas.sortingOrder = 35;
@@ -118,14 +124,66 @@ namespace AdventureKing.Gameplay
         private float lungeT = -1f;
 
         /// <summary>Server confirmed a hit: flash + knock squash.</summary>
-        public void ShowHit() => flash = 1f;
+        public void ShowHit() { flash = 1f; if (animator && Alive) PlayOnce("Hit", 0.45f); }
 
         /// <summary>The server says this monster struck the hero: lunge at it.</summary>
-        public void Strike() { lungeT = 0f; Strikes++; }
+        public void Strike() { lungeT = 0f; Strikes++; if (animator && Alive) PlayOnce("Attack", 0.7f); }
+
+        private void Play(string state)
+        {
+            if (AnimState == state || !animator) return;
+            AnimState = state;
+            animator.CrossFadeInFixedTime(state, 0.12f);
+        }
+
+        private void PlayOnce(string state, float seconds)
+        {
+            AnimState = "";
+            Play(state);
+            oneShotUntil = Time.time + seconds;
+        }
+
+        /// <summary>Rigged monster: walks (no hop) around home or after the hero, faces its way in 3/4 view,
+        /// Attack / Hit one-shots from the server's answers, Death clip then gone. Same server rules as the slimes.</summary>
+        private void AnimatedUpdate(float dt)
+        {
+            if (deathT >= 0f && deathT < 1f)
+            {
+                if (deathT == 0f) PlayOnce("Death", 1.4f);
+                deathT += dt / 1.4f;
+                if (deathT >= 1f) body.gameObject.SetActive(false);
+                UpdateFlash(dt);
+                return;
+            }
+            if (!Alive) return;
+            if (popT >= 0f)
+            {
+                popT += dt * 2.5f;
+                body.localScale = Vector3.one * Mathf.SmoothStep(0.2f, 1f, Mathf.Clamp01(popT));
+                if (popT >= 1f) { popT = -1f; body.localScale = Vector3.one; }
+            }
+            float t = Time.time, x = transform.position.x, goal;
+            if (Chase) goal = Mathf.Clamp(Chase.position.x + (Chase.position.x > x ? -0.9f : 0.9f), Home.x - Leash, Home.x + Leash);
+            else
+            {
+                if (t >= nextHop) { hopTo = Home.x + Random.Range(-1.6f, 1.6f); nextHop = t + Random.Range(2.5f, 5f); }
+                goal = hopTo == 0f ? Home.x : hopTo;
+            }
+            float speed = Chase ? 2.2f : 1.1f;
+            float nx = Mathf.MoveTowards(x, goal, dt * speed);
+            bool moving = Mathf.Abs(nx - x) > 0.0005f;
+            transform.position = new Vector3(nx, Home.y, transform.position.z);
+            float faceDir = Chase ? Mathf.Sign(Chase.position.x - nx) : moving ? Mathf.Sign(goal - x) : 0f;
+            float yaw = faceDir > 0f ? 125f : faceDir < 0f ? 235f : 180f; // 3/4 view, never the back
+            body.localRotation = Quaternion.Slerp(body.localRotation, Quaternion.Euler(0f, yaw, 0f), dt * 8f);
+            if (t >= oneShotUntil) Play(moving ? "Walk" : "Idle");
+            UpdateFlash(dt);
+        }
 
         private void Update()
         {
             float dt = Time.deltaTime;
+            if (animator) { AnimatedUpdate(dt); return; }
             if (deathT >= 0f && deathT < 1f)
             {
                 deathT += dt * 3f;
@@ -205,5 +263,6 @@ namespace AdventureKing.Gameplay
         }
 
         public void Bind(Transform bodyRoot, Renderer[] rs) { body = bodyRoot; renderers = rs; }
+        public void BindAnimated(Transform bodyRoot, Renderer[] rs, Animator a, float barHeight) { Bind(bodyRoot, rs); animator = a; hpBarHeight = barHeight; }
     }
 }

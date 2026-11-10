@@ -22,6 +22,31 @@ namespace AdventureKing.ArtPipeline
             /// <summary>Animated face layer (blinks + expressions) like the heroes: UV3 at import (HeroFaceImport),
             /// eyes/mouth measured from the painted texture. Off = the painted face only.</summary>
             public bool Face;
+            /// <summary>Monster: Animator states = the clip keys (Idle/Walk/Attack/Hit/Death), no NpcActor, saved under
+            /// Assets/Prefabs/Monsters (used by FarmField through FarmMonsterView).</summary>
+            public bool Monster;
+        }
+
+        /// <summary>Chương 1 visuals (built on their own so the approved NPCs are not re-imported).</summary>
+        public static readonly Npc[] Chapter1 =
+        {
+            new Npc { Name = "NpcMushroomElder", DisplayName = "Trưởng Làng Nấm", Clips = StandardClips("Wave_One_Hand") },
+            new Npc { Name = "MonsterNamNon", DisplayName = "Nấm Non", Monster = true, Clips = new()
+            {
+                ["Idle"] = ("Idle", true), ["Walk"] = ("Casual_Walk", true), ["Attack"] = ("Right_Jab_from_Guard", false),
+                ["Hit"] = ("Hit_Reaction", false), ["Death"] = ("Dead", false),
+            }},
+        };
+
+        public static void RebuildChapter1FromCommandLine()
+        {
+            try
+            {
+                foreach (Npc n in Chapter1) Build(n, FbxPath(n.Name));
+                AssetDatabase.SaveAssets();
+                EditorApplication.Exit(0);
+            }
+            catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
         public static string FbxPath(string name) => $"Assets/Art/Characters/{name}/{name}.fbx";
@@ -55,7 +80,7 @@ namespace AdventureKing.ArtPipeline
             new Npc { Name = "NpcMusician", DisplayName = "Nhạc Công", Clips = StandardClips("Wave_One_Hand"), Face = true },
         };
 
-        public static string PrefabPath(string name) => $"Assets/Prefabs/Npcs/{name}_Visual.prefab";
+        public static string PrefabPath(string name) => name.StartsWith("Monster") ? $"Assets/Prefabs/Monsters/{name}_Visual.prefab" : $"Assets/Prefabs/Npcs/{name}_Visual.prefab";
 
         public static void RebuildFromCommandLine()
         {
@@ -121,7 +146,7 @@ namespace AdventureKing.ArtPipeline
             var sm = ctrl.layers[0].stateMachine;
             var anims = AssetDatabase.LoadAllAssetsAtPath(fbx).OfType<AnimationClip>().Where(c => !c.name.StartsWith("__preview__")).ToDictionary(c => c.name);
             int i = 0;
-            foreach (string state in new[] { "Idle", "Walk", "Wave", "Talk", "Bow" })
+            foreach (string state in n.Monster ? n.Clips.Keys.ToArray() : new[] { "Idle", "Walk", "Wave", "Talk", "Bow" })
                 if (anims.TryGetValue(state, out AnimationClip clip))
                 {
                     var s = sm.AddState(state, new Vector3(260, 60 + i++ * 70));
@@ -199,12 +224,15 @@ namespace AdventureKing.ArtPipeline
                     Debug.Log($"[NPC] {n.Name}: animated face, eyes {fd.EyeA} {fd.EyeB}, mouth {fd.Mouth}");
                 }
             }
-            var actor = root.AddComponent<NpcActor>();
-            var so = new SerializedObject(actor);
-            so.FindProperty("animator").objectReferenceValue = anim;
-            so.FindProperty("visual").objectReferenceValue = visual;
-            so.ApplyModifiedPropertiesWithoutUndo();
-            Directory.CreateDirectory("Assets/Prefabs/Npcs");
+            if (!n.Monster)
+            {
+                var actor = root.AddComponent<NpcActor>();
+                var so = new SerializedObject(actor);
+                so.FindProperty("animator").objectReferenceValue = anim;
+                so.FindProperty("visual").objectReferenceValue = visual;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+            Directory.CreateDirectory(Path.GetDirectoryName(PrefabPath(n.Name)));
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath(n.Name));
             Object.DestroyImmediate(root);
             Debug.Log($"[NPC] {n.Name}: {clips.Count} clips, prefab {PrefabPath(n.Name)}");

@@ -93,7 +93,7 @@ public sealed class QuestService
     private readonly Func<long> now;
     public QuestConfig Config { get; }
 
-    public static readonly string[] ClientEvents = { "talk:elder", "talk:healer", "talk:tailor", "practice:attack", "practice:skill1", "practice:skill2", "practice:skill3" };
+    public static readonly string[] ClientEvents = { "talk:elder", "talk:healer", "talk:tailor", "talk:mushroom_elder","practice:attack", "practice:skill1", "practice:skill2", "practice:skill3" };
 
     public QuestService(Database db, QuestConfig config, InventoryService inv, Func<long>? clock = null)
     {

@@ -50,6 +50,13 @@ public sealed class FarmConfig
             if (types.All(t => t.id != s.type)) throw new InvalidDataException(s.id + ": unknown type " + s.type);
         if (spawns.Select(s => s.id).Distinct().Count() != spawns.Length) throw new InvalidDataException("duplicate spawn id");
         if (spawns.Any(s => s.mapId == "village_wind_bell")) throw new InvalidDataException("no monsters in the hub (safe zone)");
+        foreach (SpawnPoint s in spawns)
+        {
+            if (!FarmService.SafeZones.TryGetValue(s.mapId, out var z)) continue;
+            MonsterType t = types.First(x => x.id == s.type);
+            float r = t.leash + t.reach;
+            if (s.x + r >= z.minX && s.x - r <= z.maxX) throw new InvalidDataException(s.id + ": reaches into the safe zone of " + s.mapId);
+        }
     }
 }
 
@@ -216,6 +223,17 @@ public sealed class FarmService
     public static readonly IReadOnlyDictionary<string, (float x, float y)> RespawnPoints = new Dictionary<string, (float, float)>
     {
         ["meadow_breeze"] = (-36f, 1f),
+        ["ch1_mushroom_village"] = (-36f, 1f),
+    };
+
+    /// <summary>
+    /// Safe zones inside farm maps (village squares, around quest NPCs and portals): no spawn may be placed so that
+    /// its chase (leash) plus its reach enters the zone, so monsters can never strike a hero standing there.
+    /// Enforced when the config loads. Mirrors the client's TownLayout.*.SafeZone (shown as "Vùng an toàn").
+    /// </summary>
+    public static readonly IReadOnlyDictionary<string, (float minX, float maxX)> SafeZones = new Dictionary<string, (float, float)>
+    {
+        ["ch1_mushroom_village"] = (-46f, 30f),
     };
     public const long RegenDelayMs = 6000;      // out of combat this long -> regenerate
     public const float RegenPerSecond = 0.03f;  // of max HP
