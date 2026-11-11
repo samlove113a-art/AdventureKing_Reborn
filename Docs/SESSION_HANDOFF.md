@@ -1,9 +1,28 @@
 # Adventure King Reborn — Bàn giao phiên làm việc
 
-**Ngày:** 2026-11-08 · **Repo:** `samlove113a-art/AdventureKing_Reborn` · **Nhánh:** `feat/diamond-store-catalog-20261107`
-**Commit đã có trên GitHub trước phiên:** `cc3905a` · **Commit của phiên này:** xem `git log` (mục 9 ghi trạng thái push).
-
 > Game **chưa đạt chuẩn thương mại**. Tài liệu này chỉ ghi điều đã chạy và kiểm thử thật; phần nào chưa kiểm chứng được ghi rõ.
+> Đọc kèm: `CLAUDE.md` (quy tắc), `Docs/PROJECT_MASTER_CONTEXT.md` (bảng trạng thái mọi hệ thống), `Docs/CHAPTER01_PLAN.md`.
+> Phần dưới mục "TRẠNG THÁI HIỆN TẠI" là **lịch sử theo đợt** (mới → cũ); các trạng thái "chưa làm" trong đợt cũ có thể đã được làm ở đợt sau — tin mục hiện tại + `PROJECT_MASTER_CONTEXT.md`.
+
+---
+## ▶▶ TRẠNG THÁI HIỆN TẠI (cập nhật 2026-11-11, phiên khôi phục bối cảnh)
+- **Thư mục:** `C:\AdventureKing_Reborn` · **Repo:** `samlove113a-art/AdventureKing_Reborn` · **Nhánh:** `feat/chapter1-mushroom-kingdom`
+- **HEAD:** `7e9c174` (Skill sync) = `origin/feat/chapter1-mushroom-kingdom` theo ref đã fetch gần nhất. `git fetch` trong phiên này **thất bại** (shell không có credential GitHub) → chưa xác nhận được GitHub có commit mới hơn; chủ dự án kiểm tra bằng GitHub Desktop.
+- **Chuỗi commit Chương 1:** `d2661e8` kế hoạch → `6d0b398` handoff → `dcda972` Map 1 Làng Nấm → `c7296ff` VFX 12 skill nháp 1 → `7336e1e` sửa vị trí phát skill (đo) → `7e9c174` đồng bộ skill nhiều người chơi.
+- **Chưa commit (untracked, tài liệu chủ dự án gửi — giữ nguyên, chưa đưa vào git):** `ArtSource/Concepts/Chapter01/**` (gói concept 11,7 MB), `ArtSource/OwnerProvided/UIReferences/Skill_HUD_Approved_Concept.png`, `Assets/Art/UI/SkillButtons/ExtractedConcept/*_CONCEPT_ONLY.png` (chỉ tham khảo, có chữ in sẵn — KHÔNG dùng làm nút thật), `ICON_CROPS_PREVIEW.png`, `README_SKILL_ART.md`. Phiên này thêm `CLAUDE.md`, `Docs/PROJECT_MASTER_CONTEXT.md`.
+- **Nhánh cần biết:** `origin/fix/skill-vfx-origin-20261110` (`18502d8`, PR #5) chưa merge — **không merge**: HEAD đã sửa tận gốc cùng lỗi (`7336e1e`), sẽ xung đột `HeroCombatPresentation.cs`. Đề xuất chủ dự án đóng PR #5. `backup/pre-chapter1-20261110` = `670f6f9` (local).
+- **Skill (xác minh nhanh, không chạy lại test):** `QA/SkillOrigin/report.txt` — Pháp Sư skill 1 phát cách tay 0,06–0,30 m, thấp hơn đỉnh đầu 1,03 m, bay ±X, trúng quái 0,00 m; đánh thường hướng (±1,0,0). Kết luận: lỗi "skill bắn trên đầu" đã sửa có số đo. VFX vẫn là **bản nháp chờ duyệt** (`Docs/SKILL_VFX_REVIEW.md`).
+- **Test gần nhất (theo commit `7e9c174`):** server 163/163; PlayMode `SkillSyncMultiplayerTests`, `SkillOriginTests`, `SkillVfxShowcaseTests` 4/4, `Chapter1Tests` (chạy riêng) PASS. Đã biết fail: `MultiplayerSocialTests` (phần lễ cưới 180 s WIP), `FarmTests` knockout + `Chapter1Tests` phụ thuộc thứ tự. Phiên này **không chạy test** (chỉ khôi phục bối cảnh).
+- **Meshy:** trần Chương 1 2.000; đã tiêu 292 → còn 1.708 trong trần; số dư API lần cuối 2.950 (2026-11-10). Phiên này **0 credit**, chưa gọi API.
+- **Không được đụng:** lễ cưới 180 s, hub, Đồng Cỏ Gió (trừ cổng đã có), sảnh, shop, nhân vật, kinh tế (DRAFT).
+
+### Việc tiếp theo: Map 2 — Đồng Cỏ Xanh (`ch1_green_meadow`, scene `AK_C1_M02`)
+Thiết kế (CHAPTER01_PLAN §3 + concept `01_MAP_SCENE_PREVIEWS/CH01_MAP02_first_farmleveling.jpg`): bệ cỏ nhiều tầng, cối xay gió, rào gỗ, hoa; palette xanh cỏ tươi + xanh trời; quái **Slime Phấn Hoa** (+ Nấm Non); chức năng farm cấp thấp; không Mini Boss.
+1. **Server:** map `ch1_green_meadow` trong `CharacterService.Maps`; cổng `ch1_village_east_m02` (Làng Nấm, x≈92 — chỗ biển "sắp mở") ⇄ `ch1_m02_west_village`; `FarmService.SafeZones/RespawnPoints`; quái `pollen_slime` DRAFT trong `monsters.json`; nhiệm vụ chính `ch1_04+` trong `quests.json`; test server mở rộng `Chapter1Tests`.
+2. **Client:** `TownLayout.Ch1GreenMeadow` (decks ≥2 tầng, climbs, portals, safe zone) + đăng ký `MapInfo` + `AdventureWorldSession` map→scene; `BuildCh1GreenMeadow()` trong `VillageSceneBuilder.Chapter1.cs` + thêm vào `ChapterScenePaths`; Map 1: thay biển "sắp mở" bằng cổng thật.
+3. **Art (tái dùng trước):** đã có `Town/Props/windmill`, `planter`, `crates`, `banyan_tree`, `signboard`, `portal_gate` + 5 đạo cụ Ch1 (recolor). Slime Phấn Hoa: không hai chân → animation thủ tục (giống slime Đồng Cỏ Gió). **Dự toán Meshy:** concept Slime Phấn Hoa 6 + model 30 = **~36**; tùy chọn 2–3 đạo cụ mới (rào gỗ, cụm hoa, bệ cỏ) 3×36 = 108 → tổng **36–144**, trong trần. Kiểm tra số dư trước, làm 1 mẫu rồi mới làm tiếp.
+4. **Nhạc** `BGM_Ch1_GreenMeadow_DRAFT` (MusicComposer), minimap, tiêu đề khu vực.
+5. **Kiểm thử:** server `Chapter1Tests`; PlayMode mở rộng `Chapter1Tests` (Làng Nấm → Map 2, đánh Slime Phấn Hoa, nhiệm vụ, quay về), ảnh `QA/Chapter1/m02_*`. Commit "Chapter 1 group 2: Map 2".
 
 ---
 ## ▶ ĐANG LÀM: CHƯƠNG 1 — xem `Docs/CHAPTER01_PLAN.md` (kế hoạch, quyết định, ngân sách Meshy, nhật ký)
