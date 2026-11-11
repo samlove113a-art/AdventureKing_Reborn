@@ -27,6 +27,7 @@ namespace AdventureKing.ArtPipeline
                 EnsureLayer(OneWayLayer, "OneWayPlatform");
                 BuildMeadow();          // + the east "Cổng Pha Lê" to Làng Nấm (meadow content otherwise unchanged)
                 BuildCh1Village();
+                BuildCh1GreenMeadow(20261111, 2);
                 RegisterBuildScenes();
                 EditorApplication.Exit(0);
             }
@@ -34,7 +35,7 @@ namespace AdventureKing.ArtPipeline
         }
 
         /// <summary>Chapter maps registered after the hub / meadow / halls (see RegisterBuildScenes).</summary>
-        private static readonly string[] ChapterScenePaths = { Ch1VillageScenePath };
+        private static readonly string[] ChapterScenePaths = { Ch1VillageScenePath, Ch1GreenMeadowScenePath };
 
         /// <summary>Meshy module at its exported size × <paramref name="scale"/>, optional tint (recolour, no new credits).</summary>
         private static GameObject C1Prop(Transform parent, string name, float x, float z, float scale = 1f, bool flip = false, float y = 0f, Color? tint = null, float yaw = 0f)
@@ -99,7 +100,7 @@ namespace AdventureKing.ArtPipeline
             C1Prop(art, "ch1_mushroom_house", 80f, 17f, 0.75f, false, tint: amber);
             Prop(art, "crates", 50f, 2.6f, 2f, true);
             Prop(art, "planter", 70f, 2.4f, 1.3f, false);
-            Signboard(art, 92f, 2.6f, "Đồng Cỏ\nXanh\n→\n(sắp mở)");
+            Signboard(art, 84f, 2.6f, "Đồng Cỏ\nXanh\n→\nCổng Pha Lê");
 
             // ---- the chapter guide: Trưởng Làng Nấm by the fountain (quest giver, "!" / "?" from the server log)
             Vector2 e = TownLayout.Ch1Village.ElderSpot;

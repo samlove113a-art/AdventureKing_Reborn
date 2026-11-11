@@ -224,6 +224,7 @@ public sealed class FarmService
     {
         ["meadow_breeze"] = (-36f, 1f),
         ["ch1_mushroom_village"] = (-36f, 1f),
+        ["ch1_green_meadow"] = (-36f, 1f),
     };
 
     /// <summary>
@@ -234,6 +235,7 @@ public sealed class FarmService
     public static readonly IReadOnlyDictionary<string, (float minX, float maxX)> SafeZones = new Dictionary<string, (float, float)>
     {
         ["ch1_mushroom_village"] = (-46f, 30f),
+        ["ch1_green_meadow"] = (-46f, -23f),
     };
     public const long RegenDelayMs = 6000;      // out of combat this long -> regenerate
     public const float RegenPerSecond = 0.03f;  // of max HP

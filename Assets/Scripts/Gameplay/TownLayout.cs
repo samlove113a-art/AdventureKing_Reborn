@@ -132,7 +132,41 @@ namespace AdventureKing.Gameplay
                 new Climb("DayLeoGoRe", 79f, 0f, 7.3f, true),
             };
 
-            public static readonly PortalSpot[] Portals = { new PortalSpot("ch1_village_west_meadow", -40f, Meadow.Scene, Meadow.DisplayName) };
+            public static readonly PortalSpot[] Portals =
+            {
+                new PortalSpot("ch1_village_west_meadow", -40f, Meadow.Scene, Meadow.DisplayName),
+                new PortalSpot("ch1_village_east_m02", 92f, Ch1GreenMeadow.Scene, Ch1GreenMeadow.DisplayName),
+            };
+        }
+
+        // ------------------------------------------------------------ Chương 1 · Map 2 Đồng Cỏ Xanh (AK Map Forge)
+        public static class Ch1GreenMeadow
+        {
+            public const string MapId = "ch1_green_meadow", Scene = "AK_C1_M02", DisplayName = "Đồng Cỏ Xanh";
+            public const int Chapter = 1, Index = 2;
+            public const float MinX = -46f, MaxX = 112f;
+            public static readonly Vector2 Spawn = new Vector2(-36f, 1f);
+            public static readonly Vector2 SafeZone = new Vector2(-46f, -23f);
+
+            // Authoritative play lanes; decorative seed must NEVER alter collision geometry.
+            public static readonly Deck[] Decks =
+            {
+                new Deck("DoiCoTren", -8f, 14f, 4.5f),
+                new Deck("CoiXayCao", 26f, 48f, 7f),
+                new Deck("BaiHoa", 56f, 78f, 4.5f),
+                new Deck("DaiGio", 82f, 96f, 8f),
+            };
+            public static readonly Climb[] Climbs =
+            {
+                new Climb("DayLeoDoiCo", -6f, 0f, 5.8f, true),
+                new Climb("ThangCoiXay", 44f, 0f, 8.3f, false),
+                new Climb("DayLeoBaiHoa", 58f, 0f, 5.8f, true),
+                new Climb("ThangDaiGio", 86f, 0f, 9.3f, false),
+            };
+            public static readonly PortalSpot[] Portals =
+            {
+                new PortalSpot("ch1_m02_west_village", -40f, Ch1Village.Scene, Ch1Village.DisplayName),
+            };
         }
 
         // ------------------------------------------------------------ Sảnh Bang Hội (Phase D interior, safe zone)
@@ -180,6 +214,7 @@ namespace AdventureKing.Gameplay
             new MapInfo { MapId = GuildHall.MapId, Scene = GuildHall.Scene, DisplayName = GuildHall.DisplayName, MinX = GuildHall.MinX, MaxX = GuildHall.MaxX, Spawn = GuildHall.Spawn, Decks = GuildHall.Decks, Climbs = GuildHall.Climbs, Portals = GuildHall.Portals },
             new MapInfo { MapId = WeddingHall.MapId, Scene = WeddingHall.Scene, DisplayName = WeddingHall.DisplayName, MinX = WeddingHall.MinX, MaxX = WeddingHall.MaxX, Spawn = WeddingHall.Spawn, Decks = WeddingHall.Decks, Climbs = WeddingHall.Climbs, Portals = WeddingHall.Portals },
             new MapInfo { MapId = Ch1Village.MapId, Scene = Ch1Village.Scene, DisplayName = Ch1Village.DisplayName, MinX = Ch1Village.MinX, MaxX = Ch1Village.MaxX, Spawn = Ch1Village.Spawn, Decks = Ch1Village.Decks, Climbs = Ch1Village.Climbs, Portals = Ch1Village.Portals, SafeZone = Ch1Village.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
+            new MapInfo { MapId = Ch1GreenMeadow.MapId, Scene = Ch1GreenMeadow.Scene, DisplayName = Ch1GreenMeadow.DisplayName, MinX = Ch1GreenMeadow.MinX, MaxX = Ch1GreenMeadow.MaxX, Spawn = Ch1GreenMeadow.Spawn, Decks = Ch1GreenMeadow.Decks, Climbs = Ch1GreenMeadow.Climbs, Portals = Ch1GreenMeadow.Portals, SafeZone = Ch1GreenMeadow.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
         };
 
         /// <summary>The map with this id (the hub when unknown).</summary>
