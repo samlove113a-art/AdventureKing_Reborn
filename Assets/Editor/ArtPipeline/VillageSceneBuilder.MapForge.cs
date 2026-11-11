@@ -56,9 +56,27 @@ namespace AdventureKing.ArtPipeline
                 FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (label.text == null || !label.text.Contains("(sắp mở)")) continue;
-                label.text = "Đồng Cỏ Xanh\\n→\\nCổng Pha Lê";
+                label.text = "Đồng Cỏ Xanh\n→\nCổng Pha Lê";
+                var canvas = label.GetComponentInParent<UnityEngine.Canvas>();
+                if (canvas && canvas.renderMode == UnityEngine.RenderMode.WorldSpace &&
+                    Mathf.Abs(canvas.transform.position.x - 92f) < 1.5f)
+                {
+                    canvas.transform.position += Vector3.left * 8f;
+                    UnityEditor.EditorUtility.SetDirty(canvas);
+                }
                 UnityEditor.EditorUtility.SetDirty(label);
                 changed = true;
+            }
+            var scenery = GameObject.Find("World/Scenery");
+            if (scenery)
+            {
+                foreach (Transform child in scenery.transform)
+                {
+                    if (child.name != "Prop_signboard" || Mathf.Abs(child.position.x - 92f) > 1.5f) continue;
+                    child.position += Vector3.left * 8f;
+                    UnityEditor.EditorUtility.SetDirty(child);
+                    changed = true;
+                }
             }
             if (changed) UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, Ch1VillageScenePath);
             return changed;
