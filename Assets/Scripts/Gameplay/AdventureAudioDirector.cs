@@ -14,7 +14,8 @@ namespace AdventureKing.Gameplay
         Boss,
         VillageNight, // appended: keeps serialized indices of the stages above
         Wedding,
-        MushroomKingdom // Chương 1 field maps (appended)
+        MushroomKingdom, // Chương 1 field maps (appended)
+        Ch1GreenMeadow   // Chương 1 Map 2 Đồng Cỏ Xanh (appended)
     }
 
     [Serializable]

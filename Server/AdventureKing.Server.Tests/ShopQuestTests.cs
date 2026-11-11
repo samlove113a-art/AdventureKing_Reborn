@@ -128,7 +128,7 @@ public sealed class ShopQuestTests : IDisposable
         var (acc, id) = Hero("quest01", 1);
         QuestLogDto log = quests.Log(acc, id);
         Assert.Equal("main_01", log.main.Single().id);
-        Assert.Equal(13, log.mainTotal); // 10 starter quests + 3 Chương 1 Map 1 quests
+        Assert.Equal(16, log.mainTotal); // 10 starter quests + 3 Chương 1 Map 1 + 3 Map 2 quests
         Assert.Equal("quest_incomplete", Assert.Throws<GameError>(() => quests.Claim(acc, id, new QuestClaimDto { questId = "main_01" })).Code);
         Assert.Equal("quest_locked", Assert.Throws<GameError>(() => quests.Claim(acc, id, new QuestClaimDto { questId = "main_02" })).Code);
         log = quests.ClientEvent(acc, id, new QuestEventDto { @event = "talk:elder" });

@@ -33,6 +33,13 @@
     { "id": "ch1_03", "type": "main", "title": "Chương 1 · Nấm Non nghịch ngợm", "desc": "Nấm Non ngoài cổng đông đang quấy phá ruộng nấm. Hạ 5 con rồi báo lại Trưởng Làng Nấm.", "map": "ch1_mushroom_village", "npc": "Trưởng Làng Nấm",
       "objectives": [ { "event": "kill:young_mushroom", "need": 5, "text": "Hạ 5 Nấm Non" } ], "rewardExp": 150, "rewardGold": 60,
       "rewardItems": [ { "itemId": "potion_hp_m", "qty": 2 } ] },
+    { "id": "ch1_04", "type": "main", "title": "Chương 1 · Cánh đồng phía đông", "_draft": "DRAFT reward", "desc": "Qua cổng pha lê cuối phía đông Làng Nấm để tới Đồng Cỏ Xanh.", "map": "ch1_green_meadow", "npc": "",
+      "objectives": [ { "event": "travel:ch1_green_meadow", "need": 1, "text": "Tới Đồng Cỏ Xanh" } ], "rewardExp": 80, "rewardGold": 0 },
+    { "id": "ch1_05", "type": "main", "title": "Chương 1 · Phấn hoa bay loạn", "_draft": "DRAFT reward", "desc": "Slime Phấn Hoa làm phấn bay mù cả cánh đồng. Hạ 8 con trên các bậc cỏ của Đồng Cỏ Xanh.", "map": "ch1_green_meadow", "npc": "",
+      "objectives": [ { "event": "kill:pollen_slime", "need": 8, "text": "Hạ 8 Slime Phấn Hoa" } ], "rewardExp": 220, "rewardGold": 80,
+      "rewardItems": [ { "itemId": "potion_hp_m", "qty": 2 }, { "itemId": "potion_mp_m", "qty": 2 } ] },
+    { "id": "ch1_06", "type": "main", "title": "Chương 1 · Tin từ cánh đồng", "_draft": "DRAFT reward", "desc": "Về Làng Nấm báo Trưởng Làng Nấm: cánh đồng đã yên, nhưng ánh sáng lạ đang le lói trong khu rừng xa.", "map": "ch1_mushroom_village", "npc": "Trưởng Làng Nấm",
+      "objectives": [ { "event": "talk:mushroom_elder", "need": 1, "text": "Báo lại Trưởng Làng Nấm" } ], "rewardExp": 60, "rewardGold": 40 },
 
     { "id": "side_tailor", "type": "side", "title": "Ghé Tiệm Lụa", "desc": "Chủ Tiệm Lụa ở Chợ Phiên có trang phục mới.", "map": "village_wind_bell", "npc": "Chủ Tiệm Lụa",
       "objectives": [ { "event": "talk:tailor", "need": 1, "text": "Nói chuyện với Chủ Tiệm Lụa" } ], "rewardExp": 20, "rewardGold": 0 },

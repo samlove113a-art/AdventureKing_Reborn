@@ -16,7 +16,14 @@
 - **Meshy:** trần Chương 1 2.000; đã tiêu 292 → còn 1.708 trong trần; số dư API lần cuối 2.950 (2026-11-10). Phiên này **0 credit**, chưa gọi API.
 - **Không được đụng:** lễ cưới 180 s, hub, Đồng Cỏ Gió (trừ cổng đã có), sảnh, shop, nhân vật, kinh tế (DRAFT).
 
-### Việc tiếp theo: Map 2 — Đồng Cỏ Xanh (`ch1_green_meadow`, scene `AK_C1_M02`)
+### ✅ Map 2 — Đồng Cỏ Xanh đã dựng + kiểm thử (2026-11-11, commit "Chapter 1 group 2: Map 2") — chi tiết `CHAPTER01_PLAN.md` §7
+- Cổng Làng Nấm (x 92) ⇄ Map 2 (x −40) qua server; Slime Phấn Hoa (Meshy) + Nấm Non; nhiệm vụ `ch1_04–06` (DRAFT); nền xa + hoa dại riêng; nhạc riêng.
+- Sửa lỗi thật: heartbeat của scene cũ sau khi qua cổng làm server từ chối thao tác ở map mới ~10 s (`FarmService.Arrived`).
+- Test: server 167/167; PlayMode `Chapter1Tests` 2/2 + regression di chuyển/farm (kết quả trong commit). Mỹ thuật **chờ duyệt**. PR #6 không merge (trùng, đã lấy ý dùng được).
+- Meshy: phiên trước tiêu 108 cho Map 2 (ghi bổ sung) → tổng 400/2.000; số dư theo manifest 2.842 (chưa xác nhận API).
+- **Tiếp theo: Map 3 Rừng Nấm Sáng + Mini Boss Nấm Thủ Lĩnh.**
+
+### (Đã xong) Kế hoạch Map 2 — Đồng Cỏ Xanh (`ch1_green_meadow`, scene `AK_C1_M02`)
 Thiết kế (CHAPTER01_PLAN §3 + concept `01_MAP_SCENE_PREVIEWS/CH01_MAP02_first_farmleveling.jpg`): bệ cỏ nhiều tầng, cối xay gió, rào gỗ, hoa; palette xanh cỏ tươi + xanh trời; quái **Slime Phấn Hoa** (+ Nấm Non); chức năng farm cấp thấp; không Mini Boss.
 1. **Server:** map `ch1_green_meadow` trong `CharacterService.Maps`; cổng `ch1_village_east_m02` (Làng Nấm, x≈92 — chỗ biển "sắp mở") ⇄ `ch1_m02_west_village`; `FarmService.SafeZones/RespawnPoints`; quái `pollen_slime` DRAFT trong `monsters.json`; nhiệm vụ chính `ch1_04+` trong `quests.json`; test server mở rộng `Chapter1Tests`.
 2. **Client:** `TownLayout.Ch1GreenMeadow` (decks ≥2 tầng, climbs, portals, safe zone) + đăng ký `MapInfo` + `AdventureWorldSession` map→scene; `BuildCh1GreenMeadow()` trong `VillageSceneBuilder.Chapter1.cs` + thêm vào `ChapterScenePaths`; Map 1: thay biển "sắp mở" bằng cổng thật.

@@ -95,7 +95,7 @@ public sealed class FarmServiceTests : IDisposable
         FarmConfig cfg = FarmConfig.Load(MonstersPath);
         Assert.NotEmpty(cfg.spawns);
         // farm maps only (Đồng Cỏ Gió + Chương 1); never the hub or the hall interiors
-        Assert.All(cfg.spawns, s => Assert.Contains(s.mapId, new[] { "meadow_breeze", "ch1_mushroom_village" }));
+        Assert.All(cfg.spawns, s => Assert.Contains(s.mapId, new[] { "meadow_breeze", "ch1_mushroom_village", "ch1_green_meadow" }));
         Assert.All(cfg.types.Where(ty => ty.id.EndsWith("_slime")), ty => Assert.Equal(60, ty.respawnSeconds));
         var bad = new FarmConfig { types = cfg.types, spawns = new[] { new SpawnPoint { id = "x", mapId = "village_wind_bell", type = cfg.types[0].id } } };
         Assert.Throws<InvalidDataException>(bad.Validate);

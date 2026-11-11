@@ -40,6 +40,7 @@ namespace AdventureKing.ArtPipeline
                 (AdventureMusicStage.Village, "BGM_Village_Day"), (AdventureMusicStage.VillageNight, "BGM_Village_Night"),
                 (AdventureMusicStage.Exploration, "BGM_Meadow"), (AdventureMusicStage.Boss, "BGM_Boss"), (AdventureMusicStage.Wedding, "BGM_Wedding"),
                 (AdventureMusicStage.MushroomKingdom, "BGM_Ch1_MushroomVillage"),
+                (AdventureMusicStage.Ch1GreenMeadow, "BGM_Ch1_GreenMeadow"),
             };
             var music = so.FindProperty("soundtracks");
             music.arraySize = map.Length;

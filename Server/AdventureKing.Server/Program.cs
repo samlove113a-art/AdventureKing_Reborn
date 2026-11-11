@@ -107,6 +107,9 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
     // skills the server accepted are replayed by the other players on the map (presentation sync)
     var presenceSvc = app.Services.GetRequiredService<PresenceService>();
     farmSvc.SkillCast = presenceSvc.RecordCast;
+    // a map change seeds the farm position at the arrival point (late old-scene heartbeats cannot poison it)
+    app.Services.GetRequiredService<CharacterService>().Arrived = farmSvc.Arrived;
+    app.Services.GetRequiredService<ShopService>().Arrived = farmSvc.Arrived;
     presenceSvc.IsSafeMap = map => !farmSvc.Config.spawns.Any(s => s.mapId == map);
 }
 

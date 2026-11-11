@@ -126,7 +126,9 @@ namespace AdventureKing.Gameplay
 
         private void Heartbeat()
         {
-            if (beatBusy || HeroDead || !Net) return;
+            // (not while changing map: the server already moved the hero; old-scene coordinates would be checked
+            // against the NEW map)
+            if (beatBusy || HeroDead || !Net || world.Traveling || world.Leaving) return;
             beatBusy = true;
             Net.FarmPresence(CharId, HeroPos, (ok, h, err) =>
             {

@@ -135,7 +135,8 @@ public sealed class CharacterService
         ["guild_hall"] = new("guild_hall", "Sảnh Bang Hội", -28f, 28f, -4f, 20f),
         ["wedding_hall"] = new("wedding_hall", "Sảnh Kết Hôn", -30f, 30f, -4f, 20f),
         // Chương 1 — Vương Quốc Nấm (Docs/CHAPTER01_PLAN.md §3)
-        ["ch1_mushroom_village"] = new("ch1_mushroom_village", "Làng Nấm", -50f, 100f, -8f, 30f),
+        ["ch1_mushroom_village"] = new("ch1_mushroom_village", "Làng Nấm", -50f, 106f, -8f, 30f), // east end widened for the Map 2 gate (x 92)
+        ["ch1_green_meadow"] = new("ch1_green_meadow", "Đồng Cỏ Xanh", -50f, 110f, -8f, 30f),
     };
 
     public const string StartMap = "village_wind_bell";
@@ -157,6 +158,9 @@ public sealed class CharacterService
         // Chương 1: east end of Đồng Cỏ Gió ⇄ west gate of Làng Nấm (Map 1)
         ["meadow_east_ch1"] = new("meadow_east_ch1", "meadow_breeze", 78f, 0f, "ch1_mushroom_village", -36f, 0.9f),
         ["ch1_village_west_meadow"] = new("ch1_village_west_meadow", "ch1_mushroom_village", -40f, 0f, "meadow_breeze", 74f, 0.9f),
+        // Chương 1: east gate of Làng Nấm (Map 1) ⇄ west gate of Đồng Cỏ Xanh (Map 2)
+        ["ch1_village_east_m02"] = new("ch1_village_east_m02", "ch1_mushroom_village", 92f, 0f, "ch1_green_meadow", -36f, 0.9f),
+        ["ch1_m02_west_village"] = new("ch1_m02_west_village", "ch1_green_meadow", -40f, 0f, "ch1_mushroom_village", 89f, 0.9f),
     };
 
     public const float PortalReach = 3.5f;
@@ -169,10 +173,16 @@ public sealed class CharacterService
     /// <summary>Quest progress hook (accountId, characterId, event, amount): "travel:{map}" after a portal trip.</summary>
     public Action<string, string, string, int>? QuestEvent { get; set; }
 
+    /// <summary>Map change hook (characterId, map, x, y): FarmService.Arrived seeds the new map's position at the
+    /// arrival point, so a late heartbeat from the old scene (measured: x 78 on the meadow gate attributed to Làng
+    /// Nấm) cannot poison the new map's speed check for ~10 s.</summary>
+    public Action<string, string, float, float>? Arrived { get; set; }
+
     public CharacterDto Travel(string accountId, string characterId, string? portalId, float x, float y)
     {
         CharacterDto moved = TravelCore(accountId, characterId, portalId, x, y);
         QuestEvent?.Invoke(accountId, characterId, "travel:" + moved.lastMapId, 1);
+        Arrived?.Invoke(characterId, moved.lastMapId, moved.posX, moved.posY);
         return moved;
     }
 

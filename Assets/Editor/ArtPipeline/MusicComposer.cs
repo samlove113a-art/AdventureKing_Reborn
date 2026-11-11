@@ -18,7 +18,7 @@ namespace AdventureKing.ArtPipeline
         public const string Dir = "Assets/Audio/BGM";
         private const int SR = 32000;
 
-        public static readonly string[] Tracks = { "BGM_Login", "BGM_Village_Day", "BGM_Village_Night", "BGM_Meadow", "BGM_Boss", "BGM_Wedding", "BGM_Ch1_MushroomVillage" };
+        public static readonly string[] Tracks = { "BGM_Login", "BGM_Village_Day", "BGM_Village_Night", "BGM_Meadow", "BGM_Boss", "BGM_Wedding", "BGM_Ch1_MushroomVillage", "BGM_Ch1_GreenMeadow" };
 
         /// <summary>Composes only the tracks that have no file yet (never rewrites approved / reviewed drafts).</summary>
         public static void ComposeMissing()
@@ -127,6 +127,10 @@ namespace AdventureKing.ArtPipeline
                     return new Song { Bpm = 116, Root = 58, Scale = Major, Seed = 101, Reverb = 0.24f,
                         Chords = new[] { C(0), C(5), C(1), C(4), C(0), C(5), C(3), C(4), C(5), C(3), C(0), C(4), C(1), C(4), C(0), C(0) },
                         Arrange = (s, m) => { Marimba(s, m, 0.32f); Melody(s, m, Inst.MusicBox, 0.26f, 1, 1); Bass(s, m, 0.36f, true); Drums(s, m, 0.24f, false); Chimes(s, m, 0.1f); Pad(s, m, 0.1f); } };
+                case "BGM_Ch1_GreenMeadow": // Chương 1 Map 2 Đồng Cỏ Xanh: open sky, breezy and running — D major, flute + harp + light groove
+                    return new Song { Bpm = 120, Root = 62, Scale = Major, Seed = 113, Reverb = 0.26f,
+                        Chords = new[] { C(0), C(3), C(5), C(4), C(0), C(3), C(1), C(4), C(3), C(4), C(2), C(5), C(3), C(4), C(0), C(0) },
+                        Arrange = (s, m) => { HarpArp(s, m, 0.2f, 2); Melody(s, m, Inst.Flute, 0.3f, 1, 1); Bass(s, m, 0.34f, true); Drums(s, m, 0.22f, false); Shaker(s, m, 0.08f); Pad(s, m, 0.12f); } };
             }
             throw new ArgumentException(track);
         }

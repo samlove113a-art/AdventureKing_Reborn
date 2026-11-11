@@ -97,6 +97,9 @@ public sealed class ShopService
         return result;
     }
 
+    /// <summary>Map change hook (characterId, map, x, y): FarmService.Arrived seeds the new map's position there.</summary>
+    public Action<string, string, float, float>? Arrived { get; set; }
+
     /// <summary>Uses a teleport ticket from the bag: removes exactly that ticket and moves the hero, atomically.</summary>
     public TicketResultDto UseTicket(string accountId, string characterId, TicketRequestDto? req)
     {
@@ -121,6 +124,7 @@ public sealed class ShopService
             };
         });
         QuestEvent?.Invoke(accountId, characterId, "travel:" + res.character.lastMapId, 1);
+        Arrived?.Invoke(characterId, res.character.lastMapId, res.character.posX, res.character.posY);
         return res;
     }
 }

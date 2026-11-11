@@ -224,6 +224,7 @@ public sealed class FarmService
     {
         ["meadow_breeze"] = (-36f, 1f),
         ["ch1_mushroom_village"] = (-36f, 1f),
+        ["ch1_green_meadow"] = (-36f, 1f),
     };
 
     /// <summary>
@@ -234,6 +235,7 @@ public sealed class FarmService
     public static readonly IReadOnlyDictionary<string, (float minX, float maxX)> SafeZones = new Dictionary<string, (float, float)>
     {
         ["ch1_mushroom_village"] = (-46f, 30f),
+        ["ch1_green_meadow"] = (-46f, -20f), // west gate rest stop (portal + sign + bench)
     };
     public const long RegenDelayMs = 6000;      // out of combat this long -> regenerate
     public const float RegenPerSecond = 0.03f;  // of max HP
@@ -332,6 +334,14 @@ public sealed class FarmService
             if (dist > MaxSpeed * dt + PositionSlack) throw new GameError("moved_too_fast", "Vị trí thay đổi bất thường, thao tác bị từ chối.", 409);
         }
         presence[key] = (x, y, t);
+    }
+
+    /// <summary>The character just arrived on <paramref name="mapId"/> (portal / ticket): its farm position there starts at
+    /// the arrival point. A heartbeat the old scene still sends (old-map coordinates) is then rejected as a jump instead
+    /// of becoming the reference that rejects every real action on the new map.</summary>
+    public void Arrived(string characterId, string mapId, float x, float y)
+    {
+        lock (gate) presence[characterId + "|" + mapId] = (x, y, now());
     }
 
     private Hero HeroOf(string characterId, int heroClass, int level, long t)

@@ -247,5 +247,74 @@ namespace AdventureKing.Tests
             Assert.AreEqual(TownLayout.Ch1Village.MapId, world.Character.lastMapId);
             yield return Shot("07_after_two_kills");
         }
+
+        /// <summary>Map 2 Đồng Cỏ Xanh: Làng Nấm east gate → Map 2 (server portal), terraces with real colliders, Slime Phấn
+        /// Hoa (Meshy mesh, procedural hop) fought on the server, travel quest saved, own music, gate back to Làng Nấm.</summary>
+        [UnityTest]
+        public IEnumerator Mushroom_Village_East_Gate_To_Green_Meadow_Fight_Pollen_Slime_And_Back()
+        {
+            yield return server.OpenGame();
+            yield return TestServer.RegisterCreateAndEnter("ch1n" + Random.Range(1000, 9999), "ch1-pass-2026", HeroClass.Mage, "Lữ Khách Cỏ");
+            Bind();
+            var greeter = Object.FindAnyObjectByType<ElderGreeter>();
+            float until = Time.time + 20f;
+            while (greeter && !greeter.DialogOpen && Time.time < until) yield return null;
+            if (greeter && greeter.DialogOpen) greeter.Close();
+            until = Time.time + 15f;
+            while (greeter && !greeter.Done && Time.time < until) yield return null;
+
+            yield return TakePortal(TownLayout.Hub.Portals.First(p => p.Id == "hub_east_meadow").X, TownLayout.Meadow.Scene);
+            yield return TakePortal(TownLayout.Meadow.Portals.First(p => p.Id == "meadow_east_ch1").X, TownLayout.Ch1Village.Scene);
+            Assert.IsNotNull(Object.FindObjectsByType<PortalGate2D>(FindObjectsInactive.Exclude).FirstOrDefault(g => g.name == "Portal_ch1_village_east_m02"),
+                "Làng Nấm has the Map 2 gate at its east end");
+            yield return TakePortal(TownLayout.Ch1Village.Portals.First(p => p.Id == "ch1_village_east_m02").X, TownLayout.Ch1GreenMeadow.Scene, "m02_00_village_east_gate");
+
+            var world = AdventureWorldSession.Current;
+            Assert.AreEqual(TownLayout.Ch1GreenMeadow.MapId, world.MapId);
+            Assert.AreEqual(TownLayout.Ch1GreenMeadow.MapId, world.Character.lastMapId, "server moved the hero to Map 2");
+            Assert.AreEqual(TownLayout.Ch1GreenMeadow.Spawn.x, Pos.x, 0.8f);
+            var missing = Object.FindObjectsByType<Transform>(FindObjectsInactive.Include).Where(t => t.GetComponents<Component>().Any(c => c == null)).Select(t => UiAudit.PathOf(t)).ToList();
+            Assert.IsEmpty(missing, "missing scripts: " + string.Join(", ", missing));
+            foreach (TownLayout.Deck d in TownLayout.Ch1GreenMeadow.Decks)
+            {
+                RaycastHit2D hit = Physics2D.Raycast(new Vector2((d.XMin + d.XMax) * 0.5f, d.Top + 3f), Vector2.down, 4f);
+                Assert.IsTrue(hit.collider && Mathf.Abs(hit.point.y - d.Top) < 0.3f, $"deck {d.Name} has a real collider at y={d.Top}");
+            }
+            Assert.AreEqual(TownLayout.Ch1GreenMeadow.Climbs.Length, Object.FindObjectsByType<LadderZone2D>(FindObjectsInactive.Exclude).Length, "ladders / ropes");
+            foreach (string prop in new[] { "Prop_ch1_wood_fence", "Prop_ch1_flower_bush", "Prop_windmill" })
+                Assert.IsNotNull(GameObject.Find(prop), "3D module placed: " + prop);
+            until = Time.realtimeSinceStartup + 4f;
+            while (!(AdventureAudioDirector.Instance.CurrentMusic && AdventureAudioDirector.Instance.CurrentMusic.name.Contains("GreenMeadow")) && Time.realtimeSinceStartup < until) yield return null;
+            StringAssert.Contains("BGM_Ch1_GreenMeadow", AdventureAudioDirector.Instance.CurrentMusic.name, "Đồng Cỏ Xanh plays its own theme");
+            yield return new WaitForSeconds(1f);
+            yield return Shot("m02_01_arrival_rest_stop");
+
+            // ---- server spawns: pollen slimes (Meshy mesh, no stand-in), a few Nấm Non on the terraces
+            FarmField farm = FarmField.Current;
+            until = Time.time + 6f;
+            while (farm.Monsters.Count == 0 && Time.time < until) yield return null;
+            Assert.AreEqual(10, farm.Monsters.Count, "server spawns shown");
+            Assert.IsTrue(farm.Monsters.Values.All(m => m.Home.x - 3.5f - 1.4f > TownLayout.Ch1GreenMeadow.SafeZone.y), "monsters stay outside the rest stop");
+            FarmMonsterView p1 = farm.Monsters["c1m2_p1"];
+            Assert.AreEqual("Slime Phấn Hoa", p1.NameLabel.text);
+            Assert.IsNotNull(p1.transform.Find("Body/Prop_ch1_pollen_slime"), "Slime Phấn Hoa uses its own Meshy model");
+            yield return WalkTo(p1.Home.x - 5f);
+            yield return new WaitForSeconds(1.2f);
+            yield return Shot("m02_02_pollen_slime_field");
+            var states = new List<string>();
+            yield return Fight(farm, p1, states, "m02_03_fight_pollen_slime");
+            yield return Shot("m02_04_pollen_slime_poof");
+            Assert.AreEqual(1, farm.Kills);
+
+            // windmill hill view (quest chain ch1_04..06 is covered by the server tests)
+            yield return WalkTo(40f, 30f);
+            yield return new WaitForSeconds(1f);
+            yield return Shot("m02_05_windmill_hill");
+
+            // ---- back to Làng Nấm through the west gate
+            yield return TakePortal(TownLayout.Ch1GreenMeadow.Portals[0].X, TownLayout.Ch1Village.Scene);
+            Assert.AreEqual(TownLayout.Ch1Village.MapId, AdventureWorldSession.Current.Character.lastMapId);
+            Assert.AreEqual(89f, Pos.x, 1f, "arrived at the east gate of Làng Nấm");
+        }
     }
 }
