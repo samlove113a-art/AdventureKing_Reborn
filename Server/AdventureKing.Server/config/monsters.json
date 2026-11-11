@@ -3,24 +3,211 @@
   "version": 1,
   "dropLifetimeSeconds": 120,
   "types": [
-    { "id": "puff_slime", "name": "Slime Bông", "maxHp": 60, "goldMin": 5, "goldMax": 11, "respawnSeconds": 60, "attack": 9, "attackSeconds": 1.6, "reach": 1.3, "leash": 3.5 },
-    { "id": "moss_slime", "name": "Slime Rêu", "maxHp": 90, "goldMin": 7, "goldMax": 13, "respawnSeconds": 60, "attack": 14, "attackSeconds": 1.8, "reach": 1.4, "leash": 3.5 },
-    { "id": "young_mushroom", "_draft": "Chương 1 Map 1 — DRAFT balance (chờ chủ dự án duyệt)", "name": "Nấm Non", "maxHp": 110, "goldMin": 8, "goldMax": 14, "respawnSeconds": 45, "attack": 15, "attackSeconds": 1.7, "reach": 1.3, "leash": 3.5 }
+    {
+      "id": "puff_slime",
+      "name": "Slime Bông",
+      "maxHp": 60,
+      "goldMin": 5,
+      "goldMax": 11,
+      "respawnSeconds": 60,
+      "attack": 9,
+      "attackSeconds": 1.6,
+      "reach": 1.3,
+      "leash": 3.5
+    },
+    {
+      "id": "moss_slime",
+      "name": "Slime Rêu",
+      "maxHp": 90,
+      "goldMin": 7,
+      "goldMax": 13,
+      "respawnSeconds": 60,
+      "attack": 14,
+      "attackSeconds": 1.8,
+      "reach": 1.4,
+      "leash": 3.5
+    },
+    {
+      "id": "young_mushroom",
+      "_draft": "Chương 1 Map 1 — DRAFT balance (chờ chủ dự án duyệt)",
+      "name": "Nấm Non",
+      "maxHp": 110,
+      "goldMin": 8,
+      "goldMax": 14,
+      "respawnSeconds": 45,
+      "attack": 15,
+      "attackSeconds": 1.7,
+      "reach": 1.3,
+      "leash": 3.5
+    },
+    {
+      "id": "pollen_slime",
+      "_draft": "Chương 1 Map 2 - giá trị DRAFT, chưa được duyệt",
+      "name": "Slime Phấn Hoa",
+      "maxHp": 85,
+      "goldMin": 7,
+      "goldMax": 12,
+      "respawnSeconds": 50,
+      "attack": 12,
+      "attackSeconds": 1.8,
+      "reach": 1.3,
+      "leash": 3.5
+    }
   ],
   "spawns": [
-    { "id": "meadow_s1", "mapId": "meadow_breeze", "type": "puff_slime", "x": -22, "y": 0 },
-    { "id": "meadow_s2", "mapId": "meadow_breeze", "type": "puff_slime", "x": -14, "y": 0 },
-    { "id": "meadow_s3", "mapId": "meadow_breeze", "type": "puff_slime", "x": 9, "y": 0 },
-    { "id": "meadow_s4", "mapId": "meadow_breeze", "type": "moss_slime", "x": 22, "y": 7 },
-    { "id": "meadow_s5", "mapId": "meadow_breeze", "type": "puff_slime", "x": 34, "y": 0 },
-    { "id": "meadow_s6", "mapId": "meadow_breeze", "type": "moss_slime", "x": 48, "y": 4 },
-    { "id": "meadow_s7", "mapId": "meadow_breeze", "type": "puff_slime", "x": 62, "y": 0 },
-    { "id": "meadow_s8", "mapId": "meadow_breeze", "type": "moss_slime", "x": 72, "y": 0 },
-    { "id": "c1m1_n1", "mapId": "ch1_mushroom_village", "type": "young_mushroom", "x": 40, "y": 0 },
-    { "id": "c1m1_n2", "mapId": "ch1_mushroom_village", "type": "young_mushroom", "x": 50, "y": 0 },
-    { "id": "c1m1_n3", "mapId": "ch1_mushroom_village", "type": "young_mushroom", "x": 58, "y": 5 },
-    { "id": "c1m1_n4", "mapId": "ch1_mushroom_village", "type": "young_mushroom", "x": 66, "y": 0 },
-    { "id": "c1m1_n5", "mapId": "ch1_mushroom_village", "type": "young_mushroom", "x": 76, "y": 6 },
-    { "id": "c1m1_n6", "mapId": "ch1_mushroom_village", "type": "young_mushroom", "x": 84, "y": 0 }
+    {
+      "id": "meadow_s1",
+      "mapId": "meadow_breeze",
+      "type": "puff_slime",
+      "x": -22,
+      "y": 0
+    },
+    {
+      "id": "meadow_s2",
+      "mapId": "meadow_breeze",
+      "type": "puff_slime",
+      "x": -14,
+      "y": 0
+    },
+    {
+      "id": "meadow_s3",
+      "mapId": "meadow_breeze",
+      "type": "puff_slime",
+      "x": 9,
+      "y": 0
+    },
+    {
+      "id": "meadow_s4",
+      "mapId": "meadow_breeze",
+      "type": "moss_slime",
+      "x": 22,
+      "y": 7
+    },
+    {
+      "id": "meadow_s5",
+      "mapId": "meadow_breeze",
+      "type": "puff_slime",
+      "x": 34,
+      "y": 0
+    },
+    {
+      "id": "meadow_s6",
+      "mapId": "meadow_breeze",
+      "type": "moss_slime",
+      "x": 48,
+      "y": 4
+    },
+    {
+      "id": "meadow_s7",
+      "mapId": "meadow_breeze",
+      "type": "puff_slime",
+      "x": 62,
+      "y": 0
+    },
+    {
+      "id": "meadow_s8",
+      "mapId": "meadow_breeze",
+      "type": "moss_slime",
+      "x": 72,
+      "y": 0
+    },
+    {
+      "id": "c1m1_n1",
+      "mapId": "ch1_mushroom_village",
+      "type": "young_mushroom",
+      "x": 40,
+      "y": 0
+    },
+    {
+      "id": "c1m1_n2",
+      "mapId": "ch1_mushroom_village",
+      "type": "young_mushroom",
+      "x": 50,
+      "y": 0
+    },
+    {
+      "id": "c1m1_n3",
+      "mapId": "ch1_mushroom_village",
+      "type": "young_mushroom",
+      "x": 58,
+      "y": 5
+    },
+    {
+      "id": "c1m1_n4",
+      "mapId": "ch1_mushroom_village",
+      "type": "young_mushroom",
+      "x": 66,
+      "y": 0
+    },
+    {
+      "id": "c1m1_n5",
+      "mapId": "ch1_mushroom_village",
+      "type": "young_mushroom",
+      "x": 76,
+      "y": 6
+    },
+    {
+      "id": "c1m1_n6",
+      "mapId": "ch1_mushroom_village",
+      "type": "young_mushroom",
+      "x": 84,
+      "y": 0
+    },
+    {
+      "id": "c1m2_p1",
+      "mapId": "ch1_green_meadow",
+      "type": "pollen_slime",
+      "x": -12,
+      "y": 0
+    },
+    {
+      "id": "c1m2_n2",
+      "mapId": "ch1_green_meadow",
+      "type": "young_mushroom",
+      "x": 2,
+      "y": 4.5
+    },
+    {
+      "id": "c1m2_p3",
+      "mapId": "ch1_green_meadow",
+      "type": "pollen_slime",
+      "x": 18,
+      "y": 0
+    },
+    {
+      "id": "c1m2_p4",
+      "mapId": "ch1_green_meadow",
+      "type": "pollen_slime",
+      "x": 36,
+      "y": 7
+    },
+    {
+      "id": "c1m2_p5",
+      "mapId": "ch1_green_meadow",
+      "type": "pollen_slime",
+      "x": 51,
+      "y": 0
+    },
+    {
+      "id": "c1m2_n6",
+      "mapId": "ch1_green_meadow",
+      "type": "young_mushroom",
+      "x": 67,
+      "y": 4.5
+    },
+    {
+      "id": "c1m2_p7",
+      "mapId": "ch1_green_meadow",
+      "type": "pollen_slime",
+      "x": 87,
+      "y": 8
+    },
+    {
+      "id": "c1m2_p8",
+      "mapId": "ch1_green_meadow",
+      "type": "pollen_slime",
+      "x": 99,
+      "y": 0
+    }
   ]
 }
