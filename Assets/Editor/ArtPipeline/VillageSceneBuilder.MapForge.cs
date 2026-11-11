@@ -26,6 +26,44 @@ namespace AdventureKing.ArtPipeline
             Debug.Log("[AK Map Forge] Map 2 generated; save, compile and play-test with the server before release.");
         }
 
+        /// <summary>
+        /// Patch only the new east portal and sign in the EXISTING Map 1 scene.
+        /// Does not regenerate or overwrite the hand-crafted Map 1 scenery.
+        /// </summary>
+        public static bool ForgeLinkMap1()
+        {
+            if (!System.IO.File.Exists(Ch1VillageScenePath))
+                throw new System.IO.FileNotFoundException("Map 1 scene is missing", Ch1VillageScenePath);
+
+            string backupDir = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "AKMapForgeBackups");
+            System.IO.Directory.CreateDirectory(backupDir);
+            string backupPath = System.IO.Path.Combine(backupDir, "AK_C1_M01_before_mapforge.unity");
+            if (!System.IO.File.Exists(backupPath))
+                System.IO.File.Copy(Ch1VillageScenePath, backupPath, false);
+
+            var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(
+                Ch1VillageScenePath, UnityEditor.SceneManagement.OpenSceneMode.Single);
+            var gameplay = GameObject.Find("World/Gameplay");
+            if (!gameplay) throw new InvalidOperationException("Map 1 has no World/Gameplay group.");
+            bool changed = false;
+            if (!GameObject.Find("Portal_ch1_village_east_m02"))
+            {
+                foreach (var p in TownLayout.Ch1Village.Portals)
+                    if (p.Id == "ch1_village_east_m02") { Portal(gameplay.transform, p); changed = true; }
+            }
+
+            foreach (var label in UnityEngine.Object.FindObjectsByType<UnityEngine.UI.Text>(
+                FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (label.text == null || !label.text.Contains("(sắp mở)")) continue;
+                label.text = "Đồng Cỏ Xanh\\n→\\nCổng Pha Lê";
+                UnityEditor.EditorUtility.SetDirty(label);
+                changed = true;
+            }
+            if (changed) UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, Ch1VillageScenePath);
+            return changed;
+        }
+
         private static void BuildCh1GreenMeadow(int seed, int detail)
         {
             SceneTag = "ch1_m02";
@@ -33,7 +71,6 @@ namespace AdventureKing.ArtPipeline
             Transform art = Group(world, "Scenery");
             Transform solids = Group(world, "Collision");
             Transform play = Group(world, "Gameplay");
-            var layout = TownLayout.Ch1GreenMeadow;
 
             // Fixed gameplay geometry: portal positions and monster platforms MUST match the server config.
             Ground(art, solids, TownLayout.Ch1GreenMeadow.MinX, TownLayout.Ch1GreenMeadow.MaxX, false);
