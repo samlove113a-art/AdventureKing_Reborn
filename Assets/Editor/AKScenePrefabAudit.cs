@@ -49,7 +49,7 @@ namespace AdventureKing.EditorTools
                     problems.Add("Internal QA scene is enabled in production Build Settings: " + path);
             }
 
-            var paths = AssetDatabase.FindAssets("t:Scene t:Prefab")
+            var paths = AssetDatabase.FindAssets("t:Scene").Concat(AssetDatabase.FindAssets("t:Prefab"))
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .Where(p => p.EndsWith(".unity", StringComparison.OrdinalIgnoreCase) ||
                             p.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase))
