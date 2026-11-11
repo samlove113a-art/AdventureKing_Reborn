@@ -136,6 +136,7 @@ public sealed class CharacterService
         ["wedding_hall"] = new("wedding_hall", "Sảnh Kết Hôn", -30f, 30f, -4f, 20f),
         // Chương 1 — Vương Quốc Nấm (Docs/CHAPTER01_PLAN.md §3)
         ["ch1_mushroom_village"] = new("ch1_mushroom_village", "Làng Nấm", -50f, 100f, -8f, 30f),
+        ["ch1_green_meadow"] = new("ch1_green_meadow", "Đồng Cỏ Xanh", -50f, 116f, -8f, 30f),
     };
 
     public const string StartMap = "village_wind_bell";
@@ -157,6 +158,8 @@ public sealed class CharacterService
         // Chương 1: east end of Đồng Cỏ Gió ⇄ west gate of Làng Nấm (Map 1)
         ["meadow_east_ch1"] = new("meadow_east_ch1", "meadow_breeze", 78f, 0f, "ch1_mushroom_village", -36f, 0.9f),
         ["ch1_village_west_meadow"] = new("ch1_village_west_meadow", "ch1_mushroom_village", -40f, 0f, "meadow_breeze", 74f, 0.9f),
+        ["ch1_village_east_m02"] = new("ch1_village_east_m02", "ch1_mushroom_village", 92f, 0f, "ch1_green_meadow", -36f, 0.9f),
+        ["ch1_m02_west_village"] = new("ch1_m02_west_village", "ch1_green_meadow", -40f, 0f, "ch1_mushroom_village", 94f, 0.9f),
     };
 
     public const float PortalReach = 3.5f;
