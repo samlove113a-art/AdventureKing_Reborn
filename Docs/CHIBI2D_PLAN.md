@@ -23,3 +23,9 @@
 - Mage 2D nhỏ hơn thân 3D khoảng 1/3 (tỉ lệ khung); cần chỉnh `frame_m`/`heroScale` khi duyệt.
 - `HeroOutfit` (đồ shop) chỉ tác dụng lên thân 3D; thân 2D chưa mặc đồ.
 - Không dùng Unity 2D Animation/Skeletal Rig (gói chưa cài); dùng sprite-frame animation.
+## 2026-11-17 — Pipeline Meshy → Blender → sprite pixel (theo yêu cầu "không cắt ảnh")
+- `Tools/meshy/character_pipeline.py` tạo model + rig + animation từ **chân dung** trong 4 ảnh tham chiếu (`ArtSource/OwnerProvided/Portraits/`), tên `ref_<class>`. **Credit: 287** (3 model × 30 mới + Kiếm Sĩ 30, rig 4 × 5, animation ~147). Số dư API sau đó: 2.555. Đã ghi `ArtSource/Meshy/manifest.jsonl`.
+- `Tools/blender/export_character.py` + `ArtSource/Specs/ref_<class>.json` → FBX (`ArtSource/Chibi2D/_meshy/`, không ghi đè model 3D đang chạy trong game).
+- `Tools/blender/bake_chibi_pixel.py` → camera ngang, đầu phóng 1,2×, màu 30 màu/class, viền 1 px, khung 128 px → `ArtSource/Chibi2D/_MeshyPixel/<Class>/` (+ `<Class>_preview.png`).
+- **Kết quả thật:** Kiếm Sĩ đọc được (tóc bạc, giáp xanh, kiếm). **Pháp Sư bị dính cả bệ cỏ/nấm** của ảnh tham chiếu vào model; **Cung Thủ chỉ thấy mũ trùm + tóc, thân nhỏ xíu**; Sát Thủ chưa xem kỹ. Nguyên nhân: Meshy dựng luôn nền / khối tóc từ ảnh có nền rừng. Cần ảnh nhân vật **tách nền** (không có bệ đất) cho mỗi class rồi tạo lại (~35 credit/class + animation ~40).
+- **Chưa đưa vào Unity:** `Assets/Resources/Chibi2D/*_Visual2D.prefab` hiện vẫn là bản cắt từ ảnh (tạm, trái yêu cầu mới) cho tới khi có model Meshy sạch.

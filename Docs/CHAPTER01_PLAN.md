@@ -115,3 +115,5 @@ Quy tắc: làm **1 mẫu, kiểm tra, rồi mới làm loạt**; ghi credit t�
 - **Quest UI**: điện thoại (hoặc `QuestPanel.ForceMobile`) mặc định THU GỌN lúc vào game; mở/đóng tay được nhớ riêng (`ak_quest_folded_mobile`), PC giữ khóa cũ và mặc định mở. Thẻ mở co theo chiều cao canvas (`FitScale`) để kết thúc phía trên joystick. Không có `UIManager`: bố cục an toàn nhờ `SafeAreaFitter` sẵn có.
 - **Test**: server 168/168; PlayMode `Chapter1Tests` 4/4 (có test cổng Map 2→3→2, giữ gold/level/inventory, tranh nền từng map, Quest UI không chồng joystick/Jump/Interact/skill bar ở 6 độ phân giải tính toán); QuestHealer/SkillSync/Town/Hall/Farm/SkillCombat 8/8. Meshy: 0 credit.
 - **Lưu ý**: đăng nhập lại luôn về Thị trấn (thiết kế sẵn của `CharacterService.Enter`), nên "reconnect" trả hero về hub, không về Map 3. Chưa đo trên thiết bị thật; "điện thoại" được giả lập bằng `ForceMobile`.
+
+- **Meshy 2026-11-17:** +287 credit cho 4 model nhân vật từ ảnh tham chiếu (ref_swordsman/mage/archer/assassin: model + rig + animation). Tổng Chương 1 ≈ 687/2.000; số dư API 2.555.
