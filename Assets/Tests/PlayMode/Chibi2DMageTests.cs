@@ -68,7 +68,7 @@ namespace AdventureKing.Tests
             var sr = world.HeroModel.GetComponentInChildren<SpriteRenderer>();
             Assert.IsTrue(sr && sr.sprite, "sprite shown");
             Assert.AreEqual(FilterMode.Point, sr.sprite.texture.filterMode, "pixel art is drawn with point filtering (crisp, never smoothed)");
-            Assert.AreEqual(96, sr.sprite.texture.height, "96 px pixel-art frames");
+            Assert.AreEqual(128, sr.sprite.texture.height, "128 px pixel-art frames cut from the owner design sheet");
             foreach (string fx in new[] { "cast_circle", "arcane_orb", "hit_spark" })
             {
                 var prefab = Resources.Load<GameObject>("Chibi2D/Fx/" + fx);

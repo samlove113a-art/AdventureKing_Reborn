@@ -20,7 +20,7 @@ import numpy as np
 
 PIXEL = "--pixel" in sys.argv     # premium pixel-art output: 96 px frames, fixed palette, hard 1 px outline, no anti-aliasing
 LW = 3.2 if PIXEL else 1.0            # line-weight multiplier: ink lines must be a full pixel wide to survive the downsample
-PX = 96                               # pixel-art frame size
+PX = 128                              # pixel-art frame size
 S = 384                  # frame size (design px)
 SS = 2                   # supersampling
 CX, G = 150.0, 364.0     # root x (feet centre) and ground line
@@ -31,7 +31,7 @@ GROUND_M = (S - G) / (S / FRAME_M)
 _Y, _X = np.mgrid[0:S * SS, 0:S * SS].astype(np.float32)
 X = (_X + 0.5) / SS
 Y = (_Y + 0.5) / SS
-INK = np.array([0.15, 0.08, 0.2], np.float32)
+INK = np.array([0.14, 0.07, 0.27], np.float32)
 
 
 def rgb(h):
@@ -42,12 +42,12 @@ def rgb(h):
 # (base, shadow, light, ink line)
 PAL = {
     "skin": (rgb("#ffe0cc"), rgb("#f1b49a"), rgb("#fff4ea"), rgb("#7a3a3a")),
-    "hair": (rgb("#ece4ff"), rgb("#b9a8f0"), rgb("#ffffff"), rgb("#3b2a78")),
-    "hat": (rgb("#4c2da0"), rgb("#2f1a6c"), rgb("#7e5ad8"), rgb("#170c40")),
+    "hair": (rgb("#f3eeff"), rgb("#c4b4f6"), rgb("#ffffff"), rgb("#4d3c90")),
+    "hat": (rgb("#6040bc"), rgb("#3c2484"), rgb("#9070ec"), rgb("#1c0f4c")),
     "band": (rgb("#2c1a6a"), rgb("#1c1048"), rgb("#4d33a0"), rgb("#0e0630")),
     "gold": (rgb("#ffd45c"), rgb("#d9922b"), rgb("#fff3b0"), rgb("#6a3d0c")),
-    "dress": (rgb("#4a2f9e"), rgb("#2f1a6e"), rgb("#7a58d0"), rgb("#150c3c")),
-    "cape": (rgb("#4a2a96"), rgb("#2e1a66"), rgb("#7c58d0"), rgb("#150a3a")),
+    "dress": (rgb("#5c3cb8"), rgb("#3a2480"), rgb("#8e6ee8"), rgb("#1e1050")),
+    "cape": (rgb("#5a38b0"), rgb("#382272"), rgb("#8868dc"), rgb("#1a0e44")),
     "white": (rgb("#fbfbff"), rgb("#cdd0ec"), rgb("#ffffff"), rgb("#3a3f78")),
     "wood": (rgb("#b27a42"), rgb("#7a4c28"), rgb("#dfa664"), rgb("#3c2010")),
     "boot": (rgb("#3a2468"), rgb("#241446"), rgb("#5e40a0"), rgb("#10082a")),
@@ -231,7 +231,7 @@ class Canvas:
             return
         base, shd, hi, ink = PAL[pal] if isinstance(pal, str) else pal
         t = ((lx - center[0]) * 0.5 + (ly - center[1]) * 0.86) / max(r, 1.0)
-        sh = np.clip((t - 0.52) * 60, 0, 1) if shade else np.zeros_like(t)
+        sh = np.clip((t - 0.64) * 60, 0, 1) if shade else np.zeros_like(t)
         li = np.clip((-0.74 - t) * 60, 0, 1) * (1 - sh) if shade else np.zeros_like(t)
         col = base[None, None, :] * (1 - sh[..., None]) + shd[None, None, :] * sh[..., None]
         col = col * (1 - li[..., None]) + hi[None, None, :] * li[..., None]
@@ -444,7 +444,7 @@ def render(p):
     for i, pts in enumerate(bangs_pts):
         cv.fill(lock(lx, ly, pts, 15 - i * 1.0, 2.2), lx, ly, "hair", pts[1], 36, line=1.8)
         cv.solid(ring(capsule(lx, ly, pts[0][0] + 3, pts[0][1] + 4, pts[1][0] + 3, pts[1][1], 1, 1), 1.1), PAL["hair"][3], 0.7)
-    side = [(hc[0] - 46, hc[1] - 20), (hc[0] - 48, hc[1] + 26), (hc[0] - 56, hc[1] + 64), (hc[0] - 46, hc[1] + 86)]
+    side = [(hc[0] - 46, hc[1] - 20), (hc[0] - 50, hc[1] + 30), (hc[0] - 62, hc[1] + 76), (hc[0] - 48, hc[1] + 112), (hc[0] - 60, hc[1] + 132)]
     cv.fill(lock(lx, ly, side, 15, 3.2), lx, ly, "hair", (hc[0] - 50, hc[1] + 30), 56, line=2.0)
     for i in range(2):
         cv.solid(ring(capsule(lx, ly, hc[0] - 42 + i * 5, hc[1] - 6, hc[0] - 48 + i * 4, hc[1] + 52, 1, 1), 1.2), PAL["hair"][3], 0.75)
