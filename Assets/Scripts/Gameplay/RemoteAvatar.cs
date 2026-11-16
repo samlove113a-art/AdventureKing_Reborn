@@ -46,6 +46,7 @@ namespace AdventureKing.Gameplay
             a.Visual.Bind(a.Model.transform, a.Model.GetComponentInChildren<Animator>(true));
             HeroOutfit outfit = AdventureWorldSession.DressHero(a.Model, (HeroClass)s.heroClass);
             outfit.Apply(s.outfit ?? new OutfitLoadout());
+            a.Model.GetComponent<Paperdoll2D>()?.ApplyLoadout(s.outfit);
             a.Pose = a.Model.AddComponent<PoseOverlay>();
             a.Pose.Bind(a.Model.transform);
             a.BuildPlate(font);

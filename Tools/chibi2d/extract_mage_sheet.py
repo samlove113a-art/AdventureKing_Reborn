@@ -113,7 +113,7 @@ def cutout(box, ladder=False):
     # keep everything within 4 px of a light pixel, fill the enclosed dark parts (robe, boots), drop the rest, shave 2 px
     fg = vs >= 0.235
     grow = fg
-    for _ in range(4):
+    for _ in range(3):
         grow = dilate4(grow)
     outside = np.zeros_like(grow)
     outside[0, :] = outside[-1, :] = outside[:, 0] = outside[:, -1] = True

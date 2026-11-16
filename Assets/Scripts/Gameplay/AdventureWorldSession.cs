@@ -154,6 +154,7 @@ namespace AdventureKing.Gameplay
             // Wear the outfit the server has on record (restored after relog / scene change / server restart).
             Outfit = DressHero(HeroModel, character.heroClass);
             Outfit.Apply(character.outfit);
+            HeroModel.GetComponent<Paperdoll2D>()?.ApplyLoadout(character.outfit);   // 2D body: the same server outfit drives the paper-doll layers
             // class-based pools for the HUD (HP from the class table; MP is a balance proposal until skills land)
             if (player)
             {
@@ -189,6 +190,7 @@ namespace AdventureKing.Gameplay
             character.diamonds = diamonds;
             character.serverRevision = revision;
             if (Outfit) Outfit.Apply(character.outfit);
+            if (HeroModel) HeroModel.GetComponent<Paperdoll2D>()?.ApplyLoadout(character.outfit);
         }
 
         private void FixedUpdate()

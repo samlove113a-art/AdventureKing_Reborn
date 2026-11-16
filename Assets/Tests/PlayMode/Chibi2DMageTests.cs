@@ -153,6 +153,86 @@ namespace AdventureKing.Tests
         }
 
         [UnityTest]
+        public IEnumerator Pixel_Material_Is_Unlit_Scale_Is_Compact_And_Paperdoll_Swaps_Replace_Never_Stack()
+        {
+            yield return server.OpenGame();
+            yield return TestServer.RegisterCreateAndEnter("pd" + Random.Range(1000, 9999), "chibi-pass-2026", HeroClass.Mage, "Pháp Sư Đồ");
+            var world = AdventureWorldSession.Current;
+            motor = world.Player; input = motor.GetComponent<PlayerInput2D>();
+            var pd = world.HeroModel.GetComponent<Paperdoll2D>();
+            Assert.IsNotNull(pd, "paper doll on the 2D body");
+            var sr = pd.Body;
+
+            // 1) material: unlit pixel shader, no emission / HDR, brightness capped under the bloom threshold (no glow haze)
+            Assert.AreEqual("AdventureKing/PixelSprite", sr.sharedMaterial.shader.name);
+            Assert.IsFalse(sr.sharedMaterial.HasProperty("_EmissionColor"), "no emission");
+            Assert.LessOrEqual(sr.sharedMaterial.GetFloat("_MaxLuma"), 0.86f, "under AK_WorldLook bloom threshold 0.86");
+            Assert.AreEqual(Color.white, sr.color, "no tint");
+
+            // 2) compact scale: the whole 2D body is about as tall as the gameplay collider (not a screen-filling giant)
+            var col = motor.GetComponent<Collider2D>();
+            yield return new WaitForSeconds(0.6f);
+            Assert.That(sr.bounds.size.y, Is.InRange(0.55f, 1.35f), "sprite height in metres: " + sr.bounds.size.y);
+            Assert.LessOrEqual(sr.bounds.size.y, col.bounds.size.y * 1.1f, "not taller than the collider");
+            Assert.AreEqual(1, pd.VisibleRenderers(), "only the base body at first");
+            yield return Shot("10_scale_compact");
+
+            // 3) outfit set from the paper-doll resources: replaces the body, follows the animation frame by frame
+            Assert.IsTrue(pd.Equip(PaperSlot.Outfit, "fire_mage", true));
+            yield return null;
+            Assert.IsFalse(pd.Body.enabled, "base body hidden while a full outfit is worn");
+            Assert.AreEqual(1, pd.VisibleRenderers(), "exactly one sprite on screen");
+            Transform outfitLayer = world.HeroModel.transform.Find("Paper_Outfit");
+            var outfitSr = outfitLayer.GetComponent<SpriteRenderer>();
+            Texture fireTex = outfitSr.sprite.texture;
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Right, true);
+            yield return new WaitForSeconds(0.55f);
+            Assert.AreEqual(pd.Body.sprite.name, outfitSr.sprite.name, "outfit layer shows the same clip + frame as the animated body");
+            yield return Shot("11_outfit_fire_running");
+            input.SetTouchHeld(PlayerInput2D.TouchAction.Right, false);
+            yield return new WaitForSeconds(0.4f);
+
+            // 4) swap to another outfit: the old sprite is gone, still ONE layer and ONE visible sprite
+            Assert.IsTrue(pd.Equip(PaperSlot.Outfit, "frost_mage", true));
+            yield return null;
+            Assert.AreEqual(1, world.HeroModel.GetComponentsInChildren<SpriteRenderer>(true).Count(r => r.name == "Paper_Outfit"), "one outfit layer, never two");
+            Assert.AreEqual(1, pd.VisibleRenderers());
+            Assert.AreNotEqual(fireTex, outfitSr.sprite.texture, "the new outfit replaced the old sprite");
+            Assert.IsFalse(world.HeroModel.GetComponentsInChildren<SpriteRenderer>(true).Any(r => r.sprite && r.sprite.texture == fireTex), "no trace of the old outfit left");
+            yield return Shot("12_outfit_frost");
+
+            // 5) the server outfit drives it: a known set equips, an unknown set clears
+            pd.ApplyLoadout(new OutfitLoadout { set = "fire_mage" });
+            Assert.AreEqual("fire_mage", pd.Equipped(PaperSlot.Outfit));
+            pd.ApplyLoadout(new OutfitLoadout { set = "something_else" });
+            yield return null;
+            Assert.IsNull(pd.Equipped(PaperSlot.Outfit));
+            Assert.IsTrue(pd.Body.enabled, "base body is back");
+            Assert.AreEqual(1, pd.VisibleRenderers());
+
+            // 6) part slots (hat / weapon): one renderer per slot, a new item replaces the previous one
+            Sprite Dot(Color c)
+            {
+                var tex = new Texture2D(8, 8, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point };
+                var px = new Color[64]; for (int i = 0; i < 64; i++) px[i] = c; tex.SetPixels(px); tex.Apply();
+                return Sprite.Create(tex, new Rect(0, 0, 8, 8), new Vector2(0.5f, 0f), 110f);
+            }
+            Sprite red = Dot(Color.red), green = Dot(Color.green);
+            var redSet = Paperdoll2D.Clips.ToDictionary(c => c, c => new[] { red });
+            var greenSet = Paperdoll2D.Clips.ToDictionary(c => c, c => new[] { green });
+            pd.EquipRuntime(PaperSlot.Hat, "hat_red", redSet);
+            yield return null;
+            pd.EquipRuntime(PaperSlot.Hat, "hat_green", greenSet);
+            yield return null;
+            Assert.AreEqual(1, world.HeroModel.GetComponentsInChildren<SpriteRenderer>(true).Count(r => r.name == "Paper_Hat"), "one hat layer");
+            Assert.AreSame(green, world.HeroModel.transform.Find("Paper_Hat").GetComponent<SpriteRenderer>().sprite, "the new hat replaced the old one");
+            Assert.AreEqual(2, pd.VisibleRenderers(), "body + one hat");
+            pd.Clear(PaperSlot.Hat);
+            Assert.AreEqual(1, pd.VisibleRenderers());
+            Assert.IsFalse(pd.Equip(PaperSlot.Weapon, "no_such_item"), "missing art changes nothing");
+            Assert.AreEqual(1, pd.VisibleRenderers());
+        }
+        [UnityTest]
         public IEnumerator Default_Style_Is_Still_The_3D_Body_And_Other_Classes_Fall_Back_To_3D()
         {
             HeroVisualStyle.Override = "3d";

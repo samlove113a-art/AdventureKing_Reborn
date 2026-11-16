@@ -7,7 +7,7 @@ namespace AdventureKing.Gameplay
     {
         public SpriteRenderer Renderer;
         /// <summary>Extra size on top of the hero scale: big-head chibi sprites read at a larger size than the 3D body and match the NPC height.</summary>
-        public float Scale = 1.05f;
+        public float Scale = 0.7f;
 
         public static float ScaleOf(GameObject model) { var m = model ? model.GetComponent<Chibi2DMarker>() : null; return m ? m.Scale : 1f; }
     }

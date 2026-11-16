@@ -89,7 +89,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 60a8b4b7df6b0334db25dfa6b7a9e97c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 1723260901246511541}
   - component: {fileID: 2755471631837759531}
   - component: {fileID: 3847451658151807636}
+  - component: {fileID: 1883451395366758030}
   m_Layer: 0
   m_Name: Mage_Visual2D
   m_TagString: Untagged
@@ -206,4 +207,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.Chibi2DMarker
   Renderer: {fileID: 6733211020993011548}
-  Scale: 1.05
+  Scale: 0.7
+--- !u!114 &1883451395366758030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5950191573322205882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 524d5fe1229db8a4b937673f6986bad2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.Paperdoll2D
+  body: {fileID: 0}
+  heroName: Mage

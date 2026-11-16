@@ -96,7 +96,7 @@ namespace AdventureKing.ArtPipeline
             spriteGo.transform.SetParent(root.transform, false);
             var sr = spriteGo.AddComponent<SpriteRenderer>();
             sr.sprite = spriteClips["Idle"] ? AssetDatabase.LoadAllAssetsAtPath($"{Dst}/{name}/{clips["Idle"].file}").OfType<Sprite>().OrderBy(s => s.name).First() : null;
-            sr.sharedMaterial = AssetDatabase.GetBuiltinExtraResource<Material>("Sprites-Default.mat");
+            sr.sharedMaterial = PixelMaterial();      // unlit, no emission, capped under the bloom threshold: no glow haze, colours as painted
             sr.sortingOrder = 5;
             var anim = root.AddComponent<Animator>();
             anim.runtimeAnimatorController = ov;
@@ -106,12 +106,59 @@ namespace AdventureKing.ArtPipeline
             head.localPosition = new Vector3(0f, 0.72f, 0f);
             root.AddComponent<CharacterAnimationEvents>();
             root.AddComponent<Chibi2DMarker>().Renderer = sr;
+            root.AddComponent<Paperdoll2D>();          // modular equipment layers (outfit / hat / weapon), one renderer per slot
             string prefabPath = $"{Res}/{name}_Visual2D.prefab";
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             UnityEngine.Object.DestroyImmediate(root);
             AssetDatabase.SaveAssets();
             Debug.Log($"[CHIBI2D] {name}: {clips.Count} clips, ppu {ppu:0.0}, pixel {pixel}, prefab {prefabPath}");
             BuildFx(name, ppu);
+            BuildOutfits(name, clips, cell, ppu, pivot, pixel);
+        }
+
+        /// <summary>The unlit pixel-art sprite material (AdventureKing/PixelSprite), shared by every 2D body and effect.</summary>
+        public static Material PixelMaterial()
+        {
+            const string path = "Assets/Art/Chibi2D/AK_PixelSprite.mat";
+            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m) return m;
+            m = new Material(Shader.Find("AdventureKing/PixelSprite")) { name = "AK_PixelSprite" };
+            AssetDatabase.CreateAsset(m, path);
+            return m;
+        }
+
+        /// <summary>Paper-doll items: every folder ArtSource/Chibi2D/{Hero}/Outfits/{set} becomes Resources/Chibi2D/Paperdoll/{set}/{Hero}_{Clip}.png,
+        /// sliced exactly like the body (same frame size, pivot, point filter) so layers line up pixel for pixel.</summary>
+        private static void BuildOutfits(string name, Dictionary<string, ClipMeta> clips, float cell, float ppu, Vector2 pivot, bool pixel)
+        {
+            string root = $"{Src}/{name}/Outfits";
+            if (!Directory.Exists(root)) return;
+            foreach (string dir in Directory.GetDirectories(root))
+            {
+                string set = Path.GetFileName(dir);
+                string outDir = $"{Res}/Paperdoll/{set}";
+                Directory.CreateDirectory(outDir);
+                foreach (var kv in clips)
+                {
+                    string src = $"{dir}/{kv.Value.file}";
+                    if (!File.Exists(src)) continue;
+                    string dst = $"{outDir}/{kv.Value.file}";
+                    File.Copy(src, dst, true);
+                    AssetDatabase.ImportAsset(dst, ImportAssetOptions.ForceSynchronousImport);
+                    var ti = (TextureImporter)AssetImporter.GetAtPath(dst);
+                    ti.textureType = TextureImporterType.Sprite; ti.spriteImportMode = SpriteImportMode.Multiple; ti.spritePixelsPerUnit = ppu;
+                    ti.mipmapEnabled = false; ti.filterMode = pixel ? FilterMode.Point : FilterMode.Bilinear; ti.alphaIsTransparency = true;
+                    ti.textureCompression = TextureImporterCompression.Uncompressed; ti.maxTextureSize = 4096;
+                    var sheet = new SpriteMetaData[kv.Value.frames];
+                    for (int i = 0; i < sheet.Length; i++)
+                        sheet[i] = new SpriteMetaData { name = $"{name}_{kv.Key}_{i}", rect = new Rect(i * cell, 0, cell, cell), alignment = (int)SpriteAlignment.Custom, pivot = pivot };
+#pragma warning disable CS0618
+                    ti.spritesheet = sheet;
+#pragma warning restore CS0618
+                    ti.SaveAndReimport();
+                }
+                Debug.Log($"[CHIBI2D] paper-doll outfit {set} built");
+            }
         }
 
         /// <summary>Skill effects as separate assets: Resources/Chibi2D/Fx/{effect}.prefab (SpriteRenderer + SpriteFlipbook), same pixel scale as the body.</summary>
@@ -142,7 +189,7 @@ namespace AdventureKing.ArtPipeline
                 Sprite[] sp = AssetDatabase.LoadAllAssetsAtPath(dst).OfType<Sprite>().OrderBy(s => int.Parse(s.name.Substring(s.name.LastIndexOf('_') + 1))).ToArray();
                 var go = new GameObject(fx);
                 var sr = go.AddComponent<SpriteRenderer>();
-                sr.sharedMaterial = AssetDatabase.GetBuiltinExtraResource<Material>("Sprites-Default.mat");
+                sr.sharedMaterial = PixelMaterial();
                 sr.sortingOrder = 6;
                 var fb = go.AddComponent<SpriteFlipbook>();
                 fb.Frames = sp; fb.Fps = float.Parse(m.Groups[3].Value); fb.Loop = m.Groups[4].Value == "true"; fb.DestroyOnEnd = !fb.Loop;
