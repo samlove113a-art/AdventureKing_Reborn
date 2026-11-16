@@ -42,16 +42,16 @@ def rgb(h):
 # (base, shadow, light, ink line)
 PAL = {
     "skin": (rgb("#ffe0cc"), rgb("#f1b49a"), rgb("#fff4ea"), rgb("#7a3a3a")),
-    "hair": (rgb("#cdb4ff"), rgb("#9d7fe6"), rgb("#f0e6ff"), rgb("#3f2a78")),
-    "hat": (rgb("#6a48cc"), rgb("#43299a"), rgb("#9d84f2"), rgb("#1f1250")),
-    "band": (rgb("#ff8fb8"), rgb("#d9588a"), rgb("#ffc2d8"), rgb("#5a1840")),
+    "hair": (rgb("#ece4ff"), rgb("#b9a8f0"), rgb("#ffffff"), rgb("#3b2a78")),
+    "hat": (rgb("#4c2da0"), rgb("#2f1a6c"), rgb("#7e5ad8"), rgb("#170c40")),
+    "band": (rgb("#2c1a6a"), rgb("#1c1048"), rgb("#4d33a0"), rgb("#0e0630")),
     "gold": (rgb("#ffd45c"), rgb("#d9922b"), rgb("#fff3b0"), rgb("#6a3d0c")),
-    "dress": (rgb("#3f62d0"), rgb("#2b43a0"), rgb("#7a9cf4"), rgb("#14224f")),
-    "cape": (rgb("#6a3fb0"), rgb("#47287f"), rgb("#9a74e0"), rgb("#1f1050")),
+    "dress": (rgb("#4a2f9e"), rgb("#2f1a6e"), rgb("#7a58d0"), rgb("#150c3c")),
+    "cape": (rgb("#4a2a96"), rgb("#2e1a66"), rgb("#7c58d0"), rgb("#150a3a")),
     "white": (rgb("#fbfbff"), rgb("#cdd0ec"), rgb("#ffffff"), rgb("#3a3f78")),
     "wood": (rgb("#b27a42"), rgb("#7a4c28"), rgb("#dfa664"), rgb("#3c2010")),
-    "boot": (rgb("#8c5630"), rgb("#5c371c"), rgb("#bd7a46"), rgb("#2a1408")),
-    "gem": (rgb("#b85cff"), rgb("#7a2cd4"), rgb("#f0c8ff"), rgb("#2c0a5c")),
+    "boot": (rgb("#3a2468"), rgb("#241446"), rgb("#5e40a0"), rgb("#10082a")),
+    "gem": (rgb("#a05cff"), rgb("#6a2cd4"), rgb("#e8d0ff"), rgb("#240a58")),
     "sock": (rgb("#4d6ad0"), rgb("#33459e"), rgb("#8097ee"), rgb("#14224f")),
     "pink": (rgb("#ff8fb8"), rgb("#d9588a"), rgb("#ffc2d8"), rgb("#5a1840")),
 }
@@ -290,7 +290,7 @@ def render(p):
     cv = Canvas()
     cv.flash = p["flash"]
     root = Xf([((CX, G), p["lean"] + p["fall"], (p["fall_dx"], p["bob"] - p["lift"]), (p["sx"] * BASE, p["sy"] * BASE))])
-    hip = (CX + 2, 314)
+    hip = (CX + 2, 300)
     sh = (CX + 8, 236)
     hc = (CX + 14, 148)          # head centre
 
@@ -299,7 +299,6 @@ def render(p):
     lx, ly = cx_(X, Y)
     cape = smin(capsule(lx, ly, CX - 4, 236, CX - 30, 318, 20, 34), ellipse(lx, ly, CX - 8, 244, 26, 22), 8)
     cv.fill(cape, lx, ly, "cape", (CX - 14, 280), 50)
-    cv.fill(np.where(ly > 326, cape, 99.0), lx, ly, "gold", (CX - 20, 330), 20, line=1.4, shade=False)   # hem trim
     cv.solid(np.where(ly < 300, ring(capsule(lx, ly, CX - 8, 250, CX - 26, 300, 3, 5) - 8, 1.4), 99.0), rgb("#9a74e0"), 0.7)
 
     # ---------------------------------------------------------------- back hair, long locks, braid with a ribbon
@@ -308,7 +307,7 @@ def render(p):
     back = union(ellipse(lx, ly, hc[0] - 34, hc[1] + 8, 66, 74), ellipse(lx, ly, hc[0] - 60, hc[1] + 54, 28, 40))
     cv.fill(back, lx, ly, "hair", (hc[0] - 34, hc[1]), 80)
     for k, (dx, dy, rr) in enumerate(((-18, 0, 15), (-46, 8, 14))):         # hanging lock tips behind the shoulders
-        tip = lock(lx, ly, [(hc[0] + dx, hc[1] + 56), (hc[0] + dx - 16, hc[1] + 92 + dy), (hc[0] + dx - 8, hc[1] + 120 + dy)], rr, 3)
+        tip = lock(lx, ly, [(hc[0] + dx, hc[1] + 50), (hc[0] + dx - 18, hc[1] + 100 + dy), (hc[0] + dx - 6, hc[1] + 140 + dy), (hc[0] + dx - 20, hc[1] + 168 + dy)], rr + 3, 3)
         cv.fill(tip, lx, ly, "hair", (hc[0] + dx, hc[1] + 90), 50)
     prev = hx
     px, py = hc[0] - 64, hc[1] + 40
@@ -336,16 +335,16 @@ def render(p):
     # ---------------------------------------------------------------- legs: striped sock, boot with cuff and buckle
     def leg(angles, dx, tint):
         hp = root.child((hip[0] + dx, hip[1]), angles[0])
-        kn = hp.child((hip[0] + dx, hip[1] + 20), angles[1])
+        kn = hp.child((hip[0] + dx, hip[1] + 24), angles[1])
         fx = hip[0] + dx
         lx, ly = hp(X, Y)
-        cv.fill(capsule(lx, ly, fx, hip[1], fx, hip[1] + 22, 12, 11), lx, ly, "white", (fx, hip[1] + 12), 22, tint=tint)
+        cv.fill(capsule(lx, ly, fx, hip[1], fx, hip[1] + 26, 10, 9.5), lx, ly, "white", (fx, hip[1] + 12), 22, tint=tint)
         lx, ly = kn(X, Y)
-        shin = capsule(lx, ly, fx, hip[1] + 20, fx, hip[1] + 40, 11, 10)
+        shin = capsule(lx, ly, fx, hip[1] + 24, fx, hip[1] + 48, 9.5, 9)
         cv.fill(shin, lx, ly, "white", (fx, hip[1] + 30), 22, tint=tint)
-        stripe = (np.floor((ly - (hip[1] + 20)) / 6.0) % 2) == 1
+        stripe = (np.floor((ly - (hip[1] + 20)) / 6.0) % 2) == 7   # plain white thigh-high socks
         cv.fill(np.where(stripe, shin, 99.0), lx, ly, "sock", (fx, hip[1] + 30), 22, line=0, tint=tint)
-        foot = union(ellipse(lx, ly, fx + 10, hip[1] + 46, 25, 13), ellipse(lx, ly, fx - 2, hip[1] + 40, 14, 14))
+        foot = union(ellipse(lx, ly, fx + 9, hip[1] + 54, 22, 11), ellipse(lx, ly, fx - 2, hip[1] + 46, 12, 14))
         cv.fill(foot, lx, ly, "boot", (fx + 8, hip[1] + 46), 26, tint=tint)
         cv.fill(box(lx, ly, fx - 1, hip[1] + 34, 13, 5, 3), lx, ly, "boot", (fx, hip[1] + 34), 14, tint=tint)          # cuff
         cv.fill(ellipse(lx, ly, fx + 2, hip[1] + 34, 3.5, 3.5), lx, ly, "gold", (fx + 2, hip[1] + 34), 4, line=1.0, tint=tint)  # buckle
@@ -356,14 +355,14 @@ def render(p):
 
     # ---------------------------------------------------------------- body: tabard dress, trim, crest, belt, pouch, ruff
     lx, ly = root(X, Y)
-    dress = smin(capsule(lx, ly, CX + 4, 246, CX + 2, 290, 30, 38), ellipse(lx, ly, CX + 4, 254, 33, 28), 8)
+    dress = smin(capsule(lx, ly, CX + 4, 246, CX + 2, 278, 30, 38), ellipse(lx, ly, CX + 4, 254, 33, 28), 8)
     cv.fill(dress, lx, ly, "dress", (CX + 2, 270), 48)
     # gold trim: hem with scallops, centre stripe and the star crest
-    hem = np.where(ly > 319, dress, 99.0)
-    cv.fill(hem, lx, ly, "gold", (CX + 2, 322), 34, line=1.4, shade=False)
-    scal = np.where(ly > 319, ring(ellipse(np.mod(lx + 6, 12) - 6, ly, 0, 316, 5, 5), 1.2), 99.0)
+    hem = np.where(ly > 303, dress, 99.0)
+    cv.fill(hem, lx, ly, "white", (CX + 2, 310), 34, line=1.4, shade=False)
+    scal = np.where(ly > 303, ring(ellipse(np.mod(lx + 6, 12) - 6, ly, 0, 300, 5, 5), 1.2), 99.0)
     cv.solid(np.where(dress < 0, scal, 99.0), PAL["gold"][3], 0.8)
-    cv.solid(np.where(ly < 318, box(lx, ly, CX + 14, 284, 2.2, 26), 99.0), PAL["gold"][0])
+    cv.solid(np.where(ly < 300, box(lx, ly, CX + 14, 272, 2.2, 26), 99.0), PAL["gold"][0])
     cv.fill(star(lx, ly, CX + 18, 262, 10, 4.5), lx, ly, "gold", (CX + 18, 262), 10, line=1.2, shade=False)
     cv.fill(box(lx, ly, CX + 4, 278, 32, 5.5, 3), lx, ly, "boot", (CX + 4, 278), 30)                       # belt
     cv.fill(box(lx, ly, CX + 20, 278, 7, 8, 2), lx, ly, "gold", (CX + 20, 278), 8, line=1.2)                # buckle
@@ -388,7 +387,7 @@ def render(p):
         ry = 25 if eye == "open" else 28
         cv.solid(ellipse(lx, ly, ex, ey, 19, ry), rgb("#ffffff"))
         iris = ellipse(lx, ly, ex + 2, ey + 2, 15.5, ry - 2.5)
-        cv.fill(iris, lx, ly, (rgb("#7a52f0"), rgb("#4b2fb8"), rgb("#a9c6ff"), rgb("#24146a")), (ex + 2, ey - 4), 24, line=1.0)
+        cv.fill(iris, lx, ly, (rgb("#8a5cff"), rgb("#5a34c8"), rgb("#d2b8ff"), rgb("#2a1478")), (ex + 2, ey - 4), 24, line=1.0)
         cv.solid(ellipse(lx, ly, ex + 3, ey + 5, 9, ry - 12), rgb("#1c1052"))                    # pupil
         cv.solid(ellipse(lx, ly, ex - 6, ey - 9, 6.4, 7.6), rgb("#ffffff"))                       # big highlight
         cv.solid(ellipse(lx, ly, ex + 9, ey + 11, 3.2, 3.6), rgb("#ffffff"), 0.95)               # small highlight
@@ -473,11 +472,12 @@ def render(p):
     cv.solid(np.where(cone1 < 0, ring(ellipse(l1x, l1y, hc[0] - 6, hc[1] - 112, 26, 16), 1.5) + np.where(l1y > hc[1] - 108, 99.0, 0.0), 99.0), PAL["hat"][3], 0.5)
     band = np.where(np.abs(l1y - (hat_c[1] - 12)) < 10, cone1, 99.0)
     cv.fill(band, l1x, l1y, "band", (hat_c[0], hat_c[1] - 12), 44, line=1.8)
-    cv.fill(box(l1x, l1y, hat_c[0] + 38, hat_c[1] - 12, 8, 11, 2), l1x, l1y, "gold", (hat_c[0] + 38, hat_c[1] - 12), 12, line=1.6)   # buckle
-    cv.solid(box(l1x, l1y, hat_c[0] + 38, hat_c[1] - 12, 3.4, 6, 1), PAL["band"][0])
+    cv.fill(ellipse(l1x, l1y, hat_c[0] - 14, hat_c[1] - 12, 12, 9), l1x, l1y, "white", (hat_c[0] - 14, hat_c[1] - 12), 12, line=1.6)   # white bow
+    cv.fill(ellipse(l1x, l1y, hat_c[0] - 2, hat_c[1] - 12, 11, 9), l1x, l1y, "white", (hat_c[0] - 2, hat_c[1] - 12), 12, line=1.6)
     moon = np.maximum(ellipse(l1x, l1y, hat_c[0] + 8, hat_c[1] - 52, 14, 14), -ellipse(l1x, l1y, hat_c[0] + 14, hat_c[1] - 55, 12, 12))
     cv.fill(moon, l1x, l1y, "gold", (hat_c[0] + 4, hat_c[1] - 52), 14, line=1.4, shade=False)
-    cv.fill(star(l1x, l1y, hat_c[0] + 30, hat_c[1] - 42, 8, 3.6), l1x, l1y, "gold", (hat_c[0] + 30, hat_c[1] - 42), 8, line=1.2, shade=False)
+    cv.fill(star(l1x, l1y, hat_c[0] + 34, hat_c[1] - 14, 20, 9), l1x, l1y, "gold", (hat_c[0] + 34, hat_c[1] - 14), 20, line=1.6, shade=False)
+    cv.fill(ellipse(l1x, l1y, hat_c[0] + 34, hat_c[1] - 14, 7, 7), l1x, l1y, "gem", (hat_c[0] + 34, hat_c[1] - 14), 8, line=1.2)
     lx, ly = t1(X, Y)
     brim = ellipse(lx, ly, hat_c[0] + 4, hat_c[1] + 4, 108, 22)
     cv.fill(np.where(ly > hat_c[1] - 2, brim, 99.0), lx, ly, "hat", (hat_c[0], hat_c[1] + 8), 96, line=2.4)

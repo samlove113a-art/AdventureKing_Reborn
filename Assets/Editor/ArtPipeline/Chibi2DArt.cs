@@ -47,6 +47,7 @@ namespace AdventureKing.ArtPipeline
             var clips = ParseClips(json);
             Directory.CreateDirectory($"{Dst}/{name}");
             Directory.CreateDirectory(Res);
+            bool pixel = System.Text.RegularExpressions.Regex.IsMatch(json, "\"pixel\":\\s*true");
             float ppu = cell / frameM;                     // 1 model metre = ppu px: same scale as the 3D body
             Vector2 pivot = new Vector2(0.5f, ground / frameM);  // feet on the baseline
 
@@ -61,7 +62,7 @@ namespace AdventureKing.ArtPipeline
                 ti.spriteImportMode = SpriteImportMode.Multiple;
                 ti.spritePixelsPerUnit = ppu;
                 ti.mipmapEnabled = false;
-                ti.filterMode = FilterMode.Bilinear;
+                ti.filterMode = pixel ? FilterMode.Point : FilterMode.Bilinear;   // pixel art stays crisp, never smoothed
                 ti.alphaIsTransparency = true;
                 ti.textureCompression = TextureImporterCompression.Uncompressed;
                 ti.maxTextureSize = 4096;
@@ -109,7 +110,46 @@ namespace AdventureKing.ArtPipeline
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             UnityEngine.Object.DestroyImmediate(root);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[CHIBI2D] {name}: {clips.Count} clips, ppu {ppu:0.0}, prefab {prefabPath}");
+            Debug.Log($"[CHIBI2D] {name}: {clips.Count} clips, ppu {ppu:0.0}, pixel {pixel}, prefab {prefabPath}");
+            BuildFx(name, ppu);
+        }
+
+        /// <summary>Skill effects as separate assets: Resources/Chibi2D/Fx/{effect}.prefab (SpriteRenderer + SpriteFlipbook), same pixel scale as the body.</summary>
+        private static void BuildFx(string name, float ppu)
+        {
+            string meta = $"{Src}/{name}/Fx/fx_frames.json";
+            if (!File.Exists(meta)) return;
+            string json = File.ReadAllText(meta);
+            Directory.CreateDirectory($"{Dst}/{name}/Fx");
+            Directory.CreateDirectory($"{Res}/Fx");
+            var rx = new System.Text.RegularExpressions.Regex("\"(\\w+)\":\\s*\\{\\s*\"frames\":\\s*(\\d+),\\s*\"fps\":\\s*(\\d+),\\s*\"loop\":\\s*(true|false),\\s*\"size\":\\s*(\\d+),\\s*\"file\":\\s*\"([^\"]+)\"");
+            foreach (System.Text.RegularExpressions.Match m in rx.Matches(json))
+            {
+                string fx = m.Groups[1].Value; int frames = int.Parse(m.Groups[2].Value), size = int.Parse(m.Groups[5].Value);
+                string dst = $"{Dst}/{name}/Fx/{m.Groups[6].Value}";
+                File.Copy($"{Src}/{name}/Fx/{m.Groups[6].Value}", dst, true);
+                AssetDatabase.ImportAsset(dst, ImportAssetOptions.ForceSynchronousImport);
+                var ti = (TextureImporter)AssetImporter.GetAtPath(dst);
+                ti.textureType = TextureImporterType.Sprite; ti.spriteImportMode = SpriteImportMode.Multiple; ti.spritePixelsPerUnit = ppu;
+                ti.mipmapEnabled = false; ti.filterMode = FilterMode.Point; ti.alphaIsTransparency = true; ti.textureCompression = TextureImporterCompression.Uncompressed;
+                var sheet = new SpriteMetaData[frames];
+                for (int i = 0; i < frames; i++)
+                    sheet[i] = new SpriteMetaData { name = $"{fx}_{i}", rect = new Rect(i * size, 0, size, size), alignment = (int)SpriteAlignment.Center, pivot = new Vector2(0.5f, 0.5f) };
+#pragma warning disable CS0618
+                ti.spritesheet = sheet;
+#pragma warning restore CS0618
+                ti.SaveAndReimport();
+                Sprite[] sp = AssetDatabase.LoadAllAssetsAtPath(dst).OfType<Sprite>().OrderBy(s => int.Parse(s.name.Substring(s.name.LastIndexOf('_') + 1))).ToArray();
+                var go = new GameObject(fx);
+                var sr = go.AddComponent<SpriteRenderer>();
+                sr.sharedMaterial = AssetDatabase.GetBuiltinExtraResource<Material>("Sprites-Default.mat");
+                sr.sortingOrder = 6;
+                var fb = go.AddComponent<SpriteFlipbook>();
+                fb.Frames = sp; fb.Fps = float.Parse(m.Groups[3].Value); fb.Loop = m.Groups[4].Value == "true"; fb.DestroyOnEnd = !fb.Loop;
+                PrefabUtility.SaveAsPrefabAsset(go, $"{Res}/Fx/{fx}.prefab");
+                UnityEngine.Object.DestroyImmediate(go);
+            }
+            Debug.Log("[CHIBI2D] skill effects built");
         }
 
         private static AnimationClip MakeClip(string path, string clipName, Sprite[] frames, ClipMeta m)

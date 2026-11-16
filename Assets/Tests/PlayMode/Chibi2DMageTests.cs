@@ -67,6 +67,17 @@ namespace AdventureKing.Tests
             Assert.AreEqual(0, world.HeroModel.GetComponentsInChildren<SkinnedMeshRenderer>(true).Length, "no 3D mesh on the 2D body");
             var sr = world.HeroModel.GetComponentInChildren<SpriteRenderer>();
             Assert.IsTrue(sr && sr.sprite, "sprite shown");
+            Assert.AreEqual(FilterMode.Point, sr.sprite.texture.filterMode, "pixel art is drawn with point filtering (crisp, never smoothed)");
+            Assert.AreEqual(96, sr.sprite.texture.height, "96 px pixel-art frames");
+            foreach (string fx in new[] { "cast_circle", "arcane_orb", "hit_spark" })
+            {
+                var prefab = Resources.Load<GameObject>("Chibi2D/Fx/" + fx);
+                Assert.IsNotNull(prefab, "skill effect asset " + fx);
+                Assert.Greater(prefab.GetComponent<SpriteFlipbook>().Frames.Length, 3, fx + " frames");
+            }
+            var body = motor.GetComponent<Collider2D>();
+            Assert.IsTrue(body && body.enabled, "gameplay collider untouched by the visual swap");
+            Assert.That(body.bounds.size.y, Is.InRange(0.8f, 2.2f), "collider height unchanged");
             var anim = world.HeroModel.GetComponentInChildren<Animator>();
             var visual = world.PlayerVisual;
             Assert.IsTrue(visual.IsSprite);
