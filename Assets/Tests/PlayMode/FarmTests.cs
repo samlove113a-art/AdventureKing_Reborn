@@ -135,8 +135,8 @@ namespace AdventureKing.Tests
             var health = motor.GetComponent<Health2D>();
             Assert.Less(health.CurrentHealth, health.MaxHealth, "hero HP lowered by server-decided hits");
             Assert.AreEqual(1, farm.Kills);
-            Assert.AreEqual(1, farm.Drops.Count, "one Gold drop on the ground");
-            GoldDropView drop = farm.Drops.Values.First();
+            Assert.AreEqual(1, farm.Drops.Values.Count(d => !d.IsItem), "one Gold drop on the ground (junk piles are separate item drops)");
+            GoldDropView drop = farm.Drops.Values.First(d => !d.IsItem);
             long amount = drop.Amount;
             Assert.That(amount, Is.InRange(5, 11), "server-rolled Gold");
             yield return new WaitForSeconds(0.35f);

@@ -619,7 +619,7 @@ namespace AdventureKing.Gameplay
             var scaler = canvasGo.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.6f;
+            scaler.matchWidthOrHeight = UiStandard.Match;
             canvasGo.AddComponent<GraphicRaycaster>();
             canvasRoot = canvasGo.transform;
             if (!FindAnyObjectByType<EventSystem>())

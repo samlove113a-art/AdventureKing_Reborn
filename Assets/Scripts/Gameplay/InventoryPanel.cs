@@ -35,9 +35,32 @@ namespace AdventureKing.Gameplay
         private float nextRefreshTry;
 
         private static readonly (string slot, string label)[] EquipSlots = { ("weapon", "Vũ khí"), ("armor", "Áo"), ("accessory", "Phụ kiện") };
-        private const int Columns = 8;
+        private const int Columns = 8, MaxCells = 99;
+        private RectTransform content;
+        private ScrollRect scroll;
+        private Button expandButton;
+        private Text expandLabel;
 
-        private Sprite Icon(string name) => icons.FirstOrDefault(i => i.name == name).sprite;
+        /// <summary>Buys one more bag cell with Gold (the server sets the price; up to 99 cells).</summary>
+        public void Expand()
+        {
+            if (Busy || State == null || !world || world.Character == null) return;
+            Busy = true;
+            AdventureServerConnection.Instance.ExpandBag(world.Character.characterId, (ok, r, err) =>
+            {
+                Busy = false;
+                if (!ok || r == null) { Message(err); return; }
+                world.Character.gold = r.gold;
+                Apply(r.inventory);
+                Message($"Đã mở thêm 1 ô (−{r.priceGold:N0} Vàng). Túi: {r.inventory.capacity} ô.");
+            });
+        }
+
+        private Sprite Icon(string name)
+        {
+            Sprite s = icons.FirstOrDefault(i => i.name == name).sprite;
+            return s ? s : (string.IsNullOrEmpty(name) ? null : Resources.Load<Sprite>("ItemIcons/" + name)); // icons added after the scene was built
+        }
         /// <summary>Item icon by its server icon key (shared with the reward windows).</summary>
         public Sprite IconSprite(string name) => Icon(name);
 
@@ -255,13 +278,26 @@ namespace AdventureKing.Gameplay
             }
             statsLabel = Txt(c, "Stats", "", 22, cream, new Vector2(0f, 0f), new Vector2(170f, 70f), new Vector2(300f, 60f), TextAnchor.MiddleCenter);
 
-            // bag grid (right)
+            // bag grid (right): a scroll view, so 40 base cells and up to 99 bought cells share one layout
             const float cell0 = 104f, gap = 8f;
-            for (int i = 0; i < 40; i++)
+            Image viewport = Make<Image>(c, "BagViewport", new Vector2(0f, 1f), Vector2.zero, new Vector2(Columns * (cell0 + gap), 580f));
+            var vrt = viewport.rectTransform; vrt.pivot = new Vector2(0f, 1f); vrt.anchoredPosition = new Vector2(360f, -112f);
+            viewport.color = new Color(0f, 0f, 0f, 0.01f); // (needs a graphic so the mask and the drag area exist)
+            viewport.gameObject.AddComponent<RectMask2D>();
+            var contentGo = new GameObject("BagContent", typeof(RectTransform)) { layer = 5 }; // (AddComponent<RectTransform> on a UI object returns null)
+            contentGo.transform.SetParent(viewport.transform, false);
+            content = (RectTransform)contentGo.transform;
+            content.anchorMin = content.anchorMax = content.pivot = new Vector2(0f, 1f);
+            content.anchoredPosition = Vector2.zero;
+            content.sizeDelta = new Vector2(Columns * (cell0 + gap), 5 * (cell0 + gap));
+            scroll = viewport.gameObject.AddComponent<ScrollRect>();
+            scroll.content = content; scroll.viewport = vrt; scroll.horizontal = false; scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped; scroll.scrollSensitivity = 40f;
+            for (int i = 0; i < MaxCells; i++)
             {
                 int index = i;
-                float x = 360f + (i % Columns) * (cell0 + gap), y = -150f - (i / Columns) * (cell0 + gap);
-                Image bg = Make<Image>(c, "Cell" + i, new Vector2(0f, 1f), new Vector2(x + cell0 / 2f, y - cell0 / 2f + 40f), new Vector2(cell0, cell0));
+                float x = (i % Columns) * (cell0 + gap), y = -(i / Columns) * (cell0 + gap);
+                Image bg = Make<Image>(content, "Cell" + i, new Vector2(0f, 1f), new Vector2(x + cell0 / 2f, y - cell0 / 2f), new Vector2(cell0, cell0));
                 bg.sprite = cellSprite; bg.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple;
                 bg.color = new Color(0.55f, 0.6f, 0.78f, 0.9f);
                 bg.gameObject.AddComponent<Button>().onClick.AddListener(() => Select(index));
@@ -278,6 +314,9 @@ namespace AdventureKing.Gameplay
             nameLabel.fontStyle = FontStyle.Bold;
             descLabel = Txt(c, "ItemDesc", "", 22, cream, new Vector2(0f, 0f), new Vector2(620f, 100f), new Vector2(520f, 56f), TextAnchor.UpperLeft);
             msgLabel = Txt(c, "Message", "", 22, new Color(1f, 0.75f, 0.6f), new Vector2(0f, 0f), new Vector2(620f, 52f), new Vector2(520f, 32f), TextAnchor.MiddleLeft);
+            expandButton = Btn(c, "Expand", "Mở rộng túi", new Vector2(0f, 0f), new Vector2(170f, 150f), new Vector2(280f, 66f), new Color(0.82f, 0.6f, 0.18f), Expand);
+            expandLabel = expandButton.GetComponentInChildren<Text>();
+            expandLabel.fontSize = 20;
             useButton = Btn(c, "Use", "Dùng", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.25f, 0.6f, 0.4f), UseSelected);
             equipButton = Btn(c, "Equip", "Trang bị", new Vector2(1f, 0f), new Vector2(-270f, 110f), new Vector2(180f, 64f), new Color(0.3f, 0.45f, 0.75f), EquipSelected);
             useLabel = useButton.GetComponentInChildren<Text>();
@@ -294,7 +333,7 @@ namespace AdventureKing.Gameplay
             {
                 var (bg, icon, qty) = cells[i];
                 bool used = State != null && i < State.capacity;
-                bg.gameObject.SetActive(State == null || used);
+                bg.gameObject.SetActive(State == null ? i < 40 : used);
                 if (bySlot.TryGetValue(i, out BagSlotState s))
                 {
                     icon.sprite = Icon(s.icon); icon.enabled = icon.sprite;
@@ -312,6 +351,14 @@ namespace AdventureKing.Gameplay
                 if (e != null) ic.sprite = Icon(e.item.icon);
             }
             if (statsLabel) statsLabel.text = State == null ? "" : $"Tấn công +{State.attackBonus}\nPhòng thủ +{State.defenseBonus}";
+            if (content) content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Ceil((State == null ? 40 : State.capacity) / (float)Columns) * 112f);
+            if (expandButton)
+            {
+                bool canBuy = State != null && State.nextExpandGold > 0;
+                expandButton.gameObject.SetActive(State != null);
+                expandButton.interactable = canBuy;
+                expandLabel.text = State == null ? "" : canBuy ? $"Mở rộng túi · {State.nextExpandGold:N0} Vàng ({State.capacity}/{State.maxCapacity})" : $"Túi tối đa {State.capacity} ô";
+            }
 
             BagSlotState sel = SelectedIndex >= 0 && bySlot.TryGetValue(SelectedIndex, out var x0) ? x0 : null;
             EquippedState selEq = selectedEquip != null ? State?.equipped?.FirstOrDefault(e => e.equipSlot == selectedEquip) : null;

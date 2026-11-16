@@ -394,6 +394,27 @@ namespace AdventureKing.ArtPipeline
             Debug.Log("[SKILL ICONS] built " + (SkillIcons.Length + 5) + " icons + 2 frames in " + Dir);
         }
 
+        /// <summary>Bakes only the junk item icon (a patched sack with a leaf) and copies it to Resources/ItemIcons, where the bag window
+        /// finds icons that are not in a scene's serialized icon list. Does not touch any other icon.
+        ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.SkillIconArt.BuildJunkIconFromCommandLine</summary>
+        public static void BuildJunkIconFromCommandLine()
+        {
+            try
+            {
+                Directory.CreateDirectory(Dir);
+                Paint("item_junk", p => Backdrop(p, new Color(0.1f, 0.12f, 0.1f), new Color(0.45f, 0.55f, 0.42f), new Color(0.9f, 0.95f, 0.8f), 71),
+                    L(p => Union(Circle(p, new Vector2(0f, -0.18f), 0.5f), Box(p, new Vector2(0f, 0.35f), new Vector2(0.2f, 0.12f), 0.05f)), V(new Color(0.32f, 0.3f, 0.24f), new Color(0.62f, 0.58f, 0.46f))),
+                    L(p => Box(p, new Vector2(0f, 0.2f), new Vector2(0.3f, 0.05f), 0.03f), V(new Color(0.3f, 0.2f, 0.1f), new Color(0.6f, 0.45f, 0.25f))),
+                    L(p => Poly(p, new Vector2(-0.3f, -0.3f), new Vector2(0.3f, -0.05f), new Vector2(0.1f, -0.45f)), V(new Color(0.2f, 0.45f, 0.2f), new Color(0.5f, 0.8f, 0.4f))));
+                Directory.CreateDirectory("Assets/Resources/ItemIcons");
+                AssetDatabase.DeleteAsset("Assets/Resources/ItemIcons/item_junk.png");
+                AssetDatabase.CopyAsset($"{Dir}/item_junk.png", "Assets/Resources/ItemIcons/item_junk.png");
+                AssetDatabase.SaveAssets();
+                EditorApplication.Exit(0);
+            }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
         /// <summary>Round gold frames (transparent centre): normal, and the ornate one for skill 3 (gems + wings).</summary>
         private static void Frames()
         {

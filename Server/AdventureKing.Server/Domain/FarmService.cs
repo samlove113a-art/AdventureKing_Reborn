@@ -5,8 +5,12 @@ using Microsoft.Data.Sqlite;
 
 namespace AdventureKing.Server.Domain;
 
+/// <summary>One item a monster type can drop on death (server rolls it; DRAFT chances). Junk = map-specific, falls often, sold to the NPC; equipment never stacks.</summary>
+public sealed class MonsterItemDrop { public string itemId { get; set; } = ""; public double chance { get; set; } public int min { get; set; } = 1; public int max { get; set; } = 1; }
+
 public sealed class MonsterType
 {
+    public MonsterItemDrop[] drops { get; set; } = Array.Empty<MonsterItemDrop>();
     public string id { get; set; } = "";
     public string name { get; set; } = "";
     public int maxHp { get; set; }
@@ -31,7 +35,7 @@ public sealed class SpawnPoint
 public sealed class FarmConfig
 {
     public int version { get; set; }
-    public int dropLifetimeSeconds { get; set; } = 120;
+    public int dropLifetimeSeconds { get; set; } = 15; // a drop nobody picks up disappears after 15 s (frees server and client memory)
     public MonsterType[] types { get; set; } = Array.Empty<MonsterType>();
     public SpawnPoint[] spawns { get; set; } = Array.Empty<SpawnPoint>();
 
@@ -80,6 +84,11 @@ public sealed class DropDto
     public float y { get; set; }
     public long amount { get; set; }
     public long expiresInMs { get; set; }
+    /// <summary>Set for item drops (junk / equipment); amount is 0 then.</summary>
+    public string itemId { get; set; } = "";
+    public string itemName { get; set; } = "";
+    public string itemKind { get; set; } = "";
+    public int qty { get; set; }
 }
 
 // ---------------------------------------------------------------- skills (config/skills.json)
@@ -185,7 +194,7 @@ public sealed class AttackResultDto
     public HeroCombatDto hero { get; set; } = new();
 }
 public sealed class PickupRequestDto { public string? dropId { get; set; } public float x { get; set; } public float y { get; set; } }
-public sealed class PickupResultDto { public string dropId { get; set; } = ""; public long amount { get; set; } public long gold { get; set; } public HeroCombatDto hero { get; set; } = new(); }
+public sealed class PickupResultDto { public string dropId { get; set; } = ""; public long amount { get; set; } public long gold { get; set; } public string itemId { get; set; } = ""; public string itemName { get; set; } = ""; public int qty { get; set; } public HeroCombatDto hero { get; set; } = new(); }
 public sealed class PresenceRequestDto { public float x { get; set; } public float y { get; set; } }
 
 /// <summary>
@@ -268,7 +277,12 @@ public sealed class FarmService
 
     public SkillConfig Skills { get; }
     private readonly Dictionary<string, Hero> heroes = new();
-    private sealed class Drop { public string Id = "", MapId = "", Owner = "", Account = "", Type = ""; public float X, Y; public long Amount, ExpiresMs; public bool Picked; }
+    private sealed class Drop { public string Id = "", MapId = "", Owner = "", Account = "", Type = "", ItemId = ""; public float X, Y; public long Amount, ExpiresMs; public int Qty; public bool Picked; }
+
+    /// <summary>Set by InventoryService: puts an item into the bag inside the pickup transaction (throws bag_full -> the drop stays on the ground).</summary>
+    public Action<SqliteConnection, SqliteTransaction, string, string, string, int>? GrantItem { get; set; }
+    /// <summary>Set by InventoryService: (name, kind) of an item for the drop display.</summary>
+    public Func<string, (string name, string kind)>? ItemInfo { get; set; }
 
     public FarmService(Database db, FarmConfig config, Func<long>? clock = null, Random? random = null, SkillConfig? skills = null)
     {
@@ -322,7 +336,11 @@ public sealed class FarmService
         };
     }
 
-    private static DropDto Dto(Drop d, long t) => new() { id = d.Id, x = d.X, y = d.Y, amount = d.Amount, expiresInMs = Math.Max(0, d.ExpiresMs - t) };
+    private DropDto Dto(Drop d, long t)
+    {
+        var (name, kind) = d.ItemId.Length > 0 && ItemInfo != null ? ItemInfo(d.ItemId) : ("", "");
+        return new() { id = d.Id, x = d.X, y = d.Y, amount = d.Amount, expiresInMs = Math.Max(0, d.ExpiresMs - t), itemId = d.ItemId, itemName = name, itemKind = kind, qty = d.Qty };
+    }
 
     /// <summary>Plausibility of a reported position: reachable from the last one at running speed.</summary>
     private void Move(string characterId, string mapId, float x, float y, long t)
@@ -543,6 +561,16 @@ public sealed class FarmService
                 X = s.x, Y = s.y, Amount = rng.Next(ty.goldMin, ty.goldMax + 1), ExpiresMs = t + Config.dropLifetimeSeconds * 1000L,
             };
             drops[d.Id] = d;
+            foreach (MonsterItemDrop md in ty.drops) // extra piles of items: they appear on the next poll, each with its own 15 s life
+                if (rng.NextDouble() < md.chance)
+                {
+                    var item = new Drop
+                    {
+                        Id = Crypto.NewId("drop"), MapId = mapId, Owner = characterId, Account = accountId, Type = ty.id, ItemId = md.itemId,
+                        Qty = rng.Next(md.min, md.max + 1), X = s.x + 0.7f * (1 + drops.Count % 3), Y = s.y, ExpiresMs = t + Config.dropLifetimeSeconds * 1000L,
+                    };
+                    drops[item.Id] = item;
+                }
             hit.killed = true;
             hit.drop = Dto(d, t);
             m.Aggro = null;
@@ -699,6 +727,14 @@ public sealed class FarmService
         {
             PickupResultDto res = db.InTransaction((c, tx) =>
             {
+                if (d.ItemId.Length > 0)
+                {
+                    if (GrantItem == null) throw new GameError("items_off", "Vật phẩm chưa sẵn sàng.", 503);
+                    GrantItem(c, tx, accountId, characterId, d.ItemId, d.Qty); // throws bag_full: rolled back, the drop stays (until its 15 s end)
+                    AccountService.Audit(c, tx, accountId, "loot_item", $"{characterId} {d.Id} {d.ItemId} x{d.Qty}");
+                    var (nm, _) = ItemInfo != null ? ItemInfo(d.ItemId) : (d.ItemId, "");
+                    return new PickupResultDto { dropId = d.Id, amount = 0, gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)), itemId = d.ItemId, itemName = nm, qty = d.Qty, hero = heroDto };
+                }
                 LedgerResult r = Wallet.Gold(c, tx, accountId, characterId, d.Amount, "loot:" + d.Type, "loot:" + d.Id);
                 if (r.Applied) { AccountService.Audit(c, tx, accountId, "loot", $"{characterId} {d.Id} +{d.Amount}gold"); }
                 return new PickupResultDto { dropId = d.Id, amount = r.Applied ? d.Amount : 0, gold = r.Balance, hero = heroDto };

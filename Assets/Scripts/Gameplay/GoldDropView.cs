@@ -12,6 +12,9 @@ namespace AdventureKing.Gameplay
         public long Amount { get; private set; }
         public bool Pending { get; set; }
         public Vector2 Ground { get; private set; }
+        /// <summary>Item pile (junk / equipment) instead of Gold; tinted by kind.</summary>
+        public bool IsItem { get; private set; }
+        public string ItemName { get; private set; }
 
         private float age, expiresAt, collectT = -1f;
         private Vector3 from;
@@ -38,6 +41,13 @@ namespace AdventureKing.Gameplay
             from = new Vector3(popFrom.x, popFrom.y + 0.4f, 0.2f);
             transform.position = from;
             expiresAt = Time.time + d.expiresInMs / 1000f;
+            IsItem = d.IsItem;
+            ItemName = d.itemName;
+            if (IsItem)
+            {
+                Color tint = d.itemKind == "equipment" ? new Color(0.72f, 0.62f, 1f) : new Color(0.62f, 0.78f, 0.58f); // equipment violet, junk moss green
+                foreach (Renderer r in GetComponentsInChildren<Renderer>(true)) if (r.material.HasProperty("_BaseColor")) r.material.SetColor("_BaseColor", tint);
+            }
         }
 
         public bool Expired => Time.time >= expiresAt;
@@ -54,13 +64,15 @@ namespace AdventureKing.Gameplay
             float dt = Time.deltaTime;
             if (collectT >= 0f)
             {
-                collectT += dt * 3f;
+                collectT += dt * 8f; // picked: gone from the ground at once (flies into the hero in ~0.12 s)
                 Vector3 end = target ? target.position + Vector3.up * 1f : transform.position;
                 transform.position = Vector3.Lerp(transform.position, end, Mathf.Clamp01(collectT));
                 transform.localScale = Vector3.one * Mathf.Lerp(1f, 0.2f, Mathf.Clamp01(collectT));
                 if (collectT >= 1f) Destroy(gameObject);
                 return;
             }
+            // a pile nobody picked up disappears with the server timer (15 s): free the object, not just hide it
+            if (!Pending && Time.time >= expiresAt + 0.25f) { Destroy(gameObject); return; }
             age += dt;
             // fly out in an arc, land and bounce twice (decaying), then rest spinning and bobbing
             Vector3 rest = new Vector3(Ground.x + 0.6f, Ground.y + 0.3f, 0.2f);
@@ -86,7 +98,7 @@ namespace AdventureKing.Gameplay
                 sparkles[i].localScale = sparkleBase[i] * (0.3f + tw);
                 sparkles[i].rotation = Quaternion.Euler(0f, 0f, age * 90f + i * 40f);
             }
-            if (Time.time > expiresAt - 5f) // blink before it expires
+            if (Time.time > expiresAt - 4f) // blink before it expires
                 foreach (Renderer r in GetComponentsInChildren<Renderer>()) r.enabled = Mathf.Repeat(Time.time * 6f, 1f) > 0.3f;
         }
     }

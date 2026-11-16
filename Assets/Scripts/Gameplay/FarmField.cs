@@ -180,7 +180,7 @@ namespace AdventureKing.Gameplay
             var scaler = canvasGo.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.6f;
+            scaler.matchWidthOrHeight = UiStandard.Match;
             canvasGo.AddComponent<GraphicRaycaster>();
             var dim = new GameObject("FarmDeath", typeof(RectTransform)).AddComponent<Image>();
             dim.transform.SetParent(canvasGo.transform, false);
@@ -301,6 +301,7 @@ namespace AdventureKing.Gameplay
             if (world == null || world.Character == null || !world.Player) return;
             if (Time.time >= nextPoll) Poll();
             if (loaded && Time.time >= nextBeat) Heartbeat();
+            if (drops.Count > 0) foreach (string gone in drops.Where(kv => !kv.Value).Select(kv => kv.Key).ToList()) drops.Remove(gone); // expired piles destroy themselves
             // (no automatic pickup by the hero: Gold is collected with ↓/S or the "Nhặt" button — or later by a Pet)
         }
 
@@ -329,6 +330,7 @@ namespace AdventureKing.Gameplay
                 {
                     LastError = err;
                     if (drop) drop.Pending = false;
+                    if (err != null && err.Contains("Túi đồ")) Popup(Vector2.zero, "Túi đồ đầy!", new Color(1f, 0.55f, 0.45f), 40, world.Player.transform);
                     return;
                 }
                 drops.Remove(drop.DropId);
@@ -336,7 +338,12 @@ namespace AdventureKing.Gameplay
                 GoldPickedUp += r.amount;
                 if (drop) drop.Collect(world.Player.transform);
                 PlayChime();
-                Popup(Vector2.zero, "+" + r.amount + " Vàng", new Color(1f, 0.86f, 0.3f), 44, world.Player.transform); // big, rides above the hero
+                if (!string.IsNullOrEmpty(r.itemId))
+                {
+                    Popup(Vector2.zero, "+" + r.qty + " " + r.itemName, new Color(0.8f, 0.95f, 0.75f), 40, world.Player.transform);
+                    var bag = FindAnyObjectByType<InventoryPanel>(); if (bag) bag.Refresh();
+                }
+                else Popup(Vector2.zero, "+" + r.amount + " Vàng", new Color(1f, 0.86f, 0.3f), 44, world.Player.transform); // big, rides above the hero
                 ApplyHero(r.hero);
             });
             return true;
@@ -357,7 +364,8 @@ namespace AdventureKing.Gameplay
                 PetGoldPickedUp += r.amount;
                 if (drop) drop.Collect(pet ? pet : world.Player.transform);
                 PlayChime();
-                Popup(Vector2.zero, "+" + r.amount + " Vàng", new Color(1f, 0.86f, 0.3f), 40, pet ? pet : world.Player.transform);
+                if (!string.IsNullOrEmpty(r.itemId)) { Popup(Vector2.zero, "+" + r.qty + " " + r.itemName, new Color(0.8f, 0.95f, 0.75f), 36, pet ? pet : world.Player.transform); var bag = FindAnyObjectByType<InventoryPanel>(); if (bag) bag.Refresh(); }
+                else Popup(Vector2.zero, "+" + r.amount + " Vàng", new Color(1f, 0.86f, 0.3f), 40, pet ? pet : world.Player.transform);
                 ApplyHero(r.hero);
                 done?.Invoke(true, null);
             });

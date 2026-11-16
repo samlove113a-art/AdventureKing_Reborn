@@ -380,7 +380,8 @@ namespace AdventureKing.Tests
             Assert.AreNotEqual("", m1Tex);
             StringAssert.Contains("c1_m01", m1Tex);
             StringAssert.Contains("c1_m02", m2Tex);
-            StringAssert.Contains("c1_m01", m3Tex);
+            StringAssert.Contains("c1_m03", m3Tex);
+            Assert.AreNotEqual(m1Tex, m3Tex, "Map 3 has its own backdrop texture");
             Assert.AreNotEqual(hubTex, m1Tex, "Map 1 no longer uses the town backdrop");
             Assert.AreNotEqual(m1Tex, m2Tex);
         }
@@ -437,7 +438,7 @@ namespace AdventureKing.Tests
                 // other phone screens: the expanded card always ends above the joystick ring (canvas = ref 1920x1080, match 0.6)
                 foreach (var res in new[] { new Vector2(1280, 720), new Vector2(2400, 1080), new Vector2(2532, 1170), new Vector2(1024, 768), new Vector2(2960, 1440), new Vector2(1600, 720) })
                 {
-                    float scale = Mathf.Pow(2f, Mathf.Lerp(Mathf.Log(res.x / 1920f, 2f), Mathf.Log(res.y / 1080f, 2f), 0.6f));
+                    float scale = Mathf.Pow(2f, Mathf.Lerp(Mathf.Log(res.x / 1920f, 2f), Mathf.Log(res.y / 1080f, 2f), UiStandard.Match));
                     float canvasH = res.y / scale; // (safe area bottom/top insets only add margin on the top, joystick moves with the bottom)
                     float bottomFromTop = 262f + 420f * QuestPanel.FitScale(canvasH);
                     Assert.LessOrEqual(bottomFromTop, canvasH - 395f, $"{res}: expanded card ends above the joystick (canvasH {canvasH:0})");

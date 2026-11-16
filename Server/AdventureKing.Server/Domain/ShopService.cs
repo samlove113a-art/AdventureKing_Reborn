@@ -19,6 +19,7 @@ public sealed class NpcShopTabDto { public string id { get; set; } = ""; public 
 public sealed class NpcShopDto { public string id { get; set; } = ""; public string npc { get; set; } = ""; public int maxPerPurchase { get; set; } = 99; public NpcShopTabDto[] tabs { get; set; } = Array.Empty<NpcShopTabDto>(); }
 public sealed class BuyRequestDto { public string? shopId { get; set; } public string? itemId { get; set; } public int qty { get; set; } public string? requestId { get; set; } }
 public sealed class BuyResultDto { public string itemId { get; set; } = ""; public int qty { get; set; } public long totalGold { get; set; } public long gold { get; set; } public bool replayed { get; set; } public InventoryDto inventory { get; set; } = new(); }
+public sealed class SellJunkResultDto { public int stacksSold { get; set; } public int itemsSold { get; set; } public long totalGold { get; set; } public long gold { get; set; } public InventoryDto inventory { get; set; } = new(); }
 public sealed class TicketRequestDto { public int slot { get; set; } }
 public sealed class TicketResultDto { public CharacterDto character { get; set; } = new(); public InventoryDto inventory { get; set; } = new(); }
 
@@ -96,6 +97,26 @@ public sealed class ShopService
         if (!result.replayed) QuestEvent?.Invoke(accountId, characterId, "buy:" + d.kind, req.qty);
         return result;
     }
+
+    /// <summary>"Bán Nhanh Đồ Rác": sells every junk stack in the bag to the NPC at its fixed sell value, in one transaction (Gold + removal together,
+    /// so it can never pay twice). Only on a map that has a shop NPC; equipment and potions are never touched.</summary>
+    public SellJunkResultDto SellJunk(string accountId, string characterId) => db.InTransaction((c, tx) =>
+    {
+        var (mapId, _) = CharacterRow(c, tx, accountId, characterId);
+        if (!Cfg.shops.Any(s => s.mapId == mapId)) throw new GameError("shop_far", "Hãy tới gặp NPC cửa hàng để bán đồ rác.", 409);
+        long total = 0; int stacks = 0, items = 0;
+        foreach (var (slot, (item, qty)) in inv.Cells(c, tx, characterId).OrderBy(kv => kv.Key).ToList())
+        {
+            ItemDef? d = Cfg.Get(item);
+            if (d == null || d.kind != "junk") continue;
+            inv.RemoveFromSlot(c, tx, characterId, slot, item, qty);
+            total += d.priceGold * qty; stacks++; items += qty;
+        }
+        if (stacks == 0) throw new GameError("no_junk", "Túi đồ không có đồ rác để bán.", 409);
+        LedgerResult r = Wallet.Gold(c, tx, accountId, characterId, total, "sell_junk", "sell_junk:" + characterId + ":" + Guid.NewGuid().ToString("N"));
+        AccountService.Audit(c, tx, accountId, "sell_junk", $"{characterId} {items} items +{total}gold");
+        return new SellJunkResultDto { stacksSold = stacks, itemsSold = items, totalGold = total, gold = r.Balance, inventory = inv.SnapshotFor(c, tx, accountId, characterId) };
+    });
 
     /// <summary>Map change hook (characterId, map, x, y): FarmService.Arrived seeds the new map's position there.</summary>
     public Action<string, string, float, float>? Arrived { get; set; }

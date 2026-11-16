@@ -123,6 +123,10 @@ namespace AdventureKing.Gameplay
         public string id;
         public float x, y;
         public long amount, expiresInMs;
+        /// <summary>Item piles (junk / equipment): itemId is set and amount is 0.</summary>
+        public string itemId, itemName, itemKind;
+        public int qty;
+        public bool IsItem => !string.IsNullOrEmpty(itemId);
     }
 
     /// <summary>The hero's HP on a farm map, as the server decided it (monster hits, regeneration, death).</summary>
@@ -166,10 +170,13 @@ namespace AdventureKing.Gameplay
     [Serializable]
     public sealed class InventoryState
     {
-        public int capacity, stackMax, attackBonus, defenseBonus;
+        public int capacity, maxCapacity, stackMax, attackBonus, defenseBonus;
+        public long nextExpandGold; // 0 = bag fully expanded
         public BagSlotState[] slots = new BagSlotState[0];
         public EquippedState[] equipped = new EquippedState[0];
     }
+    [Serializable] public sealed class ExpandResult { public long priceGold, gold; public InventoryState inventory; }
+    [Serializable] public sealed class SellJunkResult { public int stacksSold, itemsSold; public long totalGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class UseItemResult { public string itemId; public int restoredHp, restoredMp; public HeroCombatState hero; public InventoryState inventory; }
 
     // ---------------------------------------------------------------- NPC shop + tickets
@@ -257,8 +264,9 @@ namespace AdventureKing.Gameplay
     [Serializable]
     public sealed class FarmPickupResult
     {
-        public string dropId;
+        public string dropId, itemId, itemName;
         public long amount, gold;
+        public int qty;
         public HeroCombatState hero;
     }
 

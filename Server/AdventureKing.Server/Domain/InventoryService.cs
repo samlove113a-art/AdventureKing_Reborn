@@ -8,7 +8,7 @@ public sealed class ItemDef
 {
     public string id { get; set; } = "";
     public string name { get; set; } = "";
-    public string kind { get; set; } = "consumable"; // consumable | equipment | material | ticket | petfood | quest
+    public string kind { get; set; } = "consumable"; // consumable | equipment | junk | material | ticket | petfood | quest
     public string icon { get; set; } = "";
     public string desc { get; set; } = "";
     public int hp { get; set; }
@@ -36,6 +36,11 @@ public sealed class ItemConfig
 {
     public int version { get; set; }
     public int bagSlots { get; set; } = 40;
+    /// <summary>Hard cap of a bag after buying cells with Gold (40 base + up to 59 bought).</summary>
+    public int maxBagSlots { get; set; } = 99;
+    /// <summary>DRAFT price of the next bought cell: base + step × cells already bought.</summary>
+    public long expandBaseGold { get; set; } = 500;
+    public long expandStepGold { get; set; } = 50;
     public int stackMax { get; set; } = 99;
     public float potionCooldownSeconds { get; set; } = 1f;
     public ItemDef[] items { get; set; } = Array.Empty<ItemDef>();
@@ -45,11 +50,12 @@ public sealed class ItemConfig
     public static ItemConfig Load(string path)
     {
         var cfg = JsonSerializer.Deserialize<ItemConfig>(File.ReadAllText(path)) ?? throw new InvalidDataException("empty item config");
-        if (cfg.stackMax < 1 || cfg.stackMax > 99 || cfg.bagSlots < 1) throw new InvalidDataException("bad bag config");
+        if (cfg.stackMax < 1 || cfg.stackMax > 99 || cfg.bagSlots < 1 || cfg.maxBagSlots < cfg.bagSlots || cfg.maxBagSlots > 99) throw new InvalidDataException("bad bag config");
         if (cfg.items.Select(i => i.id).Distinct().Count() != cfg.items.Length) throw new InvalidDataException("duplicate item id");
         foreach (ItemDef i in cfg.items)
         {
             if (i.kind == "equipment" && i.equipSlot is not ("weapon" or "armor" or "accessory")) throw new InvalidDataException(i.id + ": bad equip slot");
+            if (i.kind == "junk" && i.priceGold <= 0) throw new InvalidDataException(i.id + ": junk must have a sell value");
             // a ticket may only lead to a map the server really has (never to an unbuilt map)
             if (i.kind == "ticket" && !CharacterService.Maps.ContainsKey(i.destMap)) throw new InvalidDataException(i.id + ": ticket to unknown map " + i.destMap);
         }
@@ -86,6 +92,9 @@ public sealed class EquippedDto { public string equipSlot { get; set; } = ""; pu
 public sealed class InventoryDto
 {
     public int capacity { get; set; }
+    /// <summary>Most cells this bag can ever have, and the Gold price of the next bought cell (0 = fully expanded).</summary>
+    public int maxCapacity { get; set; }
+    public long nextExpandGold { get; set; }
     public int stackMax { get; set; }
     public BagSlotDto[] slots { get; set; } = Array.Empty<BagSlotDto>();
     public EquippedDto[] equipped { get; set; } = Array.Empty<EquippedDto>();
@@ -103,6 +112,7 @@ public sealed class UseItemResultDto
     public HeroCombatDto hero { get; set; } = new();
     public InventoryDto inventory { get; set; } = new();
 }
+public sealed class ExpandResultDto { public long priceGold { get; set; } public long gold { get; set; } public InventoryDto inventory { get; set; } = new(); }
 public sealed class EquipRequestDto { public int slot { get; set; } }
 public sealed class UnequipRequestDto { public string? equipSlot { get; set; } }
 
@@ -123,6 +133,10 @@ public sealed class InventoryService
     private readonly object gate = new();
     public ItemConfig Config { get; }
 
+    /// <summary>Cells this character can use: the base bag plus the cells bought with Gold.</summary>
+    public int Capacity(SqliteConnection c, SqliteTransaction? tx, string characterId) =>
+        Config.bagSlots + (int)Database.Scalar<long>(c, tx, "SELECT COALESCE((SELECT extra FROM bag_expansion WHERE character_id=$c),0)", ("$c", characterId));
+
     public InventoryService(Database db, ItemConfig config, FarmService farm, Func<long>? clock = null)
     {
         this.db = db;
@@ -130,6 +144,8 @@ public sealed class InventoryService
         this.farm = farm;
         now = clock ?? Database.NowMs;
         farm.EquipmentBonus = Bonus;
+        farm.GrantItem = (c, tx, _, characterId, itemId, qty) => Add(c, tx, characterId, itemId, qty);
+        farm.ItemInfo = id => Config.Get(id) is { } d ? (d.name, d.kind) : (id, "");
     }
 
     private int ClassOf(SqliteConnection c, SqliteTransaction? tx, string accountId, string characterId)
@@ -176,7 +192,8 @@ public sealed class InventoryService
             Database.Exec(c, tx, "UPDATE bag_slots SET qty=qty+$q WHERE character_id=$c AND slot_index=$s", ("$q", put), ("$c", characterId), ("$s", slot));
             left -= put;
         }
-        for (int slot = 0; slot < Config.bagSlots && left > 0; slot++)
+        int capacity = Capacity(c, tx, characterId);
+        for (int slot = 0; slot < capacity && left > 0; slot++)
         {
             if (bag.ContainsKey(slot)) continue;
             int put = Math.Min(cap, left);
@@ -213,7 +230,7 @@ public sealed class InventoryService
         if (d == null || qty < 1) return false;
         var bag = Bag(c, tx, characterId);
         int cap = Config.Stackable(d) ? Config.stackMax : 1;
-        long room = bag.Values.Where(v => v.item == itemId).Sum(v => (long)Math.Max(0, cap - v.qty)) + (long)(Config.bagSlots - bag.Count) * cap;
+        long room = bag.Values.Where(v => v.item == itemId).Sum(v => (long)Math.Max(0, cap - v.qty)) + (long)Math.Max(0, Capacity(c, tx, characterId) - bag.Count) * cap;
         return room >= qty;
     }
 
@@ -245,7 +262,8 @@ public sealed class InventoryService
             while (r.Read()) eq.Add(new EquippedDto { equipSlot = r.GetString(0), item = Dto(-1, r.GetString(1), 1) });
         return new InventoryDto
         {
-            capacity = Config.bagSlots, stackMax = Config.stackMax, slots = slots, equipped = eq.ToArray(),
+            capacity = Capacity(c, tx, characterId), maxCapacity = Config.maxBagSlots, stackMax = Config.stackMax, slots = slots, equipped = eq.ToArray(),
+            nextExpandGold = Capacity(c, tx, characterId) >= Config.maxBagSlots ? 0 : Config.expandBaseGold + Config.expandStepGold * (Capacity(c, tx, characterId) - Config.bagSlots),
             attackBonus = eq.Sum(e => e.item.attack), defenseBonus = eq.Sum(e => e.item.defense),
         };
     }
@@ -259,6 +277,21 @@ public sealed class InventoryService
     });
 
     public Action<string, string, string, int>? QuestEvent { get; set; }
+
+    /// <summary>Buys one more bag cell with Gold (DRAFT price rises with every cell), up to <c>maxBagSlots</c>. Gold and the cell change in
+    /// one transaction; the ledger key contains the cell number, so a double click can never charge twice for the same cell.</summary>
+    public ExpandResultDto Expand(string accountId, string characterId) => db.InTransaction((c, tx) =>
+    {
+        int cls = ClassOf(c, tx, accountId, characterId);
+        int cap = Capacity(c, tx, characterId);
+        if (cap >= Config.maxBagSlots) throw new GameError("bag_max", "Túi đồ đã mở rộng tối đa.", 409);
+        long price = Config.expandBaseGold + Config.expandStepGold * (cap - Config.bagSlots);
+        LedgerResult r = Wallet.Gold(c, tx, accountId, characterId, -price, "bag_expand", $"bag_expand:{characterId}:{cap + 1}");
+        if (!r.Applied) throw new GameError("already_expanded", "Ô túi này đã được mở rồi.", 409);
+        Database.Exec(c, tx, "INSERT INTO bag_expansion(character_id, extra) VALUES($c,1) ON CONFLICT(character_id) DO UPDATE SET extra=extra+1", ("$c", characterId));
+        AccountService.Audit(c, tx, accountId, "bag_expand", $"{characterId} -> {cap + 1} cells -{price}gold");
+        return new ExpandResultDto { priceGold = price, gold = r.Balance, inventory = Snapshot(c, tx, characterId, cls) };
+    });
 
     public UseItemResultDto Use(string accountId, string characterId, UseItemRequestDto? req)
     {

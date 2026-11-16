@@ -213,12 +213,16 @@ api.MapGet("/characters/{id}/inventory", (string id, HttpContext ctx, AccountSer
     inv.Get(accounts.Authenticate(Bearer(ctx)), id));
 api.MapPost("/characters/{id}/inventory/use", (string id, UseItemRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
     inv.Use(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/inventory/expand", (string id, HttpContext ctx, AccountService accounts, InventoryService inv) =>
+    inv.Expand(accounts.Authenticate(Bearer(ctx)), id));
 api.MapPost("/characters/{id}/inventory/equip", (string id, EquipRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
     inv.Equip(accounts.Authenticate(Bearer(ctx)), id, body));
 // ---------------------------------------------------------------- NPC shops + ticket travel
 api.MapGet("/shops/{shopId}", (string shopId, ShopService shops) => shops.Get(shopId));
 api.MapPost("/characters/{id}/shop/buy", (string id, BuyRequestDto body, HttpContext ctx, AccountService accounts, ShopService shops) =>
     shops.Buy(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/shop/sell-junk", (string id, HttpContext ctx, AccountService accounts, ShopService shops) =>
+    shops.SellJunk(accounts.Authenticate(Bearer(ctx)), id));
 api.MapPost("/characters/{id}/travel/ticket", (string id, TicketRequestDto body, HttpContext ctx, AccountService accounts, ShopService shops) =>
     shops.UseTicket(accounts.Authenticate(Bearer(ctx)), id, body));
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Text;
 using UnityEngine;
@@ -272,6 +272,16 @@ namespace AdventureKing.Gameplay
         public void EquipItem(string characterId, int slot, Action<bool, InventoryState, string> completed) =>
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/equip", JsonUtility.ToJson(new SlotBody { slot = slot }), true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<InventoryState>(json) : null, err));
+
+        /// <summary>Buys one more bag cell with Gold (server price, up to 99 cells).</summary>
+        public void ExpandBag(string characterId, Action<bool, ExpandResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/expand", "{}", true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<ExpandResult>(json) : null, err));
+
+        /// <summary>"Bán Nhanh Đồ Rác": the server sells every junk stack to the shop NPC in one transaction.</summary>
+        public void SellJunk(string characterId, Action<bool, SellJunkResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/shop/sell-junk", "{}", true, (ok, json, err) =>
+                completed(ok, ok ? JsonUtility.FromJson<SellJunkResult>(json) : null, err));
 
         public void UnequipItem(string characterId, string equipSlot, Action<bool, InventoryState, string> completed) =>
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/unequip", JsonUtility.ToJson(new UnequipBody { equipSlot = equipSlot }), true, (ok, json, err) =>

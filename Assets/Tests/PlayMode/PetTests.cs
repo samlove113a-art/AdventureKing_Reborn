@@ -154,8 +154,8 @@ namespace AdventureKing.Tests
             yield return Tap(PlayerInput2D.TouchAction.Skill3);           // meteor kills slime s1 at -22
             until = Time.time + 6f;
             while (farm.Drops.Count == 0 && Time.time < until) yield return null;
-            Assert.AreEqual(1, farm.Drops.Count, "Gold dropped; " + farm.LastSkillError);
-            long amount = farm.Drops.Values.First().Amount;
+            Assert.AreEqual(1, farm.Drops.Values.Count(d => !d.IsItem), "Gold dropped; " + farm.LastSkillError);
+            long amount = farm.Drops.Values.First(d => !d.IsItem).Amount;
             Assert.IsNull(farm.DropInReach(), "the coins are out of the hero's own reach");
             until = Time.time + 8f;
             while (farm.PetGoldPickedUp == 0 && Time.time < until) { if (dir.Mood == "fetch") yield return null; else yield return null; }

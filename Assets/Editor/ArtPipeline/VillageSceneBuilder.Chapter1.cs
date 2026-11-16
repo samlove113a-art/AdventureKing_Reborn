@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AdventureKing.Gameplay;
@@ -9,10 +9,10 @@ using UnityEngine.SceneManagement;
 namespace AdventureKing.ArtPipeline
 {
     /// <summary>
-    /// ChÆ°Æ¡ng 1 â€” VÆ°Æ¡ng Quá»‘c Náº¥m. Map 1 "LÃ ng Náº¥m" is the reference map for maps 2â€“10: gameplay geometry comes from
+    /// Chương 1 — Vương Quốc Nấm. Map 1 "Làng Nấm" is the reference map for maps 2–10: gameplay geometry comes from
     /// <see cref="TownLayout.Ch1Village"/> (shared with the server's portal graph / safe zone), scenery is reusable Meshy
-    /// 3D modules (Tools/meshy/make_ch1_props.py â†’ Tools/blender/export_prop.py â†’ Assets/Art/World/Chapter1/Props),
-    /// recoloured per instance instead of re-generated. The rigged Náº¥m Non (MonsterNamNon) is the farm monster.
+    /// 3D modules (Tools/meshy/make_ch1_props.py → Tools/blender/export_prop.py → Assets/Art/World/Chapter1/Props),
+    /// recoloured per instance instead of re-generated. The rigged Nấm Non (MonsterNamNon) is the farm monster.
     ///   Unity -batchmode -executeMethod AdventureKing.ArtPipeline.VillageSceneBuilder.BuildChapter1FromCommandLine
     /// </summary>
     public static partial class VillageSceneBuilder
@@ -25,7 +25,7 @@ namespace AdventureKing.ArtPipeline
             try
             {
                 EnsureLayer(OneWayLayer, "OneWayPlatform");
-                BuildMeadow();          // + the east "Cá»•ng Pha LÃª" to LÃ ng Náº¥m (meadow content otherwise unchanged)
+                BuildMeadow();          // + the east "Cổng Pha Lê" to Làng Nấm (meadow content otherwise unchanged)
                 BuildCh1Village();
                 BuildCh1GreenMeadow();
                 RegisterBuildScenes();
@@ -54,13 +54,13 @@ namespace AdventureKing.ArtPipeline
             catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
-        /// <summary>Only Map 2 (LÃ ng Náº¥m keeps its last build except when its east gate changes).</summary>
+        /// <summary>Only Map 2 (Làng Nấm keeps its last build except when its east gate changes).</summary>
         public static void BuildChapter1Map2FromCommandLine()
         {
             try
             {
                 EnsureLayer(OneWayLayer, "OneWayPlatform");
-                BuildCh1Village();      // east gate to Map 2 replaces the "sáº¯p má»Ÿ" sign
+                BuildCh1Village();      // east gate to Map 2 replaces the "sắp mở" sign
                 BuildCh1GreenMeadow();
                 RegisterBuildScenes();
                 EditorApplication.Exit(0);
@@ -68,7 +68,7 @@ namespace AdventureKing.ArtPipeline
             catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
-        /// <summary>Meshy module at its exported size Ã— <paramref name="scale"/>, optional tint (recolour, no new credits).</summary>
+        /// <summary>Meshy module at its exported size × <paramref name="scale"/>, optional tint (recolour, no new credits).</summary>
         private static GameObject C1Prop(Transform parent, string name, float x, float z, float scale = 1f, bool flip = false, float y = 0f, Color? tint = null, float yaw = 0f)
         {
             if (!File.Exists($"{C1PropDir}/{name}/{name}.fbx")) { Debug.LogWarning("[CH1] prop missing: " + name); return null; }
@@ -93,7 +93,7 @@ namespace AdventureKing.ArtPipeline
             return go;
         }
 
-        // ================================================================== Map 1 Â· LÃ ng Náº¥m
+        // ================================================================== Map 1 · Làng Nấm
         private static void BuildCh1Village()
         {
             SceneTag = "ch1_m01";
@@ -120,8 +120,8 @@ namespace AdventureKing.ArtPipeline
                 C1Prop(art, "ch1_mushroom_lamp", lx, 2.2f, 0.9f, lx > 0f);
                 HallGlow(art, "c1_lamp", new Vector3(lx + (lx > 0f ? 0.42f : -0.42f), 2.3f, 2.0f), 1.3f, new Color(1f, 0.7f, 0.35f) * 0.5f);
             }
-            Signboard(art, -33f, 2.6f, "LÃ ng Náº¥m\nâ†\nÄá»“ng Cá»\nGiÃ³");
-            Signboard(art, 31.5f, 2.6f, "Háº¿t vÃ¹ng\nan toÃ n\nâ†’\nRuá»™ng Náº¥m");
+            Signboard(art, -33f, 2.6f, "Làng Nấm\n←\nĐồng Cỏ\nGió");
+            Signboard(art, 31.5f, 2.6f, "Hết vùng\nan toàn\n→\nRuộng Nấm");
 
             // ---- farm outskirts (east): giant mushrooms behind the fields, a far village row for depth
             C1Prop(art, "ch1_giant_mushroom_tree", 46f, 13f, 1.2f, false);
@@ -131,28 +131,28 @@ namespace AdventureKing.ArtPipeline
             C1Prop(art, "ch1_mushroom_house", 80f, 17f, 0.75f, false, tint: amber);
             Prop(art, "crates", 50f, 2.6f, 2f, true);
             Prop(art, "planter", 70f, 2.4f, 1.3f, false);
-            Signboard(art, 86.5f, 2.6f, "Äá»“ng Cá»\nXanh\nâ†’"); // Map 2 gate (ch1_village_east_m02, x 92)
+            Signboard(art, 86.5f, 2.6f, "Đồng Cỏ\nXanh\n→"); // Map 2 gate (ch1_village_east_m02, x 92)
 
-            // ---- the chapter guide: TrÆ°á»Ÿng LÃ ng Náº¥m by the fountain (quest giver, "!" / "?" from the server log)
+            // ---- the chapter guide: Trưởng Làng Nấm by the fountain (quest giver, "!" / "?" from the server log)
             Vector2 e = TownLayout.Ch1Village.ElderSpot;
-            GameObject elderGo = PlaceNpc(play, "NpcMushroomElder", "TrÆ°á»Ÿng LÃ ng Náº¥m", e.x, e.y);
+            GameObject elderGo = PlaceNpc(play, "NpcMushroomElder", "Trưởng Làng Nấm", e.x, e.y);
             if (elderGo)
             {
                 elderGo.transform.localScale = Vector3.one * HeroScale * 0.8f; // rigged at 1.4 m: a little taller than the heroes
                 var actor = elderGo.GetComponent<NpcActor>();
-                var prompt = WorldLabel(elderGo.transform, "TalkPrompt", 1.85f, "E Â· NÃ³i chuyá»‡n", 28, Color.white, new Color(0.26f, 0.56f, 0.62f, 0.92f), new Vector2(300f, 54f), 41);
+                var prompt = WorldLabel(elderGo.transform, "TalkPrompt", 1.85f, "E · Nói chuyện", 28, Color.white, new Color(0.26f, 0.56f, 0.62f, 0.92f), new Vector2(300f, 54f), 41);
                 prompt.transform.parent.parent.gameObject.SetActive(false);
                 var bubble = WorldLabel(elderGo.transform, "SpeechBubble", 2.2f, "", 24, new Color(0.25f, 0.15f, 0.06f), new Color(1f, 0.96f, 0.86f, 0.95f), new Vector2(560f, 110f), 43);
                 bubble.horizontalOverflow = HorizontalWrapMode.Wrap;
                 bubble.transform.parent.parent.gameObject.SetActive(false);
-                elderGo.AddComponent<NpcTalkSpot>().Bind(actor, "talk:mushroom_elder", "TrÆ°á»Ÿng LÃ ng Náº¥m", prompt.transform.parent.parent.gameObject, bubble, new[]
+                elderGo.AddComponent<NpcTalkSpot>().Bind(actor, "talk:mushroom_elder", "Trưởng Làng Nấm", prompt.transform.parent.parent.gameObject, bubble, new[]
                 {
-                    "ChÃ o má»«ng {name} tá»›i LÃ ng Náº¥m! Quáº£ng trÆ°á»ng nÃ y lÃ  vÃ¹ng an toÃ n, cá»© nghá»‰ ngÆ¡i thoáº£i mÃ¡i.",
-                    "LÅ© Náº¥m Non ngoÃ i cá»•ng Ä‘Ã´ng nghá»‹ch láº¯m. Háº¡ giÃºp ta vÃ i Ä‘á»©a, rá»“i quay láº¡i Ä‘Ã¢y nhÃ©.",
-                    "Xa hÆ¡n vá» phÃ­a Ä‘Ã´ng lÃ  cáº£ VÆ°Æ¡ng Quá»‘c Náº¥m... vÃ  Vua Náº¥m Quá»· Ä‘ang thá»©c giáº¥c.",
+                    "Chào mừng {name} tới Làng Nấm! Quảng trường này là vùng an toàn, cứ nghỉ ngơi thoải mái.",
+                    "Lũ Nấm Non ngoài cổng đông nghịch lắm. Hạ giúp ta vài đứa, rồi quay lại đây nhé.",
+                    "Xa hơn về phía đông là cả Vương Quốc Nấm... và Vua Nấm Quỷ đang thức giấc.",
                 });
                 var mark = WorldLabel(elderGo.transform, "QuestMark", 2.6f, "", 64, new Color(1f, 0.85f, 0.25f), null, new Vector2(80f, 80f), 42);
-                elderGo.AddComponent<NpcQuestMarker>().Bind("TrÆ°á»Ÿng LÃ ng Náº¥m", mark);
+                elderGo.AddComponent<NpcQuestMarker>().Bind("Trưởng Làng Nấm", mark);
             }
 
             foreach (var p in TownLayout.Ch1Village.Portals) Portal(play, p);
@@ -165,12 +165,12 @@ namespace AdventureKing.ArtPipeline
             EditorSceneManagerSave(scene);
         }
 
-        // ================================================================== Map 2 Â· Äá»“ng Cá» Xanh
+        // ================================================================== Map 2 · Đồng Cỏ Xanh
         /// <summary>
         /// Fresh green meadow under a blue sky (concept CH01_MAP02): a west-gate rest stop, then three tiers of grass
         /// terraces with a windmill on the top hill, wooden fences and flower bushes. Reuses the town windmill / banyan /
         /// planter / crates and the Map 1 modules (recoloured); new Meshy modules: ch1_wood_fence, ch1_flower_bush.
-        /// Monsters: Slime Pháº¥n Hoa (Meshy mesh + procedural hop/squash), Náº¥m Non (rigged, from Map 1).
+        /// Monsters: Slime Phấn Hoa (Meshy mesh + procedural hop/squash), Nấm Non (rigged, from Map 1).
         /// </summary>
         private static void BuildCh1GreenMeadow()
         {
@@ -186,8 +186,8 @@ namespace AdventureKing.ArtPipeline
             // ---- west rest stop (safe zone): gate, lamp, sign, a stall selling nothing (scenery), flowers
             C1Prop(art, "ch1_mushroom_lamp", -30f, 2.2f, 0.9f, false);
             HallGlow(art, "c1_lamp", new Vector3(-30.42f, 2.3f, 2.0f), 1.3f, new Color(1f, 0.7f, 0.35f) * 0.5f);
-            Signboard(art, -33f, 2.6f, "Äá»“ng Cá» Xanh\nâ†\nLÃ ng Náº¥m");
-            Signboard(art, -22f, 2.6f, "Háº¿t vÃ¹ng\nan toÃ n\nâ†’");
+            Signboard(art, -33f, 2.6f, "Đồng Cỏ Xanh\n←\nLàng Nấm");
+            Signboard(art, -22f, 2.6f, "Hết vùng\nan toàn\n→");
             C1Prop(art, "ch1_flower_bush", -26f, 2.0f, 1f, false);
             C1Prop(art, "ch1_flower_bush", -42f, 2.3f, 0.9f, true, tint: dusk);
             Prop(art, "crates", -37.5f, 3.2f, 1.6f, true);
@@ -211,7 +211,7 @@ namespace AdventureKing.ArtPipeline
             Prop(art, "planter", 14f, 2.6f, 1.2f, false, y: 4.5f);   // on the low terrace
             Prop(art, "planter", 88f, 2.6f, 1.2f, true, y: 6.5f);    // on the flower knoll
             Prop(art, "crates", 62f, 2.8f, 1.6f, false, y: 5f);
-            Signboard(art, 97.5f, 2.6f, "Rá»«ng Náº¥m\nSÃ¡ng\nâ†’"); // Map 3 gate (ch1_m02_east_m03, x 102)
+            Signboard(art, 97.5f, 2.6f, "Rừng Nấm\nSáng\n→"); // Map 3 gate (ch1_m02_east_m03, x 102)
 
             C1Wildflowers(art, TownLayout.Ch1GreenMeadow.Decks, minX + 6f, maxX - 4f, forgeSeed, forgeDetail);
 
@@ -225,7 +225,7 @@ namespace AdventureKing.ArtPipeline
             EditorSceneManagerSave(scene); // bright clear day (concept)
         }
 
-        // ================================================================== Map 3 Â· Rá»«ng Náº¥m SÃ¡ng (khung map)
+        // ================================================================== Map 3 · Rừng Nấm Sáng (khung map)
         /// <summary>
         /// Walkable shell of Map 3 so the Map 2 portal has a real destination: west rest stop with the gate back, two root
         /// tiers, glowing giant mushrooms. NO monsters and NO Mini Boss yet (those are the next group of work).
@@ -243,8 +243,8 @@ namespace AdventureKing.ArtPipeline
             Color teal = new Color(0.7f, 1f, 0.95f), violet = new Color(0.92f, 0.82f, 1f), amber = new Color(1f, 0.85f, 0.65f);
             C1Prop(art, "ch1_mushroom_lamp", -30f, 2.2f, 0.9f, false);
             HallGlow(art, "c1_lamp", new Vector3(-30.42f, 2.3f, 2.0f), 1.3f, new Color(1f, 0.7f, 0.35f) * 0.5f);
-            Signboard(art, -33f, 2.6f, "Rá»«ng Náº¥m SÃ¡ng\nâ†\nÄá»“ng Cá» Xanh");
-            Signboard(art, -22f, 2.6f, "Háº¿t vÃ¹ng\nan toÃ n\nâ†’");
+            Signboard(art, -33f, 2.6f, "Rừng Nấm Sáng\n←\nĐồng Cỏ Xanh");
+            Signboard(art, -22f, 2.6f, "Hết vùng\nan toàn\n→");
             float[] treeX = { -12f, 4f, 20f, 36f, 52f, 68f, 84f, 100f };
             for (int i = 0; i < treeX.Length; i++)
             {
@@ -254,13 +254,13 @@ namespace AdventureKing.ArtPipeline
             }
             for (int i = 0; i < 7; i++) C1Prop(art, "ch1_flower_bush", -8f + i * 17f, i % 2 == 0 ? 2.3f : 4.4f, 0.9f, i % 2 == 0, tint: i % 2 == 0 ? teal : violet);
             Prop(art, "crates", -37.5f, 3.2f, 1.6f, true);
-            Signboard(art, 96f, 2.6f, "Mini Boss\nNáº¥m Thá»§ LÄ©nh\n(sáº¯p má»Ÿ)");
+            Signboard(art, 96f, 2.6f, "Mini Boss\nNấm Thủ Lĩnh\n(sắp mở)");
 
             foreach (var p in TownLayout.Ch1GlowForest.Portals) Portal(play, p);
             Ch1FarmSetup(play);
             FinishWorld(scene, Ch1GlowForestScenePath, world, TownLayout.Ch1GlowForest.MapId, TownLayout.Ch1GlowForest.DisplayName,
                 TownLayout.Ch1GlowForest.Spawn, minX, maxX, 12f, AdventureMusicStage.MushroomKingdom);
-            C1VillagePanorama(); // placeholder far landscape, shares Map 1's generated texture but its own ParallaxLayer instance
+            C1GlowForestPanorama(); // Map 3's own far landscape (no longer borrows Map 1's)
             Light sun = Object.FindAnyObjectByType<Light>();
             if (sun) { sun.color = new Color(0.78f, 0.86f, 1f); sun.intensity = 0.9f; } // dim blue-green forest light
             EditorSceneManagerSave(scene);
@@ -271,7 +271,7 @@ namespace AdventureKing.ArtPipeline
         /// <summary>
         /// Wildflowers (idea from AK Map Forge, PR #6): hundreds of small stems + blossoms batched into ONE vertex-colour mesh
         /// (one draw call, mobile-friendly), seeded so rebuilds are identical, standing on whichever surface is under them
-        /// (ground or deck top) and kept off the walking lane (z â‰¥ 2.6) so they never cover the hero or monsters.
+        /// (ground or deck top) and kept off the walking lane (z ≥ 2.6) so they never cover the hero or monsters.
         /// </summary>
         private static void C1Wildflowers(Transform art, TownLayout.Deck[] decks, float x0, float x1, int seed, int detail)
         {
@@ -304,7 +304,7 @@ namespace AdventureKing.ArtPipeline
         }
 
         /// <summary>Map 2's own far landscape (procedural, no paid generation): soft sky with clouds, three rolling green
-        /// ridges with tree clumps and a tiny distant windmill â€” replaces the town's rice-terrace painting on this map.</summary>
+        /// ridges with tree clumps and a tiny distant windmill — replaces the town's rice-terrace painting on this map.</summary>
         private static void C1MeadowPanorama()
         {
             const string name = "c1_m02_meadow_panorama_v3";
@@ -336,7 +336,7 @@ namespace AdventureKing.ArtPipeline
                     Color col = crown ? hill[2 - i] * 0.8f : Color.Lerp(hill[2 - i] * 1.08f, hill[2 - i] * 0.88f, shade);
                     return Color.Lerp(col, sky0, 0.18f * i); // aerial perspective
                 }
-                // tiny far windmill on the farthest ridge (u â‰ˆ 0.68)
+                // tiny far windmill on the farthest ridge (u ≈ 0.68)
                 float wx = u - 0.68f, wy = v - (Ridge(0.68f, 0.45f, 0.035f, 7f, 0.01f, 29f, 4.3f) + 0.02f);
                 if (Mathf.Abs(wx) < 0.004f && wy > -0.02f && wy < 0.035f) return new Color(0.78f, 0.82f, 0.86f);
                 if (wy > 0.03f && wy < 0.05f && (Mathf.Abs(wx - (wy - 0.04f)) < 0.002f || Mathf.Abs(wx + (wy - 0.04f)) < 0.002f) && Mathf.Abs(wx) < 0.014f) return new Color(0.8f, 0.84f, 0.88f);
@@ -399,7 +399,55 @@ namespace AdventureKing.ArtPipeline
             backdrop.GetComponent<MeshRenderer>().sharedMaterial = CutoutMat($"{WorldDir}/Generated/{name}.png", 0f, fogAmount: 0f, cutoff: 0f);
         }
 
-        /// <summary>Slime Pháº¥n Hoa: the Meshy mesh (exported by Tools/blender/export_prop.py at 1 m) under a "Body" pivot that
+        /// <summary>Map 3's own far landscape (procedural): twilight teal-violet sky, layered forest ridges, tall glowing mushroom
+        /// silhouettes and drifting spore light. Own texture + own material; nothing shared with Map 1 / Map 2 / the town.</summary>
+        private static void C1GlowForestPanorama()
+        {
+            const string name = "c1_m03_glow_forest_panorama_v1";
+            float Ridge(float u, float baseV, float a1, float f1, float a2, float f2, float ph) => baseV + a1 * Mathf.Sin(u * f1 + ph) + a2 * Mathf.Sin(u * f2 + ph * 1.7f);
+            Color sky0 = new Color(0.34f, 0.52f, 0.62f), sky1 = new Color(0.1f, 0.12f, 0.3f);
+            Color[] ridge = { new Color(0.1f, 0.2f, 0.24f), new Color(0.14f, 0.3f, 0.34f), new Color(0.2f, 0.4f, 0.44f) };
+            Color[] glow = { new Color(0.45f, 1f, 0.9f), new Color(0.8f, 0.6f, 1f), new Color(1f, 0.82f, 0.5f) };
+            var rng = new System.Random(20261116);
+            var shrooms = new List<(float u, float baseV, float h, float w, int ridge, int tone)>();
+            for (int i = 0; i < 34; i++)
+            {
+                int r = i % 3;
+                float tu = (float)rng.NextDouble();
+                float crest = Ridge(tu, 0.2f + r * 0.1f, 0.03f, 9f + r * 3f, 0.01f, 31f, 0.7f + r);
+                float h = (0.2f - r * 0.04f) * (0.7f + (float)rng.NextDouble() * 0.6f);
+                shrooms.Add((tu, crest - 0.01f, h, h * 0.24f, r, rng.Next(3)));
+            }
+            GeneratedTexture(name, 1024, (u, v) =>
+            {
+                float[] ridges = { Ridge(u, 0.2f, 0.03f, 9f, 0.01f, 31f, 0.7f), Ridge(u, 0.3f, 0.03f, 12f, 0.01f, 31f, 1.7f), Ridge(u, 0.4f, 0.03f, 15f, 0.01f, 31f, 2.7f) };
+                for (int i = 0; i < 3; i++)
+                {
+                    foreach (var m in shrooms)
+                    {
+                        if (m.ridge != i) continue;
+                        float dx = u - m.u, y = v - m.baseV;
+                        if (y < 0f || y > m.h || Mathf.Abs(dx) > m.w * 1.7f) continue;
+                        float capLo = m.h * 0.6f;
+                        if (y < capLo && Mathf.Abs(dx) < m.w * 0.2f) return Color.Lerp(ridge[2 - i], glow[m.tone], 0.35f);
+                        float cy = (y - capLo) / (m.h - capLo);
+                        if (y >= capLo && Mathf.Abs(dx) < m.w * 1.6f * Mathf.Sqrt(Mathf.Max(0f, 1f - cy * cy)))
+                            return Color.Lerp(glow[m.tone] * 0.85f, sky0, 0.18f * i);
+                    }
+                    if (v > ridges[i]) continue;
+                    return Color.Lerp(ridge[2 - i] * (0.8f + 0.4f * Mathf.Clamp01((ridges[i] - v) / 0.1f)), sky0, 0.14f * i);
+                }
+                Color sky = Color.Lerp(sky0, sky1, Mathf.Pow(Mathf.Clamp01((v - 0.4f) / 0.6f), 0.7f));
+                float spore = Mathf.PerlinNoise(u * 60f, v * 60f);
+                float star = Mathf.SmoothStep(0.86f, 0.93f, spore) * Mathf.SmoothStep(0.55f, 0.85f, v);
+                return Color.Lerp(sky, new Color(0.7f, 1f, 0.95f), star * 0.6f);
+            });
+            var backdrop = GameObject.Find("Backdrop_Painting");
+            if (!backdrop) throw new System.InvalidOperationException("Backdrop_Painting not found after FinishWorld");
+            backdrop.GetComponent<MeshRenderer>().sharedMaterial = CutoutMat($"{WorldDir}/Generated/{name}.png", 0f, fogAmount: 0f, cutoff: 0f);
+        }
+
+        /// <summary>Slime Phấn Hoa: the Meshy mesh (exported by Tools/blender/export_prop.py at 1 m) under a "Body" pivot that
         /// FarmMonsterView hops, squashes and breathes procedurally (no rig: it has no limbs).</summary>
         private static FarmMonsterView MeshMonster(Transform parent, string propName, string name, float scale, float barHeight)
         {
@@ -420,7 +468,7 @@ namespace AdventureKing.ArtPipeline
 
         private static void EditorSceneManagerSave(Scene scene) => UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, scene.path);
 
-        /// <summary>Farm client for Chapter 1: the meadow slimes stay as fallbacks, Náº¥m Non uses the rigged Meshy model.</summary>
+        /// <summary>Farm client for Chapter 1: the meadow slimes stay as fallbacks, Nấm Non uses the rigged Meshy model.</summary>
         private static void Ch1FarmSetup(Transform play, bool withPollenSlime = false)
         {
             FarmSetup(play);
@@ -433,7 +481,7 @@ namespace AdventureKing.ArtPipeline
             {
                 FarmMonsterView pollen = MeshMonster(templates, "ch1_pollen_slime", "SlimePhanHoa", 1.05f, 1.35f);
                 if (pollen) list.Add(("pollen_slime", pollen));
-                else throw new FileNotFoundException("Slime Pháº¥n Hoa mesh missing (export ch1_pollen_slime first) â€” no stand-in monster");
+                else throw new FileNotFoundException("Slime Phấn Hoa mesh missing (export ch1_pollen_slime first) — no stand-in monster");
             }
             var so = new SerializedObject(farm);
             var arr = so.FindProperty("typedTemplates");
@@ -447,8 +495,8 @@ namespace AdventureKing.ArtPipeline
             foreach (Transform t in templates) t.gameObject.SetActive(false);
         }
 
-        /// <summary>Template for a rigged monster prefab (NpcArtPipeline.Chapter1): root (FarmMonsterView) â†’ Body (yaw / pop)
-        /// â†’ visual prefab with Animator states Idle / Walk / Attack / Hit / Death.</summary>
+        /// <summary>Template for a rigged monster prefab (NpcArtPipeline.Chapter1): root (FarmMonsterView) → Body (yaw / pop)
+        /// → visual prefab with Animator states Idle / Walk / Attack / Hit / Death.</summary>
         private static FarmMonsterView RiggedMonster(Transform parent, string prefabName, string name, float scale, float barHeight)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(NpcArtPipeline.PrefabPath(prefabName));

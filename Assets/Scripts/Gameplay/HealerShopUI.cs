@@ -90,6 +90,7 @@ namespace AdventureKing.Gameplay
             Txt(c, "Title", "Dược Sư Mộc Linh", 38, gold, new Vector2(0.5f, 1f), new Vector2(0f, -86f), new Vector2(700f, 54f), TextAnchor.MiddleCenter, true);
             greet = Txt(c, "Greeting", "", 22, cream, new Vector2(0.5f, 1f), new Vector2(0f, -132f), new Vector2(1000f, 34f), TextAnchor.MiddleCenter);
             Btn(c, "Close", "Đóng", new Vector2(1f, 1f), new Vector2(-130f, -64f), new Vector2(150f, 62f), new Color(0.55f, 0.3f, 0.3f), Close);
+            Btn(c, "SellJunk", "Bán Nhanh Đồ Rác", new Vector2(1f, 1f), new Vector2(-400f, -64f), new Vector2(270f, 62f), new Color(0.26f, 0.56f, 0.62f), SellJunk);
             Image coin = Make<Image>(c, "Coin", new Vector2(0f, 1f), new Vector2(92f, -64f), new Vector2(40f, 40f));
             coin.sprite = coinSprite; coin.preserveAspect = true;
             goldLabel = Txt(c, "Gold", "", 26, gold, new Vector2(0f, 1f), new Vector2(210f, -64f), new Vector2(200f, 40f), TextAnchor.MiddleLeft, true);
@@ -242,6 +243,24 @@ namespace AdventureKing.Gameplay
             qtyLabel.text = Qty.ToString();
             totalLabel.text = $"Tổng: {Total:N0} Vàng";
             buyButton.interactable = Selected != null && !Busy;
+        }
+
+        /// <summary>"Bán Nhanh Đồ Rác": the server sells every junk stack in the bag to the NPC (equipment and potions are never touched).</summary>
+        public void SellJunk()
+        {
+            var world = AdventureWorldSession.Current;
+            if (Busy || !world || world.Character == null) return;
+            Busy = true;
+            AdventureServerConnection.Instance.SellJunk(world.Character.characterId, (ok, r, err) =>
+            {
+                Busy = false;
+                if (!ok || r == null) { Message(err); Redraw(); return; }
+                world.Character.gold = r.gold;
+                var bag = FindAnyObjectByType<InventoryPanel>();
+                if (bag) bag.Refresh();
+                Message($"Đã bán {r.itemsSold} đồ rác (+{r.totalGold:N0} Vàng).");
+                Redraw();
+            });
         }
 
         public void AskBuy()

@@ -149,6 +149,14 @@ public sealed class Database
             Exec(c, tx, Schema.V11);
             Exec(c, tx, "PRAGMA user_version=11;");
             tx.Commit();
+            version = 11;
+        }
+        if (version < 12)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V12);
+            Exec(c, tx, "PRAGMA user_version=12;");
+            tx.Commit();
         }
     }
 
@@ -181,7 +189,15 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 11;
+    public const int Current = 12;
+
+    // V12: bought bag cells (40 base + extra, up to 99 in total; one row per character, changed only by InventoryService.Expand).
+    public const string V12 = """
+    CREATE TABLE bag_expansion (
+        character_id TEXT PRIMARY KEY REFERENCES characters(id),
+        extra        INTEGER NOT NULL CHECK (extra >= 0)
+    );
+    """;
 
     // V11: social layer — friends, blocks, chat, guilds, marriage (all server-side; positions/online state are memory only).
     public const string V11 = """
