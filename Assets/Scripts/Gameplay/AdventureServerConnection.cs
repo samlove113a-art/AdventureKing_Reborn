@@ -55,7 +55,8 @@ namespace AdventureKing.Gameplay
 
         /// <summary>
         /// For tests / launcher configuration. Accepted: loopback, HTTPS, or (development builds only) plain HTTP to a
-        /// private LAN address (192.168.x.x, 10.x.x.x, 172.16–31.x.x) so a phone can reach the PC test server.
+        /// private LAN address (192.168.x.x, 10.x.x.x, 172.16–31.x.x) or a Tailscale address (100.64.0.0/10) so a phone can
+        /// reach the PC test server. Release builds still require HTTPS (or loopback).
         /// </summary>
         public void SetBaseUrl(string url)
         {
@@ -75,7 +76,26 @@ namespace AdventureKing.Gameplay
             if (!developmentBuild) return false;
             string[] p = host.Split('.');
             if (p.Length != 4 || !int.TryParse(p[0], out int a) || !int.TryParse(p[1], out int b)) return false;
+            if (IsTailscaleHost(host)) return true;
             return a == 10 || (a == 192 && b == 168) || (a == 172 && b >= 16 && b <= 31);
+        }
+
+        /// <summary>Tailscale addresses: the CGNAT range 100.64.0.0/10 (100.64.0.0 – 100.127.255.255). Strict dotted-quad parse
+        /// (four plain 0–255 numbers, no signs / spaces / extra parts), so look-alikes such as 100.128.0.1 or 100.64.0.1.evil are refused.</summary>
+        public static bool IsTailscaleHost(string host)
+        {
+            if (string.IsNullOrEmpty(host)) return false;
+            string[] p = host.Split('.');
+            if (p.Length != 4) return false;
+            var o = new int[4];
+            for (int i = 0; i < 4; i++)
+            {
+                if (p[i].Length == 0 || p[i].Length > 3) return false;
+                foreach (char c in p[i]) if (c < '0' || c > '9') return false;
+                o[i] = int.Parse(p[i]);
+                if (o[i] > 255) return false;
+            }
+            return o[0] == 100 && o[1] >= 64 && o[1] <= 127;
         }
 
         /// <summary>
