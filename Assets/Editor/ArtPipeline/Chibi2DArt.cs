@@ -100,6 +100,9 @@ namespace AdventureKing.ArtPipeline
             var anim = root.AddComponent<Animator>();
             anim.runtimeAnimatorController = ov;
             anim.applyRootMotion = false;
+            var head = new GameObject("Head").transform;   // the name plate / bubbles find the head by this name
+            head.SetParent(root.transform, false);
+            head.localPosition = new Vector3(0f, 0.72f, 0f);
             root.AddComponent<CharacterAnimationEvents>();
             root.AddComponent<Chibi2DMarker>().Renderer = sr;
             string prefabPath = $"{Res}/{name}_Visual2D.prefab";

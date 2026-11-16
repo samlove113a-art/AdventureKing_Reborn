@@ -148,7 +148,7 @@ namespace AdventureKing.Gameplay
             }
             HeroModel = Instantiate(prefab, visualMount);
             HeroModel.transform.localPosition = Vector3.zero;
-            HeroModel.transform.localScale = Vector3.one * heroScale;
+            HeroModel.transform.localScale = Vector3.one * heroScale * Chibi2DMarker.ScaleOf(HeroModel);
             if (playerVisual)
                 playerVisual.Bind(HeroModel.transform, HeroModel.GetComponentInChildren<Animator>(true));
             // Wear the outfit the server has on record (restored after relog / scene change / server restart).

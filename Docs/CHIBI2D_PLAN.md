@@ -1,6 +1,8 @@
 # Chuyển đồ họa 3D → 2D chibi (bake từ model 3D hiện có)
 
-**Hướng đã chọn:** bake ngang trực giao từ chính model 3D (Blender 5.2) thành sprite sheet; không tốn credit Meshy, giữ model 3D gốc, gameplay/server không đổi.
+**Cập nhật (chủ dự án chưa duyệt bản bake 3D):** bake từ model 3D ra hình 3/4, không đạt "2D chibi side-view". Đã làm lại Pháp Sư bằng **rig 2D procedural gốc** `Tools/chibi2d/mage_rig.py` (Python của Blender + numpy): đầu to ~45% chiều cao, mắt to biểu cảm (mở/chớp/cười/đau/X), viền mực dày, tô cel, các lớp tách rời (tóc, nón, thân, tay, chân, gậy) để sau này thay trang phục/vũ khí theo lớp. Không dùng Meshy, không tải asset ngoài. Pipeline Unity (Chibi2DArt, HeroVisualStyle) giữ nguyên.
+
+**Hướng cũ (đã bỏ cho Pháp Sư):** bake ngang trực giao từ chính model 3D (Blender 5.2).
 
 ## Pipeline
 1. `Tools/blender/bake_chibi2d.py` + `ArtSource/Specs/chibi2d_{Tên}.json` → `ArtSource/Chibi2D/{Tên}/{Tên}_{Clip}.png` (384 px/khung, viền mực 3 px, đáy chân cố định) + `_frames.json`.
