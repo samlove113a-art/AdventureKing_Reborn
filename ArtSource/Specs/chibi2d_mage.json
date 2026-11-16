@@ -1,0 +1,22 @@
+{
+  "name": "Mage",
+  "fbx": "Assets/Art/Characters/Mage/Mage.fbx",
+  "out": "ArtSource/Chibi2D/Mage",
+  "cell": 384,
+  "frame_m": 1.35,
+  "ground_from_bottom_m": 0.06,
+  "outline_px": 3,
+  "flip": false,
+  "cam_side": -1,
+  "clips": [
+    { "name": "Idle",   "action": "Idle_02",              "from": 0,  "to": 56, "frames": 8,  "fps": 8,  "loop": true },
+    { "name": "Run",    "action": "Run_02",               "from": 0,  "to": 21, "frames": 8,  "fps": 14, "loop": true, "follow": true },
+    { "name": "Jump",   "action": "Regular_Jump",         "from": 12, "to": 19, "frames": 4,  "fps": 10 },
+    { "name": "Fall",   "action": "Regular_Jump",         "from": 19, "to": 25, "frames": 3,  "fps": 8 },
+    { "name": "Climb",  "action": "Ladder_Climb_Loop",    "from": 1,  "to": 48, "frames": 8,  "fps": 10, "loop": true },
+    { "name": "Hit",    "action": "Hit_Reaction",         "from": 0,  "to": 30, "frames": 4,  "fps": 12 },
+    { "name": "Death",  "action": "dying_backwards",      "from": 0,  "to": 53, "frames": 6,  "fps": 8 },
+    { "name": "Attack", "action": "mage_soell_cast",      "from": 0,  "to": 40, "frames": 8,  "fps": 14 },
+    { "name": "Skill",  "action": "Charged_Spell_Cast",   "from": 0,  "to": 62, "frames": 10, "fps": 12 }
+  ]
+}

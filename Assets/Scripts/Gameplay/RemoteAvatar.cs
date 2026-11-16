@@ -37,6 +37,7 @@ namespace AdventureKing.Gameplay
             var mount = new GameObject("VisualMount").transform;
             mount.SetParent(root.transform, false);
             mount.localPosition = new Vector3(0f, -0.8f, 0f); // body centre -> feet (same as the local hero)
+            prefab = HeroVisualStyle.Resolve((HeroClass)s.heroClass, prefab); // same style as the local hero (2D body when chosen and available)
             a.Model = Instantiate(prefab, mount);
             a.Model.transform.localPosition = Vector3.zero;
             a.Model.transform.localScale = Vector3.one * heroScale;

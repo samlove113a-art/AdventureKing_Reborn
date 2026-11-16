@@ -140,6 +140,7 @@ namespace AdventureKing.Gameplay
         {
             int index = (int)character.heroClass;
             GameObject prefab = heroPrefabs != null && index < heroPrefabs.Length ? heroPrefabs[index] : null;
+            prefab = HeroVisualStyle.Resolve(character.heroClass, prefab); // 2D chibi body when chosen and available, else the 3D model
             if (!prefab || !visualMount)
             {
                 SetStatus("Thiếu model 3D của nghề này.");

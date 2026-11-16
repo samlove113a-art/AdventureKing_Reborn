@@ -39,6 +39,17 @@ namespace AdventureKing.Gameplay
         private bool hasRunPlayback, hasClimbPlayback;
 
         public Animator Animator => animator;
+
+        /// <summary>True when the body is a 2D chibi sprite: it faces left / right by mirroring, not by turning in 3D.</summary>
+        public bool IsSprite => visualRoot && visualRoot.GetComponent<Chibi2DMarker>();
+
+        private void Face2D(int facing)
+        {
+            visualRoot.localRotation = Quaternion.identity;
+            Vector3 s = visualRoot.localScale;
+            float want = Mathf.Abs(s.x) * (facing < 0 ? -1f : 1f);
+            if (!Mathf.Approximately(s.x, want)) visualRoot.localScale = new Vector3(want, s.y, s.z);
+        }
         public Transform VisualRoot => visualRoot;
 
         /// <summary>A cinematic owns this body: no yaw / animator parameters from the motor or the network
@@ -92,7 +103,8 @@ namespace AdventureKing.Gameplay
         public void DriveRemote(Vector2 velocity, string anim, int facing, bool turn = true)
         {
             if (Cinematic) return;
-            if (visualRoot && turn)
+            if (visualRoot && turn && IsSprite) Face2D(facing);
+            else if (visualRoot && turn)
             {
                 float yaw = anim == "climb" ? climbingYaw : facing < 0 ? -rightFacingYaw : rightFacingYaw;
                 visualRoot.localRotation = Quaternion.Slerp(visualRoot.localRotation, Quaternion.Euler(0f, yaw, 0f), 1f - Mathf.Exp(-turnSpeed * Time.deltaTime));
@@ -239,11 +251,15 @@ namespace AdventureKing.Gameplay
 
             if (visualRoot)
             {
-                float yaw = motor.IsClimbing ? climbingYaw
-                    : motor.Facing < 0 ? -rightFacingYaw : rightFacingYaw;
-                Quaternion target = Quaternion.Euler(0f, yaw, 0f);
-                float factor = 1f - Mathf.Exp(-turnSpeed * Time.deltaTime);
-                visualRoot.localRotation = Quaternion.Slerp(visualRoot.localRotation, target, factor);
+                if (IsSprite) Face2D(motor.Facing);
+                else
+                {
+                    float yaw = motor.IsClimbing ? climbingYaw
+                        : motor.Facing < 0 ? -rightFacingYaw : rightFacingYaw;
+                    Quaternion target = Quaternion.Euler(0f, yaw, 0f);
+                    float factor = 1f - Mathf.Exp(-turnSpeed * Time.deltaTime);
+                    visualRoot.localRotation = Quaternion.Slerp(visualRoot.localRotation, target, factor);
+                }
 
                 // On a ladder the body eases onto the ladder's centre line so the hands meet the rungs
                 // (the physics body may drift sideways inside the zone; this is visual only).
