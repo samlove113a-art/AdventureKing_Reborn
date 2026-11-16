@@ -34,6 +34,14 @@ namespace AdventureKing.ArtPipeline
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
+        /// <summary>All four classes (Pháp Sư, Kiếm Sĩ, Cung Thủ, Sát Thủ) from ArtSource/Chibi2D/{Class}.
+        ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildAllFromCommandLine</summary>
+        public static void BuildAllFromCommandLine()
+        {
+            try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin }) Build(c); EditorApplication.Exit(0); }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
         [MenuItem("AdventureKing/Art/Build 2D Chibi (Mage)")]
         public static void BuildMage() => Build(HeroClass.Mage);
 

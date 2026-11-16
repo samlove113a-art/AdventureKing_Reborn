@@ -39,6 +39,9 @@ namespace AdventureKing.Gameplay
             if (!body) { var m = GetComponent<Chibi2DMarker>(); body = m ? m.Renderer : GetComponentInChildren<SpriteRenderer>(); }
         }
 
+        /// <summary>Class prefix of the body sprites ("Mage", "Archer", ...): items are named per class.</summary>
+        private string Hero => body && body.sprite && body.sprite.name.IndexOf('_') > 0 ? body.sprite.name.Substring(0, body.sprite.name.IndexOf('_')) : heroName;
+
         public string Equipped(PaperSlot slot) => layers.TryGetValue(slot, out Layer l) ? l.ItemId : null;
 
         /// <summary>Renderers currently showing a sprite (the body counts when it is not masked): for tests and sanity checks.</summary>
@@ -57,7 +60,7 @@ namespace AdventureKing.Gameplay
             var frames = new Dictionary<string, Sprite[]>();
             foreach (string clip in Clips)
             {
-                Sprite[] sp = Resources.LoadAll<Sprite>($"Chibi2D/Paperdoll/{itemId}/{heroName}_{clip}");
+                Sprite[] sp = Resources.LoadAll<Sprite>($"Chibi2D/Paperdoll/{itemId}/{Hero}_{clip}");
                 if (sp.Length == 0) continue;
                 System.Array.Sort(sp, (a, b) => Index(a.name).CompareTo(Index(b.name)));
                 frames[clip] = sp;
@@ -125,7 +128,8 @@ namespace AdventureKing.Gameplay
             int last = n.LastIndexOf('_');
             if (last < 0) return;
             int frame = Index(n);
-            string clip = n.Substring(heroName.Length + 1, last - heroName.Length - 1);
+            string hero = Hero;
+            string clip = n.Substring(hero.Length + 1, last - hero.Length - 1);
             foreach (Layer l in layers.Values)
             {
                 if (l.ItemId == null || l.Frames == null) continue;

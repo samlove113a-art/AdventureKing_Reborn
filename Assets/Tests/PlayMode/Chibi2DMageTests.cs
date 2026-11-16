@@ -242,8 +242,10 @@ namespace AdventureKing.Tests
             Assert.IsNull(world.HeroModel.GetComponent<Chibi2DMarker>());
             Assert.Greater(world.HeroModel.GetComponentsInChildren<SkinnedMeshRenderer>(true).Length, 0, "3D body intact");
             HeroVisualStyle.Override = "2d";
-            Assert.IsNull(HeroVisualStyle.Body2D(HeroClass.Archer), "Archer has no 2D body yet");
-            Assert.AreSame(world.HeroPrefabs[(int)HeroClass.Archer], HeroVisualStyle.Resolve(HeroClass.Archer, world.HeroPrefabs[(int)HeroClass.Archer]), "unconverted class falls back to 3D");
+            var archer3D = world.HeroPrefabs[(int)HeroClass.Archer];
+            Assert.AreNotSame(archer3D, HeroVisualStyle.Resolve(HeroClass.Archer, archer3D), "2D style picks the 2D body");
+            HeroVisualStyle.Override = "3d";
+            Assert.AreSame(archer3D, HeroVisualStyle.Resolve(HeroClass.Archer, archer3D), "3D style keeps the original 3D prefab");
         }
     }
 }
