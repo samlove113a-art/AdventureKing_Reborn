@@ -201,6 +201,34 @@ public sealed class Chapter1Tests : IDisposable
     }
 
     [Fact]
+    public void Green_meadow_east_gate_leads_to_glow_forest_keeps_the_hero_and_returns_to_the_east_end()
+    {
+        var (acc, id) = Hero("ch1m3t01");
+        ToMushroomVillage(acc, id);
+        CharacterDto before = chars.Travel(acc, id, "ch1_village_east_m02", 92f, 0f);
+        clock += 2000;
+        // the Map 3 gate is at the east end of Map 2: the arrival point is too far, a Map 1 gate is not on this map
+        Assert.Equal("portal_too_far", Assert.Throws<GameError>(() => chars.Travel(acc, id, "ch1_m02_east_m03", -36f, 0f)).Code);
+        Assert.Throws<GameError>(() => chars.Travel(acc, id, "ch1_village_east_m02", 92f, 0f));
+        Walk(acc, id, -36f, 102f);
+        CharacterDto m3 = chars.Travel(acc, id, "ch1_m02_east_m03", 102f, 0f);
+        Assert.Equal("ch1_glow_forest", m3.lastMapId);
+        Assert.Equal(-36f, m3.posX, 1); // the Map 3 spawn, not a Map 2 coordinate
+        Assert.Equal(before.level, m3.level);
+        Assert.Equal(before.gold, m3.gold);
+        // the first heartbeat of the new map is accepted right away (the old scene's last beat must not count)
+        farm.Presence(acc, id, new PresenceRequestDto { x = -36f, y = 0f });
+        Assert.Equal("position_invalid", Assert.Throws<GameError>(() => chars.SaveLocation(acc, id, "ch1_glow_forest", 140f, 0.9f)).Code);
+        clock += 2000;
+        CharacterDto back = chars.Travel(acc, id, "ch1_m03_west_m02", -40f, 0f);
+        Assert.Equal("ch1_green_meadow", back.lastMapId);
+        Assert.Equal(99f, back.posX, 1);
+        foreach (var p in CharacterService.Portals.Values.Where(p => p.FromMap == "ch1_glow_forest"))
+            Assert.Contains(CharacterService.Portals.Values, q => q.FromMap == p.ToMap && q.ToMap == "ch1_glow_forest");
+        Assert.True(FarmService.SafeZones.ContainsKey("ch1_glow_forest") && FarmService.RespawnPoints.ContainsKey("ch1_glow_forest"));
+    }
+
+    [Fact]
     public void Green_meadow_spawns_pollen_slimes_outside_the_gate_rest_stop()
     {
         FarmConfig cfg = FarmConfig.Load(FarmServiceTests.MonstersPath);

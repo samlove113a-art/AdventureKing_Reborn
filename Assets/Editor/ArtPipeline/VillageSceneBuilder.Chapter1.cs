@@ -35,8 +35,24 @@ namespace AdventureKing.ArtPipeline
         }
 
         /// <summary>Chapter maps registered after the hub / meadow / halls (see RegisterBuildScenes).</summary>
-        private static readonly string[] ChapterScenePaths = { Ch1VillageScenePath, Ch1GreenMeadowScenePath };
+        private static readonly string[] ChapterScenePaths = { Ch1VillageScenePath, Ch1GreenMeadowScenePath, Ch1GlowForestScenePath };
         public const string Ch1GreenMeadowScenePath = "Assets/Scenes/Chapter1/AK_C1_M02.unity";
+        public const string Ch1GlowForestScenePath = "Assets/Scenes/Chapter1/AK_C1_M03.unity";
+
+        /// <summary>Map 1 (own panorama), Map 2 (east gate to Map 3) and the Map 3 shell. Meadow / hub stay as built.</summary>
+        public static void BuildChapter1Map3FromCommandLine()
+        {
+            try
+            {
+                EnsureLayer(OneWayLayer, "OneWayPlatform");
+                BuildCh1Village();
+                BuildCh1GreenMeadow();
+                BuildCh1GlowForest();
+                RegisterBuildScenes();
+                EditorApplication.Exit(0);
+            }
+            catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
 
         /// <summary>Only Map 2 (Làng Nấm keeps its last build except when its east gate changes).</summary>
         public static void BuildChapter1Map2FromCommandLine()
@@ -143,8 +159,10 @@ namespace AdventureKing.ArtPipeline
             Ch1FarmSetup(play);
             FinishWorld(scene, Ch1VillageScenePath, world, TownLayout.Ch1Village.MapId, TownLayout.Ch1Village.DisplayName, TownLayout.Ch1Village.Spawn,
                 minX, maxX, 11f, AdventureMusicStage.MushroomKingdom);
+            C1VillagePanorama(); // its own far landscape (was the town's rice-terrace painting)
             Light sun = Object.FindAnyObjectByType<Light>();
-            if (sun) { sun.color = new Color(1f, 0.9f, 0.78f); EditorSceneManagerSave(scene); } // warm red-orange palette (concept)
+            if (sun) sun.color = new Color(1f, 0.9f, 0.78f); // warm red-orange palette (concept)
+            EditorSceneManagerSave(scene);
         }
 
         // ================================================================== Map 2 · Đồng Cỏ Xanh
@@ -193,7 +211,7 @@ namespace AdventureKing.ArtPipeline
             Prop(art, "planter", 14f, 2.6f, 1.2f, false, y: 4.5f);   // on the low terrace
             Prop(art, "planter", 88f, 2.6f, 1.2f, true, y: 6.5f);    // on the flower knoll
             Prop(art, "crates", 62f, 2.8f, 1.6f, false, y: 5f);
-            Signboard(art, 101f, 2.6f, "Rừng Nấm\nSáng\n→\n(sắp mở)");
+            Signboard(art, 97.5f, 2.6f, "Rừng Nấm\nSáng\n→"); // Map 3 gate (ch1_m02_east_m03, x 102)
 
             C1Wildflowers(art, TownLayout.Ch1GreenMeadow.Decks, minX + 6f, maxX - 4f, 20261111, MapDetail());
 
@@ -205,6 +223,47 @@ namespace AdventureKing.ArtPipeline
             Light sun = Object.FindAnyObjectByType<Light>();
             if (sun) { sun.color = new Color(1f, 0.97f, 0.9f); sun.intensity = 1.3f; }
             EditorSceneManagerSave(scene); // bright clear day (concept)
+        }
+
+        // ================================================================== Map 3 · Rừng Nấm Sáng (khung map)
+        /// <summary>
+        /// Walkable shell of Map 3 so the Map 2 portal has a real destination: west rest stop with the gate back, two root
+        /// tiers, glowing giant mushrooms. NO monsters and NO Mini Boss yet (those are the next group of work).
+        /// </summary>
+        private static void BuildCh1GlowForest()
+        {
+            SceneTag = "ch1_m03";
+            Scene scene = NewWorldScene(out Transform world);
+            Transform art = Group(world, "Scenery"), solids = Group(world, "Collision"), play = Group(world, "Gameplay");
+            float minX = TownLayout.Ch1GlowForest.MinX, maxX = TownLayout.Ch1GlowForest.MaxX;
+            Ground(art, solids, minX, maxX, stream: false);
+            foreach (var d in TownLayout.Ch1GlowForest.Decks) Deck(art, solids, d, d.Top >= 6f ? "deck_high" : "deck");
+            foreach (var c in TownLayout.Ch1GlowForest.Climbs) ClimbZone(art, play, c);
+
+            Color teal = new Color(0.7f, 1f, 0.95f), violet = new Color(0.92f, 0.82f, 1f), amber = new Color(1f, 0.85f, 0.65f);
+            C1Prop(art, "ch1_mushroom_lamp", -30f, 2.2f, 0.9f, false);
+            HallGlow(art, "c1_lamp", new Vector3(-30.42f, 2.3f, 2.0f), 1.3f, new Color(1f, 0.7f, 0.35f) * 0.5f);
+            Signboard(art, -33f, 2.6f, "Rừng Nấm Sáng\n←\nĐồng Cỏ Xanh");
+            Signboard(art, -22f, 2.6f, "Hết vùng\nan toàn\n→");
+            float[] treeX = { -12f, 4f, 20f, 36f, 52f, 68f, 84f, 100f };
+            for (int i = 0; i < treeX.Length; i++)
+            {
+                Color tint = i % 3 == 0 ? teal : i % 3 == 1 ? violet : amber;
+                C1Prop(art, "ch1_giant_mushroom_tree", treeX[i], 9f + (i % 3) * 3f, 0.9f + (i % 2) * 0.25f, i % 2 == 1, tint: tint);
+                HallGlow(art, "c1_glow" + i, new Vector3(treeX[i], 6f, 7f), 3.2f, tint * 0.35f);
+            }
+            for (int i = 0; i < 7; i++) C1Prop(art, "ch1_flower_bush", -8f + i * 17f, i % 2 == 0 ? 2.3f : 4.4f, 0.9f, i % 2 == 0, tint: i % 2 == 0 ? teal : violet);
+            Prop(art, "crates", -37.5f, 3.2f, 1.6f, true);
+            Signboard(art, 96f, 2.6f, "Mini Boss\nNấm Thủ Lĩnh\n(sắp mở)");
+
+            foreach (var p in TownLayout.Ch1GlowForest.Portals) Portal(play, p);
+            Ch1FarmSetup(play);
+            FinishWorld(scene, Ch1GlowForestScenePath, world, TownLayout.Ch1GlowForest.MapId, TownLayout.Ch1GlowForest.DisplayName,
+                TownLayout.Ch1GlowForest.Spawn, minX, maxX, 12f, AdventureMusicStage.MushroomKingdom);
+            C1VillagePanorama(); // placeholder far landscape, shares Map 1's generated texture but its own ParallaxLayer instance
+            Light sun = Object.FindAnyObjectByType<Light>();
+            if (sun) { sun.color = new Color(0.78f, 0.86f, 1f); sun.intensity = 0.9f; } // dim blue-green forest light
+            EditorSceneManagerSave(scene);
         }
 
         private static int MapDetail() => 2;
@@ -285,6 +344,55 @@ namespace AdventureKing.ArtPipeline
                 Color sky = Color.Lerp(sky0, sky1, Mathf.Pow(s, 0.8f));
                 float cloud = Mathf.PerlinNoise(u * 9f, v * 18f) * Mathf.PerlinNoise(u * 3f + 5f, v * 6f);
                 return Color.Lerp(sky, Color.white, Mathf.SmoothStep(0.22f, 0.36f, cloud) * 0.75f * Mathf.SmoothStep(0.5f, 0.7f, v));
+            });
+            var backdrop = GameObject.Find("Backdrop_Painting");
+            if (!backdrop) throw new System.InvalidOperationException("Backdrop_Painting not found after FinishWorld");
+            backdrop.GetComponent<MeshRenderer>().sharedMaterial = CutoutMat($"{WorldDir}/Generated/{name}.png", 0f, fogAmount: 0f, cutoff: 0f);
+        }
+
+        /// <summary>Map 1's own far landscape (procedural): warm peach-to-teal sky, violet ridges and giant mushroom silhouettes.
+        /// Own texture + own material asset (+ own ParallaxLayer follow rates), so nothing is shared with the town's painting.</summary>
+        private static void C1VillagePanorama()
+        {
+            const string name = "c1_m01_mushroom_panorama_v1";
+            float Ridge(float u, float baseV, float a1, float f1, float a2, float f2, float ph) => baseV + a1 * Mathf.Sin(u * f1 + ph) + a2 * Mathf.Sin(u * f2 + ph * 1.7f);
+            Color sky0 = new Color(1f, 0.86f, 0.74f), sky1 = new Color(0.55f, 0.74f, 0.9f);
+            Color[] hill = { new Color(0.56f, 0.48f, 0.66f), new Color(0.44f, 0.5f, 0.62f), new Color(0.34f, 0.5f, 0.5f) };
+            Color[] cap = { new Color(0.86f, 0.4f, 0.36f), new Color(0.9f, 0.6f, 0.38f), new Color(0.5f, 0.7f, 0.78f) };
+            var rng = new System.Random(20261112);
+            var shrooms = new List<(float u, float baseV, float h, float w, int ridge, int tone)>();
+            for (int i = 0; i < 26; i++)
+            {
+                int ridge = 1 + i % 2;
+                float tu = (float)rng.NextDouble();
+                float crest = ridge == 1 ? Ridge(tu, 0.34f, 0.04f, 11f, 0.012f, 33f, 1.3f) : Ridge(tu, 0.46f, 0.03f, 6f, 0.01f, 25f, 3.1f);
+                float h = (ridge == 1 ? 0.17f : 0.12f) * (0.75f + (float)rng.NextDouble() * 0.5f);
+                shrooms.Add((tu, crest - 0.01f, h, h * 0.2f, ridge, rng.Next(3)));
+            }
+            GeneratedTexture(name, 1024, (u, v) =>
+            {
+                float[] ridges = { Ridge(u, 0.22f, 0.05f, 8f, 0.015f, 39f, 0.9f), Ridge(u, 0.34f, 0.04f, 11f, 0.012f, 33f, 1.3f), Ridge(u, 0.46f, 0.03f, 6f, 0.01f, 25f, 3.1f) };
+                for (int i = 0; i < 3; i++)
+                {
+                    foreach (var m in shrooms)
+                    {
+                        if (m.ridge != i) continue;
+                        float dx = u - m.u, y = v - m.baseV;
+                        if (y < 0f || y > m.h || Mathf.Abs(dx) > m.w * 1.6f) continue;
+                        float capLo = m.h * 0.55f;
+                        if (y < capLo && Mathf.Abs(dx) < m.w * 0.22f) return Color.Lerp(new Color(0.95f, 0.88f, 0.78f), sky0, 0.22f * i); // stem
+                        float cy = (y - capLo) / (m.h - capLo);
+                        if (y >= capLo && Mathf.Abs(dx) < m.w * 1.5f * Mathf.Sqrt(Mathf.Max(0f, 1f - cy * cy)))
+                            return Color.Lerp(cap[m.tone], sky0, 0.2f * i + 0.1f); // dome cap
+                    }
+                    if (v > ridges[i]) continue;
+                    float shade = Mathf.Clamp01((ridges[i] - v) / 0.12f);
+                    return Color.Lerp(Color.Lerp(hill[2 - i] * 1.08f, hill[2 - i] * 0.86f, shade), sky0, 0.2f * i);
+                }
+                float s = Mathf.Clamp01((v - 0.46f) / 0.54f);
+                Color sky = Color.Lerp(sky0, sky1, Mathf.Pow(s, 0.75f));
+                float cloud = Mathf.PerlinNoise(u * 8f + 3f, v * 16f) * Mathf.PerlinNoise(u * 2.5f, v * 5f);
+                return Color.Lerp(sky, new Color(1f, 0.97f, 0.93f), Mathf.SmoothStep(0.22f, 0.36f, cloud) * 0.7f * Mathf.SmoothStep(0.5f, 0.7f, v));
             });
             var backdrop = GameObject.Find("Backdrop_Painting");
             if (!backdrop) throw new System.InvalidOperationException("Backdrop_Painting not found after FinishWorld");

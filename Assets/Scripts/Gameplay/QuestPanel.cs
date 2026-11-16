@@ -33,18 +33,46 @@ namespace AdventureKing.Gameplay
         private readonly Button[] tabs = new Button[3];
         private float nextRefresh;
         private const string FoldKey = "ak_quest_folded";
+        private const string FoldKeyMobile = "ak_quest_folded_mobile";
+        // Expanded card on a phone must end above the joystick (ring top = 250 + 145 above the bottom of the safe area)
+        private const float TopOffset = 262f, CardHeight = 420f, JoystickTop = 395f, ClearGap = 12f;
+        private float lastParentHeight = -1f;
+
+        /// <summary>Phone: scale the expanded card so it ends above the joystick whatever the screen height / safe area.</summary>
+        public static float FitScale(float parentHeight) => Mathf.Clamp((parentHeight - TopOffset - JoystickTop - ClearGap) / CardHeight, 0.5f, 0.85f);
+
+        private void FitToScreen()
+        {
+            if (!card || !card.parent) return;
+            float h = ((RectTransform)card.parent).rect.height;
+            if (Mathf.Approximately(h, lastParentHeight) || h <= 0f) return;
+            lastParentHeight = h;
+            float s = FitScale(h);
+            card.localScale = new Vector3(s, s, 1f);
+        }
+
+        /// <summary>QA: lay out as on a phone even on desktop.</summary>
+        public static bool ForceMobile;
+        public static bool MobileLayout => ForceMobile || TouchControlsVisibility.TouchPreferred;
 
         private void Start()
         {
             Build();
             QuestBook.Changed += Redraw;
-            try { if (PlayerPrefs.GetInt(FoldKey, 0) == 1) SetCollapsed(true); } catch { }
+            bool mobile = MobileLayout;
+            if (mobile) FitToScreen();
+            // PC keeps the saved choice (default open). A phone starts folded so the card never covers the touch controls,
+            // until the player opens it by hand; that manual choice is remembered separately from the PC one.
+            bool fold = false;
+            try { fold = mobile ? PlayerPrefs.GetInt(FoldKeyMobile, 1) == 1 : PlayerPrefs.GetInt(FoldKey, 0) == 1; } catch { fold = mobile; }
+            if (fold) ApplyCollapsed(true);
         }
 
         private void OnDestroy() => QuestBook.Changed -= Redraw;
 
         private void Update()
         {
+            if (MobileLayout) FitToScreen();
             if (Time.unscaledTime >= nextRefresh && AdventureWorldSession.Current && AdventureWorldSession.Current.Character != null)
             {
                 nextRefresh = Time.unscaledTime + 4f;
@@ -139,13 +167,18 @@ namespace AdventureKing.Gameplay
 
         public void SetCollapsed(bool c)
         {
+            ApplyCollapsed(c);
+            try { PlayerPrefs.SetInt(MobileLayout ? FoldKeyMobile : FoldKey, c ? 1 : 0); } catch { } // manual choice only
+        }
+
+        private void ApplyCollapsed(bool c)
+        {
             Collapsed = c;
             if (bodyRoot) bodyRoot.gameObject.SetActive(!c);
             if (hint) hint.gameObject.SetActive(!c);
             if (card) card.sizeDelta = new Vector2(460f, c ? 72f : 420f);
             var fold = card ? card.Find("Fold") : null;
             if (fold) fold.localEulerAngles = new Vector3(0f, 0f, c ? -90f : 90f);
-            try { PlayerPrefs.SetInt(FoldKey, c ? 1 : 0); } catch { }
         }
 
         public void Show(Tab t) { Current = t; Redraw(); }

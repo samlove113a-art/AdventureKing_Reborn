@@ -170,7 +170,40 @@ namespace AdventureKing.Gameplay
                 new Climb("DayLeoGoHoa", 83f, 0f, 7.8f, true),
             };
 
-            public static readonly PortalSpot[] Portals = { new PortalSpot("ch1_m02_west_village", -40f, Ch1Village.Scene, Ch1Village.DisplayName) };
+            public static readonly PortalSpot[] Portals =
+            {
+                new PortalSpot("ch1_m02_west_village", -40f, Ch1Village.Scene, Ch1Village.DisplayName),
+                new PortalSpot("ch1_m02_east_m03", 102f, Ch1GlowForest.Scene, Ch1GlowForest.DisplayName), // Map 3 gate (east end)
+            };
+        }
+
+        // ------------------------------------------------------------ Chương 1 · Map 3 Rừng Nấm Sáng (khung map — chưa có quái / Mini Boss)
+        /// <summary>
+        /// Map 3 so far: the walkable shell (west rest stop, two raised root tiers, glow-mushroom forest) so the Map 2 → Map 3
+        /// portal has a real destination. Monsters and the Mini Boss (Nấm Thủ Lĩnh) are NOT built yet.
+        /// Server mirrors: CharacterService.Maps/Portals, FarmService.SafeZones/RespawnPoints.
+        /// </summary>
+        public static class Ch1GlowForest
+        {
+            public const string MapId = "ch1_glow_forest", Scene = "AK_C1_M03", DisplayName = "Rừng Nấm Sáng";
+            public const int Chapter = 1, Index = 3;
+            public const float MinX = -46f, MaxX = 106f;
+            public static readonly Vector2 Spawn = new Vector2(-36f, 1f);
+            public static readonly Vector2 SafeZone = new Vector2(-46f, -20f);
+
+            public static readonly Deck[] Decks =
+            {
+                new Deck("RePhatSang", 10f, 22f, 4.5f),
+                new Deck("GoNamSang", 46f, 58f, 6f),
+            };
+
+            public static readonly Climb[] Climbs =
+            {
+                new Climb("ThangRePhatSang", 11f, 0f, 5.8f, false),
+                new Climb("DayLeoGoNamSang", 47f, 0f, 7.3f, true),
+            };
+
+            public static readonly PortalSpot[] Portals = { new PortalSpot("ch1_m03_west_m02", -40f, Ch1GreenMeadow.Scene, Ch1GreenMeadow.DisplayName) };
         }
 
         // ------------------------------------------------------------ Sảnh Bang Hội (Phase D interior, safe zone)
@@ -219,6 +252,7 @@ namespace AdventureKing.Gameplay
             new MapInfo { MapId = WeddingHall.MapId, Scene = WeddingHall.Scene, DisplayName = WeddingHall.DisplayName, MinX = WeddingHall.MinX, MaxX = WeddingHall.MaxX, Spawn = WeddingHall.Spawn, Decks = WeddingHall.Decks, Climbs = WeddingHall.Climbs, Portals = WeddingHall.Portals },
             new MapInfo { MapId = Ch1Village.MapId, Scene = Ch1Village.Scene, DisplayName = Ch1Village.DisplayName, MinX = Ch1Village.MinX, MaxX = Ch1Village.MaxX, Spawn = Ch1Village.Spawn, Decks = Ch1Village.Decks, Climbs = Ch1Village.Climbs, Portals = Ch1Village.Portals, SafeZone = Ch1Village.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
             new MapInfo { MapId = Ch1GreenMeadow.MapId, Scene = Ch1GreenMeadow.Scene, DisplayName = Ch1GreenMeadow.DisplayName, MinX = Ch1GreenMeadow.MinX, MaxX = Ch1GreenMeadow.MaxX, Spawn = Ch1GreenMeadow.Spawn, Decks = Ch1GreenMeadow.Decks, Climbs = Ch1GreenMeadow.Climbs, Portals = Ch1GreenMeadow.Portals, SafeZone = Ch1GreenMeadow.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
+            new MapInfo { MapId = Ch1GlowForest.MapId, Scene = Ch1GlowForest.Scene, DisplayName = Ch1GlowForest.DisplayName, MinX = Ch1GlowForest.MinX, MaxX = Ch1GlowForest.MaxX, Spawn = Ch1GlowForest.Spawn, Decks = Ch1GlowForest.Decks, Climbs = Ch1GlowForest.Climbs, Portals = Ch1GlowForest.Portals, SafeZone = Ch1GlowForest.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
         };
 
         /// <summary>The map with this id (the hub when unknown).</summary>

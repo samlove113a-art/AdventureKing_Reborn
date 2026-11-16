@@ -316,5 +316,155 @@ namespace AdventureKing.Tests
             Assert.AreEqual(TownLayout.Ch1Village.MapId, AdventureWorldSession.Current.Character.lastMapId);
             Assert.AreEqual(89f, Pos.x, 1f, "arrived at the east gate of Làng Nấm");
         }
+
+        private static string BackdropTexture()
+        {
+            var mat = GameObject.Find("Backdrop_Painting").GetComponent<MeshRenderer>().sharedMaterial;
+            foreach (string n in mat.GetTexturePropertyNames()) { Texture t = mat.GetTexture(n); if (t) return t.name; }
+            return "";
+        }
+
+        /// <summary>Map 2 east gate → Map 3 (server portal, state kept, spawn point of Map 3, no Map 2 coordinate) and back;
+        /// every map loads its own far backdrop (Map 1 no longer the town painting) and its own ParallaxLayer.</summary>
+        [UnityTest]
+        public IEnumerator Green_Meadow_East_Gate_To_Glow_Forest_Keeps_State_And_Each_Map_Has_Its_Own_Parallax()
+        {
+            yield return server.OpenGame();
+            yield return TestServer.RegisterCreateAndEnter("ch1p" + Random.Range(1000, 9999), "ch1-pass-2026", HeroClass.Mage, "Lữ Khách Rừng");
+            Bind();
+            var greeter = Object.FindAnyObjectByType<ElderGreeter>();
+            float until = Time.time + 20f;
+            while (greeter && !greeter.DialogOpen && Time.time < until) yield return null;
+            if (greeter && greeter.DialogOpen) greeter.Close();
+            until = Time.time + 15f;
+            while (greeter && !greeter.Done && Time.time < until) yield return null;
+            string hubTex = BackdropTexture();
+
+            yield return TakePortal(TownLayout.Hub.Portals.First(p => p.Id == "hub_east_meadow").X, TownLayout.Meadow.Scene);
+            yield return TakePortal(TownLayout.Meadow.Portals.First(p => p.Id == "meadow_east_ch1").X, TownLayout.Ch1Village.Scene);
+            string m1Tex = BackdropTexture();
+            var m1Layer = GameObject.Find("Backdrop_Painting").GetComponent<ParallaxLayer>();
+            Vector2 m1Follow = m1Layer.Follow;
+            yield return new WaitForSeconds(1f);
+            yield return Shot("m01_parallax_own_backdrop");
+            yield return TakePortal(TownLayout.Ch1Village.Portals.First(p => p.Id == "ch1_village_east_m02").X, TownLayout.Ch1GreenMeadow.Scene);
+            string m2Tex = BackdropTexture();
+
+            var world = AdventureWorldSession.Current;
+            long gold = world.Character.gold; int level = world.Character.level; int items = world.Character.inventory.Length;
+            yield return TakePortal(TownLayout.Ch1GreenMeadow.Portals.First(p => p.Id == "ch1_m02_east_m03").X, TownLayout.Ch1GlowForest.Scene, "m03_00_m02_east_gate");
+            world = AdventureWorldSession.Current;
+            Assert.AreEqual(TownLayout.Ch1GlowForest.MapId, world.MapId);
+            Assert.AreEqual(TownLayout.Ch1GlowForest.MapId, world.Character.lastMapId, "server moved the hero to Map 3");
+            Assert.AreEqual(TownLayout.Ch1GlowForest.Spawn.x, Pos.x, 0.8f, "placed at the Map 3 spawn, not at Map 2's x≈100");
+            Assert.AreEqual(gold, world.Character.gold); Assert.AreEqual(level, world.Character.level);
+            Assert.AreEqual(items, world.Character.inventory.Length, "inventory kept");
+            var rb = motor.GetComponent<Rigidbody2D>();
+            Assert.Greater(Pos.y, -1f, "standing on the Map 3 ground, not falling out of the map");
+            Assert.IsNotNull(Physics2D.Raycast(new Vector2(Pos.x, 3f), Vector2.down, 6f).collider, "Map 3 ground collider under the hero");
+            var missing = Object.FindObjectsByType<Transform>(FindObjectsInactive.Include).Where(t => t.GetComponents<Component>().Any(c => c == null)).Select(t => UiAudit.PathOf(t)).ToList();
+            Assert.IsEmpty(missing, "missing scripts: " + string.Join(", ", missing));
+            string m3Tex = BackdropTexture();
+            yield return new WaitForSeconds(1f);
+            yield return Shot("m03_01_arrival");
+
+            // the portal cannot be used twice in a row / from the wrong side
+            Assert.IsNull(Object.FindObjectsByType<PortalGate2D>(FindObjectsInactive.Exclude).FirstOrDefault(g => g.name == "Portal_ch1_m02_east_m03"), "Map 2's gate is not on Map 3");
+
+            yield return TakePortal(TownLayout.Ch1GlowForest.Portals[0].X, TownLayout.Ch1GreenMeadow.Scene);
+            Assert.AreEqual(TownLayout.Ch1GreenMeadow.MapId, AdventureWorldSession.Current.Character.lastMapId);
+            Assert.AreEqual(99f, Pos.x, 1f, "back at the east end of Map 2");
+
+            // ---- parallax: each map has its own texture + layer rates, none is the town painting
+            Debug.Log($"[PARALLAX] hub={hubTex} m1={m1Tex} m2={m2Tex} m3={m3Tex} m1Follow={m1Follow}");
+            Assert.AreNotEqual("", m1Tex);
+            StringAssert.Contains("c1_m01", m1Tex);
+            StringAssert.Contains("c1_m02", m2Tex);
+            StringAssert.Contains("c1_m01", m3Tex);
+            Assert.AreNotEqual(hubTex, m1Tex, "Map 1 no longer uses the town backdrop");
+            Assert.AreNotEqual(m1Tex, m2Tex);
+        }
+
+        /// <summary>Quest tracker on a phone: folded by default, manual open/close remembered separately from the PC choice,
+        /// never overlapping the joystick / jump / interact / skill bar, no flicker; PC layout unchanged.</summary>
+        [UnityTest]
+        public IEnumerator Quest_Tracker_Folds_On_Phone_And_Keeps_Clear_Of_The_Touch_Controls()
+        {
+            yield return server.OpenGame();
+            yield return TestServer.RegisterCreateAndEnter("ch1q" + Random.Range(1000, 9999), "ch1-pass-2026", HeroClass.Mage, "Lữ Khách Gọn");
+            Bind();
+            var existing = Object.FindAnyObjectByType<QuestPanel>();
+            Assert.IsNotNull(existing);
+            try { PlayerPrefs.DeleteKey("ak_quest_folded"); PlayerPrefs.DeleteKey("ak_quest_folded_mobile"); } catch { }
+
+            // PC (this editor run): not folded by default
+            QuestPanel pc = NewPanel(existing, "QuestPc");
+            yield return null; yield return null;
+            Assert.IsFalse(pc.Collapsed, "PC keeps the open tracker");
+            Assert.AreEqual(1f, pc.transform.localScale.x, 0.001f);
+
+            QuestPanel.ForceMobile = true;
+            try
+            {
+                QuestPanel phone = NewPanel(existing, "QuestPhone");
+                yield return null; yield return null;
+                Assert.IsTrue(phone.Collapsed, "phone starts folded");
+                for (int i = 0; i < 90; i++) { yield return null; Assert.IsTrue(phone.Collapsed, "no flicker / auto re-open"); }
+                // folded bar is a thin strip: far above every touch control
+                RectTransform[] controls = new[] { "TouchJoystick", "TouchJump", "TouchInteract" }
+                    .Select(n => Object.FindObjectsByType<RectTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(r => r.name == n)).ToArray();
+                Assert.IsTrue(controls.All(c => c), "touch controls exist in the HUD");
+                var bar = Object.FindObjectsByType<HeroActionBar>(FindObjectsInactive.Include, FindObjectsSortMode.None).First();
+                var barRects = bar.GetComponentsInChildren<RectTransform>(false).Where(r => r != bar.transform).ToList();
+                RectTransform card = (RectTransform)phone.transform;
+                AssertClear(card, controls, barRects, "folded");
+
+                phone.SetCollapsed(false); // the player opens it by hand
+                yield return null; yield return null;
+                Assert.IsFalse(phone.Collapsed);
+                AssertClear(card, controls, barRects, "expanded");
+                yield return Shot("m_quest_phone_open");
+                phone.SetCollapsed(true);
+                yield return null;
+                yield return Shot("m_quest_phone_folded");
+                phone.SetCollapsed(false);
+                Assert.AreEqual(0, PlayerPrefs.GetInt("ak_quest_folded_mobile", 1), "manual open remembered for the phone");
+                Assert.AreEqual(0, PlayerPrefs.GetInt("ak_quest_folded", 0), "PC key untouched by phone choices");
+                QuestPanel again = NewPanel(existing, "QuestPhone2");
+                yield return null; yield return null;
+                Assert.IsFalse(again.Collapsed, "a manual open is respected on the next start");
+
+                // other phone screens: the expanded card always ends above the joystick ring (canvas = ref 1920x1080, match 0.6)
+                foreach (var res in new[] { new Vector2(1280, 720), new Vector2(2400, 1080), new Vector2(2532, 1170), new Vector2(1024, 768), new Vector2(2960, 1440), new Vector2(1600, 720) })
+                {
+                    float scale = Mathf.Pow(2f, Mathf.Lerp(Mathf.Log(res.x / 1920f, 2f), Mathf.Log(res.y / 1080f, 2f), 0.6f));
+                    float canvasH = res.y / scale; // (safe area bottom/top insets only add margin on the top, joystick moves with the bottom)
+                    float bottomFromTop = 262f + 420f * QuestPanel.FitScale(canvasH);
+                    Assert.LessOrEqual(bottomFromTop, canvasH - 395f, $"{res}: expanded card ends above the joystick (canvasH {canvasH:0})");
+                }
+            }
+            finally { QuestPanel.ForceMobile = false; try { PlayerPrefs.DeleteKey("ak_quest_folded"); PlayerPrefs.DeleteKey("ak_quest_folded_mobile"); } catch { } }
+        }
+
+        private static QuestPanel NewPanel(QuestPanel like, string name)
+        {
+            var go = new GameObject(name, typeof(RectTransform)) { layer = 5 };
+            go.transform.SetParent(like.transform.parent, false);
+            like.gameObject.SetActive(false); // the real one stays out of the way
+            return go.AddComponent<QuestPanel>();
+        }
+
+        private static Rect Bounds(RectTransform r)
+        {
+            var c = new Vector3[4]; r.GetWorldCorners(c);
+            return Rect.MinMaxRect(Mathf.Min(c[0].x, c[2].x), Mathf.Min(c[0].y, c[2].y), Mathf.Max(c[0].x, c[2].x), Mathf.Max(c[0].y, c[2].y));
+        }
+
+        private static void AssertClear(RectTransform card, RectTransform[] controls, List<RectTransform> bar, string what)
+        {
+            Rect q = Bounds(card);
+            foreach (RectTransform c in controls) Assert.IsFalse(q.Overlaps(Bounds(c)), $"{what}: quest card overlaps {c.name}");
+            foreach (RectTransform c in bar) Assert.IsFalse(q.Overlaps(Bounds(c)), $"{what}: quest card overlaps the skill bar ({c.name})");
+        }
     }
 }

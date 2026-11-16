@@ -62,6 +62,7 @@ namespace AdventureKing.Gameplay
             [TownLayout.WeddingHall.MapId] = TownLayout.WeddingHall.Scene,
             [TownLayout.Ch1Village.MapId] = TownLayout.Ch1Village.Scene,
             [TownLayout.Ch1GreenMeadow.MapId] = TownLayout.Ch1GreenMeadow.Scene,
+            [TownLayout.Ch1GlowForest.MapId] = TownLayout.Ch1GlowForest.Scene,
         };
 
         public static AdventureWorldSession Current { get; private set; }
