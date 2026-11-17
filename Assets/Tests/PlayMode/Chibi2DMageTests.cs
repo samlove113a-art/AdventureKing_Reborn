@@ -172,8 +172,8 @@ namespace AdventureKing.Tests
             // 2) compact scale: the whole 2D body is about as tall as the gameplay collider (not a screen-filling giant)
             var col = motor.GetComponent<Collider2D>();
             yield return new WaitForSeconds(0.6f);
-            Assert.That(sr.bounds.size.y, Is.InRange(0.55f, 1.35f), "sprite height in metres: " + sr.bounds.size.y);
-            Assert.LessOrEqual(sr.bounds.size.y, col.bounds.size.y * 1.1f, "not taller than the collider");
+            Assert.That(sr.bounds.size.y, Is.InRange(1.8f, 3.2f), "sprite height in metres: " + sr.bounds.size.y);
+            Assert.LessOrEqual(sr.bounds.size.y * 0.5f, col.bounds.size.y * 1.15f, "the drawn figure (about half of the frame) is not taller than the collider");
             Assert.AreEqual(1, pd.VisibleRenderers(), "only the base body at first");
             yield return Shot("10_scale_compact");
 

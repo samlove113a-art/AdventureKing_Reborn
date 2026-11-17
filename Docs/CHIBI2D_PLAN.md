@@ -29,3 +29,9 @@
 - `Tools/blender/bake_chibi_pixel.py` → camera ngang, đầu phóng 1,2×, màu 30 màu/class, viền 1 px, khung 128 px → `ArtSource/Chibi2D/_MeshyPixel/<Class>/` (+ `<Class>_preview.png`).
 - **Kết quả thật:** Kiếm Sĩ đọc được (tóc bạc, giáp xanh, kiếm). **Pháp Sư bị dính cả bệ cỏ/nấm** của ảnh tham chiếu vào model; **Cung Thủ chỉ thấy mũ trùm + tóc, thân nhỏ xíu**; Sát Thủ chưa xem kỹ. Nguyên nhân: Meshy dựng luôn nền / khối tóc từ ảnh có nền rừng. Cần ảnh nhân vật **tách nền** (không có bệ đất) cho mỗi class rồi tạo lại (~35 credit/class + animation ~40).
 - **Chưa đưa vào Unity:** `Assets/Resources/Chibi2D/*_Visual2D.prefab` hiện vẫn là bản cắt từ ảnh (tạm, trái yêu cầu mới) cho tới khi có model Meshy sạch.
+
+## 2026-11-17 (tiếp) — Meshy v2 sạch nền, đã vào Unity
+- Pháp Sư / Cung Thủ / Sát Thủ: tạo concept mới **không nền** bằng Meshy text-to-image (6 credit), rồi `v2_<class>` model + rig + animation. Credit thêm ≈ 240; số dư API 2.315. Kiếm Sĩ dùng `ref_swordsman`.
+- Bake lại bằng `bake_chibi_pixel.py` (đầu 1,3–1,45×, cắt sạch phần đất dưới chân, 48 màu, khung 128 px, FRAME_M 1,5) → `ArtSource/Chibi2D/<Class>/` → `Chibi2DArt.BuildAllFromCommandLine` → prefab `*_Visual2D`. Bản cắt từ ảnh đã bị thay thế (còn trong git).
+- Test thật: Chibi2DClassTests (3 nghề) + Chibi2DMageTests (3) + SkillOrigin + SkillSync = 8/8 pass.
+- **Hạn chế:** pixel hóa từ model 3D nên chi tiết mặt/mắt nhỏ và mất nét; vũ khí Meshy cũ gắn tạm (Pháp Sư cầm gậy đeo lưng); Skill/Attack chưa có VFX riêng; Mage giữ hiệu ứng pixel cũ; chưa có NPC/quái/boss 2D.

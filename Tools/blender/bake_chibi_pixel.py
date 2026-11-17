@@ -13,6 +13,7 @@ import math
 import os
 import sys
 
+import bmesh
 import bpy
 import numpy as np
 from mathutils import Vector
@@ -24,8 +25,8 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 OUT = os.path.join(ROOT, "ArtSource", "Chibi2D", CLS)
 os.makedirs(OUT, exist_ok=True)
 
-HEAD_SCALE = 1.2
-FRAME_M = 1.45                 # metres per frame side
+HEAD_SCALE = {"Mage": 1.45, "Swordsman": 1.3, "Archer": 1.35, "Assassin": 1.4}.get(CLS, 1.2)
+FRAME_M = 1.5                  # metres per frame side
 BASE = 0.07                    # ground line above the bottom edge (m)
 RES, PX = 512, 128
 OUTLINE = (0.12, 0.06, 0.2)
@@ -60,6 +61,27 @@ for ax in "xyz":
     setattr(con, f"max_{ax}", HEAD_SCALE)
 con.owner_space = "LOCAL"
 bpy.ops.object.mode_set(mode="OBJECT")
+
+# ---- Meshy dumps the reference picture's ground (grass base, stones, mushrooms) into the model: cut everything under / beside the feet
+foot_bones = [b for b in arm.data.bones if b.name in ("LeftFoot", "RightFoot", "LeftToeBase", "RightToeBase")]
+pts = [arm.matrix_world @ p for b in foot_bones for p in (b.head_local, b.tail_local)]
+sole = min(p.z for p in pts) - 0.035
+fx0, fx1 = min(p.x for p in pts) - 0.14, max(p.x for p in pts) + 0.14
+fy0, fy1 = min(p.y for p in pts) - 0.16, max(p.y for p in pts) + 0.16
+removed = 0
+for ob in [o for o in sc.objects if o.type == "MESH" and not o.name.startswith("Weapon_")]:
+    bm = bmesh.new(); bm.from_mesh(ob.data)
+    kill = []
+    for v in bm.verts:
+        w = ob.matrix_world @ v.co
+        under = w.z < sole + 0.012
+        beside = w.z < sole + 0.17 and not (fx0 <= w.x <= fx1 and fy0 <= w.y <= fy1)
+        if under or beside:
+            kill.append(v)
+    bmesh.ops.delete(bm, geom=kill, context="VERTS")
+    removed += len(kill)
+    bm.to_mesh(ob.data); bm.free()
+print("GROUND CUT", CLS, "sole z %.3f" % sole, "verts removed", removed, flush=True)
 
 sc.render.engine = "BLENDER_EEVEE"
 sc.render.resolution_x = sc.render.resolution_y = RES
@@ -124,7 +146,7 @@ for name, take, f0, f1, n, fps, loop, follow in CLIPS:
 samples = np.concatenate([f[::4, ::4][f[::4, ::4, 3] > 0.5][:, :3] for fr, _, _ in raw.values() for f in fr])
 rng = np.random.default_rng(5)
 samples = samples[rng.choice(len(samples), min(50000, len(samples)), replace=False)]
-cen = samples[rng.choice(len(samples), 30, replace=False)].copy()
+cen = samples[rng.choice(len(samples), 48, replace=False)].copy()
 for _ in range(12):
     idx = ((samples[:, None] - cen[None]) ** 2).sum(-1).argmin(1)
     for j in range(len(cen)):

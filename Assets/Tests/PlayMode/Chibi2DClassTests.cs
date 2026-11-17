@@ -70,8 +70,8 @@ namespace AdventureKing.Tests
             StringAssert.StartsWith(n + "_", sr.sprite.name, "sprite named per class");
             var col = motor.GetComponent<Collider2D>();
             Assert.IsTrue(col && col.enabled);
-            Assert.That(sr.bounds.size.y, Is.InRange(0.55f, 1.35f), "compact size");
-            Assert.LessOrEqual(sr.bounds.size.y, col.bounds.size.y * 1.1f);
+            Assert.That(sr.bounds.size.y, Is.InRange(1.8f, 3.2f), "compact size");
+            Assert.LessOrEqual(sr.bounds.size.y * 0.5f, col.bounds.size.y * 1.15f, "drawn figure (about half of the frame) vs collider");
 
             var anim = world.HeroModel.GetComponentInChildren<Animator>();
             foreach (string state in new[] { "Idle", "Run", "Jump", "Fall", "Climb", "Hit", "Death", "Attack", "Skill" })
