@@ -105,6 +105,7 @@ namespace AdventureKing.Gameplay
 
         private void LateUpdate()
         {
+            SpriteLateUpdate();
             if (!NameLabel) return;
             var w = AdventureWorldSession.Current;
             float want = 1f;
@@ -288,6 +289,40 @@ namespace AdventureKing.Gameplay
                     r.SetPropertyBlock(block);
                 }
             }
+        }
+
+        private GameObject sprite2D;
+        public bool IsSprite => sprite2D;
+
+        /// <summary>2D chibi style: shows the sprite body of this monster type (state names Idle / Walk / Attack / Hit / Death) instead of the 3D one.</summary>
+        public bool UseSprite(string monsterType)
+        {
+            string actor = Actor2D.ForMonster(monsterType);
+            if (string.IsNullOrEmpty(actor) || sprite2D) return sprite2D;
+            sprite2D = Actor2D.Swap(transform, actor, body ? body.GetComponentInChildren<Animator>(true) : null);
+            if (!sprite2D)
+            {
+                // procedural slimes have no animator: hide their meshes and show the sprite under the hop pivot
+                GameObject prefab = HeroVisualStyle.Chibi2D ? Resources.Load<GameObject>("Chibi2D/Actors/" + actor + "_Visual2D") : null;
+                if (!prefab || !body) return false;
+                foreach (Renderer r in body.GetComponentsInChildren<Renderer>(true)) r.enabled = false;
+                sprite2D = Instantiate(prefab, body);
+                sprite2D.name = actor + "_2D";
+                sprite2D.transform.localPosition = Vector3.zero;
+                sprite2D.transform.localScale = Vector3.one * Chibi2DMarker.ScaleOf(sprite2D);
+            }
+            var an = sprite2D.GetComponent<Animator>();
+            if (an && an.runtimeAnimatorController && an.runtimeAnimatorController.animationClips.Length > 1) animator = an;   // clips with states: animated mode
+            renderers = sprite2D.GetComponentsInChildren<Renderer>(true);
+            return true;
+        }
+
+        private void SpriteLateUpdate()
+        {
+            if (!sprite2D || !body) return;
+            body.localRotation = Quaternion.identity;                          // never turn a sprite in 3D (it would turn edge-on)
+            float dir = Chase ? Chase.position.x - transform.position.x : hopTo - hopFrom;
+            if (Mathf.Abs(dir) > 0.01f) Actor2D.Flip(sprite2D, dir < 0f);
         }
 
         public void Bind(Transform bodyRoot, Renderer[] rs) { body = bodyRoot; renderers = rs; }

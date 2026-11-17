@@ -38,7 +38,7 @@ namespace AdventureKing.ArtPipeline
         ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildAllFromCommandLine</summary>
         public static void BuildAllFromCommandLine()
         {
-            try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin }) Build(c); EditorApplication.Exit(0); }
+            try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin }) Build(c); BuildAllActors(); EditorApplication.Exit(0); }
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
@@ -124,6 +124,67 @@ namespace AdventureKing.ArtPipeline
             BuildOutfits(name, clips, cell, ppu, pivot, pixel);
         }
 
+        // actor (NPC / monster) -> display scale of its sprite (heroes use 1.0): the body is shown at the same px/metre as the heroes
+        private static readonly (string name, float scale)[] Actors =
+        {
+            ("NpcElder", 1f), ("NpcSmith", 1f), ("NpcStorekeeper", 1f), ("NpcCaptain", 1f), ("NpcOfficiant", 1f), ("NpcMusician", 1f), ("NpcMushroomElder", 1f),
+            ("MonsterNamNon", 0.8f), ("PollenSlime", 0.5f), ("PuffSlime", 0.42f), ("MossSlime", 0.5f),
+        };
+
+        /// <summary>NPCs and monsters: strips from bake_chibi_actor.py -> clips, a plain state controller (states = clip names: NpcActor and
+        /// FarmMonsterView CrossFade by state name) and Resources/Chibi2D/Actors/{name}_Visual2D.prefab.</summary>
+        public static void BuildAllActors()
+        {
+            foreach (var (name, scale) in Actors)
+            {
+                string json = $"{Src}/{name}/{name}_frames.json";
+                if (!File.Exists(json)) { Debug.LogWarning("[CHIBI2D] no art for " + name); continue; }
+                string text = File.ReadAllText(json);
+                float cell = ReadFloat(text, "cell"), frameM = ReadFloat(text, "frame_m"), ground = ReadFloat(text, "ground_from_bottom_m");
+                float ppu = cell / frameM; Vector2 pivot = new Vector2(0.5f, ground / frameM);
+                Directory.CreateDirectory($"{Dst}/{name}"); Directory.CreateDirectory($"{Res}/Actors");
+                var ctrlPath = $"{Dst}/{name}/{name}.controller";
+                AssetDatabase.DeleteAsset(ctrlPath);
+                var ctrl = AnimatorController.CreateAnimatorControllerAtPath(ctrlPath);
+                var sm = ctrl.layers[0].stateMachine;
+                bool first = true; Sprite firstSprite = null;
+                foreach (var kv in ParseClips(text))
+                {
+                    string dst = $"{Dst}/{name}/{kv.Value.file}";
+                    File.Copy($"{Src}/{name}/{kv.Value.file}", dst, true);
+                    AssetDatabase.ImportAsset(dst, ImportAssetOptions.ForceSynchronousImport);
+                    var ti = (TextureImporter)AssetImporter.GetAtPath(dst);
+                    ti.textureType = TextureImporterType.Sprite; ti.spriteImportMode = SpriteImportMode.Multiple; ti.spritePixelsPerUnit = ppu;
+                    ti.mipmapEnabled = false; ti.filterMode = FilterMode.Point; ti.alphaIsTransparency = true; ti.textureCompression = TextureImporterCompression.Uncompressed; ti.maxTextureSize = 4096;
+                    var sheet = new SpriteMetaData[kv.Value.frames];
+                    for (int i = 0; i < sheet.Length; i++)
+                        sheet[i] = new SpriteMetaData { name = $"{name}_{kv.Key}_{i}", rect = new Rect(i * cell, 0, cell, cell), alignment = (int)SpriteAlignment.Custom, pivot = pivot };
+#pragma warning disable CS0618
+                    ti.spritesheet = sheet;
+#pragma warning restore CS0618
+                    ti.SaveAndReimport();
+                    Sprite[] frames = AssetDatabase.LoadAllAssetsAtPath(dst).OfType<Sprite>().OrderBy(s => int.Parse(s.name.Substring(s.name.LastIndexOf('_') + 1))).ToArray();
+                    AnimationClip clip = MakeClip($"{Dst}/{name}/{name}_{kv.Key}.anim", name + "_" + kv.Key, frames, kv.Value, false);
+                    AnimatorState st = sm.AddState(kv.Key);
+                    st.motion = clip;
+                    if (first || kv.Key == "Idle") { sm.defaultState = st; }
+                    first = false;
+                    if (kv.Key == "Idle" || firstSprite == null) firstSprite = frames[0];
+                }
+                var root = new GameObject(name + "_Visual2D");
+                var spriteGo = new GameObject("Sprite");
+                spriteGo.transform.SetParent(root.transform, false);
+                var sr = spriteGo.AddComponent<SpriteRenderer>();
+                sr.sprite = firstSprite; sr.sharedMaterial = PixelMaterial(); sr.sortingOrder = 4;
+                var an = root.AddComponent<Animator>(); an.runtimeAnimatorController = ctrl; an.applyRootMotion = false;
+                var mk = root.AddComponent<Chibi2DMarker>(); mk.Renderer = sr; mk.Scale = scale;
+                PrefabUtility.SaveAsPrefabAsset(root, $"{Res}/Actors/{name}_Visual2D.prefab");
+                UnityEngine.Object.DestroyImmediate(root);
+                Debug.Log($"[CHIBI2D] actor {name} built (scale {scale})");
+            }
+            AssetDatabase.SaveAssets();
+        }
+
         /// <summary>The unlit pixel-art sprite material (AdventureKing/PixelSprite), shared by every 2D body and effect.</summary>
         public static Material PixelMaterial()
         {
@@ -207,7 +268,7 @@ namespace AdventureKing.ArtPipeline
             Debug.Log("[CHIBI2D] skill effects built");
         }
 
-        private static AnimationClip MakeClip(string path, string clipName, Sprite[] frames, ClipMeta m)
+        private static AnimationClip MakeClip(string path, string clipName, Sprite[] frames, ClipMeta m, bool events = true)
         {
             AssetDatabase.DeleteAsset(path);
             var clip = new AnimationClip { name = clipName, frameRate = m.fps };
@@ -220,7 +281,7 @@ namespace AdventureKing.ArtPipeline
             st.loopTime = m.loop;
             AnimationUtility.SetAnimationClipSettings(clip, st);
             string key = clipName.Substring(clipName.IndexOf('_') + 1);
-            if (Hooks.TryGetValue(key, out var h))
+            if (events && Hooks.TryGetValue(key, out var h))
             {
                 float len = frames.Length / m.fps;
                 AnimationUtility.SetAnimationEvents(clip, h.events.Select(e => new AnimationEvent { time = e.at * len, functionName = e.fn }).ToArray());

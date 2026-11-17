@@ -16,13 +16,17 @@ namespace AdventureKing.Gameplay
         [SerializeField] private float sideYaw = 110f;
         [SerializeField] private float frontYaw = 180f;
 
+        private GameObject body2D;
         public bool Walking { get; private set; }
+        public bool IsSprite => body2D;
         public Animator Animator => animator;
 
         private void Awake()
         {
             if (!animator) animator = GetComponentInChildren<Animator>();
             if (!visual && animator) visual = animator.transform.parent ? animator.transform.parent : animator.transform;
+            body2D = Actor2D.Swap(transform, name, animator);                  // 2D chibi style: sprite body instead of the 3D model
+            if (body2D) animator = body2D.GetComponent<Animator>();
             Play("Idle", 0f);
             FaceFront();
         }
@@ -43,6 +47,7 @@ namespace AdventureKing.Gameplay
 
         private void SetYaw(float yaw)
         {
+            if (body2D) { Actor2D.Flip(body2D, yaw < 0f && yaw > -150f); return; }   // sprite: front / right = as drawn, left = mirrored
             if (visual) visual.localRotation = Quaternion.Euler(0f, yaw, 0f);
         }
 

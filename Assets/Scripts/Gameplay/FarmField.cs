@@ -239,6 +239,7 @@ namespace AdventureKing.Gameplay
                         v.name = "Monster_" + s.id;
                         v.gameObject.SetActive(true);
                         v.Bind(s, font);
+                        v.UseSprite(s.type);                                    // 2D chibi style: sprite body of this monster type
                         monsters[s.id] = v;
                     }
                     // a skill is still flying at it: its new HP / death is shown on the impact beat, not by the poll

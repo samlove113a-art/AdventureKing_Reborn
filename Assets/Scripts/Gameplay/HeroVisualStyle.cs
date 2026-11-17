@@ -10,6 +10,8 @@ namespace AdventureKing.Gameplay
     public static class HeroVisualStyle
     {
         public const string Key = "ak_visual_style";
+        /// <summary>2D chibi is the default look; "3d" (the original rigged models, never deleted) stays selectable for QA.</summary>
+        public const string DefaultStyle = "2d";
         /// <summary>QA / tests: force a style for this run (null = use the saved choice).</summary>
         public static string Override;
 
@@ -19,7 +21,7 @@ namespace AdventureKing.Gameplay
             {
                 string s = Override;
                 if (string.IsNullOrEmpty(s)) s = System.Environment.GetEnvironmentVariable("AK_VISUAL_STYLE");
-                if (string.IsNullOrEmpty(s)) { try { s = PlayerPrefs.GetString(Key, "3d"); } catch { s = "3d"; } }
+                if (string.IsNullOrEmpty(s)) { try { s = PlayerPrefs.GetString(Key, DefaultStyle); } catch { s = DefaultStyle; } }
                 return string.Equals(s, "2d", System.StringComparison.OrdinalIgnoreCase);
             }
         }

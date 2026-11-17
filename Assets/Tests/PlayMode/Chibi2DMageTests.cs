@@ -33,7 +33,7 @@ namespace AdventureKing.Tests
         [UnityTearDown]
         public IEnumerator TearDown()
         {
-            HeroVisualStyle.Override = null;
+            HeroVisualStyle.Override = "3d";
             if (input) foreach (PlayerInput2D.TouchAction a in System.Enum.GetValues(typeof(PlayerInput2D.TouchAction))) input.SetTouchHeld(a, false);
             yield return TestRunnerGuard.CloseGame();
             server.Stop();
@@ -233,8 +233,10 @@ namespace AdventureKing.Tests
             Assert.AreEqual(1, pd.VisibleRenderers());
         }
         [UnityTest]
-        public IEnumerator Default_Style_Is_Still_The_3D_Body_And_Other_Classes_Fall_Back_To_3D()
+        public IEnumerator Default_Style_Is_2D_And_The_3D_Models_Stay_Selectable()
         {
+            HeroVisualStyle.Override = null;
+            Assert.IsTrue(HeroVisualStyle.Chibi2D, "2D chibi is the default style");
             HeroVisualStyle.Override = "3d";
             yield return server.OpenGame();
             yield return TestServer.RegisterCreateAndEnter("c3d" + Random.Range(1000, 9999), "chibi-pass-2026", HeroClass.Mage, "Pháp Sư 3D");

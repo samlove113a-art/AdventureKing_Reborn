@@ -15,6 +15,7 @@ namespace AdventureKing.Tests
         {
             DayNightCycle.ModeOverride = DayNightMode.Day;
             DayNightCycle.HourOverride = 12f;
+            HeroVisualStyle.Override = "3d";     // the 3D-specific tests (hand bones, skinned outfits, 3D camera shots) keep the original bodies; 2D tests set "2d" themselves
         }
 
         [OneTimeTearDown]
@@ -22,6 +23,7 @@ namespace AdventureKing.Tests
         {
             DayNightCycle.ModeOverride = null;
             DayNightCycle.HourOverride = null;
+            HeroVisualStyle.Override = null;
         }
     }
 }
