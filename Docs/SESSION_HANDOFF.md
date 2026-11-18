@@ -10,7 +10,9 @@
 - **Đã làm (4 class):** Kiếm Sĩ, Pháp Sư (nữ), Sát Thủ, Cung Thủ (nữ) — mỗi class 9 clip (Idle/Run/Jump/Fall/Climb/Attack/Skill/Hit/Death) bằng Meshy `image-to-image` từ 1 ảnh chuẩn → `Tools/chibi2d/pixel_class.py` + `process_pixel_strip.py` → `ArtSource/Chibi2D/{Class}/` → `Chibi2DArt.Build` (prefab `Resources/Chibi2D/{Class}_Visual2D`, event gameplay giữ nguyên).
 - **Kiểm tra:** `PixelHeroVerify.Run` (batchmode) PASS 4 class: không Missing Script, đủ clip + event, Point/không nén. **CHƯA kiểm Play Mode** (test PlayMode `Chibi2D*` treo ở TestServer >8 phút — chưa tìm nguyên nhân) và **chưa duyệt mỹ thuật**.
 - **Chưa làm:** clip nghi lễ (Walk/Kneel/Toast/Cheer/Bow/Heart…) vẫn là clip 3D cũ; skin shop (Paperdoll fire_mage/frost_mage) là hình cũ; NPC/quái/pet/tile; màn chọn nhân vật chưa kiểm; FX tích hợp trong khung có thể trùng VFX skill director.
-- **Credit Meshy:** Kiếm Sĩ 66, Pháp Sư 78, Sát Thủ 72, Cung Thủ 78 (số dư API ≈ 2.027 sau Cung Thủ). Lệnh sinh/tạo lại cần `--yes` (chỉ sau khi chủ dự án đồng ý).
+- **NPC pixel (6/7, dừng theo yêu cầu chủ dự án):** NpcElder, NpcSmith, NpcStorekeeper, NpcCaptain, NpcOfficiant, NpcMusician — mỗi NPC 5 clip (Idle/Walk/Wave/Talk/Bow, 6–12 khung), ô 192, `frame_m` 1,9; build bằng `AK_ACTORS=NpcX` + `Chibi2DArt.BuildSelectedActorsFromCommandLine`. **Còn NpcMushroomElder** (mũ nấm đỏ lớn; mô tả đã có trong `pixel_class.py`, chưa tạo ảnh). Chưa kiểm Play Mode/`NpcActor`, chưa duyệt mỹ thuật. Quái/boss/pet/tile chưa làm.
+- **Công cụ:** `pixel_class.py` (plan/ref/gen/process/install, `--only`, cần `--yes` để tốn credit), `process_pixel_strip.py` (dò lưới, khử nền, `--single`, `--target`, tự bỏ ô trống). Sheet AI hay lỗi: nhiều nhân vật/ô, cận cảnh, cỡ không đều → tạo lại clip lỗi (6 credit).
+- **Credit Meshy:** NPC ≈ 36–54 mỗi NPC (số dư API ≈ 1.805 sau Nhạc Công). Kiếm Sĩ 66, Pháp Sư 78, Sát Thủ 72, Cung Thủ 78 (số dư API ≈ 2.027 sau Cung Thủ). Lệnh sinh/tạo lại cần `--yes` (chỉ sau khi chủ dự án đồng ý).
 - Nhánh này KHÔNG có Lực Chiến HUD/Cường Hóa (ở `feat/chapter1-mushroom-kingdom`). Đã sửa 1 lỗi biên dịch cũ ở `SkillVfxDirector.Pixel.cs` (chuỗi `\n\n`).
 
 ---
