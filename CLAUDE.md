@@ -14,8 +14,9 @@
 4. `Docs/SKILL_VFX_REVIEW.md` — VFX 12 skill (bản nháp chờ duyệt), sửa vị trí phát skill.
 5. `ArtSource/Concepts/Chapter01/README_FOR_CLAUDE_FIRST.md` — gói concept Chương 1.
 
-## Game (không đổi)
-MMORPG online, fantasy, nhân vật **3D chibi** anime, gameplay **2.5D cuộn ngang** (Rigidbody2D + model 3D, CameraFollow2D, joystick cảm ứng). Windows / Android / iOS. 4 nghề: Kiếm Sĩ, Pháp Sư, Sát Thủ, Cung Thủ (3 skill mỗi nghề). Server quyết định sát thương, phần thưởng, kinh tế, tiến trình.
+## Game
+MMORPG online, fantasy, **100% Pure 2D** (chủ dự án đổi hướng 2026-11-18, thay hướng 3D chibi cũ): nhân vật/NPC/quái/boss/pet/tileset/vật phẩm/UI đều là sprite hoặc 2D bone, **pixel-art chi tiết, tỷ lệ anh hùng (đầu ≈ 1/5–1/6 chiều cao; chủ dự án đổi 2026-11-18 sau ảnh mẫu, thay chibi 1:1 cho nhân vật; quái/NPC/pet/tile phải vẽ lại cùng mật độ pixel + tỷ lệ; ảnh mẫu chỉ làm chuẩn bố cục/chất lượng, KHÔNG sao chép nhân vật của game khác)**, viền tối cứng, màu rực, ánh sáng từ trên; CẤM 3D, giả 3D (sprite bake từ model 3D), placeholder, ảnh mờ. Gameplay cuộn ngang (Rigidbody2D, CameraFollow2D, joystick cảm ứng), map Parallax 4 lớp (`ParallaxBackground4`, tileset 100 PPU). HUD = Screen-Space Canvas neo theo màn hình. Windows / Android / iOS. 4 nghề: Kiếm Sĩ, Pháp Sư, Sát Thủ, Cung Thủ (3 skill mỗi nghề). Server quyết định sát thương, phần thưởng, kinh tế, tiến trình. Chi tiết: `Docs/ART_DIRECTION_25D.md` (đầu file), `Docs/CHIBI2D_PLAN.md`, `Docs/ART_PROMPTS_2D_TILESET.md`.
+- Hiện trạng: hệ thân 2D (`HeroVisualStyle` mặc định "2d", `Resources/Chibi2D/*_Visual2D`, `Chibi2DArt`) đã chạy nhưng sprite là **bake/pixel hóa từ model Meshy 3D** → chưa đạt chuẩn, chủ dự án chưa duyệt; sẽ thay bằng 2D vẽ/rig thật, làm 1 mẫu (Kiếm Sĩ) → duyệt → mới làm loạt. Model 3D giữ trong git/Resources làm dự phòng, không xóa.
 
 ## Quy tắc bất biến
 - KHÔNG tạo project/game mới, KHÔNG reset/checkout đè/xóa thay đổi chưa commit, KHÔNG làm lại hệ thống đang chạy (nhân vật, hub Thị trấn Chuông Gió, Đồng Cỏ Gió, sảnh bang/cưới, shop, pet…).

@@ -23,6 +23,13 @@
 - Mage 2D nhỏ hơn thân 3D khoảng 1/3 (tỉ lệ khung); cần chỉnh `frame_m`/`heroScale` khi duyệt.
 - `HeroOutfit` (đồ shop) chỉ tác dụng lên thân 3D; thân 2D chưa mặc đồ.
 - Không dùng Unity 2D Animation/Skeletal Rig (gói chưa cài); dùng sprite-frame animation.
+## 2026-11-18 — Pure 2D (chủ dự án): mẫu Kiếm Sĩ vẽ tay 2D (CHỜ DUYỆT)
+- Hướng mới: 100% Pure 2D, cấm sprite bake từ 3D. Sprite Meshy-bake/pixel ở trên bị coi là **tạm**, sẽ thay dần.
+- `Tools/chibi2d/swordsman_rig.py` (dùng chung engine `mage_rig.py`): rig 2D thủ công — tóc bạc gai, giáp xanh, khăn/áo choàng đỏ, khiên tròn, kiếm thép; viền mực cứng + cel 2 tông, không blur/glow. 9 clip: Idle 8, Run 8, Jump 4, Fall 3, Climb 8, Hit 4, Death 6, Attack 8 (có vệt chém), Skill 10; khung 384 px, mặt phải.
+- Xuất ra `ArtSource/Chibi2D/_Hand/Swordsman/` (kèm `Swordsman_preview.png`), **chưa** vào Unity, **không** ghi đè `ArtSource/Chibi2D/Swordsman` hay prefab `Swordsman_Visual2D`.
+- Lệnh: `"C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\bin\python.exe" Tools/chibi2d/swordsman_rig.py "" "" --preview`
+- Việc kế sau khi duyệt: đưa vào Unity bằng `Chibi2DArt.Build` (đổi nguồn sang `_Hand`), kiểm gameplay/hitbox, rồi làm Cung Thủ, Sát Thủ, Pháp Sư (đã có v2 thủ công), NPC, quái.
+
 ## 2026-11-17 — Pipeline Meshy → Blender → sprite pixel (theo yêu cầu "không cắt ảnh")
 - `Tools/meshy/character_pipeline.py` tạo model + rig + animation từ **chân dung** trong 4 ảnh tham chiếu (`ArtSource/OwnerProvided/Portraits/`), tên `ref_<class>`. **Credit: 287** (3 model × 30 mới + Kiếm Sĩ 30, rig 4 × 5, animation ~147). Số dư API sau đó: 2.555. Đã ghi `ArtSource/Meshy/manifest.jsonl`.
 - `Tools/blender/export_character.py` + `ArtSource/Specs/ref_<class>.json` → FBX (`ArtSource/Chibi2D/_meshy/`, không ghi đè model 3D đang chạy trong game).

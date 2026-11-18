@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +10,7 @@ using UnityEngine;
 namespace AdventureKing.ArtPipeline
 {
     /// <summary>
-    /// 2D chibi bodies baked from the rigged 3D models (Tools/blender/bake_chibi2d.py → ArtSource/Chibi2D/{Name}/*.png).
+    /// 2D chibi bodies baked from the rigged 3D models (Tools/blender/bake_chibi2d.py â†’ ArtSource/Chibi2D/{Name}/*.png).
     /// Imports the strips as sprite sheets, builds one sprite AnimationClip per state, an AnimatorOverrideController on top of the
     /// hero's EXISTING controller (same states, parameters and transitions, so CharacterVisual3D, remote players and the skill
     /// director work unchanged) and the prefab Resources/Chibi2D/{Class}_Visual2D. The 3D model and controller are never modified.
@@ -34,7 +34,22 @@ namespace AdventureKing.ArtPipeline
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
-        /// <summary>All four classes (Pháp Sư, Kiếm Sĩ, Cung Thủ, Sát Thủ) from ArtSource/Chibi2D/{Class}.
+        /// <summary>Only the Swordsman (hand-processed pixel sprites): Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildSwordsmanFromCommandLine</summary>
+        public static void BuildSwordsmanFromCommandLine()
+        {
+            try { Build(HeroClass.Swordsman); EditorApplication.Exit(0); }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
+        /// <summary>Mage, Assassin, Archer once their pixel strips are installed (same pipeline as the Swordsman).
+        ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildPixelClassesFromCommandLine</summary>
+        public static void BuildPixelClassesFromCommandLine()
+        {
+            try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Assassin, HeroClass.Archer }) Build(c); EditorApplication.Exit(0); }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
+        /// <summary>All four classes (PhÃ¡p SÆ°, Kiáº¿m SÄ©, Cung Thá»§, SÃ¡t Thá»§) from ArtSource/Chibi2D/{Class}.
         ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildAllFromCommandLine</summary>
         public static void BuildAllFromCommandLine()
         {
@@ -129,7 +144,7 @@ namespace AdventureKing.ArtPipeline
         {
             ("NpcElder", 1f), ("NpcSmith", 1f), ("NpcStorekeeper", 1f), ("NpcCaptain", 1f), ("NpcOfficiant", 1f), ("NpcMusician", 1f), ("NpcMushroomElder", 1f),
             ("MonsterNamNon", 0.8f), ("PollenSlime", 0.5f), ("PuffSlime", 0.42f), ("MossSlime", 0.5f),
-            // Chương 1 Map 3-10 (Tools/chibi2d/make_monsters.py): the frame size already sets the real size, so scale 1
+            // ChÆ°Æ¡ng 1 Map 3-10 (Tools/chibi2d/make_monsters.py): the frame size already sets the real size, so scale 1
             ("GlowMoss", 1f), ("MushroomChief", 1f), ("FlowerBee", 1f), ("CrystalBat", 1f), ("JadeTurtle", 1f), ("JadeGuardian", 1f), ("ShadowLeaf", 1f),
             ("ToxicSlime", 1f), ("ToxicElite", 1f), ("StoneGuard", 1f), ("DarkMushroom", 1f), ("RoyalGuard", 1f), ("MushroomKing", 1f),
         };

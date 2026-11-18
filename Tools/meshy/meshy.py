@@ -25,6 +25,7 @@ RAW = os.path.join(OUT, "raw")
 MANIFEST = os.path.join(OUT, "manifest.jsonl")
 ENDPOINT = {
     "text-to-image": "/openapi/v1/text-to-image",
+    "image-to-image": "/openapi/v1/image-to-image",
     "image-to-3d": "/openapi/v1/image-to-3d",
     "text-to-3d": "/openapi/v2/text-to-3d",
     "rigging": "/openapi/v1/rigging",
