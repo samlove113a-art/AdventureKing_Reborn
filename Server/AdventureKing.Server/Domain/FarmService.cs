@@ -352,7 +352,7 @@ public sealed class FarmService
         {
             id = s.id, type = s.type, name = ty.name, x = s.x, y = s.y, hp = Math.Max(0, m.Hp), maxHp = ty.maxHp,
             alive = m.Hp > 0, respawnInMs = m.Hp > 0 ? 0 : Math.Max(0, m.RespawnAtMs - t),
-            tier = ty.tier, phase = Enraged(ty, m) ? 2 : 1,
+            tier = ty.tier, phase = Enraged(ty, m) ? 2 : 1, slamReach = ty.slamSeconds > 0 ? ty.slamReach : 0f,
             slamInMs = ty.slamSeconds > 0 && m.Aggro != null && m.Hp > 0 ? Math.Max(0, m.NextSlamMs - t) : 0,
         };
     }

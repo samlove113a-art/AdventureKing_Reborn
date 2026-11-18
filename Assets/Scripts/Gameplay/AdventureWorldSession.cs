@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -54,7 +55,7 @@ namespace AdventureKing.Gameplay
         public bool LoadingVisible => loadingPanel && loadingPanel.activeSelf;
 
         /// <summary>Server map id -> Unity scene. The server decides the map; the client only loads its scene.</summary>
-        public static readonly System.Collections.Generic.Dictionary<string, string> SceneForMap = new()
+        public static readonly System.Collections.Generic.Dictionary<string, string> SceneForMap = new System.Collections.Generic.Dictionary<string, string>
         {
             ["village_wind_bell"] = "AK_Village",
             ["meadow_breeze"] = "AK_Meadow",
@@ -63,7 +64,7 @@ namespace AdventureKing.Gameplay
             [TownLayout.Ch1Village.MapId] = TownLayout.Ch1Village.Scene,
             [TownLayout.Ch1GreenMeadow.MapId] = TownLayout.Ch1GreenMeadow.Scene,
             [TownLayout.Ch1GlowForest.MapId] = TownLayout.Ch1GlowForest.Scene,
-        };
+        }.Concat(Ch1MapData.All.Select(m => new System.Collections.Generic.KeyValuePair<string, string>(m.MapId, m.Scene))).ToDictionary(kv => kv.Key, kv => kv.Value);   // Map 4-10 from the generated layout
 
         public static AdventureWorldSession Current { get; private set; }
 

@@ -54,3 +54,17 @@ Server 175/175. PlayMode 71 test: 63 pass, 2 bỏ qua, 6 fail:
 
 ## 2026-11-18 — Pet 2D
 4 pet (Mèo Mây, Gà Bông, Rồng Ngọc, Hồ Ly Lửa) thành sprite 2D chibi (vẽ SDF gốc, `Tools/chibi2d/make_pets.py`, không tốn Meshy). `PetDirector` dùng `Pet2DBody` khi 2D (lật hướng, nhảy/co giãn, mặt đói + bóng chữ `Đói...`); pet 3D giữ làm dự phòng. `PetTests` 2/2 pass (theo chủ, mặt đói, không còn mesh 3D). Còn: không có hiệu ứng hào quang VIP trên bản 2D, pet chưa có hoạt ảnh nhiều khung (chỉ hop/squash theo code).
+
+## 2026-11-18 (phiên 2) — nhân vật đứng thẳng, Map 3–10, boss, VFX 2D
+**Đã làm (có thể kiểm chứng):**
+- **Nhân vật nghiêng — SỬA TỪ NGUỒN**: `Tools/blender/bake_chibi_pixel.py` thêm `straighten()` (ràng buộc Copy Rotation lên xương Spine, đo độ lệch đầu–chân trên ảnh render, xoay quanh trục camera) cho clip Idle. Idle 4 nghề: lệch đầu/chân ≤ 0,14 chiều cao (trước 0,15–0,17 + gập người). Kiếm Sĩ đổi take Idle_02 (đứng thẳng, trước là Combat_Stance gập gối). Clip Jump/Fall/Skill giữ hông cùng độ cao ("xz") để thân không bị di chuyển hai lần; FRAME_M riêng (Mage 1,6 / Kiếm Sĩ 1,65 / Sát Thủ 1,75) → 0 khung bị cắt mép. Khung 192 px (trước 128) cho mặt/mắt/vũ khí rõ hơn. Test: `Chibi2DPostureTests`.
+- **Server** (181/181 test): map 3–10 (cổng, điểm hồi, vùng an toàn, spawn, 29 nhiệm vụ chính ch1_07+), 13 loại quái mới (Elite/Mini Boss/Boss), kỹ năng boss `slam` có cảnh báo + `enrage` pha 2, `chapter_progress` (schema V13, chỉ server ghi, idempotent), điểm khám phá (`explore:*` tính từ vị trí đã kiểm tốc độ). Nguồn dữ liệu duy nhất: `Tools/server/ch1_maps.py` (sinh JSON + `Ch1ServerData.cs` + `Ch1MapData.cs`). Số liệu DRAFT.
+- **Client**: 8 scene `AK_C1_M03..M10` (nhiều tầng + thang/dây + cổng + biển Mini Boss/Boss + điểm khám phá + nền xa/ánh sáng riêng từng map), 13 quái 2D mới vẽ SDF (`Tools/chibi2d/make_monsters.py`, đủ Idle/Walk/Attack/Hit/Death), thanh máu to + màu tier + đỏ khi pha 2 + vòng cảnh báo slam (`FarmMonsterView`).
+- **VFX 2D 4 nghề**: `Tools/chibi2d/make_fx.py` (16 hiệu ứng pixel) → `Resources/Chibi2D/Fx2`; `SkillVfxDirector.Pixel.cs` chạy cho thân sprite (xuất phát trước thân, bay đúng hướng, đáp lên quái, gọi `Land()` đúng nhịp, giữ âm thanh/rung màn hình/hit-stop). Bản 3D giữ làm dự phòng.
+- Pet 2D (4 con) — xem mục trên.
+**Chưa làm / chưa kiểm chứng:**
+- Chưa có kiểm thử PlayMode đánh boss thật (chỉ server test cho slam/enrage/phần thưởng/chapter_progress; client chỉ kiểm tra trình bày).
+- Boss chưa có hoạt ảnh kỹ năng riêng ngoài Attack (slam dùng cùng clip Attack + vòng cảnh báo); chưa có triệu hồi Nấm Cận Vệ trong pha 2.
+- Vũ khí/trang phục đổi được chỉ có Pháp Sư (`fire_mage`, `frost_mage`); cầm vũ khí chưa chỉnh socket riêng.
+- Chưa đo FPS, chưa build Windows/Android, chưa thử nhiều client nhìn thấy thân 2D của nhau trên Map 3–10.
+- Cổng Chương 2 chưa có (Map 10 chỉ ghi `chapter_progress`).

@@ -12,7 +12,10 @@ namespace AdventureKing.Gameplay
         /// <summary>Monster type id (server config) -> sprite actor.</summary>
         public static string ForMonster(string type) => type switch
         {
-            "young_mushroom" => "MonsterNamNon", "pollen_slime" => "PollenSlime", "puff_slime" => "PuffSlime", "moss_slime" => "MossSlime", _ => null,
+            "young_mushroom" => "MonsterNamNon", "pollen_slime" => "PollenSlime", "puff_slime" => "PuffSlime", "moss_slime" => "MossSlime",
+            "glow_moss_mushroom" => "GlowMoss", "mushroom_chief" => "MushroomChief", "flower_bee" => "FlowerBee", "crystal_bat" => "CrystalBat", "jade_turtle" => "JadeTurtle",
+            "jade_guardian" => "JadeGuardian", "shadow_leaf" => "ShadowLeaf", "toxic_slime" => "ToxicSlime", "toxic_elite" => "ToxicElite", "stone_guard" => "StoneGuard",
+            "dark_mushroom" => "DarkMushroom", "royal_guard" => "RoyalGuard", "mushroom_king" => "MushroomKing", _ => null,
         };
 
         /// <summary>Returns the sprite body (already parented where the 3D model was), or null when the style is 3D / no art exists.</summary>

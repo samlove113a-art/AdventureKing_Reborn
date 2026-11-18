@@ -31,7 +31,7 @@ namespace AdventureKing.Gameplay
     /// skill; skill 3 is the biggest of each class but keeps the target readable. Presentation only: the server has
     /// already decided damage, MP and cooldown. The hero animation per skill is chosen here to match the effect timing.
     /// </summary>
-    public sealed class SkillVfxDirector : MonoBehaviour
+    public sealed partial class SkillVfxDirector : MonoBehaviour
     {
         private static SkillVfxDirector host;
         private static readonly Dictionary<Transform, float> casting = new Dictionary<Transform, float>();
@@ -69,6 +69,7 @@ namespace AdventureKing.Gameplay
                 (HeroClass.Assassin, 1) => DaggerFan(c), (HeroClass.Assassin, 2) => ShadowClones(c), (HeroClass.Assassin, 3) => ShadowCombo(c),
                 (HeroClass.Archer, 1) => PiercingArrow(c), (HeroClass.Archer, 2) => ArrowRain(c), _ => PhoenixArrow(c),
             };
+            if (c.Visual && c.Visual.IsSprite) routine = PixelSkill(c);   // 2D pixel effects for the sprite heroes (default look)
             yield return routine;
             c.Land(); // safety: the damage is always shown
         }

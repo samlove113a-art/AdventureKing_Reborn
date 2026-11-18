@@ -194,17 +194,24 @@ namespace AdventureKing.Gameplay
             public static readonly Deck[] Decks =
             {
                 new Deck("RePhatSang", 10f, 22f, 4.5f),
+                new Deck("CauReNam", 16f, 30f, 8.5f),         // upper root bridge (over the first tier)
                 new Deck("GoNamSang", 46f, 58f, 6f),
+                new Deck("DinhNamLon", 64f, 76f, 5f),
             };
 
             public static readonly Climb[] Climbs =
             {
                 new Climb("ThangRePhatSang", 11f, 0f, 5.8f, false),
+                new Climb("DayLeoCauRe", 17f, 4.5f, 9.8f, true),
                 new Climb("DayLeoGoNamSang", 47f, 0f, 7.3f, true),
+                new Climb("ThangDinhNamLon", 65f, 0f, 6.3f, false),
             };
 
-            public static readonly PortalSpot[] Portals = { new PortalSpot("ch1_m03_west_m02", -40f, Ch1GreenMeadow.Scene, Ch1GreenMeadow.DisplayName) };
-        }
+            public static readonly PortalSpot[] Portals =
+            {
+                new PortalSpot("ch1_m03_west_m02", -40f, Ch1GreenMeadow.Scene, Ch1GreenMeadow.DisplayName),
+                new PortalSpot("ch1_m03_east_m04", 102f, "AK_C1_M04", "Đồi Hoa"),   // Map 4 gate (east end; Map 4+ come from Ch1MapData)
+            };        }
 
         // ------------------------------------------------------------ Sảnh Bang Hội (Phase D interior, safe zone)
         public static class GuildHall
@@ -244,8 +251,12 @@ namespace AdventureKing.Gameplay
             public bool InSafeZone(float x) => SafeZone != Vector2.zero && x >= SafeZone.x && x <= SafeZone.y;
         }
 
-        public static readonly MapInfo[] Maps =
+        public static readonly MapInfo[] Maps = BuildMaps();
+
+        private static MapInfo[] BuildMaps()
         {
+            var list = new System.Collections.Generic.List<MapInfo>
+            {
             new MapInfo { MapId = Hub.MapId, Scene = Hub.Scene, DisplayName = Hub.DisplayName, MinX = Hub.MinX, MaxX = Hub.MaxX, Spawn = Hub.Spawn, Decks = Hub.Decks, Climbs = Hub.Climbs, Portals = Hub.Portals },
             new MapInfo { MapId = Meadow.MapId, Scene = Meadow.Scene, DisplayName = Meadow.DisplayName, MinX = Meadow.MinX, MaxX = Meadow.MaxX, Spawn = Meadow.Spawn, Decks = Meadow.Decks, Climbs = Meadow.Climbs, Portals = Meadow.Portals },
             new MapInfo { MapId = GuildHall.MapId, Scene = GuildHall.Scene, DisplayName = GuildHall.DisplayName, MinX = GuildHall.MinX, MaxX = GuildHall.MaxX, Spawn = GuildHall.Spawn, Decks = GuildHall.Decks, Climbs = GuildHall.Climbs, Portals = GuildHall.Portals },
@@ -253,7 +264,12 @@ namespace AdventureKing.Gameplay
             new MapInfo { MapId = Ch1Village.MapId, Scene = Ch1Village.Scene, DisplayName = Ch1Village.DisplayName, MinX = Ch1Village.MinX, MaxX = Ch1Village.MaxX, Spawn = Ch1Village.Spawn, Decks = Ch1Village.Decks, Climbs = Ch1Village.Climbs, Portals = Ch1Village.Portals, SafeZone = Ch1Village.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
             new MapInfo { MapId = Ch1GreenMeadow.MapId, Scene = Ch1GreenMeadow.Scene, DisplayName = Ch1GreenMeadow.DisplayName, MinX = Ch1GreenMeadow.MinX, MaxX = Ch1GreenMeadow.MaxX, Spawn = Ch1GreenMeadow.Spawn, Decks = Ch1GreenMeadow.Decks, Climbs = Ch1GreenMeadow.Climbs, Portals = Ch1GreenMeadow.Portals, SafeZone = Ch1GreenMeadow.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
             new MapInfo { MapId = Ch1GlowForest.MapId, Scene = Ch1GlowForest.Scene, DisplayName = Ch1GlowForest.DisplayName, MinX = Ch1GlowForest.MinX, MaxX = Ch1GlowForest.MaxX, Spawn = Ch1GlowForest.Spawn, Decks = Ch1GlowForest.Decks, Climbs = Ch1GlowForest.Climbs, Portals = Ch1GlowForest.Portals, SafeZone = Ch1GlowForest.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" },
-        };
+            };
+            foreach (Ch1MapData.Ch1Map m in Ch1MapData.All)    // Map 4-10 (generated from Tools/server/ch1_maps.py)
+                list.Add(new MapInfo { MapId = m.MapId, Scene = m.Scene, DisplayName = m.DisplayName, MinX = Ch1MapData.Ch1Map.MinX, MaxX = Ch1MapData.Ch1Map.MaxX, Spawn = Ch1MapData.Ch1Map.Spawn,
+                    Decks = m.Decks, Climbs = m.Climbs, Portals = m.Portals, SafeZone = Ch1MapData.Ch1Map.SafeZone, AreaTitle = "Chương 1 · Vương Quốc Nấm" });
+            return list.ToArray();
+        }
 
         /// <summary>The map with this id (the hub when unknown).</summary>
         public static MapInfo For(string mapId)

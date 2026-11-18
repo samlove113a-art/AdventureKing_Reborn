@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -95,6 +96,59 @@ namespace AdventureKing.Gameplay
             else if (!s.alive && Alive) { deathT = instant ? 1f : 0f; if (instant) body.gameObject.SetActive(false); }
             else if (!s.alive && instant) body.gameObject.SetActive(false);
             Alive = s.alive;
+            ApplyTier(s);
+        }
+
+        public string Tier { get; private set; } = "normal";
+        public bool SlamWarningVisible => slamWarn && slamWarn.enabled;
+        public bool Enraged => Phase >= 2;
+        public float BarHeight => hpBarHeight;
+        public int Phase { get; private set; } = 1;
+        private SpriteRenderer slamWarn;
+        private float slamUntil;
+
+        /// <summary>Elite / Mini Boss / Boss presentation, all from server state: gold name + bigger bar, red tint when enraged (phase 2), and the ground warning
+        /// that shows where the next slam will land (the server says how long is left and how wide it is).</summary>
+        private void ApplyTier(FarmMonsterState s)
+        {
+            Tier = string.IsNullOrEmpty(s.tier) ? "normal" : s.tier;
+            Phase = Mathf.Max(1, s.phase);
+            if (NameLabel && Tier != "normal")
+            {
+                NameLabel.color = new Color(Tier == "boss" ? 1f : 1f, Tier == "elite" ? 0.85f : Tier == "boss" ? 0.45f : 0.78f, Tier == "elite" ? 0.4f : 0.3f, NameLabel.color.a);
+                NameLabel.fontSize = Tier == "boss" ? 30 : 26;
+                if (hpRoot) hpRoot.transform.localScale = Vector3.one * (Tier == "boss" ? 0.011f : 0.0095f);
+                if (hpFill) hpFill.color = Phase >= 2 ? new Color(1f, 0.2f, 0.65f) : Tier == "boss" ? new Color(0.85f, 0.2f, 0.85f) : new Color(1f, 0.6f, 0.2f);
+            }
+            if (sprite2D)
+                foreach (SpriteRenderer sr in sprite2D.GetComponentsInChildren<SpriteRenderer>(true))
+                    sr.color = Phase >= 2 ? new Color(1f, 0.62f, 0.62f) : Color.white;
+            if (s.alive && s.slamInMs > 0 && s.slamInMs <= 1200 && s.slamReach > 0f) { EnsureWarn(); slamReach = s.slamReach; slamUntil = Time.time + s.slamInMs / 1000f; }
+        }
+
+        private float slamReach;
+        private void EnsureWarn()
+        {
+            if (slamWarn) return;
+            var go = new GameObject("SlamWarning");
+            go.transform.SetParent(transform, false);
+            slamWarn = go.AddComponent<SpriteRenderer>();
+            slamWarn.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 4f);
+            slamWarn.sortingOrder = 3;
+            slamWarn.enabled = false;
+        }
+
+        private void UpdateWarn()
+        {
+            if (!slamWarn) return;
+            float left = slamUntil - Time.time;
+            bool on = Alive && left > 0f;
+            slamWarn.enabled = on;
+            if (!on) return;
+            slamWarn.transform.position = new Vector3(transform.position.x, transform.position.y + 0.05f, transform.position.z - 0.1f);
+            slamWarn.transform.localScale = new Vector3(slamReach * 2f, 0.45f, 1f);
+            float k = 1f - Mathf.Clamp01(left / 1.2f);
+            slamWarn.color = new Color(1f, 0.15f + 0.3f * Mathf.Sin(Time.time * 18f) * 0.5f, 0.1f, 0.25f + 0.4f * k);
         }
 
         public Text NameLabel { get; private set; }
@@ -106,6 +160,7 @@ namespace AdventureKing.Gameplay
         private void LateUpdate()
         {
             SpriteLateUpdate();
+            UpdateWarn();
             if (!NameLabel) return;
             var w = AdventureWorldSession.Current;
             float want = 1f;
@@ -314,6 +369,12 @@ namespace AdventureKing.Gameplay
             var an = sprite2D.GetComponent<Animator>();
             if (an && an.runtimeAnimatorController && an.runtimeAnimatorController.animationClips.Length > 1) animator = an;   // clips with states: animated mode
             renderers = sprite2D.GetComponentsInChildren<Renderer>(true);
+            if (hpRoot)       // name + bar sit above the sprite, whatever its size (bosses are several metres tall)
+            {
+                float top = renderers.Where(r => r).Select(r => r.bounds.max.y).DefaultIfEmpty(transform.position.y + 1f).Max() - transform.position.y;
+                hpBarHeight = Mathf.Max(0.9f, top + 0.35f);
+                hpRoot.transform.localPosition = new Vector3(0f, hpBarHeight, -0.2f);
+            }
             return true;
         }
 

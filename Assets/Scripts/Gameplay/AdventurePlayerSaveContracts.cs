@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace AdventureKing.Gameplay
@@ -115,6 +115,11 @@ namespace AdventureKing.Gameplay
         public int hp, maxHp;
         public bool alive;
         public long respawnInMs;
+        /// <summary>"normal" | "elite" | "mini" | "boss"; phase 2 = enraged; slamInMs / slamReach drive the ground warning (server-owned).</summary>
+        public string tier;
+        public int phase;
+        public long slamInMs;
+        public float slamReach;
     }
 
     [Serializable]

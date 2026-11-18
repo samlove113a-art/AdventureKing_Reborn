@@ -35,7 +35,7 @@ namespace AdventureKing.ArtPipeline
         }
 
         /// <summary>Chapter maps registered after the hub / meadow / halls (see RegisterBuildScenes).</summary>
-        private static readonly string[] ChapterScenePaths = { Ch1VillageScenePath, Ch1GreenMeadowScenePath, Ch1GlowForestScenePath };
+        private static string[] ChapterScenePaths => new[] { Ch1VillageScenePath, Ch1GreenMeadowScenePath, Ch1GlowForestScenePath }.Concat(Ch1MapData.All.Select(m => Ch1ScenePath(m.Scene))).ToArray();
         public const string Ch1GreenMeadowScenePath = "Assets/Scenes/Chapter1/AK_C1_M02.unity";
         public const string Ch1GlowForestScenePath = "Assets/Scenes/Chapter1/AK_C1_M03.unity";
 
@@ -254,7 +254,10 @@ namespace AdventureKing.ArtPipeline
             }
             for (int i = 0; i < 7; i++) C1Prop(art, "ch1_flower_bush", -8f + i * 17f, i % 2 == 0 ? 2.3f : 4.4f, 0.9f, i % 2 == 0, tint: i % 2 == 0 ? teal : violet);
             Prop(art, "crates", -37.5f, 3.2f, 1.6f, true);
-            Signboard(art, 96f, 2.6f, "Mini Boss\nNấm Thủ Lĩnh\n(sắp mở)");
+            Signboard(art, Ch1MapData.Map3BossX - 10f, 2.6f, "Mini Boss\nNấm Thủ Lĩnh\n→");
+            HallGlow(art, "c1_boss", new Vector3(Ch1MapData.Map3BossX, 3f, 3f), 4.2f, teal * 0.45f);
+            Signboard(art, Ch1MapData.Map3ExploreX, 2.6f, "✦ " + Ch1MapData.Map3ExploreLabel + " ✦");
+            HallGlow(art, "c1_explore", new Vector3(Ch1MapData.Map3ExploreX, Ch1MapData.Map3ExploreY + 1.2f, 1.6f), 2.2f, violet * 0.7f);
 
             foreach (var p in TownLayout.Ch1GlowForest.Portals) Portal(play, p);
             Ch1FarmSetup(play);

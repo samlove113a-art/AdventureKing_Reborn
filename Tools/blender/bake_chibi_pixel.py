@@ -26,24 +26,26 @@ OUT = os.path.join(ROOT, "ArtSource", "Chibi2D", CLS)
 os.makedirs(OUT, exist_ok=True)
 
 HEAD_SCALE = {"Mage": 1.45, "Swordsman": 1.3, "Archer": 1.35, "Assassin": 1.4}.get(CLS, 1.2)
-FRAME_M = 1.5                  # metres per frame side
+FRAME_M = {"Mage": 1.6, "Swordsman": 1.65, "Assassin": 1.75}.get(CLS, 1.5)   # metres per frame side (wider for the classes whose attack / skill poses touched the frame edge)
 BASE = 0.07                    # ground line above the bottom edge (m)
-RES, PX = 512, 128
+RES, PX = 768, 192            # 192 px frames: faces, eyes and weapons stay readable (was 128)
 OUTLINE = (0.12, 0.06, 0.2)
 
+# follow: False = fixed camera, "x" = follow the hips sideways (root motion), "xz" = also keep the hips at the same height (the game moves the body:
+# a jump or a dash must not move the sprite twice)
 SHARED = [
-    ("Run", "Run_02", 0, 21, 8, 14, True, True), ("Jump", "Regular_Jump", 12, 19, 4, 10, False, False),
-    ("Fall", "Regular_Jump", 19, 25, 3, 8, False, False), ("Climb", "Ladder_Climb_Loop", 1, 48, 6, 8, True, False),
-    ("Hit", "Hit_Reaction", 0, 30, 4, 12, False, False), ("Death", "dying_backwards", 0, 53, 6, 6, False, True)]
+    ("Run", "Run_02", 0, 21, 8, 14, True, "x"), ("Jump", "Regular_Jump", 12, 19, 4, 10, False, "xz"),
+    ("Fall", "Regular_Jump", 19, 25, 3, 8, False, "xz"), ("Climb", "Ladder_Climb_Loop", 1, 48, 6, 8, True, False),
+    ("Hit", "Hit_Reaction", 0, 30, 4, 12, False, False), ("Death", "dying_backwards", 0, 53, 6, 6, False, "x")]
 SPEC = {   # class -> (idle take, idle last, attack, skill)
     "Mage": (("Idle_02", 56), ("mage_soell_cast", 0, 40), ("Charged_Spell_Cast", 0, 62)),
-    "Swordsman": (("Combat_Stance", 50), ("Right_Hand_Sword_Slash", 0, 30), ("Triple_Combo_Attack", 0, 70)),
+    "Swordsman": (("Idle_02", 56), ("Right_Hand_Sword_Slash", 0, 30), ("Triple_Combo_Attack", 0, 70)),
     "Assassin": (("Combat_Stance", 50), ("Double_Combo_Attack", 4, 36), ("Double_Blade_Spin", 0, 56)),
     "Archer": (("Idle_02", 56), ("Archery_Shot_3", 0, 16), ("Archery_Shot", 24, 76)),
 }
 idle, att, skl = SPEC[CLS]
 CLIPS = ([("Idle", idle[0], 0, idle[1], 6, 8, True, False)] + SHARED +
-         [("Attack", att[0], att[1], att[2], 6, 14, False, False), ("Skill", skl[0], skl[1], skl[2], 8, 12, False, False)])
+         [("Attack", att[0], att[1], att[2], 6, 14, False, False), ("Skill", skl[0], skl[1], skl[2], 8, 12, False, "xz")])
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 sc = bpy.context.scene
@@ -106,10 +108,72 @@ def action(name):
     raise KeyError(name)
 
 
-def hips_y(frame):
+def hips_pos(frame):
     sc.frame_set(int(frame))
-    return (arm.matrix_world @ arm.pose.bones["Hips"].head).y
+    h = arm.matrix_world @ arm.pose.bones["Hips"].head
+    return h.y, h.z
 
+
+def hips_y(frame):
+    return hips_pos(frame)[0]
+
+
+UPRIGHT = {"Idle"}      # standing clips: head must sit over the feet (Meshy's stance / idle takes lean the torso forward)
+SPINE = next((n for n in ("Spine", "Spine01", "Spine02") if n in arm.pose.bones), None)
+
+
+def lean_dy():
+    """Horizontal offset (m, image x) of the head (top 35 % of the silhouette) from the feet (bottom 12 %), measured on a quick render:
+    the bones are not enough - Meshy's heads sit forward of the neck bone."""
+    old = (sc.render.resolution_x, sc.render.resolution_y)
+    sc.render.resolution_x = sc.render.resolution_y = 256
+    sc.render.filepath = os.path.join(OUT, "_l.png")
+    bpy.ops.render.render(write_still=True)
+    img = bpy.data.images.load(sc.render.filepath)
+    a = np.array(img.pixels[:], np.float32).reshape(256, 256, 4)[::-1, :, 3] > 0.5
+    bpy.data.images.remove(img)
+    sc.render.resolution_x, sc.render.resolution_y = old
+    ys, xs = np.nonzero(a)
+    top, bot = ys.min(), ys.max()
+    h = max(1, bot - top)
+    px_m = FRAME_M / 256.0
+    return float((xs[ys < top + h * 0.35].mean() - xs[ys > bot - h * 0.12].mean()) * px_m)
+
+
+FIX = None
+
+
+def straighten():
+    """Rotate the spine about the camera axis until the head is over the feet. The correction is a constraint on the spine bone
+    (copy-rotation from a helper empty, added after the animation, world space): the animation channels would overwrite direct edits."""
+    global FIX
+    if not SPINE:
+        return
+    if FIX is None:
+        FIX = bpy.data.objects.new("lean_fix", None)
+        sc.collection.objects.link(FIX)
+        bpy.context.view_layer.objects.active = arm
+        bpy.ops.object.mode_set(mode="POSE")
+        con = arm.pose.bones[SPINE].constraints.new("COPY_ROTATION")
+        con.target = FIX
+        con.mix_mode = "AFTER"
+        con.target_space = "WORLD"
+        con.owner_space = "WORLD"
+        bpy.ops.object.mode_set(mode="OBJECT")
+
+    def put(a):
+        FIX.rotation_euler = (a, 0.0, 0.0)
+        bpy.context.view_layer.update()
+        return lean_dy()
+    ang, cur = 0.0, put(0.0)
+    for _ in range(6):
+        if abs(cur) < 0.012:
+            break
+        step = math.atan2(cur, 0.45)
+        cands = [(abs(put(ang + s * step)), ang + s * step) for s in (1, -1)]
+        d, ang = min(cands)
+        cur = put(ang)
+        print("  spine", SPINE, "angle %.3f lean %.3f" % (ang, cur), flush=True)
 
 def render_frame():
     path = os.path.join(OUT, "_t.png")
@@ -121,6 +185,16 @@ def render_frame():
     return a
 
 
+def standing_z():
+    """Hips height of the standing idle pose: "xz" clips keep the hips at exactly this height (the game moves the body, the sprite stays put)."""
+    act = action(idle[0])
+    arm.animation_data_create().action = act
+    if hasattr(act, "slots") and len(act.slots):
+        arm.animation_data.action_slot = act.slots[0]
+    return hips_pos(1)[1]
+
+
+STAND_Z = standing_z()
 raw = {}
 for name, take, f0, f1, n, fps, loop, follow in CLIPS:
     if ONLY and name not in ONLY:
@@ -130,13 +204,19 @@ for name, take, f0, f1, n, fps, loop, follow in CLIPS:
     if hasattr(act, "slots") and len(act.slots):
         arm.animation_data.action_slot = act.slots[0]
     a0, a1 = f0 + 1, f1 + 1
-    base_h = hips_y(a0)
+    base_h, base_z = hips_pos(a0)[0], STAND_Z
     frames = []
     for i in range(n):
         fr = a0 + (a1 - a0) * i / (n if loop else max(1, n - 1))
         sc.frame_set(int(fr), subframe=fr - int(fr))
-        cx = hips_y(fr) if follow else base_h
-        cam.location = Vector((-10, cx, cam_z))
+        if name in UPRIGHT:
+            before = lean_dy()
+            straighten()
+            print("UPRIGHT", CLS, name, i, "lean m %.3f -> %.3f" % (before, lean_dy()), flush=True)
+        hy, hz = hips_pos(fr) if follow else (base_h, base_z)
+        cx = hy if follow else base_h
+        dz = (hz - base_z) if follow == "xz" else 0.0
+        cam.location = Vector((-10, cx, cam_z + dz))
         sun.location = Vector((-5, cx, 3))
         frames.append(render_frame())
     raw[name] = (frames, fps, loop)

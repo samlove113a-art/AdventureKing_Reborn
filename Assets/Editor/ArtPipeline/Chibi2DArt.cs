@@ -38,7 +38,7 @@ namespace AdventureKing.ArtPipeline
         ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildAllFromCommandLine</summary>
         public static void BuildAllFromCommandLine()
         {
-            try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin }) Build(c); BuildAllActors(); BuildPets(); EditorApplication.Exit(0); }
+            try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin }) Build(c); BuildAllActors(); BuildPets(); BuildFx2(); EditorApplication.Exit(0); }
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
@@ -129,6 +129,9 @@ namespace AdventureKing.ArtPipeline
         {
             ("NpcElder", 1f), ("NpcSmith", 1f), ("NpcStorekeeper", 1f), ("NpcCaptain", 1f), ("NpcOfficiant", 1f), ("NpcMusician", 1f), ("NpcMushroomElder", 1f),
             ("MonsterNamNon", 0.8f), ("PollenSlime", 0.5f), ("PuffSlime", 0.42f), ("MossSlime", 0.5f),
+            // Chương 1 Map 3-10 (Tools/chibi2d/make_monsters.py): the frame size already sets the real size, so scale 1
+            ("GlowMoss", 1f), ("MushroomChief", 1f), ("FlowerBee", 1f), ("CrystalBat", 1f), ("JadeTurtle", 1f), ("JadeGuardian", 1f), ("ShadowLeaf", 1f),
+            ("ToxicSlime", 1f), ("ToxicElite", 1f), ("StoneGuard", 1f), ("DarkMushroom", 1f), ("RoyalGuard", 1f), ("MushroomKing", 1f),
         };
 
         /// <summary>NPCs and monsters: strips from bake_chibi_actor.py -> clips, a plain state controller (states = clip names: NpcActor and
@@ -226,6 +229,55 @@ namespace AdventureKing.ArtPipeline
         {
             try { BuildPets(); EditorApplication.Exit(0); }
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
+        /// <summary>The unlit sprite material for skill effects: like the pixel material but allowed to reach full brightness (a glow, not a painted colour).</summary>
+        public static Material FxMaterial()
+        {
+            const string path = "Assets/Art/Chibi2D/AK_PixelFx.mat";
+            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m) return m;
+            m = new Material(Shader.Find("AdventureKing/PixelSprite")) { name = "AK_PixelFx" };
+            m.SetFloat("_MaxLuma", 1f);
+            AssetDatabase.CreateAsset(m, path);
+            return m;
+        }
+
+        /// <summary>Hero skill effects drawn by Tools/chibi2d/make_fx.py: ArtSource/Chibi2D/Fx/{name}.png strips -> Resources/Chibi2D/Fx2/{name}.prefab (flip-book).</summary>
+        public static void BuildFx2()
+        {
+            string meta = $"{Src}/Fx/fx_frames.json";
+            if (!File.Exists(meta)) { Debug.LogWarning("[CHIBI2D] no Fx art: run Tools/chibi2d/make_fx.py"); return; }
+            string json = File.ReadAllText(meta);
+            Directory.CreateDirectory($"{Dst}/Fx2"); Directory.CreateDirectory($"{Res}/Fx2");
+            var rx = new System.Text.RegularExpressions.Regex("\"(\\w+)\":\\s*\\{\\s*\"frames\":\\s*(\\d+),\\s*\"fps\":\\s*(\\d+),\\s*\"loop\":\\s*(true|false)");
+            foreach (System.Text.RegularExpressions.Match m in rx.Matches(json))
+            {
+                string fx = m.Groups[1].Value; int frames = int.Parse(m.Groups[2].Value);
+                string dst = $"{Dst}/Fx2/{fx}.png";
+                File.Copy($"{Src}/Fx/{fx}.png", dst, true);
+                AssetDatabase.ImportAsset(dst, ImportAssetOptions.ForceSynchronousImport);
+                var ti = (TextureImporter)AssetImporter.GetAtPath(dst);
+                ti.textureType = TextureImporterType.Sprite; ti.spriteImportMode = SpriteImportMode.Multiple; ti.spritePixelsPerUnit = 64f;
+                ti.mipmapEnabled = false; ti.filterMode = FilterMode.Point; ti.alphaIsTransparency = true; ti.textureCompression = TextureImporterCompression.Uncompressed;
+                var sheet = new SpriteMetaData[frames];
+                for (int i = 0; i < frames; i++)
+                    sheet[i] = new SpriteMetaData { name = $"{fx}_{i}", rect = new Rect(i * 128, 0, 128, 128), alignment = (int)SpriteAlignment.Center, pivot = new Vector2(0.5f, 0.5f) };
+#pragma warning disable CS0618
+                ti.spritesheet = sheet;
+#pragma warning restore CS0618
+                ti.SaveAndReimport();
+                Sprite[] sp = AssetDatabase.LoadAllAssetsAtPath(dst).OfType<Sprite>().OrderBy(s => int.Parse(s.name.Substring(s.name.LastIndexOf('_') + 1))).ToArray();
+                var go = new GameObject(fx);
+                var sr = go.AddComponent<SpriteRenderer>();
+                sr.sprite = sp[0]; sr.sharedMaterial = FxMaterial(); sr.sortingOrder = 8;
+                var fb = go.AddComponent<SpriteFlipbook>();
+                fb.Frames = sp; fb.Fps = float.Parse(m.Groups[3].Value); fb.Loop = m.Groups[4].Value == "true"; fb.DestroyOnEnd = !fb.Loop;
+                PrefabUtility.SaveAsPrefabAsset(go, $"{Res}/Fx2/{fx}.prefab");
+                UnityEngine.Object.DestroyImmediate(go);
+            }
+            AssetDatabase.SaveAssets();
+            Debug.Log("[CHIBI2D] skill effects 2 built");
         }
 
         /// <summary>The unlit pixel-art sprite material (AdventureKing/PixelSprite), shared by every 2D body and effect.</summary>
