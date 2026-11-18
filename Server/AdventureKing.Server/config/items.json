@@ -22,6 +22,8 @@
     { "id": "junk_slime_jelly", "name": "Thạch Slime", "kind": "junk", "icon": "item_junk", "priceGold": 4, "desc": "Đồ rác của Đồng Cỏ Gió. Bán cho NPC lấy Vàng." },
     { "id": "junk_moss_clump", "name": "Cụm Rêu Ướt", "kind": "junk", "icon": "item_junk", "priceGold": 6, "desc": "Đồ rác của Đồng Cỏ Gió. Bán cho NPC lấy Vàng." },
     { "id": "junk_mushroom_cap", "name": "Mũ Nấm Vụn", "kind": "junk", "icon": "item_junk", "priceGold": 7, "desc": "Đồ rác của Làng Nấm. Bán cho NPC lấy Vàng." },
+    { "id": "enhance_stone", "rarity": "blue", "name": "Đá Cường Hóa", "kind": "material", "icon": "item_junk", "priceGold": 200, "desc": "DRAFT: dùng để cường hóa trang bị +1…+15 (Cường Hóa ở túi đồ). Số đá cần tăng theo cấp." },
+    { "id": "protect_charm", "rarity": "purple", "name": "Bùa Bảo Vệ", "kind": "material", "icon": "item_charm", "priceGold": 1500, "desc": "DRAFT: đặt vào ô bảo vệ khi cường hóa từ +6: nếu thất bại thì giữ nguyên cấp và không vỡ đồ (bùa mất đi). Không mất khi thành công." },
     { "id": "junk_pollen_dust", "name": "Phấn Hoa Vón", "kind": "junk", "icon": "item_junk", "priceGold": 8, "desc": "Đồ rác của Đồng Cỏ Xanh. Bán cho NPC lấy Vàng." },
     { "id": "junk_glow_spore", "name": "Bào Tử Sáng", "kind": "junk", "icon": "item_junk", "priceGold": 10, "desc": "Đồ rác của Rừng Nấm Sáng. Bán cho NPC lấy Vàng." },
     { "id": "junk_bee_wing", "name": "Cánh Ong Hoa", "kind": "junk", "icon": "item_junk", "priceGold": 12, "desc": "Đồ rác của Đồi Hoa. Bán cho NPC lấy Vàng." },
@@ -52,7 +54,8 @@
       "tabs": [
         { "id": "potions", "name": "Dược Phẩm", "items": ["potion_hp_s", "potion_hp_m", "potion_hp_l", "potion_mp_s", "potion_mp_m", "potion_mp_l"] },
         { "id": "tickets", "name": "Vé Dịch Chuyển", "items": ["ticket_meadow"] },
-        { "id": "petfood", "name": "Thức Ăn Pet", "items": ["petfood_basic", "petfood_feast"] }
+        { "id": "petfood", "name": "Thức Ăn Pet", "items": ["petfood_basic", "petfood_feast"] },
+        { "id": "enhance", "name": "Cường Hóa", "items": ["enhance_stone", "protect_charm"] }
       ] }
   ],
   "starterKit": [

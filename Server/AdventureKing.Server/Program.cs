@@ -53,6 +53,7 @@ string itemsPath = Path.Combine(contentRoot, cfg["ItemConfigPath"] ?? "config/it
 builder.Services.AddSingleton(sp => new InventoryService(sp.GetRequiredService<Database>(), ItemConfig.Load(itemsPath), sp.GetRequiredService<FarmService>()));
 builder.Services.AddSingleton(sp => new ShopService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
 string petsPath = Path.Combine(contentRoot, cfg["PetConfigPath"] ?? "config/pets.json");
+builder.Services.AddSingleton(sp => new EnhanceService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
 builder.Services.AddSingleton(sp => new ChapterService(sp.GetRequiredService<Database>()));
 builder.Services.AddSingleton(sp => new PetService(sp.GetRequiredService<Database>(), PetConfig.Load(petsPath), sp.GetRequiredService<InventoryService>()));
 string questsPath = Path.Combine(contentRoot, cfg["QuestConfigPath"] ?? "config/quests.json");
@@ -248,6 +249,8 @@ api.MapPost("/characters/{id}/quests/claim", (string id, QuestClaimDto body, Htt
     quests.Claim(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/quests/event", (string id, QuestEventDto body, HttpContext ctx, AccountService accounts, QuestService quests) =>
     quests.ClientEvent(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/inventory/enhance", (string id, EnhanceRequestDto body, HttpContext ctx, AccountService accounts, EnhanceService enh) =>
+    enh.Enhance(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/inventory/unequip", (string id, UnequipRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
     inv.Unequip(accounts.Authenticate(Bearer(ctx)), id, body));
 

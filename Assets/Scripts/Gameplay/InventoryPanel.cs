@@ -66,7 +66,7 @@ namespace AdventureKing.Gameplay
         /// <summary>Item icon by its server icon key (shared with the reward windows).</summary>
         public Sprite IconSprite(string name) => Icon(name);
 
-        private void Start() { Build(); CombatPowerHud.Attach(this, font); }
+        private void Start() { Build(); CombatPowerHud.Attach(this, font); EnhancePanel.Attach(this, font); }
 
         private void Update()
         {
@@ -90,6 +90,22 @@ namespace AdventureKing.Gameplay
                 if (ok && inv != null) Apply(inv); else LastMessage = err;
                 done?.Invoke();
             });
+        }
+
+        /// <summary>Takes a snapshot the server returned from another window (Cường Hóa): redraws and tells the Lực Chiến HUD.</summary>
+        public void Adopt(InventoryState inv) { if (inv != null) Apply(inv); }
+
+        /// <summary>The gear the player has selected, as the server addresses it: ("bag", cell, "") or ("equipped", 0, equipSlot); null when nothing is selected.</summary>
+        public (string where, int slot, string equipSlot)? SelectedGear() =>
+            selectedEquip != null ? ("equipped", 0, selectedEquip) : SelectedIndex >= 0 ? ("bag", SelectedIndex, "") : ((string, int, string)?)null;
+
+        public void OpenEnhance()
+        {
+            var sel = SelectedGear();
+            var panel = GetComponent<EnhancePanel>();
+            if (!panel) return;
+            if (sel == null) { Message("Chọn một trang bị trước khi cường hóa."); return; }
+            panel.Open(sel.Value.where, sel.Value.slot, sel.Value.equipSlot);
         }
 
         private void Apply(InventoryState inv)
@@ -322,6 +338,7 @@ namespace AdventureKing.Gameplay
             expandLabel.fontSize = 20;
             useButton = Btn(c, "Use", "Dùng", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.25f, 0.6f, 0.4f), UseSelected);
             equipButton = Btn(c, "Equip", "Trang bị", new Vector2(1f, 0f), new Vector2(-270f, 110f), new Vector2(180f, 64f), new Color(0.3f, 0.45f, 0.75f), EquipSelected);
+            Btn(c, "Enhance", "Cường hóa", new Vector2(1f, 0f), new Vector2(-98f, 110f), new Vector2(164f, 64f), new Color(0.82f, 0.55f, 0.12f), OpenEnhance);
             useLabel = useButton.GetComponentInChildren<Text>();
             unequipButton = Btn(c, "Unequip", "Tháo", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.6f, 0.4f, 0.25f), () => { if (selectedEquip != null) Unequip(selectedEquip); });
             root.SetActive(false);
@@ -341,7 +358,7 @@ namespace AdventureKing.Gameplay
                 {
                     icon.sprite = Icon(s.icon); icon.enabled = icon.sprite;
                     icon.color = s.usableByClass ? Color.white : new Color(1f, 1f, 1f, 0.45f);
-                    qty.text = s.qty > 1 ? s.qty.ToString() : "";
+                    qty.text = s.qty > 1 ? s.qty.ToString() : s.enhance > 0 ? "+" + s.enhance : "";
                 }
                 else { icon.enabled = false; qty.text = ""; }
                 // the cell colour is the rarity: white < blue < purple < orange < red (a plain cell stays the usual blue-grey)

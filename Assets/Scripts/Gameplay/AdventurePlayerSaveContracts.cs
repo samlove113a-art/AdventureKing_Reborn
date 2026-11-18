@@ -172,6 +172,8 @@ namespace AdventureKing.Gameplay
         public int index, qty, attack, defense;
         public string itemId, name, kind, icon, desc, equipSlot, rarity;
         public bool usableByClass = true;
+        /// <summary>Enhancement +0..+15 (attack / defense already include it); nextAttack / nextDefense = one level up (0 when not equipment or at +15).</summary>
+        public int enhance, nextAttack, nextDefense;
     }
     [Serializable] public sealed class EquippedState { public string equipSlot; public BagSlotState item; }
     [Serializable]
@@ -180,9 +182,29 @@ namespace AdventureKing.Gameplay
         public int capacity, maxCapacity, stackMax, attackBonus, defenseBonus;
         /// <summary>Lực Chiến (server formula, same as the ranking) with the gear currently worn.</summary>
         public int combatPower;
+        public EnhanceRulesState enhanceRules;
         public long nextExpandGold; // 0 = bag fully expanded
         public BagSlotState[] slots = new BagSlotState[0];
         public EquippedState[] equipped = new EquippedState[0];
+    }
+    /// <summary>The Cường Hóa table: index = current level (0..14) -> success %, stones and Gold of the attempt to reach the next level.</summary>
+    [Serializable]
+    public sealed class EnhanceRulesState
+    {
+        public int maxLevel, safeLevel, breakFromLevel, breakPercent;
+        public int[] success = new int[0], stones = new int[0];
+        public long[] gold = new long[0];
+        public string stoneItemId, charmItemId;
+    }
+    /// <summary>outcome: success | fail | protected | drop | broken.</summary>
+    [Serializable]
+    public sealed class EnhanceResult
+    {
+        public string outcome, itemId;
+        public int levelBefore, levelAfter, successPercent, stonesUsed;
+        public long goldSpent, gold;
+        public bool charmUsed;
+        public InventoryState inventory;
     }
     [Serializable] public sealed class ExpandResult { public long priceGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class SellJunkResult { public int stacksSold, itemsSold; public long totalGold, gold; public InventoryState inventory; }

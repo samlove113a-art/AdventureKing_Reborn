@@ -283,6 +283,12 @@ namespace AdventureKing.Gameplay
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/shop/sell-junk", "{}", true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<SellJunkResult>(json) : null, err));
 
+        /// <summary>Cường Hóa: where = "bag" (slot) or "equipped" (equipSlot). The server takes the stones and Gold and rolls; the client only shows the result.</summary>
+        public void EnhanceItem(string characterId, string where, int slot, string equipSlot, bool useCharm, Action<bool, EnhanceResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/enhance",
+                JsonUtility.ToJson(new EnhanceBody { where = where, slot = slot, equipSlot = equipSlot ?? "", useCharm = useCharm }), true, (ok, json, err) =>
+                    completed(ok, ok ? JsonUtility.FromJson<EnhanceResult>(json) : null, err));
+
         public void UnequipItem(string characterId, string equipSlot, Action<bool, InventoryState, string> completed) =>
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/unequip", JsonUtility.ToJson(new UnequipBody { equipSlot = equipSlot }), true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<InventoryState>(json) : null, err));
@@ -413,6 +419,7 @@ namespace AdventureKing.Gameplay
         [Serializable] private sealed class SlotBody { public int slot; }
         [Serializable] private sealed class UseBody { public int slot; public bool force; }
         [Serializable] private sealed class UnequipBody { public string equipSlot; }
+        [Serializable] private sealed class EnhanceBody { public string where; public int slot; public string equipSlot; public bool useCharm; }
 
         // ------------------------------------------------------------------ 7-day check-in (server decides everything)
         public void GetCheckin(string characterId, Action<bool, CheckinStatus, string> completed) =>

@@ -68,3 +68,8 @@ Server 175/175. PlayMode 71 test: 63 pass, 2 bỏ qua, 6 fail:
 - Vũ khí/trang phục đổi được chỉ có Pháp Sư (`fire_mage`, `frost_mage`); cầm vũ khí chưa chỉnh socket riêng.
 - Chưa đo FPS, chưa build Windows/Android, chưa thử nhiều client nhìn thấy thân 2D của nhau trên Map 3–10.
 - Cổng Chương 2 chưa có (Map 10 chỉ ghi `chapter_progress`).
+## 2026-11-18 — Lực Chiến HUD, loot theo phẩm chất, Cường Hóa +1…+15
+- Lực Chiến HUD (`CombatPowerHud`), phẩm chất Trắng<Xanh<Tím<Cam<Đỏ, cột sáng/nảy/chuông khi rớt đồ Tím+ (`LootBeam`, `LootRarity`, `GoldDropView`) — commit a6024a7.
+- **Cường Hóa** (server V14, `EnhanceService`): cấp +0…+15 lưu theo từng món (ô túi hoặc ô trang bị, đi theo món khi mặc/tháo); đá `enhance_stone` + Vàng; tỷ lệ 100%→20%; +0…+5 thất bại chỉ mất nguyên liệu, +6…+9 tụt 1 cấp, +10…+14 tụt 1 cấp và 25% vỡ đồ; `protect_charm` (Bùa Bảo Vệ) chỉ bị tiêu khi thật sự cứu (thất bại từ +6). Roll trên server, một giao dịch. Cộng chỉ số: +1/cấp +12% base, tính vào Lực Chiến. Bán ở Dược Sư (tab Cường Hóa). Số liệu DRAFT.
+- Client: `EnhancePanel` (nút "Cường hóa" trong túi đồ), `EnhanceFx` (âm thanh tổng hợp: búa, thành công, thất bại, bảo vệ, vỡ), lóe sáng + tia + rung + biểu ngữ. Test: server 191/191, `EnhancePanelTests` 3/3 (có chạy server thật, ảnh QA/Enhance).
+- Chưa làm: đá cường hóa chưa rớt từ quái (chỉ mua bằng Vàng); chưa có cân bằng/duyệt số; chưa kiểm hồi quy PlayMode đầy đủ.

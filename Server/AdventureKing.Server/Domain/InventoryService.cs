@@ -88,6 +88,11 @@ public sealed class BagSlotDto
     public int attack { get; set; }
     public int defense { get; set; }
     public bool usableByClass { get; set; } = true;
+    /// <summary>Enhancement level +0..+15 of this piece of gear; attack / defence above already include it.</summary>
+    public int enhance { get; set; }
+    /// <summary>Attack / defence one enhancement level up (equipment below +15), for the Cường Hóa preview; 0 otherwise.</summary>
+    public int nextAttack { get; set; }
+    public int nextDefense { get; set; }
     public string destMap { get; set; } = "";
 }
 
@@ -106,6 +111,8 @@ public sealed class InventoryDto
     public int defenseBonus { get; set; }
     /// <summary>Lực Chiến of the hero with this gear (same formula as the ranking: FarmService.PowerOf); the HUD shows it and counts up when gear changes.</summary>
     public int combatPower { get; set; }
+    /// <summary>The Cường Hóa table (success rate, stones, Gold per level; failure rules) so the client can preview an attempt.</summary>
+    public EnhanceRulesDto enhanceRules { get; set; } = EnhanceRules.Describe();
 }
 
 /// <summary>force: drink even with a full bar (the player confirmed; nothing is restored above the maximum).</summary>
@@ -154,6 +161,9 @@ public sealed class InventoryService
         farm.ItemInfo = id => Config.Get(id) is { } d ? (d.name, d.kind, d.rarity) : (id, "", "white");
     }
 
+    /// <summary>The hero class of one of THIS account's characters (404 otherwise); also the ownership check of every inventory action.</summary>
+    public int OwnerClass(SqliteConnection c, SqliteTransaction? tx, string accountId, string characterId) => ClassOf(c, tx, accountId, characterId);
+
     private int ClassOf(SqliteConnection c, SqliteTransaction? tx, string accountId, string characterId)
     {
         using var cmd = Database.Command(c, tx, "SELECT hero_class FROM characters WHERE id=$c AND account_id=$a", ("$c", characterId), ("$a", accountId));
@@ -167,9 +177,9 @@ public sealed class InventoryService
     {
         using var c = db.Open();
         int atk = 0, def = 0;
-        using var cmd = Database.Command(c, null, "SELECT item_id FROM equipped WHERE character_id=$c", ("$c", characterId));
+        using var cmd = Database.Command(c, null, "SELECT item_id, enhance FROM equipped WHERE character_id=$c", ("$c", characterId));
         using var r = cmd.ExecuteReader();
-        while (r.Read()) { ItemDef? d = Config.Get(r.GetString(0)); if (d != null) { atk += d.attack; def += d.defense; } }
+        while (r.Read()) { ItemDef? d = Config.Get(r.GetString(0)); if (d != null) { atk += EnhanceRules.Scaled(d.attack, r.GetInt32(1)); def += EnhanceRules.Scaled(d.defense, r.GetInt32(1)); } }
         return (atk, def);
     }
 
@@ -184,7 +194,7 @@ public sealed class InventoryService
     }
 
     /// <summary>Adds qty of an item: tops up existing stacks to the cap, then fills free cells. All or nothing.</summary>
-    public void Add(SqliteConnection c, SqliteTransaction tx, string characterId, string itemId, int qty)
+    public void Add(SqliteConnection c, SqliteTransaction tx, string characterId, string itemId, int qty, int enhance = 0)
     {
         ItemDef d = Config.Get(itemId) ?? throw new GameError("item_unknown", "Vật phẩm không tồn tại.", 404);
         if (qty < 1) throw new GameError("bad_qty", "Số lượng không hợp lệ.");
@@ -203,7 +213,7 @@ public sealed class InventoryService
         {
             if (bag.ContainsKey(slot)) continue;
             int put = Math.Min(cap, left);
-            Database.Exec(c, tx, "INSERT INTO bag_slots(character_id, slot_index, item_id, qty) VALUES($c,$s,$i,$q)", ("$c", characterId), ("$s", slot), ("$i", itemId), ("$q", put));
+            Database.Exec(c, tx, "INSERT INTO bag_slots(character_id, slot_index, item_id, qty, enhance) VALUES($c,$s,$i,$q,$e)", ("$c", characterId), ("$s", slot), ("$i", itemId), ("$q", put), ("$e", enhance));
             bag[slot] = (itemId, put);
             left -= put;
         }
@@ -251,21 +261,27 @@ public sealed class InventoryService
 
     private InventoryDto Snapshot(SqliteConnection c, SqliteTransaction tx, string characterId, int heroClass)
     {
-        BagSlotDto Dto(int index, string itemId, int qty)
+        var bagEnhance = new Dictionary<int, int>();
+        using (var ec = Database.Command(c, tx, "SELECT slot_index, enhance FROM bag_slots WHERE character_id=$c AND enhance>0", ("$c", characterId)))
+        using (var er = ec.ExecuteReader())
+            while (er.Read()) bagEnhance[er.GetInt32(0)] = er.GetInt32(1);
+        BagSlotDto Dto(int index, string itemId, int qty, int enhance = 0)
         {
             ItemDef d = Config.Get(itemId) ?? new ItemDef { id = itemId, name = itemId };
             return new BagSlotDto
             {
-                index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, qty = qty,
-                equipSlot = d.equipSlot, rarity = d.rarity, attack = d.attack, defense = d.defense, destMap = d.destMap,
+                index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, qty = qty, enhance = enhance,
+                equipSlot = d.equipSlot, rarity = d.rarity, attack = EnhanceRules.Scaled(d.attack, enhance), defense = EnhanceRules.Scaled(d.defense, enhance), destMap = d.destMap,
+                nextAttack = d.kind == "equipment" && enhance < EnhanceRules.MaxLevel ? EnhanceRules.Scaled(d.attack, enhance + 1) : 0,
+                nextDefense = d.kind == "equipment" && enhance < EnhanceRules.MaxLevel ? EnhanceRules.Scaled(d.defense, enhance + 1) : 0,
                 usableByClass = d.kind != "equipment" || d.classes.Length == 0 || d.classes.Contains(heroClass),
             };
         }
-        var slots = Bag(c, tx, characterId).OrderBy(kv => kv.Key).Select(kv => Dto(kv.Key, kv.Value.item, kv.Value.qty)).ToArray();
+        var slots = Bag(c, tx, characterId).OrderBy(kv => kv.Key).Select(kv => Dto(kv.Key, kv.Value.item, kv.Value.qty, bagEnhance.TryGetValue(kv.Key, out int lv) ? lv : 0)).ToArray();
         var eq = new List<EquippedDto>();
-        using (var cmd = Database.Command(c, tx, "SELECT equip_slot, item_id FROM equipped WHERE character_id=$c ORDER BY equip_slot", ("$c", characterId)))
+        using (var cmd = Database.Command(c, tx, "SELECT equip_slot, item_id, enhance FROM equipped WHERE character_id=$c ORDER BY equip_slot", ("$c", characterId)))
         using (var r = cmd.ExecuteReader())
-            while (r.Read()) eq.Add(new EquippedDto { equipSlot = r.GetString(0), item = Dto(-1, r.GetString(1), 1) });
+            while (r.Read()) eq.Add(new EquippedDto { equipSlot = r.GetString(0), item = Dto(-1, r.GetString(1), 1, r.GetInt32(2)) });
         return new InventoryDto
         {
             capacity = Capacity(c, tx, characterId), maxCapacity = Config.maxBagSlots, stackMax = Config.stackMax, slots = slots, equipped = eq.ToArray(),
@@ -346,11 +362,13 @@ public sealed class InventoryService
         if (d.kind != "equipment") throw new GameError("not_equipment", "Vật phẩm này không trang bị được.", 409);
         if (d.classes.Length > 0 && !d.classes.Contains(cls)) throw new GameError("wrong_class", "Nghề của bạn không dùng được trang bị này.", 409);
         string? old = Database.Scalar<string>(c, tx, "SELECT item_id FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", d.equipSlot));
+        int oldLevel = old == null ? 0 : (int)Database.Scalar<long>(c, tx, "SELECT enhance FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", d.equipSlot));
+        int newLevel = (int)Database.Scalar<long>(c, tx, "SELECT enhance FROM bag_slots WHERE character_id=$c AND slot_index=$s", ("$c", characterId), ("$s", req.slot));   // the level travels with the piece
         Database.Exec(c, tx, "DELETE FROM bag_slots WHERE character_id=$c AND slot_index=$s", ("$c", characterId), ("$s", req.slot));
         if (old != null)
-            Database.Exec(c, tx, "INSERT INTO bag_slots(character_id, slot_index, item_id, qty) VALUES($c,$s,$i,1)", ("$c", characterId), ("$s", req.slot), ("$i", old));
-        Database.Exec(c, tx, "INSERT INTO equipped(character_id, equip_slot, item_id) VALUES($c,$e,$i) ON CONFLICT(character_id, equip_slot) DO UPDATE SET item_id=excluded.item_id",
-            ("$c", characterId), ("$e", d.equipSlot), ("$i", d.id));
+            Database.Exec(c, tx, "INSERT INTO bag_slots(character_id, slot_index, item_id, qty, enhance) VALUES($c,$s,$i,1,$e)", ("$c", characterId), ("$s", req.slot), ("$i", old), ("$e", oldLevel));
+        Database.Exec(c, tx, "INSERT INTO equipped(character_id, equip_slot, item_id, enhance) VALUES($c,$e,$i,$l) ON CONFLICT(character_id, equip_slot) DO UPDATE SET item_id=excluded.item_id, enhance=excluded.enhance",
+            ("$c", characterId), ("$e", d.equipSlot), ("$i", d.id), ("$l", newLevel));
         return Snapshot(c, tx, characterId, cls);
     });
 
@@ -359,8 +377,9 @@ public sealed class InventoryService
         int cls = ClassOf(c, tx, accountId, characterId);
         string? item = Database.Scalar<string>(c, tx, "SELECT item_id FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req?.equipSlot ?? ""));
         if (item == null) throw new GameError("not_equipped", "Ô trang bị này đang trống.", 409);
-        Database.Exec(c, tx, "DELETE FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req!.equipSlot));
-        Add(c, tx, characterId, item, 1); // bag full -> GameError -> rollback (stays equipped)
+        int level = (int)Database.Scalar<long>(c, tx, "SELECT enhance FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req!.equipSlot));
+        Database.Exec(c, tx, "DELETE FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req.equipSlot));
+        Add(c, tx, characterId, item, 1, level); // bag full -> GameError -> rollback (stays equipped)
         return Snapshot(c, tx, characterId, cls);
     });
 }

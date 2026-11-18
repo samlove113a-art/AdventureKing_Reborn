@@ -165,7 +165,24 @@ public sealed class Database
             Exec(c, tx, Schema.V13);
             Exec(c, tx, "PRAGMA user_version=13;");
             tx.Commit();
+            version = 13;
         }
+        if (version < 14)
+        {
+            using var tx = c.BeginTransaction();
+            // V14: enhancement level (+0..+15) of one piece of gear, in the bag cell or in the equipment slot (moves with the item).
+            AddColumnIfMissing(c, tx, "bag_slots", "enhance");
+            AddColumnIfMissing(c, tx, "equipped", "enhance");
+            Exec(c, tx, "PRAGMA user_version=14;");
+            tx.Commit();
+        }
+    }
+
+    private static void AddColumnIfMissing(SqliteConnection c, SqliteTransaction tx, string table, string column)
+    {
+        using (var cmd = Command(c, tx, $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name=$n", ("$n", column)))
+            if (Convert.ToInt64(cmd.ExecuteScalar()) > 0) return;
+        Exec(c, tx, $"ALTER TABLE {table} ADD COLUMN {column} INTEGER NOT NULL DEFAULT 0 CHECK ({column} BETWEEN 0 AND 15);");
     }
 
     public static int Exec(SqliteConnection c, SqliteTransaction? tx, string sql, params (string, object?)[] args)
@@ -197,7 +214,7 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 13;
+    public const int Current = 14;
 
     // V13: chapter progress — the chapter boss kill the SERVER confirmed (one row per character and chapter; written only by ChapterService).
     public const string V13 = """
