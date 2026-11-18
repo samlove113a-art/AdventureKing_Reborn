@@ -167,7 +167,7 @@ namespace AdventureKing.Gameplay
     [Serializable]
     public sealed class BagSlotState
     {
-        public int index, qty, attack, defense, enhanceLevel;
+        public int index, qty, attack, defense, enhanceLevel, enhanceChance;
         public string itemId, name, kind, icon, desc, equipSlot, rarity;
         public bool usableByClass = true;
     }
