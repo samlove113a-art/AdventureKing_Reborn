@@ -265,6 +265,8 @@ namespace AdventureKing.Gameplay
             g.gameObject.SetActive(true);
             g.Bind(d, from);
             drops[d.id] = g;
+            if (d.IsItem && (d.itemRarity == "purple" || d.itemRarity == "orange" || d.itemRarity == "red"))
+                QuickGoalToast.Show("Vật phẩm hiếm xuất hiện: " + d.itemName + " · Nhặt trước khi biến mất!");
         }
 
         /// <summary>Nearest living monster in front of the hero within the class reach (the server re-checks).</summary>
@@ -288,7 +290,10 @@ namespace AdventureKing.Gameplay
                 target.Apply(r.monster);
                 if (r.monster != null && r.monster.alive) target.Chase = world.Player.transform; // it fights back (server timer)
                 ApplyHero(r.hero);
-                Popup(target.Position + Vector2.up * 1.4f, "-" + r.damage, new Color(1f, 0.92f, 0.6f), 30);
+                Popup(target.Position + Vector2.up * 1.4f, r.crit ? "CHÍ MẠNG  -" + r.damage : "-" + r.damage,
+                    r.crit ? new Color(1f, 0.38f, 0.14f) : new Color(1f, 0.92f, 0.6f), r.crit ? 42 : 30);
+                if (r.crit && (target.Tier == "boss" || target.Tier == "mini"))
+                    SkillVfxKit.Shake(0.06f, 0.13f);
                 if (r.HasDrop)
                 {
                     Kills++;
@@ -460,7 +465,9 @@ namespace AdventureKing.Gameplay
                         if (h.monster == null || !monsters.TryGetValue(h.monster.id, out FarmMonsterView m) || !m) continue;
                         m.Apply(h.monster);
                         if (h.monster.alive) m.Chase = world.Player.transform;
-                        Popup(m.Position + Vector2.up * 1.6f, "-" + h.damage, slot == 3 ? new Color(1f, 0.55f, 0.3f) : new Color(1f, 0.85f, 0.5f), slot == 3 ? 40 : 34);
+                        Popup(m.Position + Vector2.up * 1.6f, h.crit ? "CHÍ MẠNG  -" + h.damage : "-" + h.damage,
+                            h.crit ? new Color(1f, 0.32f, 0.16f) : slot == 3 ? new Color(1f, 0.55f, 0.3f) : new Color(1f, 0.85f, 0.5f),
+                            h.crit ? 46 : slot == 3 ? 40 : 34);
                         if (h.HasDrop) { Kills++; SpawnDrop(h.drop, m.Position); }
                     }
                 };
