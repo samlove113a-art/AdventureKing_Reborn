@@ -128,6 +128,8 @@ def run(kind, name, body):
         rec["request"] = dict(rec["request"], image_url="<data-uri>")
     if isinstance(rec["request"].get("model_url"), str) and rec["request"]["model_url"].startswith("data:"):
         rec["request"] = dict(rec["request"], model_url="<data-uri>")
+    if isinstance(rec["request"].get("reference_image_urls"), list):   # image-to-image references (base64) would bloat the manifest to 100+ MB
+        rec["request"] = dict(rec["request"], reference_image_urls=["<data-uri>" if str(u).startswith("data:") else u for u in rec["request"]["reference_image_urls"]])
     os.makedirs(OUT, exist_ok=True)
     with open(MANIFEST, "a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")

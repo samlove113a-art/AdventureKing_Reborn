@@ -1,4 +1,4 @@
-﻿"""AdventureKing original PIXEL-ART Swordsman, heroic proportions (head ~ 1/5.5 of height), side view, faces right.
+"""AdventureKing original PIXEL-ART Swordsman, heroic proportions (head ~ 1/5.5 of height), side view, faces right.
 Same analytic engine as mage_rig.py in its pixel mode (128 px frames, fixed palette, hard 1 px outline, no anti-aliasing).
 
   "<Blender>/5.2/python/bin/python.exe" Tools/chibi2d/swordsman_pixel.py [out_dir] [only_clip,...] [--preview]
@@ -20,11 +20,11 @@ from mage_rig import (Canvas, Xf, X, Y, CX, G, S, FRAME_M, GROUND_M, ellipse, ca
                       rgb, INK, sample, write_png, PX)
 
 M.PAL.update({
-    "shair": (rgb("#e8eef9"), rgb("#a9b8d8"), rgb("#ffffff"), rgb("#2c3560")),
+    "shair": (rgb("#ffd54a"), rgb("#e0902a"), rgb("#fff3a8"), rgb("#5a2e0a")),
     "steel": (rgb("#d3dcea"), rgb("#8e9bb6"), rgb("#ffffff"), rgb("#1c2540")),
     "leather": (rgb("#9a6238"), rgb("#62401f"), rgb("#c98c52"), rgb("#24120a")),
-    "coat": (rgb("#2c3a78"), rgb("#1a2350"), rgb("#5468b8"), rgb("#090d22")),
-    "tunic": (rgb("#2f9aa6"), rgb("#1d6676"), rgb("#74d8de"), rgb("#082a33")),
+    "coat": (rgb("#d8434e"), rgb("#9c2433"), rgb("#ff8088"), rgb("#3e0a14")),
+    "tunic": (rgb("#3a63c8"), rgb("#243f94"), rgb("#80a6f2"), rgb("#0c1840")),
     "pants": (rgb("#3c4258"), rgb("#272b3c"), rgb("#5f6684"), rgb("#10121d")),
     "boot2": (rgb("#7a5234"), rgb("#4c301c"), rgb("#a87348"), rgb("#1f1008")),
     "eye": (rgb("#4fa8ff"), rgb("#2a64d0"), rgb("#bfe0ff"), rgb("#0c1f4a")),
@@ -33,6 +33,11 @@ M.PAL.update({
 PAL = M.PAL
 SKIN_INK = PAL["skin"][3]
 M.BASE = 0.86
+PX = M.PX = 192                         # 192 px cell (4x4 supersample per pixel): detail level of the existing hero sprites
+M.LW = 2.0                              # ink lines ~1 px at this cell size
+HEAD_SCALE = (1.3, 1.3)                 # chibi: big head on a sturdy body (the doc forbids tall thin mannequins)
+FRAME_OUT = 1.9                         # metres per frame side: the hero stands ~1.15 m like the existing sprites
+GROUND_OUT = (S - G) / S * FRAME_OUT
 
 HIP, SH, HEAD = (CX + 2, 208), (CX + 6, 134), (CX + 6, 92)
 
@@ -91,7 +96,7 @@ def render(p):
     cv.fill(np.where((ly > HIP[1] + 79) & (ly < HIP[1] + 85), tail, 99.0), lx, ly, "gold", (HIP[0] - 14, HIP[1] + 82), 20, line=0.5, shade=False)
 
     # ---- back hair
-    ht = root.child(HEAD, p["head"] + p["hair"] * 0.3)
+    ht = root.child(HEAD, p["head"] + p["hair"] * 0.3, (0, 0), HEAD_SCALE)
     lx, ly = ht(X, Y)
     cv.fill(ellipse(lx, ly, HEAD[0] - 12, HEAD[1] - 4, 26, 26), lx, ly, "shair", (HEAD[0] - 12, HEAD[1]), 28, line=1.0)
     for pts in ([(HEAD[0] - 14, HEAD[1] - 14), (HEAD[0] - 36, HEAD[1] - 18), (HEAD[0] - 50, HEAD[1] - 10)],
@@ -103,21 +108,21 @@ def render(p):
     sf = root.child(SH, p["arm_f"][0], (-5, 2))
     ef = sf.child((SH[0], SH[1] + 44), p["arm_f"][1])
     lx, ly = sf(X, Y)
-    cv.fill(capsule(lx, ly, SH[0], SH[1], SH[0], SH[1] + 46, 8, 7), lx, ly, "tunic", SH, 24, line=0.8, tint=dim)
+    cv.fill(capsule(lx, ly, SH[0], SH[1], SH[0], SH[1] + 46, 10.5, 8.5), lx, ly, "tunic", SH, 24, line=0.8, tint=dim)
     lx, ly = ef(X, Y)
-    cv.fill(capsule(lx, ly, SH[0], SH[1] + 44, SH[0], SH[1] + 84, 7.5, 6.5), lx, ly, "steel", (SH[0], SH[1] + 64), 22, line=0.8, tint=dim)
-    cv.fill(ellipse(lx, ly, SH[0], SH[1] + 90, 6.5, 6.5), lx, ly, "skin", (SH[0], SH[1] + 90), 7, line=0.8, tint=dim)
+    cv.fill(capsule(lx, ly, SH[0], SH[1] + 44, SH[0], SH[1] + 84, 9.5, 8), lx, ly, "steel", (SH[0], SH[1] + 64), 22, line=0.8, tint=dim)
+    cv.fill(ellipse(lx, ly, SH[0], SH[1] + 90, 8.5, 8.5), lx, ly, "skin", (SH[0], SH[1] + 90), 7, line=0.8, tint=dim)
 
     def leg(angles, dx, tint):
         hp = root.child((HIP[0] + dx, HIP[1]), angles[0])
         kn = hp.child((HIP[0] + dx, HIP[1] + 78), angles[1])
         fx = HIP[0] + dx
         lx, ly = hp(X, Y)
-        cv.fill(capsule(lx, ly, fx, HIP[1], fx, HIP[1] + 80, 15, 11.5), lx, ly, "pants", (fx, HIP[1] + 40), 44, line=1.0, tint=tint)
+        cv.fill(capsule(lx, ly, fx, HIP[1], fx, HIP[1] + 80, 18.5, 14), lx, ly, "pants", (fx, HIP[1] + 40), 44, line=1.0, tint=tint)
         lx, ly = kn(X, Y)
-        cv.fill(capsule(lx, ly, fx, HIP[1] + 76, fx, HIP[1] + 140, 12, 9.5), lx, ly, "boot2", (fx, HIP[1] + 108), 40, line=1.0, tint=tint)
-        cv.fill(ellipse(lx, ly, fx + 2, HIP[1] + 78, 9, 8), lx, ly, "steel", (fx + 2, HIP[1] + 78), 10, line=0.8, tint=tint)         # knee guard
-        cv.fill(union(ellipse(lx, ly, fx + 9, HIP[1] + 148, 20, 8), ellipse(lx, ly, fx - 1, HIP[1] + 140, 9, 12)), lx, ly, "boot2", (fx + 6, HIP[1] + 144), 22, line=1.0, tint=tint)
+        cv.fill(capsule(lx, ly, fx, HIP[1] + 76, fx, HIP[1] + 140, 14.5, 11.5), lx, ly, "boot2", (fx, HIP[1] + 108), 40, line=1.0, tint=tint)
+        cv.fill(ellipse(lx, ly, fx + 2, HIP[1] + 78, 11.5, 10), lx, ly, "steel", (fx + 2, HIP[1] + 78), 10, line=0.8, tint=tint)         # knee guard
+        cv.fill(union(ellipse(lx, ly, fx + 10, HIP[1] + 148, 25, 10), ellipse(lx, ly, fx - 1, HIP[1] + 140, 11, 14)), lx, ly, "boot2", (fx + 6, HIP[1] + 144), 22, line=1.0, tint=tint)
         cv.fill(box(lx, ly, fx, HIP[1] + 118, 10, 3, 1.5), lx, ly, "gold", (fx, HIP[1] + 118), 10, line=0.6, shade=False, tint=tint)
 
     leg(p["leg_f"], -8, dim)
@@ -125,20 +130,20 @@ def render(p):
 
     # ---- torso: tunic + chest plate + belt, coat front flap
     lx, ly = root(X, Y)
-    torso = smin(capsule(lx, ly, CX + 2, 152, CX + 2, 196, 23, 19), ellipse(lx, ly, CX + 4, 150, 26, 18), 6)
+    torso = smin(capsule(lx, ly, CX + 2, 152, CX + 2, 198, 28, 23), ellipse(lx, ly, CX + 4, 150, 31, 21), 6)
     cv.fill(torso, lx, ly, "tunic", (CX + 2, 175), 36, line=1.0)
-    cv.fill(np.where(ly < 182, smin(capsule(lx, ly, CX + 7, 146, CX + 7, 178, 17, 14), ellipse(lx, ly, CX + 9, 148, 19, 13), 5), 99.0), lx, ly, "steel", (CX + 6, 160), 26, line=0.9)
-    cv.fill(box(lx, ly, CX + 2, 200, 19, 4.5, 2), lx, ly, "leather", (CX + 2, 200), 20, line=0.8)
+    cv.fill(np.where(ly < 182, smin(capsule(lx, ly, CX + 7, 146, CX + 7, 180, 21, 17), ellipse(lx, ly, CX + 9, 148, 23, 16), 5), 99.0), lx, ly, "steel", (CX + 6, 160), 26, line=0.9)
+    cv.fill(box(lx, ly, CX + 2, 201, 24, 5.5, 2), lx, ly, "leather", (CX + 2, 200), 20, line=0.8)
     cv.fill(box(lx, ly, CX + 12, 200, 4.5, 5.5, 1), lx, ly, "gold", (CX + 12, 200), 6, line=0.6, shade=False)
     cv.fill(box(lx, ly, CX + 14, 226, 7, 22, 3), lx, ly, "coat", (CX + 14, 226), 24, line=0.8)
     cv.fill(box(lx, ly, CX + 2, 130, 7, 6, 3), lx, ly, "skin", (CX + 2, 130), 8, line=0.8)                      # neck
 
     # ---- head, face, front hair
-    hx = root.child(HEAD, p["head"])
+    hx = root.child(HEAD, p["head"], (0, 0), HEAD_SCALE)
     lx, ly = hx(X, Y)
     cv.fill(ellipse(lx, ly, HEAD[0], HEAD[1], 26, 29), lx, ly, "skin", HEAD, 30, line=1.2)
     face(cv, lx, ly, p)
-    hh = root.child(HEAD, p["head"] + p["hair"] * 0.15)
+    hh = root.child(HEAD, p["head"] + p["hair"] * 0.15, (0, 0), HEAD_SCALE)
     lx, ly = hh(X, Y)
     cv.fill(ellipse(lx, ly, HEAD[0] + 2, HEAD[1] - 18, 26, 12), lx, ly, "shair", (HEAD[0], HEAD[1] - 18), 28, line=0.9)
     for i, pts in enumerate(([(HEAD[0] - 6, HEAD[1] - 22), (HEAD[0] + 2, HEAD[1] - 8), (HEAD[0] + 3, HEAD[1] + 4)],
@@ -162,17 +167,17 @@ def render(p):
     cv.fill(box(lx, ly, bx, by_ - 17, 16, 4.2, 1.5), lx, ly, "gold", (bx, by_ - 17), 12, line=0.7)
     for sgn in (-1, 1):
         cv.fill(capsule(lx, ly, bx + sgn * 12, by_ - 17, bx + sgn * 18, by_ - 26, 3, 1.5), lx, ly, "gold", (bx + sgn * 14, by_ - 20), 8, line=0.6, shade=False)
-    cv.fill(capsule(lx, ly, bx, by_ + 4, bx, by_ - 13, 3.6, 3.6), lx, ly, "leather", (bx, by_ - 4), 10, line=0.7)
+    cv.fill(capsule(lx, ly, bx, by_ + 4, bx, by_ - 13, 4.6, 4.6), lx, ly, "leather", (bx, by_ - 4), 10, line=0.7)
     cv.fill(ellipse(lx, ly, bx, by_ + 10, 4.6, 4.6), lx, ly, "gold", (bx, by_ + 10), 5, line=0.6, shade=False)
 
     lx, ly = sn(X, Y)
-    cv.fill(capsule(lx, ly, SH[0], SH[1], SH[0], SH[1] + 46, 11.5, 9.5), lx, ly, "tunic", SH, 26, line=1.0)
-    cv.fill(ellipse(lx, ly, SH[0] + 1, SH[1] + 2, 15, 12), lx, ly, "steel", SH, 17, line=1.0)                    # pauldron
+    cv.fill(capsule(lx, ly, SH[0], SH[1], SH[0], SH[1] + 46, 13.5, 11), lx, ly, "tunic", SH, 26, line=1.0)
+    cv.fill(ellipse(lx, ly, SH[0] + 1, SH[1] + 2, 19, 15), lx, ly, "steel", SH, 17, line=1.0)                    # pauldron
     cv.fill(ellipse(lx, ly, SH[0] + 2, SH[1] + 1, 8, 6), lx, ly, "gold", SH, 8, line=0.6, shade=False)
     lx, ly = en(X, Y)
-    cv.fill(capsule(lx, ly, SH[0], SH[1] + 44, SH[0], SH[1] + 84, 10.2, 8.6), lx, ly, "steel", (SH[0], SH[1] + 64), 24, line=1.0)    # bracer
+    cv.fill(capsule(lx, ly, SH[0], SH[1] + 44, SH[0], SH[1] + 84, 12, 10), lx, ly, "steel", (SH[0], SH[1] + 64), 24, line=1.0)    # bracer
     lx, ly = stf(X, Y)
-    cv.fill(box(lx, ly, hand[0], hand[1] - 3, 7.5, 7, 3), lx, ly, "skin", hand, 9, line=0.9)
+    cv.fill(box(lx, ly, hand[0], hand[1] - 3, 9.5, 9, 3.5), lx, ly, "skin", hand, 9, line=0.9)
 
     # ---- tip sparkle while charging + slash crescent (flat, hard-edged)
     if p["spark"] > 0:
@@ -181,10 +186,11 @@ def render(p):
     if p["slash"] > 0:
         a = min(1.0, p["slash"])
         outer = ellipse(X, Y, CX + 46, 152, 150, 138)
-        inner = ellipse(X, Y, CX + 6 + (1 - a) * 34, 160, 136, 124)
-        cres = np.where(X > CX + 12, np.maximum(outer, -inner), 99.0)
+        inner = ellipse(X, Y, CX + 2 + (1 - a) * 36, 158, 132, 120)
+        ang = np.degrees(np.arctan2(Y - 152, X - (CX + 46)))
+        cres = np.where((ang > -72) & (ang < 68) & (X > CX + 12), np.maximum(outer, -inner), 99.0)
         cv.fill(cres, X, Y, "fire" if p["fire"] else "steel", (CX + 150, 152), 140, line=1.0, shade=False)
-    return cv.finish(3.2)
+    return cv.finish(2.2)
 
 
 # ------------------------------------------------------------------ animation
@@ -246,9 +252,9 @@ def clip_hit(n):
 
 def clip_death(n):
     keys = [P(flash=0.8, lean=-10, head=-10, hair=18, eye="hurt", mouth="open", arm_n=(10, -14), sword=0),
-            P(lean=-26, fall=-30, fall_dx=30, head=-12, hair=28, eye="dead", mouth="o", arm_n=(30, 10), arm_f=(50, 20), sword=-30),
-            P(fall=-72, fall_dx=85, head=-6, hair=18, eye="dead", mouth="o", arm_n=(40, 20), arm_f=(60, 20), sword=-50),
-            P(fall=-86, fall_dx=108, bob=4, head=-4, hair=8, eye="dead", mouth="sad", arm_n=(48, 24), arm_f=(66, 20), sword=-60)]
+            P(lean=-26, fall=-30, fall_dx=30, bob=-10, head=-12, hair=28, eye="dead", mouth="o", arm_n=(30, 10), arm_f=(50, 20), sword=-30),
+            P(fall=-72, fall_dx=95, bob=-22, head=-6, hair=18, eye="dead", mouth="o", arm_n=(40, 20), arm_f=(60, 20), sword=-50),
+            P(fall=-86, fall_dx=125, bob=-26, head=-4, hair=8, eye="dead", mouth="sad", arm_n=(48, 24), arm_f=(66, 20), sword=-60)]
     return [sample(keys, i / max(1, n - 1)) for i in range(n)]
 
 
@@ -291,7 +297,7 @@ def preview(out_dir, frames):
         cells.append(np.concatenate([f[..., :3] * a + bg * (1 - a), np.ones((n_, n_, 1), np.float32)], axis=2))
     rows = [np.concatenate(cells[r * 4:(r + 1) * 4], axis=1) for r in range(3)]
     sheet = np.concatenate(rows, axis=0)
-    write_png(os.path.join(out_dir, "Swordsman_preview.png"), np.repeat(np.repeat(sheet, 3, 0), 3, 1))     # nearest-neighbour zoom
+    write_png(os.path.join(out_dir, "Swordsman_preview.png"), np.repeat(np.repeat(sheet, 2, 0), 2, 1))     # nearest-neighbour zoom
 
 
 def _task(job):
@@ -307,7 +313,7 @@ def main():
     only = set(args[1].split(",")) if len(args) > 1 and args[1] else None
     os.makedirs(out, exist_ok=True)
     meta_path = os.path.join(out, "Swordsman_frames.json")
-    meta = {"cell": PX, "pixel": True, "frame_m": FRAME_M, "ground_from_bottom_m": round(GROUND_M, 4), "clips": {}}
+    meta = {"cell": PX, "pixel": True, "frame_m": FRAME_OUT, "ground_from_bottom_m": round(GROUND_OUT, 4), "clips": {}}
     if os.path.exists(meta_path):
         with open(meta_path, encoding="utf-8") as f:
             meta["clips"] = json.load(f).get("clips", {})
