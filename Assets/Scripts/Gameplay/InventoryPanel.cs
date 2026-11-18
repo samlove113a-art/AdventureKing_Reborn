@@ -28,14 +28,22 @@ namespace AdventureKing.Gameplay
         private GameObject root;
         private readonly List<(Image bg, Image icon, Text qty)> cells = new List<(Image, Image, Text)>();
         private readonly Dictionary<string, (Image icon, Text label)> equipCells = new Dictionary<string, (Image, Text)>();
-        private Text statsLabel, nameLabel, descLabel, msgLabel;
+        private Text statsLabel, nameLabel, descLabel, msgLabel, powerLabel;
+        private Image characterPreview;
+        private int targetPower, displayedPower;
+        private float powerPulseUntil;
+        private bool useProtection;
+        private string pendingEnhanceId, pendingEnhanceSlot;
+        private bool pendingEnhanceProtect;
+        private Button enhanceButton, protectionButton;
+        private Text enhanceLabel, protectionLabel;
         private Button useButton, equipButton, unequipButton;
         private string selectedEquip;
         private AdventureWorldSession world;
         private float nextRefreshTry;
 
         private static readonly (string slot, string label)[] EquipSlots = { ("weapon", "Vũ khí"), ("armor", "Áo"), ("accessory", "Phụ kiện") };
-        private const int Columns = 8, MaxCells = 99;
+        private const int Columns = 6, MaxCells = 99;
         private RectTransform content;
         private ScrollRect scroll;
         private Button expandButton;
@@ -68,6 +76,24 @@ namespace AdventureKing.Gameplay
 
         private void Update()
         {
+            if (root && root.activeSelf)
+            {
+                if (powerLabel)
+                {
+                    displayedPower = Mathf.RoundToInt(Mathf.MoveTowards(displayedPower, targetPower,
+                        Time.unscaledDeltaTime * Mathf.Max(220f, Mathf.Abs(targetPower - displayedPower) * 7f)));
+                    powerLabel.text = $"TỔNG LỰC CHIẾN  {displayedPower:N0}";
+                    powerLabel.color = Time.unscaledTime < powerPulseUntil
+                        ? Color.Lerp(new Color(1f, 0.75f, 0.2f), Color.white, Mathf.PingPong(Time.unscaledTime * 6f, 1f))
+                        : new Color(1f, 0.83f, 0.4f);
+                }
+                if (characterPreview && world && world.HeroModel)
+                {
+                    SpriteRenderer hero = world.HeroModel.GetComponentInChildren<SpriteRenderer>();
+                    characterPreview.sprite = hero ? hero.sprite : null;
+                    characterPreview.enabled = characterPreview.sprite;
+                }
+            }
             if (!world) world = AdventureWorldSession.Current;
             if (State == null && !Busy && world && world.Character != null && AdventureServerConnection.Instance && Time.time >= nextRefreshTry)
             {
@@ -92,7 +118,11 @@ namespace AdventureKing.Gameplay
 
         private void Apply(InventoryState inv)
         {
+            bool changed = State != null && inv != null && inv.combatPower != State.combatPower;
             State = inv;
+            targetPower = inv != null ? inv.combatPower : 0;
+            if (changed) powerPulseUntil = Time.unscaledTime + 0.85f;
+            else if (displayedPower == 0) displayedPower = targetPower;
             Redraw();
         }
 
@@ -196,14 +226,55 @@ namespace AdventureKing.Gameplay
             });
         }
 
+        private static Color TierColor(string rarity)
+        {
+            switch ((rarity ?? "white").ToLowerInvariant())
+            {
+                case "green": return new Color(0.36f, 0.9f, 0.53f);
+                case "purple": return new Color(0.74f, 0.45f, 1f);
+                case "orange": return new Color(1f, 0.62f, 0.22f);
+                case "red": return new Color(1f, 0.29f, 0.36f);
+                default: return new Color(0.92f, 0.93f, 0.97f);
+            }
+        }
+
+        private void ToggleProtection()
+        {
+            useProtection = !useProtection;
+            pendingEnhanceId = null;
+            Redraw();
+        }
+
+        public void EnhanceSelected()
+        {
+            if (Busy || State == null || string.IsNullOrEmpty(selectedEquip) || !world || world.Character == null
+                || !AdventureServerConnection.Instance) return;
+            if (pendingEnhanceId == null || pendingEnhanceSlot != selectedEquip || pendingEnhanceProtect != useProtection)
+            {
+                pendingEnhanceId = Guid.NewGuid().ToString("N");
+                pendingEnhanceSlot = selectedEquip;
+                pendingEnhanceProtect = useProtection;
+            }
+            Busy = true;
+            AdventureServerConnection.Instance.EnhanceItem(world.Character.characterId, selectedEquip, useProtection, pendingEnhanceId, (ok, r, err) =>
+            {
+                Busy = false;
+                if (!ok || r == null) { Message(err ?? "Mất kết nối. Nhấn lại để kiểm tra cùng giao dịch."); return; }
+                pendingEnhanceId = null; // confirmed receipt; next click is a new attempt
+                Apply(r.inventory);
+                Message(r.success ? $"Cường hóa thành công +{r.afterLevel}!" :
+                    r.afterLevel < r.beforeLevel ? $"Thất bại, tụt còn +{r.afterLevel}." : "Thất bại, giữ nguyên cấp.");
+            });
+        }
+
         private void Message(string text) { LastMessage = text ?? ""; if (msgLabel) msgLabel.text = LastMessage; }
 
         public void Toggle() { if (IsOpen) Close(); else Open(); }
         public void Open() { if (!root) Build(); root.SetActive(true); transform.SetAsLastSibling(); Refresh(); }
         public void Close() { if (root) root.SetActive(false); }
 
-        public void Select(int slot) { SelectedIndex = slot; selectedEquip = null; PendingTicket = -1; pendingForce = -1; if (useLabel) useLabel.text = "Dùng"; Redraw(); }
-        public void SelectEquip(string equipSlot) { selectedEquip = equipSlot; SelectedIndex = -1; Redraw(); }
+        public void Select(int slot) { pendingEnhanceId = null; SelectedIndex = slot; selectedEquip = null; PendingTicket = -1; pendingForce = -1; if (useLabel) useLabel.text = "Dùng"; Redraw(); }
+        public void SelectEquip(string equipSlot) { pendingEnhanceId = null; selectedEquip = equipSlot; SelectedIndex = -1; Redraw(); }
 
         // ------------------------------------------------------------------ UI
         private T Make<T>(Transform parent, string name, Vector2 anchor, Vector2 pos, Vector2 size) where T : Component
