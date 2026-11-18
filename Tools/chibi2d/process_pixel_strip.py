@@ -45,13 +45,13 @@ def spans(lines, size, min_len=100):
 
 def split_cells(img):
     a = np.asarray(img.convert("RGB")).astype(int)
-    dark = (a.sum(axis=2) < 120)
+    dark = (a.sum(axis=2) < 300)
     h, w = dark.shape
-    ys = spans(groups(np.where(dark.mean(axis=1) > 0.85)[0]), h)
+    ys = spans(groups(np.where(dark.mean(axis=1) > 0.9)[0]), h)
     cells = []
     for (y0, y1) in ys:
         row = dark[y0:y1]
-        xs = spans(groups(np.where(row.mean(axis=0) > 0.85)[0]), w)
+        xs = spans(groups(np.where(row.mean(axis=0) > 0.9)[0]), w)
         for (x0, x1) in xs:
             cells.append((x0, y0, x1, y1))
     return cells
@@ -235,6 +235,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 

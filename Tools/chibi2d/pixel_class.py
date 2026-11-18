@@ -82,7 +82,7 @@ NPC_CLIPS = [
     ("Idle", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, True, "IDLE breathing loop: standing relaxed, subtle body bob, clothing and hair swaying slightly between frames", -1),
     ("Walk", 8, "a grid of 4 columns and 2 rows, equal cells", "16:9", 10, True, "WALK CYCLE: calm walking, clear foot contact and passing poses", -1),
     ("Wave", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 10, False, "WAVE: raising one hand and waving a friendly greeting, then lowering it", -1),
-    ("Talk", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, True, "TALKING: animated speaking with expressive hand gestures, head nodding slightly. IMPORTANT: FULL BODY from head to boots always visible and uncropped, standing at the same scale as the reference, NOT a close-up or portrait", -1),
+    ("Talk", 8, "a grid of 4 columns and 2 rows, equal cells (a WIDE SHOT: small full-body figures with empty space around them)", "16:9", 8, True, "TALKING: animated speaking with expressive hand gestures, head nodding slightly. IMPORTANT: FULL BODY from head to boots always visible and uncropped, standing at the same scale as the reference, NOT a close-up or portrait", -1),
     ("Bow", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, False, "POLITE BOW: bending forward at the waist in a respectful bow and rising back up", -1),
 ]
 NPCS = {
@@ -222,6 +222,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 
