@@ -165,6 +165,14 @@ public sealed class Database
             Exec(c, tx, Schema.V13);
             Exec(c, tx, "PRAGMA user_version=13;");
             tx.Commit();
+            version = 13;
+        }
+        if (version < 14)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V14);
+            Exec(c, tx, "PRAGMA user_version=14;");
+            tx.Commit();
         }
     }
 
@@ -197,7 +205,25 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 13;
+    public const int Current = 14;
+
+    // V14: per-instance equipment +0..+15; upgrade receipts provide idempotency across network retries.
+    // All resources, failure rolls, gear level and receipts change atomically in one transaction.
+    public const string V14 = """
+    ALTER TABLE bag_slots ADD COLUMN enhance_level INTEGER NOT NULL DEFAULT 0 CHECK (enhance_level BETWEEN 0 AND 15);
+    ALTER TABLE equipped ADD COLUMN enhance_level INTEGER NOT NULL DEFAULT 0 CHECK (enhance_level BETWEEN 0 AND 15);
+    CREATE TABLE enhancement_attempts (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        request_id TEXT NOT NULL,
+        equip_slot TEXT NOT NULL,
+        prev_level INTEGER NOT NULL,
+        next_level INTEGER NOT NULL,
+        chance_percent INTEGER NOT NULL,
+        success INTEGER NOT NULL,
+        protected INTEGER NOT NULL,
+        PRIMARY KEY (character_id, request_id)
+    );
+    """;
 
     // V13: chapter progress — the chapter boss kill the SERVER confirmed (one row per character and chapter; written only by ChapterService).
     public const string V13 = """
