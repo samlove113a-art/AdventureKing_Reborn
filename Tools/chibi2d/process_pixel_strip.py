@@ -168,7 +168,7 @@ def scale_tile(c, m, b, scale):
 
 def main():
     argv = sys.argv
-    args = [a for i, a in enumerate(argv[1:], 1) if not a.startswith("--") and not argv[i - 1] in ("--whiten", "--ref-scale", "--copy", "--target")]
+    args = [a for i, a in enumerate(argv[1:], 1) if not a.startswith("--") and not argv[i - 1] in ("--whiten", "--ref-scale", "--copy", "--target", "--keep")]
     sheet, out_dir, cls, clip, frames = args[0], args[1], args[2], args[3], int(args[4])
     whiten = int(argv[argv.index("--whiten") + 1]) if "--whiten" in argv else -1
     img = Image.open(sheet).convert("RGB")
@@ -177,6 +177,12 @@ def main():
         sys.exit(f"found {len(cells)} cells, expected {frames}: {cells}")
     target = float(argv[argv.index("--target") + 1]) if "--target" in argv else TARGET
     scale = target / float(np.median([c[3] - c[1] - 6 for c in cells]))
+    if "--fit-first" in argv:   # monsters: every clip gets the same body size, measured on its first (standing) frame
+        x0, y0, x1, y1 = cells[0]
+        c0 = np.asarray(img.crop((x0 + 3, y0 + 3, x1 - 3, y1 - 3)))
+        m0 = single_hero(largest_components(key_magenta(c0), min_area=150))
+        ys0, _ = np.where(m0)
+        scale = target / float(ys0.max() - ys0.min() + 1)
     if "--ref-scale" in argv:
         scale = float(argv[argv.index("--ref-scale") + 1])
     print("scale", round(scale, 4))
@@ -237,6 +243,8 @@ def main():
             continue
         break
 
+    if '--keep' in argv:   # keep only these frames, in this order (a sheet whose last frames are junk)
+        items = [items[int(v)] for v in argv[argv.index('--keep') + 1].split(',')]
     frames = len(items)   # empty cells were dropped
     strip = Image.new("RGBA", (CELL * frames, CELL), (0, 0, 0, 0))
     for i, it in enumerate(items):
@@ -272,6 +280,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 

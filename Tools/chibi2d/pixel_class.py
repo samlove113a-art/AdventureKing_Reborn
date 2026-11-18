@@ -112,8 +112,31 @@ for _n, _d in NPCS.items():
     CLASSES[_n] = _d
 
 
+# Monsters: FarmMonsterView CrossFades by state name: Idle / Walk / Attack / Hit / Death. target = size in "hero px" (82 = 0.82 m, the old in-game size).
+MONSTER_CLIPS = [
+    ("Idle", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, True, "IDLE loop: the creature breathing / bobbing in place, subtle body movement between frames", -1),
+    ("Walk", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 10, True, "WALK / MOVE CYCLE: the creature moving forward, clear step or hop poses", -1),
+    ("Attack", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 12, False, "ATTACK: {attack}", -1),
+    ("Hit", 3, "one horizontal row of 3 equal cells", "16:9", 10, False, "HIT REACTION: flinching backward in pain (the middle frame is replaced by a white flash in code)", 1),
+    ("Death", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, False, "DEATH: {death}", -1),
+]
+MONSTERS = {
+    "MonsterNamNon": dict(target=82, attack="lunges forward and head-butts with its mushroom cap, then recovers",
+                          death="staggers, deflates, topples over and its cap pops off, ending on a small spore puff on the ground",
+                          ref=("a young hostile forest mushroom creature (Nam Non): a short stocky mushroom monster with a large red cap with cream spots, "
+                               "a pale cream stalk body with two small angry eyes, a small leather strap across the body, stubby brown feet, sharp little "
+                               "fangs, slightly menacing but cute dark-fantasy forest monster, side view. Palette: red cap, cream, brown, dark outline")),
+}
+for _n, _d in MONSTERS.items():
+    CLASSES[_n] = _d
+
+
+# frames to keep when the generator drew junk at the end of a sheet: (actor, clip) -> indexes
+KEEP = {("MonsterNamNon", "Death"): "0,1,2,3,3"}
+
+
 def clips_for(cls):
-    return NPC_CLIPS if cls in NPCS else CLIPS
+    return NPC_CLIPS if cls in NPCS else MONSTER_CLIPS if cls in MONSTERS else CLIPS
 
 
 # per-clip processor flags: drop ground lines the generator draws, keep only the hero (projectile is separate VFX), anchor on the body
@@ -174,7 +197,7 @@ def cmd_gen(cls):
     b64 = base64.b64encode(open(ref, "rb").read()).decode()
     c = CLASSES[cls]
     for n, f, lay, ar, fps, loop, tpl, wh in todo:
-        desc = tpl.format(**{"attack": "", "skill": "", "stash": "", **c})
+        desc = tpl.format(**{"attack": "", "skill": "", "stash": "", "death": "", **c})
         fr = f"{f} frames" if f else "6 or 7 frames"
         body = dict(prompt=f"{SAME} Create a flat 2D sprite sheet image that fills the ENTIRE canvas edge to edge (not a tilted screen, no perspective, no mockup, no grey surround) of {fr} arranged in {lay}, {desc}. Feet on the same baseline in every cell.",
                     ai_model="nano-banana-2", reference_image_urls=["data:image/png;base64," + b64], aspect_ratio=ar)
@@ -191,8 +214,10 @@ def cmd_process(cls):
         args = [py(), os.path.join(HERE, "process_pixel_strip.py"), src, od, cls, n, str(cnt)]
         if wh >= 0:
             args += ["--whiten", str(wh)]
-        if cls in NPCS:
-            args += ["--target", str(NPCS[cls]["target"]), "--single"]
+        if (cls, n) in KEEP:
+            args += ["--keep", KEEP[(cls, n)]]
+        if cls in NPCS or cls in MONSTERS:
+            args += ["--target", str((NPCS.get(cls) or MONSTERS[cls])["target"]), "--single"] + (["--fit-first"] if cls in MONSTERS else [])
         else:
             args += EXTRA.get(n, [])
         # frames=0 -> try 7 then 6 (the generator draws either)
@@ -222,6 +247,9 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
+
+
 
 
 

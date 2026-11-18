@@ -143,7 +143,7 @@ namespace AdventureKing.ArtPipeline
         private static readonly (string name, float scale)[] Actors =
         {
             ("NpcElder", 1f), ("NpcSmith", 1f), ("NpcStorekeeper", 1f), ("NpcCaptain", 1f), ("NpcOfficiant", 1f), ("NpcMusician", 1f), ("NpcMushroomElder", 1f),
-            ("MonsterNamNon", 0.8f), ("PollenSlime", 0.5f), ("PuffSlime", 0.42f), ("MossSlime", 0.5f),
+            ("MonsterNamNon", 1f), ("PollenSlime", 0.5f), ("PuffSlime", 0.42f), ("MossSlime", 0.5f),
             // ChÆ°Æ¡ng 1 Map 3-10 (Tools/chibi2d/make_monsters.py): the frame size already sets the real size, so scale 1
             ("GlowMoss", 1f), ("MushroomChief", 1f), ("FlowerBee", 1f), ("CrystalBat", 1f), ("JadeTurtle", 1f), ("JadeGuardian", 1f), ("ShadowLeaf", 1f),
             ("ToxicSlime", 1f), ("ToxicElite", 1f), ("StoneGuard", 1f), ("DarkMushroom", 1f), ("RoyalGuard", 1f), ("MushroomKing", 1f),
