@@ -167,7 +167,7 @@ namespace AdventureKing.Gameplay
     [Serializable]
     public sealed class BagSlotState
     {
-        public int index, qty, attack, defense;
+        public int index, qty, attack, defense, enhanceLevel;
         public string itemId, name, kind, icon, desc, equipSlot, rarity;
         public bool usableByClass = true;
     }
@@ -180,6 +180,7 @@ namespace AdventureKing.Gameplay
         public BagSlotState[] slots = new BagSlotState[0];
         public EquippedState[] equipped = new EquippedState[0];
     }
+    [Serializable] public sealed class EnhanceResult { public bool success, protectedLevel, replayed; public int beforeLevel, afterLevel, chancePercent; public InventoryState inventory; }
     [Serializable] public sealed class ExpandResult { public long priceGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class SellJunkResult { public int stacksSold, itemsSold; public long totalGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class UseItemResult { public string itemId; public int restoredHp, restoredMp; public HeroCombatState hero; public InventoryState inventory; }
