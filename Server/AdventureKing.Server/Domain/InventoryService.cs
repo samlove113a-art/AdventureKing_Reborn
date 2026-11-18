@@ -9,6 +9,7 @@ public sealed class ItemDef
     public string id { get; set; } = "";
     public string name { get; set; } = "";
     public string kind { get; set; } = "consumable"; // consumable | equipment | junk | material | ticket | petfood | quest
+    public string rarity { get; set; } = "white"; // white | green | purple | orange | red
     public string icon { get; set; } = "";
     public string desc { get; set; } = "";
     public int hp { get; set; }
@@ -54,6 +55,7 @@ public sealed class ItemConfig
         if (cfg.items.Select(i => i.id).Distinct().Count() != cfg.items.Length) throw new InvalidDataException("duplicate item id");
         foreach (ItemDef i in cfg.items)
         {
+            if (i.rarity is not ("white" or "green" or "purple" or "orange" or "red")) throw new InvalidDataException(i.id + ": bad rarity");
             if (i.kind == "equipment" && i.equipSlot is not ("weapon" or "armor" or "accessory")) throw new InvalidDataException(i.id + ": bad equip slot");
             if (i.kind == "junk" && i.priceGold <= 0) throw new InvalidDataException(i.id + ": junk must have a sell value");
             // a ticket may only lead to a map the server really has (never to an unbuilt map)
@@ -79,6 +81,7 @@ public sealed class BagSlotDto
     public string kind { get; set; } = "";
     public string icon { get; set; } = "";
     public string desc { get; set; } = "";
+    public string rarity { get; set; } = "white";
     public int qty { get; set; }
     public string equipSlot { get; set; } = "";
     public int attack { get; set; }
@@ -100,6 +103,7 @@ public sealed class InventoryDto
     public EquippedDto[] equipped { get; set; } = Array.Empty<EquippedDto>();
     public int attackBonus { get; set; }
     public int defenseBonus { get; set; }
+    public int combatPower { get; set; }
 }
 
 /// <summary>force: drink even with a full bar (the player confirmed; nothing is restored above the maximum).</summary>
@@ -145,7 +149,7 @@ public sealed class InventoryService
         now = clock ?? Database.NowMs;
         farm.EquipmentBonus = Bonus;
         farm.GrantItem = (c, tx, _, characterId, itemId, qty) => Add(c, tx, characterId, itemId, qty);
-        farm.ItemInfo = id => Config.Get(id) is { } d ? (d.name, d.kind) : (id, "");
+        farm.ItemInfo = id => Config.Get(id) is { } d ? (d.name, d.kind, d.rarity) : (id, "", "white");
     }
 
     private int ClassOf(SqliteConnection c, SqliteTransaction? tx, string accountId, string characterId)
@@ -250,7 +254,7 @@ public sealed class InventoryService
             ItemDef d = Config.Get(itemId) ?? new ItemDef { id = itemId, name = itemId };
             return new BagSlotDto
             {
-                index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, qty = qty,
+                index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, rarity = d.rarity, qty = qty,
                 equipSlot = d.equipSlot, attack = d.attack, defense = d.defense, destMap = d.destMap,
                 usableByClass = d.kind != "equipment" || d.classes.Length == 0 || d.classes.Contains(heroClass),
             };
@@ -260,11 +264,14 @@ public sealed class InventoryService
         using (var cmd = Database.Command(c, tx, "SELECT equip_slot, item_id FROM equipped WHERE character_id=$c ORDER BY equip_slot", ("$c", characterId)))
         using (var r = cmd.ExecuteReader())
             while (r.Read()) eq.Add(new EquippedDto { equipSlot = r.GetString(0), item = Dto(-1, r.GetString(1), 1) });
+        int level = (int)Database.Scalar<long>(c, tx, "SELECT level FROM characters WHERE id=$c", ("$c", characterId));
+        int atk = eq.Sum(e => e.item.attack), def = eq.Sum(e => e.item.defense);
         return new InventoryDto
         {
+            combatPower = FarmService.CombatPowerFromBonuses(heroClass, level, atk, def),
             capacity = Capacity(c, tx, characterId), maxCapacity = Config.maxBagSlots, stackMax = Config.stackMax, slots = slots, equipped = eq.ToArray(),
             nextExpandGold = Capacity(c, tx, characterId) >= Config.maxBagSlots ? 0 : Config.expandBaseGold + Config.expandStepGold * (Capacity(c, tx, characterId) - Config.bagSlots),
-            attackBonus = eq.Sum(e => e.item.attack), defenseBonus = eq.Sum(e => e.item.defense),
+            attackBonus = atk, defenseBonus = def,
         };
     }
 
