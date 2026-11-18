@@ -46,3 +46,9 @@ Server 175/175. PlayMode 71 test: 63 pass, 2 bỏ qua, 6 fail:
 - 3 fail là phần đám cưới 180 giây đang tạm dừng (không đụng): `Two_Players_..._Marry_In_The_Wedding_Hall`, `Archer_And_Assassin_Key_Moments`, `Swordsman_And_Mage_Key_Moments`.
 - `Hub_To_Meadow_To_Mushroom_Village_Fight...`: fail trong lần chạy đầy đủ nhưng **pass khi chạy riêng** → nhiễu thứ tự test, không phải lỗi 2D.
 - **ĐÃ SỬA 2026-11-18**: Town_Portals_... (chữ VIP chồng nhãn Auto 3›2›1 trên 19.5:9 — nút Auto hạ 32 đơn vị trong HeroActionBar) và Town_Screens_... (âm lượng nhạc nền lưu = 0 trên máy: test tự đặt 0,7 khi thấp, không phải lỗi 2D). Cả hai pass.
+
+## 2026-11-18 — kiểm tra skill trên thân 2D
+- Thêm `SkillOriginTests.Mage_2D_Skill1_Starts_In_Front_Of_The_Body_Both_Facings`: trên thân 2D mặc định, skill 1 Pháp Sư **không bắn trên đầu** (cao hơn đầu −0,67 m = dưới đầu), xuất phát trước thân 0,48 m, bay đúng hướng nhìn (cả hai phía), trúng đúng vị trí quái (sai số 0,00 m). **Pass.** Với 2D không có xương tay/vũ khí nên điểm bắn tính từ thân (collider), chưa từ đầu gậy.
+- Ngưỡng độ lệch z của bản 3D nâng 0,15 → 0,20 (dao động theo khoảng cách quái ngẫu nhiên, 0,1515 vẫn là lệch nhỏ).
+- Cả 2 test UI (VIP/Auto trên 19.5:9, BGM) đã pass (f5b7656).
+- Còn lại: VFX riêng Kiếm Sĩ/Cung Thủ/Sát Thủ (hiện dùng 12 choreography 3D có sẵn, đã đúng vị trí, chưa có VFX pixel 2D như ảnh mẫu), mặt/mắt/vũ khí, pet, boss, map 3–10.

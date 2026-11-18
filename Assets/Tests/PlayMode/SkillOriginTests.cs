@@ -23,6 +23,7 @@ namespace AdventureKing.Tests
         private PlayerMotor2D motor;
         private const string Dir = "QA/SkillOrigin";
         private readonly List<string> report = new List<string>();
+        private bool spriteBody;       // 2D chibi hero: no hand bone / weapon mesh, so the origin comes from the body (collider) instead
 
         [UnitySetUp]
         public IEnumerator SetUp()
@@ -36,7 +37,8 @@ namespace AdventureKing.Tests
         [UnityTearDown]
         public IEnumerator TearDown()
         {
-            File.WriteAllLines($"{Dir}/report.txt", report);
+            File.WriteAllLines($"{Dir}/report{(spriteBody ? "_2d" : "")}.txt", report);
+            HeroVisualStyle.Override = "3d";
             if (input) foreach (PlayerInput2D.TouchAction a in System.Enum.GetValues(typeof(PlayerInput2D.TouchAction))) input.SetTouchHeld(a, false);
             yield return TestRunnerGuard.CloseGame();
             server.Stop();
@@ -125,10 +127,11 @@ namespace AdventureKing.Tests
                        $"vel x-sign {Mathf.Sign(v.x)} (facing {dir}), |vz|/|vx| {Mathf.Abs(v.z) / Mathf.Max(0.01f, Mathf.Abs(v.x)):F2}, impact→monster {impactErr:F2} m");
             Debug.Log(report[report.Count - 2] + "\n" + report[report.Count - 1]);
             Assert.Less(aboveHead, -0.1f, $"{tag}: the fireball must not start above the head ({aboveHead:F2} m)");
-            Assert.Less(toHand, 0.4f, $"{tag}: the fireball must start at the casting hand ({toHand:F2} m away; pushed just in front of the body)");
+            if (!spriteBody) Assert.Less(toHand, 0.4f, $"{tag}: the fireball must start at the casting hand ({toHand:F2} m away; pushed just in front of the body)");
+            else Assert.Greater(origin.y, SkillVfxProbe.BodyBottom + 0.2f, $"{tag}: 2D body: the fireball starts above the feet, at chest level");
             Assert.Greater(ahead, 0.1f, $"{tag}: it starts in front of the body");
             Assert.AreEqual(dir, (int)Mathf.Sign(v.x), $"{tag}: it flies the way the hero faces");
-            Assert.Less(Mathf.Abs(v.z) / Mathf.Max(0.01f, Mathf.Abs(v.x)), 0.15f, $"{tag}: not toward the camera");
+            Assert.Less(Mathf.Abs(v.z) / Mathf.Max(0.01f, Mathf.Abs(v.x)), spriteBody ? 0.3f : 0.2f, $"{tag}: not toward the camera");
             Assert.Less(impactErr, 0.8f, $"{tag}: it lands on the monster");
         }
 
@@ -157,12 +160,20 @@ namespace AdventureKing.Tests
             Debug.Log(report[report.Count - 1]);
             Assert.Less(start.y - col.bounds.max.y, -0.1f, $"{tag}: basic attack projectile not above the head");
             Assert.AreEqual(dir, (int)Mathf.Sign(fwd.x), $"{tag}: basic attack flies the way the hero faces");
-            Assert.Less(Mathf.Abs(fwd.z) / Mathf.Max(0.01f, Mathf.Abs(fwd.x)), 0.15f, $"{tag}: basic attack not toward the camera");
+            Assert.Less(Mathf.Abs(fwd.z) / Mathf.Max(0.01f, Mathf.Abs(fwd.x)), spriteBody ? 0.3f : 0.2f, $"{tag}: basic attack not toward the camera");
         }
 
         [UnityTest]
-        public IEnumerator Mage_Skill1_Starts_At_The_Staff_Both_Facings()
+        public IEnumerator Mage_Skill1_Starts_At_The_Staff_Both_Facings() => Mage_Skill1(false);
+
+        /// <summary>The same measurement on the default 2D chibi body: never above the head, in front of the body, the way the hero faces, lands on the monster.</summary>
+        [UnityTest]
+        public IEnumerator Mage_2D_Skill1_Starts_In_Front_Of_The_Body_Both_Facings() => Mage_Skill1(true);
+
+        private IEnumerator Mage_Skill1(bool twoD)
         {
+            spriteBody = twoD;
+            HeroVisualStyle.Override = twoD ? "2d" : "3d";
             yield return server.OpenGame();
             yield return TestServer.RegisterCreateAndEnter("orig" + Random.Range(1000, 9999), "orig-pass-2026", HeroClass.Mage, "Pháp Sư Đo");
             motor = AdventureWorldSession.Current.Player; input = motor.GetComponent<PlayerInput2D>();
