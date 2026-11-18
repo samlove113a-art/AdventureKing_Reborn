@@ -82,13 +82,31 @@ NPC_CLIPS = [
     ("Idle", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, True, "IDLE breathing loop: standing relaxed, subtle body bob, clothing and hair swaying slightly between frames", -1),
     ("Walk", 8, "a grid of 4 columns and 2 rows, equal cells", "16:9", 10, True, "WALK CYCLE: calm walking, clear foot contact and passing poses", -1),
     ("Wave", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 10, False, "WAVE: raising one hand and waving a friendly greeting, then lowering it", -1),
-    ("Talk", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, True, "TALKING: animated speaking with expressive hand gestures, head nodding slightly", -1),
+    ("Talk", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, True, "TALKING: animated speaking with expressive hand gestures, head nodding slightly. IMPORTANT: FULL BODY from head to boots always visible and uncropped, standing at the same scale as the reference, NOT a close-up or portrait", -1),
     ("Bow", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, False, "POLITE BOW: bending forward at the waist in a respectful bow and rising back up", -1),
 ]
 NPCS = {
     "NpcElder": dict(target=118, ref=("an elderly village elder, kind wise old man, bald head with a long flowing white beard and white eyebrows, small round "
                                        "glasses, slightly stooped, long teal-green robe with cream trim and a deep purple vest, brown belt and sturdy boots. "
                                        "Palette: teal, purple, cream, brown, white beard")),
+    "NpcSmith": dict(target=126, ref=("a young village blacksmith, sturdy broad-shouldered young man with short messy auburn hair and a goggles headband on his "
+                                       "forehead, soot-smudged face, rolled-up rust-brown shirt, thick brown leather apron, leather gloves and bracers, a "
+                                       "smith's hammer in his right hand, dark heavy boots. Palette: rust brown, leather, dark iron gray, a little orange")),
+    "NpcStorekeeper": dict(target=124, ref=("a friendly young village shopkeeper, slim man with black hair in a small topknot, a warm smile, olive-green "
+                                             "linen shirt with rolled sleeves, a brown cloth apron with a small coin pouch at the belt, cream trousers, brown "
+                                             "boots. Palette: olive green, cream, brown, black hair")),
+    "NpcCaptain": dict(target=132, ref=("a guard captain, tall disciplined young soldier with silver-blue braided hair, blue-and-gold plate armor with steel "
+                                         "pauldrons, a short blue cape with gold trim, leather gloves, a sheathed sword at the hip, upright proud posture, "
+                                         "stern eyes. Palette: royal blue, gold, steel gray, silver hair")),
+    "NpcOfficiant": dict(target=120, ref=("a gentle elderly wedding officiant, white hair in a neat bun, a short white beard, long cream-and-gold ceremonial "
+                                           "robe with golden embroidery and a soft golden sash, a small holy book in one hand, kind serene face. Palette: "
+                                           "cream white, soft gold, pale blue accents")),
+    "NpcMusician": dict(target=122, ref=("a graceful young woman musician, a slender female bard with a beautiful delicate face, long wavy brown hair with a "
+                                          "pink flower hair clip, teal short jacket over a pink layered skirt with leggings and brown boots, a small lute "
+                                          "slung on her back, fully clothed and tasteful. Palette: teal, rose pink, brown, cream")),
+    "NpcMushroomElder": dict(target=132, ref=("a mushroom-folk elder, a stout old forest sage wearing an enormous red mushroom-cap hat with cream spots, a "
+                                               "long flowing white beard, teal tunic with a mossy green patchwork vest and cream hem, brown boots, a "
+                                               "gnarled wooden staff. Palette: mushroom red, cream, teal, moss green, white beard")),
 }
 for _n, _d in NPCS.items():
     CLASSES[_n] = _d
@@ -178,7 +196,7 @@ def cmd_process(cls):
         else:
             args += EXTRA.get(n, [])
         # frames=0 -> try 7 then 6 (the generator draws either)
-        for attempt in dict.fromkeys(([cnt] if f else []) + [9, 10, 8, 7, 6, 5, 4, 3, 2]):   # the generator sometimes draws a different count
+        for attempt in dict.fromkeys(([cnt] if f else []) + [12, 9, 10, 8, 7, 6, 5, 4, 3, 2]):   # the generator sometimes draws a different count
             args[6] = str(attempt)
             if subprocess.call(args) == 0:
                 cnt = attempt
@@ -204,6 +222,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
+
 
 
 
