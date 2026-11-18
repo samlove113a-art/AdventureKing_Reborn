@@ -133,14 +133,15 @@ def scale_tile(c, m, b, scale):
 
 def main():
     argv = sys.argv
-    args = [a for i, a in enumerate(argv[1:], 1) if not a.startswith("--") and not argv[i - 1] in ("--whiten", "--ref-scale", "--copy")]
+    args = [a for i, a in enumerate(argv[1:], 1) if not a.startswith("--") and not argv[i - 1] in ("--whiten", "--ref-scale", "--copy", "--target")]
     sheet, out_dir, cls, clip, frames = args[0], args[1], args[2], args[3], int(args[4])
     whiten = int(argv[argv.index("--whiten") + 1]) if "--whiten" in argv else -1
     img = Image.open(sheet).convert("RGB")
     cells = split_cells(img)
     if len(cells) != frames:
         sys.exit(f"found {len(cells)} cells, expected {frames}: {cells}")
-    scale = TARGET / float(np.median([c[3] - c[1] - 6 for c in cells]))
+    target = float(argv[argv.index("--target") + 1]) if "--target" in argv else TARGET
+    scale = target / float(np.median([c[3] - c[1] - 6 for c in cells]))
     if "--ref-scale" in argv:
         scale = float(argv[argv.index("--ref-scale") + 1])
     print("scale", round(scale, 4))
@@ -230,6 +231,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 

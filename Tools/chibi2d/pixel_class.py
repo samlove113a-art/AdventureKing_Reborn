@@ -77,6 +77,27 @@ CLIPS = [
 ]
 
 
+# NPCs: the game plays Idle / Walk / Wave / Talk / Bow (NpcActor, NpcTalkSpot). target = hero-relative size (136 = full hero cell).
+NPC_CLIPS = [
+    ("Idle", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, True, "IDLE breathing loop: standing relaxed, subtle body bob, clothing and hair swaying slightly between frames", -1),
+    ("Walk", 8, "a grid of 4 columns and 2 rows, equal cells", "16:9", 10, True, "WALK CYCLE: calm walking, clear foot contact and passing poses", -1),
+    ("Wave", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 10, False, "WAVE: raising one hand and waving a friendly greeting, then lowering it", -1),
+    ("Talk", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, True, "TALKING: animated speaking with expressive hand gestures, head nodding slightly", -1),
+    ("Bow", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, False, "POLITE BOW: bending forward at the waist in a respectful bow and rising back up", -1),
+]
+NPCS = {
+    "NpcElder": dict(target=118, ref=("an elderly village elder, kind wise old man, bald head with a long flowing white beard and white eyebrows, small round "
+                                       "glasses, slightly stooped, long teal-green robe with cream trim and a deep purple vest, brown belt and sturdy boots. "
+                                       "Palette: teal, purple, cream, brown, white beard")),
+}
+for _n, _d in NPCS.items():
+    CLASSES[_n] = _d
+
+
+def clips_for(cls):
+    return NPC_CLIPS if cls in NPCS else CLIPS
+
+
 # per-clip processor flags: drop ground lines the generator draws, keep only the hero (projectile is separate VFX), anchor on the body
 EXTRA = {"Jump": ["--deline"], "Attack": ["--hero-only", "--anchor-body"], "Skill": ["--anchor-body", "--copy", "6:5"]}
 
@@ -109,8 +130,9 @@ def need_yes(n, what):
 
 def cmd_plan(cls):
     c = CLASSES[cls]
-    print(f"{cls}: 1 reference (x2 tries) + {len(CLIPS)} clip sheets = {(2 + len(CLIPS)) * CREDIT} credits (+{CREDIT} per redo)")
-    for n, f, lay, ar, fps, loop, tpl, wh in CLIPS:
+    cl = clips_for(cls)
+    print(f"{cls}: 1 reference (x2 tries) + {len(cl)} clip sheets = {(2 + len(cl)) * CREDIT} credits (+{CREDIT} per redo)")
+    for n, f, lay, ar, fps, loop, tpl, wh in cl:
         print(f"  {n:7s} frames {f or 'auto'}  {lay}  {ar}  {fps} fps  loop={loop}")
 
 
@@ -129,12 +151,12 @@ def cmd_gen(cls):
     if not os.path.exists(ref):
         sys.exit("missing " + ref)
     only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
-    todo = [cl for cl in CLIPS if not only or cl[0] in only]
+    todo = [cl for cl in clips_for(cls) if not only or cl[0] in only]
     need_yes(len(todo), "clip sheets")
     b64 = base64.b64encode(open(ref, "rb").read()).decode()
     c = CLASSES[cls]
     for n, f, lay, ar, fps, loop, tpl, wh in todo:
-        desc = tpl.format(**c)
+        desc = tpl.format(**{"attack": "", "skill": "", "stash": "", **c})
         fr = f"{f} frames" if f else "6 or 7 frames"
         body = dict(prompt=f"{SAME} Create a flat 2D sprite sheet image that fills the ENTIRE canvas edge to edge (not a tilted screen, no perspective, no mockup, no grey surround) of {fr} arranged in {lay}, {desc}. Feet on the same baseline in every cell.",
                     ai_model="nano-banana-2", reference_image_urls=["data:image/png;base64," + b64], aspect_ratio=ar)
@@ -145,13 +167,16 @@ def cmd_process(cls):
     od = os.path.join(OUT, cls)
     os.makedirs(od, exist_ok=True)
     meta = {"cell": 192, "pixel": True, "frame_m": 1.9, "ground_from_bottom_m": 0.099, "clips": {}}
-    for n, f, lay, ar, fps, loop, tpl, wh in CLIPS:
+    for n, f, lay, ar, fps, loop, tpl, wh in clips_for(cls):
         src = os.path.join(RAW, f"pixel_{cls.lower()}_{n.lower()}", "image_0.png")
         cnt = f if f else 7
         args = [py(), os.path.join(HERE, "process_pixel_strip.py"), src, od, cls, n, str(cnt)]
         if wh >= 0:
             args += ["--whiten", str(wh)]
-        args += EXTRA.get(n, [])
+        if cls in NPCS:
+            args += ["--target", str(NPCS[cls]["target"])]
+        else:
+            args += EXTRA.get(n, [])
         # frames=0 -> try 7 then 6 (the generator draws either)
         for attempt in dict.fromkeys(([cnt] if f else []) + [9, 10, 8, 7, 6, 5, 4, 3, 2]):   # the generator sometimes draws a different count
             args[6] = str(attempt)
@@ -169,7 +194,7 @@ def cmd_process(cls):
 def cmd_install(cls):
     od, dd = os.path.join(OUT, cls), os.path.join(FINAL, cls)
     os.makedirs(dd, exist_ok=True)
-    for n, *_ in CLIPS:
+    for n, *_ in clips_for(cls):
         shutil.copy(os.path.join(od, f"{cls}_{n}.png"), os.path.join(dd, f"{cls}_{n}.png"))
     shutil.copy(os.path.join(od, f"{cls}_frames.json"), os.path.join(dd, f"{cls}_frames.json"))
     print("installed ->", dd, "(git keeps the previous files); now run Chibi2DArt.BuildPixelClassesFromCommandLine")
@@ -179,6 +204,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 

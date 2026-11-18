@@ -149,12 +149,30 @@ namespace AdventureKing.ArtPipeline
             ("ToxicSlime", 1f), ("ToxicElite", 1f), ("StoneGuard", 1f), ("DarkMushroom", 1f), ("RoyalGuard", 1f), ("MushroomKing", 1f),
         };
 
+        private static HashSet<string> ActorFilter;
+
+        /// <summary>Only the actors named in env AK_ACTORS (comma list, e.g. NpcElder,NpcSmith): the pixel NPCs are replaced one by one.
+        ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildSelectedActorsFromCommandLine</summary>
+        public static void BuildSelectedActorsFromCommandLine()
+        {
+            try
+            {
+                string list = Environment.GetEnvironmentVariable("AK_ACTORS") ?? "";
+                ActorFilter = new HashSet<string>(list.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0));
+                if (ActorFilter.Count == 0) throw new InvalidOperationException("AK_ACTORS is empty");
+                BuildAllActors();
+                EditorApplication.Exit(0);
+            }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
         /// <summary>NPCs and monsters: strips from bake_chibi_actor.py -> clips, a plain state controller (states = clip names: NpcActor and
         /// FarmMonsterView CrossFade by state name) and Resources/Chibi2D/Actors/{name}_Visual2D.prefab.</summary>
         public static void BuildAllActors()
         {
             foreach (var (name, scale) in Actors)
             {
+                if (ActorFilter != null && !ActorFilter.Contains(name)) continue;
                 string json = $"{Src}/{name}/{name}_frames.json";
                 if (!File.Exists(json)) { Debug.LogWarning("[CHIBI2D] no art for " + name); continue; }
                 string text = File.ReadAllText(json);
