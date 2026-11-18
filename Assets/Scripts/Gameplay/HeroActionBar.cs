@@ -199,7 +199,7 @@ namespace AdventureKing.Gameplay
             }
 
             // Auto sits left of skill 2 (clear of the screen edge / notch inset and of skill 3's key badge), labels above it
-            Button("Auto", autoIcon, frame, new Vector2(-470f, 470f), 84f, out _, out ActionPress auto, "");
+            Button("Auto", autoIcon, frame, new Vector2(-470f, 438f), 84f, out _, out ActionPress auto, "");
             AutoButton = auto;
             autoGlow = Img(auto.transform, "AutoGlow", Circle(), Vector2.zero, 96f, new Color(0.45f, 0.95f, 1f, 0.45f));
             autoGlow.raycastTarget = false;

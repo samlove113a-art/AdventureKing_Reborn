@@ -45,4 +45,4 @@ Dùng trong Chương 1: ≈ 687 / 2.000 (xem `Docs/CHAPTER01_PLAN.md`). Số dư
 Server 175/175. PlayMode 71 test: 63 pass, 2 bỏ qua, 6 fail:
 - 3 fail là phần đám cưới 180 giây đang tạm dừng (không đụng): `Two_Players_..._Marry_In_The_Wedding_Hall`, `Archer_And_Assassin_Key_Moments`, `Swordsman_And_Mage_Key_Moments`.
 - `Hub_To_Meadow_To_Mushroom_Village_Fight...`: fail trong lần chạy đầy đủ nhưng **pass khi chạy riêng** → nhiễu thứ tự test, không phải lỗi 2D.
-- **`Town_Portals_Lead_Into_Both_Halls_And_Back`** và **`Town_Screens_Pass_Ui_Audit_At_All_Resolutions`** fail cả khi chạy riêng — **CẦN KIỂM TRA ĐẦU TIÊN SÁNG MAI**: chữ "VIP" chồng "3›2›1" trên điện thoại 19.5:9 (UI audit), và "village BGM playing and audible". Chưa biết do 2D, do UiStandard (Match 0.5, e86fb88) hay do QuestPanel; so sánh với kết quả trước e86fb88 (bản đó pass: hall 8/8).
+- **ĐÃ SỬA 2026-11-18**: Town_Portals_... (chữ VIP chồng nhãn Auto 3›2›1 trên 19.5:9 — nút Auto hạ 32 đơn vị trong HeroActionBar) và Town_Screens_... (âm lượng nhạc nền lưu = 0 trên máy: test tự đặt 0,7 khi thấp, không phải lỗi 2D). Cả hai pass.

@@ -73,6 +73,9 @@ namespace AdventureKing.Tests
             bool wasMuted = audio.Muted, wasMusicOn = audio.MusicOn;
             audio.SetAllMuted(false);
             audio.SetMusicOn(true);
+            float wasMusicVolume = audio.MusicVolume, wasEffectsVolume = audio.EffectsVolume;
+            if (audio.MusicVolume < 0.3f) audio.SetMusicVolume(0.7f);       // the saved volume is a local preference (a previous manual session may have left it at 0)
+            if (audio.EffectsVolume < 0.3f) audio.SetEffectsVolume(0.7f);
             until = Time.realtimeSinceStartup + 3f;
             while (!audio.MusicAudible && Time.realtimeSinceStartup < until) yield return null;
             Assert.IsTrue(audio.MusicAudible, "village BGM playing and audible");
@@ -91,7 +94,8 @@ namespace AdventureKing.Tests
             while (Mathf.Abs(audio.MusicVolume - 0.75f) > 0.01f) menu.CycleMusicVolume(); // back to default
             menu.CycleEffectsVolume();
             Assert.AreNotEqual(sfxBefore, audio.EffectsVolume, "SFX volume step");
-            audio.SetEffectsVolume(sfxBefore);
+            audio.SetEffectsVolume(wasEffectsVolume);
+            audio.SetMusicVolume(wasMusicVolume);
             // night falls (display mode) -> the calm night theme fades in
             var prevMode = DayNightCycle.ModeOverride;
             DayNightCycle.ModeOverride = DayNightMode.Night;
