@@ -1,0 +1,21 @@
+name: Adventure King server regression
+
+on:
+  push:
+    branches: [feat/mmorpg-coreloop-ui-20261118]
+  pull_request:
+    branches: [feat/chapter1-mushroom-kingdom]
+
+jobs:
+  server-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore dependencies
+        run: dotnet restore Server/AdventureKing.Server.Tests/AdventureKing.Server.Tests.csproj
+      - name: Server tests (real SQLite migrations and multiplayer regressions)
+        run: dotnet test Server/AdventureKing.Server.Tests/AdventureKing.Server.Tests.csproj --configuration Release --no-restore
