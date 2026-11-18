@@ -91,6 +91,7 @@ public sealed class MonsterDto
     public int phase { get; set; } = 1;
     /// <summary>Time until this monster's next slam on the hero that fights it (0 = no slam): the client shows the telegraph.</summary>
     public long slamInMs { get; set; }
+    public float slamReach { get; set; }
 }
 
 public sealed class DropDto
