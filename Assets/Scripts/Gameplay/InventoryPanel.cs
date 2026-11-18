@@ -37,6 +37,8 @@ namespace AdventureKing.Gameplay
         private bool pendingEnhanceProtect;
         private Button enhanceButton, protectionButton;
         private Text enhanceLabel, protectionLabel;
+        private RectTransform responsiveCard;
+        private readonly List<(Outline edge, Color color)> rareItemEdges = new List<(Outline, Color)>();
         private Button useButton, equipButton, unequipButton;
         private string selectedEquip;
         private AdventureWorldSession world;
@@ -78,6 +80,19 @@ namespace AdventureKing.Gameplay
         {
             if (root && root.activeSelf)
             {
+                if (responsiveCard)
+                {
+                    var viewport = ((RectTransform)root.transform).rect;
+                    float scale = Mathf.Min(1f, Mathf.Min((viewport.width - 24f) / 1280f, (viewport.height - 24f) / 800f));
+                    responsiveCard.localScale = Vector3.one * Mathf.Clamp(scale, 0.28f, 1f);
+                }
+                foreach (var rare in rareItemEdges)
+                {
+                    if (!rare.edge) continue;
+                    Color c = rare.color;
+                    c.a = 0.7f + 0.3f * Mathf.PingPong(Time.unscaledTime * 1.8f, 1f);
+                    rare.edge.effectColor = c;
+                }
                 if (powerLabel)
                 {
                     displayedPower = Mathf.RoundToInt(Mathf.MoveTowards(displayedPower, targetPower,
@@ -333,6 +348,7 @@ namespace AdventureKing.Gameplay
             card.type = panelSprite ? Image.Type.Sliced : Image.Type.Simple;
             card.color = panelSprite ? Color.white : new Color(0.1f, 0.12f, 0.2f, 0.97f);
             Transform c = card.transform;
+            responsiveCard = card.rectTransform;
             Color gold = new Color(1f, 0.85f, 0.45f), cream = new Color(1f, 0.96f, 0.88f);
             Text title = Txt(c, "Title", "NHÂN VẬT  •  TÚI ĐỒ", 37, gold, new Vector2(0.5f, 1f), new Vector2(0f, -63f), new Vector2(720f, 56f), TextAnchor.MiddleCenter);
             title.fontStyle = FontStyle.Bold;
@@ -370,7 +386,7 @@ namespace AdventureKing.Gameplay
                 equipCells[slot] = (ic, labelText);
             }
 
-            string[] unavailable = { "Nón", "Giày", "Nhẫn", "Pet", "Hóa thân" };
+            string[] unavailable = { "Nón", "Giày", "Dây chuyền", "Pet", "Hóa thân" };
             var lockedPositions = new [] {
                 new Vector2(464f, -448f), new Vector2(88f, -574f), new Vector2(464f, -574f),
                 new Vector2(190f, -628f), new Vector2(365f, -628f)
@@ -444,6 +460,7 @@ namespace AdventureKing.Gameplay
         {
             if (!root) return;
             var bySlot = State?.slots?.ToDictionary(s => s.index) ?? new Dictionary<int, BagSlotState>();
+            rareItemEdges.Clear();
             for (int i = 0; i < cells.Count; i++)
             {
                 var (bg, icon, qty) = cells[i];
@@ -461,7 +478,12 @@ namespace AdventureKing.Gameplay
                 bg.color = i == SelectedIndex ? new Color(1f, 0.85f, 0.45f)
                     : Color.Lerp(new Color(0.22f, 0.25f, 0.34f), rarity, 0.44f);
                 Outline border = bg.GetComponent<Outline>();
-                if (border) border.effectColor = rarity;
+                if (border)
+                {
+                    border.effectColor = rarity;
+                    if (held != null && (held.rarity == "orange" || held.rarity == "red"))
+                        rareItemEdges.Add((border, rarity));
+                }
             }
             foreach (var (slot, _) in EquipSlots)
             {
@@ -469,7 +491,7 @@ namespace AdventureKing.Gameplay
                 var (ic, label) = equipCells[slot];
                 ic.enabled = e != null && Icon(e.item.icon);
                 if (e != null) ic.sprite = Icon(e.item.icon);
-                label.text = slot == "weapon" ? "Vũ khí" : slot == "armor" ? "Áo" : "Dây chuyền";
+                label.text = slot == "weapon" ? "Vũ khí" : slot == "armor" ? "Áo" : "Phụ kiện";
                 if (e != null && e.item.enhanceLevel > 0) label.text += " +" + e.item.enhanceLevel;
                 Image cell = ic.transform.parent.GetComponent<Image>();
                 if (cell) cell.color = e == null ? new Color(0.4f, 0.45f, 0.62f) :
@@ -505,7 +527,7 @@ namespace AdventureKing.Gameplay
                 enhanceButton.gameObject.SetActive(selEq != null);
                 enhanceButton.interactable = selEq != null && stones > 0 && selEq.item.enhanceLevel < 15
                     && !Busy && (!useProtection || charms > 0);
-                enhanceLabel.text = selEq == null ? "" : $"Lên +{selEq.item.enhanceLevel + 1} ({stones} đá)";
+                enhanceLabel.text = selEq == null ? "" : $"Lên +{selEq.item.enhanceLevel + 1} · {selEq.item.enhanceChance}% ({stones} đá)";
             }
             if (protectionButton)
             {
