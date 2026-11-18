@@ -245,6 +245,10 @@ namespace AdventureKing.Gameplay
                     // a skill is still flying at it: its new HP / death is shown on the impact beat, not by the poll
                     else if (!landing.Contains(s.id)) v.Apply(s);
                 }
+                // Only announce a respawn the server actually scheduled; never fabricate boss timings.
+                foreach (FarmMonsterState m in state.monsters)
+                    if (m.tier == "boss" && !m.alive && m.respawnInMs > 0 && m.respawnInMs <= 30000)
+                        QuickGoalToast.Show("Boss " + m.name + " sắp hồi sinh!");
                 var listed = new HashSet<string>(state.drops.Select(d => d.id));
                 foreach (FarmDropState d in state.drops) if (!drops.ContainsKey(d.id)) SpawnDrop(d, new Vector2(d.x, d.y));
                 foreach (var gone in drops.Where(kv => !listed.Contains(kv.Key) && !kv.Value.Pending).Select(kv => kv.Key).ToList())
