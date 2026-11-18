@@ -53,6 +53,7 @@ string itemsPath = Path.Combine(contentRoot, cfg["ItemConfigPath"] ?? "config/it
 builder.Services.AddSingleton(sp => new InventoryService(sp.GetRequiredService<Database>(), ItemConfig.Load(itemsPath), sp.GetRequiredService<FarmService>()));
 builder.Services.AddSingleton(sp => new ShopService(sp.GetRequiredService<Database>(), sp.GetRequiredService<InventoryService>()));
 string petsPath = Path.Combine(contentRoot, cfg["PetConfigPath"] ?? "config/pets.json");
+builder.Services.AddSingleton(sp => new ChapterService(sp.GetRequiredService<Database>()));
 builder.Services.AddSingleton(sp => new PetService(sp.GetRequiredService<Database>(), PetConfig.Load(petsPath), sp.GetRequiredService<InventoryService>()));
 string questsPath = Path.Combine(contentRoot, cfg["QuestConfigPath"] ?? "config/quests.json");
 builder.Services.AddSingleton(sp => new QuestService(sp.GetRequiredService<Database>(),
@@ -100,6 +101,8 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
     app.Services.GetRequiredService<CharacterService>().QuestEvent = record;
     var pets = app.Services.GetRequiredService<PetService>();
     var farmSvc = app.Services.GetRequiredService<FarmService>();
+    var chapters = app.Services.GetRequiredService<ChapterService>();
+    farmSvc.ChapterBossKilled = chapters.RecordBossKill;
     farmSvc.PetTick = pets.Tick;
     farmSvc.PetCanCollect = pets.CanCollect;
     farmSvc.PetReach = pets.Config.pickupReach;
@@ -227,6 +230,8 @@ api.MapPost("/characters/{id}/travel/ticket", (string id, TicketRequestDto body,
     shops.UseTicket(accounts.Authenticate(Bearer(ctx)), id, body));
 
 // ---------------------------------------------------------------- pets
+api.MapGet("/characters/{id}/chapters", (string id, HttpContext ctx, AccountService accounts, ChapterService chapters) =>
+    new { cleared = chapters.ClearedFor(accounts.Authenticate(Bearer(ctx)), id) });
 api.MapGet("/characters/{id}/pets", (string id, HttpContext ctx, AccountService accounts, PetService pets) => pets.Get(accounts.Authenticate(Bearer(ctx)), id));
 api.MapPost("/characters/{id}/pets/buy", (string id, PetBuyDto body, HttpContext ctx, AccountService accounts, PetService pets) => pets.Buy(accounts.Authenticate(Bearer(ctx)), id, body));
 api.MapPost("/characters/{id}/pets/summon", (string id, PetIdDto body, HttpContext ctx, AccountService accounts, PetService pets) => pets.Summon(accounts.Authenticate(Bearer(ctx)), id, body));

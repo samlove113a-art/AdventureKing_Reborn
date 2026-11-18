@@ -21,6 +21,17 @@ public sealed class MonsterType
     public int goldMin { get; set; }
     public int goldMax { get; set; }
     public int respawnSeconds { get; set; } = 60;
+    /// <summary>"normal" | "elite" | "mini" | "boss". Elite/mini/boss are shown with a name bar and big HP bar by the client.</summary>
+    public string tier { get; set; } = "normal";
+    /// <summary>Boss skill (0 = none): every slamSeconds a wide strike hits a hero within slamReach for slamDamage (telegraphed: MonsterDto.slamInMs).</summary>
+    public float slamSeconds { get; set; }
+    public int slamDamage { get; set; }
+    public float slamReach { get; set; } = 3.2f;
+    /// <summary>Below this share of max HP (0 = never) the monster enrages: attacks hit harder and slams come faster (phase 2).</summary>
+    public float enrageBelow { get; set; }
+    public float enrageMultiplier { get; set; } = 1.4f;
+    /// <summary>Boss only: chapter this kill belongs to (0 = none). The SERVER records it as chapter progress (see ChapterService).</summary>
+    public int chapterBossOf { get; set; }
 }
 
 public sealed class SpawnPoint
@@ -75,6 +86,11 @@ public sealed class MonsterDto
     public int maxHp { get; set; }
     public bool alive { get; set; }
     public long respawnInMs { get; set; }
+    public string tier { get; set; } = "normal";
+    /// <summary>1 normally, 2 once enraged (boss / mini boss).</summary>
+    public int phase { get; set; } = 1;
+    /// <summary>Time until this monster's next slam on the hero that fights it (0 = no slam): the client shows the telegraph.</summary>
+    public long slamInMs { get; set; }
 }
 
 public sealed class DropDto
@@ -229,13 +245,13 @@ public sealed class FarmService
         (22, 0.9f, 7f, 100, 6),     // Cung Thủ
     };
     /// <summary>Where a fallen hero gets back up on each farm map (the map's portal arrival point).</summary>
-    public static readonly IReadOnlyDictionary<string, (float x, float y)> RespawnPoints = new Dictionary<string, (float, float)>
+    public static readonly IReadOnlyDictionary<string, (float x, float y)> RespawnPoints = new Dictionary<string, (float x, float y)>
     {
         ["meadow_breeze"] = (-36f, 1f),
         ["ch1_mushroom_village"] = (-36f, 1f),
         ["ch1_green_meadow"] = (-36f, 1f),
         ["ch1_glow_forest"] = (-36f, 1f),
-    };
+    }.Concat(Ch1ServerData.RespawnPoints).ToDictionary(kv => kv.Key, kv => kv.Value);
 
     /// <summary>
     /// Safe zones inside farm maps (village squares, around quest NPCs and portals): no spawn may be placed so that
@@ -247,7 +263,7 @@ public sealed class FarmService
         ["ch1_mushroom_village"] = (-46f, 30f),
         ["ch1_green_meadow"] = (-46f, -20f), // west gate rest stop (portal + sign + bench)
         ["ch1_glow_forest"] = (-46f, -20f),
-    };
+    }.Concat(Ch1ServerData.SafeZones).ToDictionary(kv => kv.Key, kv => kv.Value);
     public const long RegenDelayMs = 6000;      // out of combat this long -> regenerate
     public const float RegenPerSecond = 0.03f;  // of max HP
     public const float MaxSpeed = 12f;        // m/s (run 6-7 m/s, dash/fall headroom)
@@ -266,7 +282,8 @@ public sealed class FarmService
 
     public FarmConfig Config { get; }
 
-    private sealed class Live { public int Hp; public long RespawnAtMs; public string? Aggro; public long NextHitMs; }
+    private sealed class Live { public int Hp; public long RespawnAtMs; public string? Aggro; public long NextHitMs, NextSlamMs; }
+    private static bool Enraged(MonsterType ty, Live m) => ty.enrageBelow > 0 && m.Hp > 0 && m.Hp <= ty.maxHp * ty.enrageBelow;
     private sealed class Hero
     {
         public int Hp, Max, Defense; public bool Dead; public long LastDamageMs, LastRegenMs; public float RegenCarry;
@@ -316,6 +333,8 @@ public sealed class FarmService
 
     /// <summary>Quest progress hook (accountId, characterId, event, amount): kills, pickups, skills that hit.</summary>
     public Action<string, string, string, int>? QuestEvent { get; set; }
+    /// <summary>A chapter boss just died by this hero's hit (accountId, characterId, chapter, monster type): ChapterService records it.</summary>
+    public Action<string, string, int, string>? ChapterBossKilled { get; set; }
     private void Fire(string acc, string ch, string ev, int n = 1) { try { QuestEvent?.Invoke(acc, ch, ev, n); } catch (Exception e) { Console.Error.WriteLine("quest hook: " + e.Message); } }
 
     /// <summary>Revives a dead monster whose respawn time has passed (server clock).</summary>
@@ -333,6 +352,8 @@ public sealed class FarmService
         {
             id = s.id, type = s.type, name = ty.name, x = s.x, y = s.y, hp = Math.Max(0, m.Hp), maxHp = ty.maxHp,
             alive = m.Hp > 0, respawnInMs = m.Hp > 0 ? 0 : Math.Max(0, m.RespawnAtMs - t),
+            tier = ty.tier, phase = Enraged(ty, m) ? 2 : 1,
+            slamInMs = ty.slamSeconds > 0 && m.Aggro != null && m.Hp > 0 ? Math.Max(0, m.NextSlamMs - t) : 0,
         };
     }
 
@@ -408,11 +429,29 @@ public sealed class FarmService
             if (m.Hp <= 0 || h.Dead || !known || MathF.Abs(p.x - s.x) > ty.leash + 8f) { m.Aggro = null; continue; } // lost interest
             float monsterX = Math.Clamp(p.x, s.x - ty.leash, s.x + ty.leash);
             bool inReach = MathF.Abs(p.x - monsterX) <= ty.reach && MathF.Abs(p.y - s.y) <= 2f;
-            long step = (long)(ty.attackSeconds * 1000f);
+            bool enraged = Enraged(ty, m);
+            float mul = enraged ? ty.enrageMultiplier : 1f;
+            long step = (long)(ty.attackSeconds * 1000f / (enraged ? 1.25f : 1f));
+            if (ty.slamSeconds > 0)   // boss skill: a wide strike on a timer; the hero can step out of slamReach during the telegraph
+            {
+                long slamStep = (long)(ty.slamSeconds * 1000f / (enraged ? ty.enrageMultiplier : 1f));
+                if (m.NextSlamMs == 0) m.NextSlamMs = t + slamStep;
+                while (m.NextSlamMs <= t && !h.Dead)
+                {
+                    bool caught = MathF.Abs(p.x - monsterX) <= ty.slamReach && MathF.Abs(p.y - s.y) <= 2f;
+                    if (caught)
+                    {
+                        int sd = Math.Max(1, (int)(ty.slamDamage * mul) - (h.Defense + defenseBonus) / 2);
+                        h.Hp -= sd; h.Pending += sd; h.HitBy.Add(s.id); h.LastDamageMs = m.NextSlamMs;
+                        if (h.Hp <= 0) { h.Hp = 0; h.Dead = true; }
+                    }
+                    m.NextSlamMs += slamStep;
+                }
+            }
             if (!inReach) { m.NextHitMs = Math.Max(m.NextHitMs, t + step / 2); continue; } // must close in again (wind-up)
             while (m.NextHitMs <= t && !h.Dead)
             {
-                int dmg = Math.Max(1, ty.attack - (h.Defense + defenseBonus) / 2);
+                int dmg = Math.Max(1, (int)(ty.attack * mul) - (h.Defense + defenseBonus) / 2);
                 h.Hp -= dmg;
                 h.Pending += dmg;
                 h.HitBy.Add(s.id);
@@ -455,7 +494,7 @@ public sealed class FarmService
         lock (gate)
         {
             Hero h = HeroOf(characterId, heroClass, level, t);
-            if (!h.Dead) Move(characterId, mapId, req?.x ?? float.NaN, req?.y ?? float.NaN, t);
+            if (!h.Dead) { Move(characterId, mapId, req?.x ?? float.NaN, req?.y ?? float.NaN, t); CheckExplore(accountId, characterId, mapId); }
             Evaluate(characterId, mapId, h, t);
             dto = Drain(h, t);
             if (!h.Dead) try { PetTick?.Invoke(characterId); } catch (Exception e) { Console.Error.WriteLine("pet tick: " + e.Message); }
@@ -469,6 +508,17 @@ public sealed class FarmService
             catch (GameError) { } // e.g. fell in between: no drink, nothing consumed (rolled back)
         }
         return dto;
+    }
+
+    private readonly HashSet<string> explored = new();
+
+    /// <summary>Walking into an explore point (server-checked from the speed-checked position) records "explore:{id}" once per session.</summary>
+    private void CheckExplore(string accountId, string characterId, string mapId)
+    {
+        if (!presence.TryGetValue(characterId + "|" + mapId, out var p)) return;
+        foreach (var pt in Ch1ServerData.ExplorePoints)
+            if (pt.MapId == mapId && MathF.Abs(p.x - pt.X) <= pt.Radius && MathF.Abs(p.y - pt.Y) <= 3f && explored.Add(characterId + "|" + pt.Id))
+                Fire(accountId, characterId, "explore:" + pt.Id);
     }
 
     /// <summary>Pet auto-potion hook (PetService.AutoPotion), run after each heartbeat on farm maps.</summary>
@@ -574,10 +624,13 @@ public sealed class FarmService
             hit.killed = true;
             hit.drop = Dto(d, t);
             m.Aggro = null;
+            if (ty.chapterBossOf > 0)   // server-side proof of the boss kill (the client can never claim it)
+                try { ChapterBossKilled?.Invoke(accountId, characterId, ty.chapterBossOf, ty.id); } catch (Exception e) { Console.Error.WriteLine("chapter hook: " + e.Message); }
         }
         else if (m.Aggro != characterId)
         {
             m.Aggro = characterId; // it fights back: first strike after one wind-up
+            m.NextSlamMs = TypeOf(s).slamSeconds > 0 ? t + (long)(TypeOf(s).slamSeconds * 1000f) : 0;
             m.NextHitMs = t + (long)(TypeOf(s).attackSeconds * 1000f);
         }
         hit.monster = Dto(s, t);

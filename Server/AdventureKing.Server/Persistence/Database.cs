@@ -157,6 +157,14 @@ public sealed class Database
             Exec(c, tx, Schema.V12);
             Exec(c, tx, "PRAGMA user_version=12;");
             tx.Commit();
+            version = 12;
+        }
+        if (version < 13)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V13);
+            Exec(c, tx, "PRAGMA user_version=13;");
+            tx.Commit();
         }
     }
 
@@ -189,7 +197,18 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 12;
+    public const int Current = 13;
+
+    // V13: chapter progress — the chapter boss kill the SERVER confirmed (one row per character and chapter; written only by ChapterService).
+    public const string V13 = """
+    CREATE TABLE chapter_progress (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        chapter      INTEGER NOT NULL CHECK (chapter >= 1),
+        boss_type    TEXT NOT NULL,
+        killed_at    INTEGER NOT NULL,
+        PRIMARY KEY (character_id, chapter)
+    );
+    """;
 
     // V12: bought bag cells (40 base + extra, up to 99 in total; one row per character, changed only by InventoryService.Expand).
     public const string V12 = """
