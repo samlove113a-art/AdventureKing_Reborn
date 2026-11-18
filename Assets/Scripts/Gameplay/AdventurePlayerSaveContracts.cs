@@ -130,6 +130,8 @@ namespace AdventureKing.Gameplay
         public long amount, expiresInMs;
         /// <summary>Item piles (junk / equipment): itemId is set and amount is 0.</summary>
         public string itemId, itemName, itemKind;
+        /// <summary>white / blue / purple / orange / red (server data); purple and above get the pillar of light.</summary>
+        public string itemRarity;
         public int qty;
         public bool IsItem => !string.IsNullOrEmpty(itemId);
     }
@@ -168,7 +170,7 @@ namespace AdventureKing.Gameplay
     public sealed class BagSlotState
     {
         public int index, qty, attack, defense;
-        public string itemId, name, kind, icon, desc, equipSlot;
+        public string itemId, name, kind, icon, desc, equipSlot, rarity;
         public bool usableByClass = true;
     }
     [Serializable] public sealed class EquippedState { public string equipSlot; public BagSlotState item; }
@@ -176,6 +178,8 @@ namespace AdventureKing.Gameplay
     public sealed class InventoryState
     {
         public int capacity, maxCapacity, stackMax, attackBonus, defenseBonus;
+        /// <summary>Lực Chiến (server formula, same as the ranking) with the gear currently worn.</summary>
+        public int combatPower;
         public long nextExpandGold; // 0 = bag fully expanded
         public BagSlotState[] slots = new BagSlotState[0];
         public EquippedState[] equipped = new EquippedState[0];

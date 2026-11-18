@@ -20,6 +20,8 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Font font;
 
         public InventoryState State { get; private set; }
+        /// <summary>Raised whenever the server sends a new bag / equipment snapshot (CombatPowerHud counts the new Lực Chiến from it).</summary>
+        public event Action<InventoryState> StateChanged;
         public bool IsOpen => root && root.activeSelf;
         public int SelectedIndex { get; private set; } = -1;
         public string LastMessage { get; private set; } = "";
@@ -64,7 +66,7 @@ namespace AdventureKing.Gameplay
         /// <summary>Item icon by its server icon key (shared with the reward windows).</summary>
         public Sprite IconSprite(string name) => Icon(name);
 
-        private void Start() => Build();
+        private void Start() { Build(); CombatPowerHud.Attach(this, font); }
 
         private void Update()
         {
@@ -94,6 +96,7 @@ namespace AdventureKing.Gameplay
         {
             State = inv;
             Redraw();
+            StateChanged?.Invoke(inv);
         }
 
         public int PotionCount(bool hp) => State == null ? 0 : State.slots.Where(s => s.kind == "consumable" && s.icon == (hp ? "item_potion_hp" : "item_potion_mp")).Sum(s => s.qty);
@@ -341,7 +344,11 @@ namespace AdventureKing.Gameplay
                     qty.text = s.qty > 1 ? s.qty.ToString() : "";
                 }
                 else { icon.enabled = false; qty.text = ""; }
-                bg.color = i == SelectedIndex ? new Color(1f, 0.85f, 0.45f) : new Color(0.55f, 0.6f, 0.78f, 0.9f);
+                // the cell colour is the rarity: white < blue < purple < orange < red (a plain cell stays the usual blue-grey)
+                Color plain = new Color(0.55f, 0.6f, 0.78f, 0.9f);
+                int tier = s != null ? LootRarity.Tier(s.rarity) : 0;
+                Color cell = tier == 0 ? (s != null && s.kind == "equipment" ? new Color(0.9f, 0.9f, 0.95f, 0.95f) : plain) : Color.Lerp(plain, LootRarity.ColorOf(tier), 0.8f);
+                bg.color = i == SelectedIndex ? new Color(1f, 0.85f, 0.45f) : cell;
             }
             foreach (var (slot, _) in EquipSlots)
             {
@@ -350,7 +357,7 @@ namespace AdventureKing.Gameplay
                 ic.enabled = e != null && Icon(e.item.icon);
                 if (e != null) ic.sprite = Icon(e.item.icon);
             }
-            if (statsLabel) statsLabel.text = State == null ? "" : $"Tấn công +{State.attackBonus}\nPhòng thủ +{State.defenseBonus}";
+            if (statsLabel) statsLabel.text = State == null ? "" : $"Lực chiến {State.combatPower:N0}\nTấn công +{State.attackBonus}\nPhòng thủ +{State.defenseBonus}";
             if (content) content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Ceil((State == null ? 40 : State.capacity) / (float)Columns) * 112f);
             if (expandButton)
             {

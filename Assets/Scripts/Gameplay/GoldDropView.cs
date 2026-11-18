@@ -15,6 +15,11 @@ namespace AdventureKing.Gameplay
         /// <summary>Item pile (junk / equipment) instead of Gold; tinted by kind.</summary>
         public bool IsItem { get; private set; }
         public string ItemName { get; private set; }
+        /// <summary>0 white .. 4 red (server rarity). Purple and above: pillar of light, bigger bounce, chime.</summary>
+        public int RarityTier { get; private set; }
+        public bool Collecting => collectT >= 0f;
+        public LootBeam Beam { get; private set; }
+        private bool chimed;
 
         private float age, expiresAt, collectT = -1f;
         private Vector3 from;
@@ -45,8 +50,11 @@ namespace AdventureKing.Gameplay
             ItemName = d.itemName;
             if (IsItem)
             {
-                Color tint = d.itemKind == "equipment" ? new Color(0.72f, 0.62f, 1f) : new Color(0.62f, 0.78f, 0.58f); // equipment violet, junk moss green
+                RarityTier = LootRarity.Tier(d.itemRarity);
+                Color tint = RarityTier > 0 ? Color.Lerp(Color.white, LootRarity.ColorOf(RarityTier), 0.7f)               // blue / purple / orange / red pile
+                    : d.itemKind == "equipment" ? new Color(0.72f, 0.62f, 1f) : new Color(0.62f, 0.78f, 0.58f);             // white equipment violet, junk moss green
                 foreach (Renderer r in GetComponentsInChildren<Renderer>(true)) if (r.material.HasProperty("_BaseColor")) r.material.SetColor("_BaseColor", tint);
+                Beam = LootBeam.Attach(this, RarityTier);
             }
         }
 
@@ -76,17 +84,21 @@ namespace AdventureKing.Gameplay
             age += dt;
             // fly out in an arc, land and bounce twice (decaying), then rest spinning and bobbing
             Vector3 rest = new Vector3(Ground.x + 0.6f, Ground.y + 0.3f, 0.2f);
+            bool high = RarityTier >= LootRarity.High;
+            // normal: out in an arc, two bounces (0.32 m, 0.12 m). High rarity: a higher arc and three bounces (0.75 m, 0.34 m, 0.12 m) so it reads from across the screen
+            float arc = high ? 2.3f : 1.4f, bounceEnd = high ? 1.46f : 1.05f;
             if (age < 0.5f)
             {
                 float k = age / 0.5f;
-                transform.position = Vector3.Lerp(from, rest, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 1.4f;
+                transform.position = Vector3.Lerp(from, rest, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * arc;
             }
-            else if (age < 1.05f)
+            else if (age < bounceEnd)
             {
-                float b = age - 0.5f;                                   // two bounces: 0.32 m then 0.12 m
-                float h = b < 0.32f ? Mathf.Sin(b / 0.32f * Mathf.PI) * 0.32f : Mathf.Sin((b - 0.32f) / 0.23f * Mathf.PI) * 0.12f;
+                float b = age - 0.5f, h;
+                if (high) h = b < 0.46f ? Mathf.Sin(b / 0.46f * Mathf.PI) * 0.75f : b < 0.76f ? Mathf.Sin((b - 0.46f) / 0.30f * Mathf.PI) * 0.34f : Mathf.Sin((b - 0.76f) / 0.20f * Mathf.PI) * 0.12f;
+                else h = b < 0.32f ? Mathf.Sin(b / 0.32f * Mathf.PI) * 0.32f : Mathf.Sin((b - 0.32f) / 0.23f * Mathf.PI) * 0.12f;
                 transform.position = rest + Vector3.up * Mathf.Max(0f, h);
-                Landed = true;
+                if (!Landed) { Landed = true; if (!chimed) { chimed = true; LootRarity.PlayDrop(RarityTier); } }   // the chime rings on the first touchdown
             }
             else transform.position = rest + Vector3.up * (Mathf.Sin(age * 3f) * 0.08f);
             transform.rotation = Quaternion.Euler(0f, age * 140f, 0f);

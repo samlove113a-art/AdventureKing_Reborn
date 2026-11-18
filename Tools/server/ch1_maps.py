@@ -163,7 +163,7 @@ def spawn_lines():
     return out
 
 
-def item_lines():
+RARITY = {"gear_glow_charm": "blue", "gear_chief_armor": "purple", "gear_bee_charm": "blue", "gear_crystal_ring": "blue", "gear_jade_vest": "blue", "gear_jade_guardian_charm": "purple",\n          "gear_shadow_cloak": "purple", "gear_toxic_ring": "purple", "gear_toxic_mask": "orange", "gear_stone_vest": "purple", "gear_dark_charm": "orange", "gear_royal_vest": "purple",\n          "gear_king_crown_charm": "red"}\n\n\ndef item_lines():
     out = []
     for it in ITEMS:
         if it[0] == "junk":
@@ -172,7 +172,7 @@ def item_lines():
         else:
             _, iid, name, slot, atk, df, desc = it
             icon = "item_armor_vest" if slot == "armor" else "item_charm"
-            out.append('    { "id": "%s", "name": "%s", "kind": "equipment", "icon": "%s", "equipSlot": "%s", "classes": [0, 1, 2, 3], "attack": %d, "defense": %d, "desc": "%s Không cộng dồn." },' % (iid, name, icon, slot, atk, df, desc))
+            out.append('    { "id": "%s", "rarity": "%s", "name": "%s", "kind": "equipment", "icon": "%s", "equipSlot": "%s", "classes": [0, 1, 2, 3], "attack": %d, "defense": %d, "desc": "%s Không cộng dồn." },' % (iid, RARITY[iid], name, icon, slot, atk, df, desc))
     return out
 
 

@@ -15,6 +15,8 @@ public sealed class ItemDef
     public int mp { get; set; }
     public long priceGold { get; set; }
     public string equipSlot { get; set; } = "";
+    /// <summary>white &lt; blue &lt; purple &lt; orange &lt; red (Trắng &lt; Xanh &lt; Tím &lt; Cam &lt; Đỏ). Server data: the client only draws it.</summary>
+    public string rarity { get; set; } = "white";
     public int[] classes { get; set; } = Array.Empty<int>();
     public int attack { get; set; }
     public int defense { get; set; }
@@ -55,6 +57,7 @@ public sealed class ItemConfig
         foreach (ItemDef i in cfg.items)
         {
             if (i.kind == "equipment" && i.equipSlot is not ("weapon" or "armor" or "accessory")) throw new InvalidDataException(i.id + ": bad equip slot");
+            if (i.rarity is not ("white" or "blue" or "purple" or "orange" or "red")) throw new InvalidDataException(i.id + ": bad rarity " + i.rarity);
             if (i.kind == "junk" && i.priceGold <= 0) throw new InvalidDataException(i.id + ": junk must have a sell value");
             // a ticket may only lead to a map the server really has (never to an unbuilt map)
             if (i.kind == "ticket" && !CharacterService.Maps.ContainsKey(i.destMap)) throw new InvalidDataException(i.id + ": ticket to unknown map " + i.destMap);
@@ -81,6 +84,7 @@ public sealed class BagSlotDto
     public string desc { get; set; } = "";
     public int qty { get; set; }
     public string equipSlot { get; set; } = "";
+    public string rarity { get; set; } = "white";
     public int attack { get; set; }
     public int defense { get; set; }
     public bool usableByClass { get; set; } = true;
@@ -100,6 +104,8 @@ public sealed class InventoryDto
     public EquippedDto[] equipped { get; set; } = Array.Empty<EquippedDto>();
     public int attackBonus { get; set; }
     public int defenseBonus { get; set; }
+    /// <summary>Lực Chiến of the hero with this gear (same formula as the ranking: FarmService.PowerOf); the HUD shows it and counts up when gear changes.</summary>
+    public int combatPower { get; set; }
 }
 
 /// <summary>force: drink even with a full bar (the player confirmed; nothing is restored above the maximum).</summary>
@@ -145,7 +151,7 @@ public sealed class InventoryService
         now = clock ?? Database.NowMs;
         farm.EquipmentBonus = Bonus;
         farm.GrantItem = (c, tx, _, characterId, itemId, qty) => Add(c, tx, characterId, itemId, qty);
-        farm.ItemInfo = id => Config.Get(id) is { } d ? (d.name, d.kind) : (id, "");
+        farm.ItemInfo = id => Config.Get(id) is { } d ? (d.name, d.kind, d.rarity) : (id, "", "white");
     }
 
     private int ClassOf(SqliteConnection c, SqliteTransaction? tx, string accountId, string characterId)
@@ -251,7 +257,7 @@ public sealed class InventoryService
             return new BagSlotDto
             {
                 index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, qty = qty,
-                equipSlot = d.equipSlot, attack = d.attack, defense = d.defense, destMap = d.destMap,
+                equipSlot = d.equipSlot, rarity = d.rarity, attack = d.attack, defense = d.defense, destMap = d.destMap,
                 usableByClass = d.kind != "equipment" || d.classes.Length == 0 || d.classes.Contains(heroClass),
             };
         }
@@ -265,6 +271,7 @@ public sealed class InventoryService
             capacity = Capacity(c, tx, characterId), maxCapacity = Config.maxBagSlots, stackMax = Config.stackMax, slots = slots, equipped = eq.ToArray(),
             nextExpandGold = Capacity(c, tx, characterId) >= Config.maxBagSlots ? 0 : Config.expandBaseGold + Config.expandStepGold * (Capacity(c, tx, characterId) - Config.bagSlots),
             attackBonus = eq.Sum(e => e.item.attack), defenseBonus = eq.Sum(e => e.item.defense),
+            combatPower = FarmService.PowerOf(heroClass, Database.Scalar<long>(c, tx, "SELECT level FROM characters WHERE id=$c", ("$c", characterId)) is var lv ? (int)lv : 1, eq.Sum(e => e.item.attack), eq.Sum(e => e.item.defense)),
         };
     }
 

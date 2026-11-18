@@ -32,7 +32,9 @@ namespace AdventureKing.Gameplay
             return go;
         }
 
-        private const float FxScale = 0.6f;\n\n        private static float AngleOf(Vector3 d) => Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
+        private const float FxScale = 0.6f;
+
+        private static float AngleOf(Vector3 d) => Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
 
         /// <summary>A looping sprite flown from→to in <paramref name="time"/> seconds (homing on a monster the player sees); gone on arrival.</summary>
         private static IEnumerator Fly(GameObject go, Vector3 from, Func<Vector3> to, float time, float spin = 0f)
