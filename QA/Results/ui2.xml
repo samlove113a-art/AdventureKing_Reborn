@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-18 01:59:42Z" end-time="2026-11-18 02:02:01Z" duration="139.1166559">
+  <test-suite type="TestSuite" id="1110" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="71" result="Passed" start-time="2026-11-18 01:59:42Z" end-time="2026-11-18 02:02:01Z" duration="139.116656" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1098" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-11-18 01:59:42Z" end-time="2026-11-18 02:02:01Z" duration="139.086491" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="5536" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1099" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-11-18 01:59:42Z" end-time="2026-11-18 02:02:01Z" duration="139.073594" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="SetUpFixture" id="1024" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-11-18 01:59:42Z" end-time="2026-11-18 02:02:01Z" duration="139.067785" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1034" name="HallTravelTests" fullname="AdventureKing.Tests.HallTravelTests" classname="AdventureKing.Tests.HallTravelTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-18 01:59:42Z" end-time="2026-11-18 02:01:19Z" duration="96.366725" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1035" name="Town_Portals_Lead_Into_Both_Halls_And_Back" fullname="AdventureKing.Tests.HallTravelTests.Town_Portals_Lead_Into_Both_Halls_And_Back" methodname="Town_Portals_Lead_Into_Both_Halls_And_Back" classname="AdventureKing.Tests.HallTravelTests" runstate="Runnable" seed="565307260" result="Passed" start-time="2026-11-18 01:59:42Z" end-time="2026-11-18 02:01:19Z" duration="96.336523" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[02_guild_hud pc_1920x1080] OK (41 texts, 18 buttons)
+[02_guild_hud pc_1366x768] OK (41 texts, 18 buttons)
+[02_guild_hud phone_19.5x9] OK (41 texts, 18 buttons)
+[02_guild_hud phone_16x9] OK (41 texts, 18 buttons)
+[02_guild_hud tablet_4x3] OK (41 texts, 18 buttons)
+[06b_wedding_hud pc_1920x1080] OK (41 texts, 18 buttons)
+[06b_wedding_hud pc_1366x768] OK (41 texts, 18 buttons)
+[06b_wedding_hud phone_19.5x9] OK (41 texts, 18 buttons)
+[06b_wedding_hud phone_16x9] OK (41 texts, 18 buttons)
+[06b_wedding_hud tablet_4x3] OK (41 texts, 18 buttons)
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1091" name="UiTownScreensTests" fullname="AdventureKing.Tests.UiTownScreensTests" classname="AdventureKing.Tests.UiTownScreensTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-18 02:01:19Z" end-time="2026-11-18 02:02:01Z" duration="42.684369" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1092" name="Town_Screens_Pass_Ui_Audit_At_All_Resolutions" fullname="AdventureKing.Tests.UiTownScreensTests.Town_Screens_Pass_Ui_Audit_At_All_Resolutions" methodname="Town_Screens_Pass_Ui_Audit_At_All_Resolutions" classname="AdventureKing.Tests.UiTownScreensTests" runstate="Runnable" seed="226313570" result="Passed" start-time="2026-11-18 02:01:19Z" end-time="2026-11-18 02:02:01Z" duration="42.676994" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[[01_elder_dialog pc_1920x1080] OK (28 texts, 18 buttons)
+[01_elder_dialog pc_1366x768] OK (28 texts, 18 buttons)
+[01_elder_dialog phone_19.5x9] OK (28 texts, 18 buttons)
+[01_elder_dialog phone_16x9] OK (28 texts, 18 buttons)
+[01_elder_dialog tablet_4x3] OK (28 texts, 18 buttons)
+[02_hud pc_1920x1080] OK (40 texts, 18 buttons)
+[02_hud pc_1366x768] OK (40 texts, 18 buttons)
+[02_hud phone_19.5x9] OK (40 texts, 18 buttons)
+[02_hud phone_16x9] OK (40 texts, 18 buttons)
+[02_hud tablet_4x3] OK (40 texts, 18 buttons)
+[02b_settings pc_1920x1080] OK (9 texts, 8 buttons)
+[02b_settings pc_1366x768] OK (9 texts, 8 buttons)
+[02b_settings phone_19.5x9] OK (9 texts, 8 buttons)
+[02b_settings phone_16x9] OK (9 texts, 8 buttons)
+[02b_settings tablet_4x3] OK (9 texts, 8 buttons)
+[02c_shortcut_popup pc_1920x1080] OK (3 texts, 1 buttons)
+[02c_shortcut_popup pc_1366x768] OK (3 texts, 1 buttons)
+[02c_shortcut_popup phone_19.5x9] OK (3 texts, 1 buttons)
+[02c_shortcut_popup phone_16x9] OK (3 texts, 1 buttons)
+[02c_shortcut_popup tablet_4x3] OK (3 texts, 1 buttons)
+[02d_checkin pc_1920x1080] OK (28 texts, 5 buttons)
+[02d_checkin pc_1366x768] OK (28 texts, 5 buttons)
+[02d_checkin phone_19.5x9] OK (28 texts, 5 buttons)
+[02d_checkin phone_16x9] OK (28 texts, 5 buttons)
+[02d_checkin tablet_4x3] OK (28 texts, 5 buttons)
+[02e_checkin_claimed pc_1920x1080] OK (28 texts, 5 buttons)
+[02e_checkin_claimed pc_1366x768] OK (28 texts, 5 buttons)
+[02e_checkin_claimed phone_19.5x9] OK (28 texts, 5 buttons)
+[02e_checkin_claimed phone_16x9] OK (28 texts, 5 buttons)
+[02e_checkin_claimed tablet_4x3] OK (28 texts, 5 buttons)
+[02g_bag pc_1920x1080] OK (13 texts, 46 buttons)
+[02g_bag pc_1366x768] OK (13 texts, 46 buttons)
+[02g_bag phone_19.5x9] OK (13 texts, 46 buttons)
+[02g_bag phone_16x9] OK (13 texts, 46 buttons)
+[02g_bag tablet_4x3] OK (13 texts, 46 buttons)
+[02f_icons_folded pc_1920x1080] OK (30 texts, 8 buttons)
+[02f_icons_folded pc_1366x768] OK (30 texts, 8 buttons)
+[02f_icons_folded phone_19.5x9] OK (30 texts, 8 buttons)
+[02f_icons_folded phone_16x9] OK (30 texts, 8 buttons)
+[02f_icons_folded tablet_4x3] OK (30 texts, 8 buttons)
+[03_merchant_menu pc_1920x1080] OK (32 texts, 22 buttons)
+[03_merchant_menu pc_1366x768] OK (32 texts, 22 buttons)
+[03_merchant_menu phone_19.5x9] OK (32 texts, 22 buttons)
+[03_merchant_menu phone_16x9] OK (32 texts, 22 buttons)
+[03_merchant_menu tablet_4x3] OK (32 texts, 22 buttons)
+[04_shop_gold pc_1920x1080] OK (36 texts, 27 buttons)
+[04_shop_gold pc_1366x768] OK (36 texts, 27 buttons)
+[04_shop_gold phone_19.5x9] OK (38 texts, 25 buttons)
+[04_shop_gold phone_16x9] OK (36 texts, 27 buttons)
+[04_shop_gold tablet_4x3] OK (42 texts, 26 buttons)
+[05_shop_confirm pc_1920x1080] OK (4 texts, 2 buttons)
+[05_shop_confirm pc_1366x768] OK (4 texts, 2 buttons)
+[05_shop_confirm phone_19.5x9] OK (4 texts, 2 buttons)
+[05_shop_confirm phone_16x9] OK (4 texts, 2 buttons)
+[05_shop_confirm tablet_4x3] OK (4 texts, 2 buttons)
+[06_shop_wardrobe pc_1920x1080] OK (29 texts, 20 buttons)
+[06_shop_wardrobe pc_1366x768] OK (29 texts, 20 buttons)
+[06_shop_wardrobe phone_19.5x9] OK (30 texts, 21 buttons)
+[06_shop_wardrobe phone_16x9] OK (29 texts, 20 buttons)
+[06_shop_wardrobe tablet_4x3] OK (28 texts, 19 buttons)
+[07_portal_confirm pc_1920x1080] OK (5 texts, 3 buttons)
+[07_portal_confirm pc_1366x768] OK (5 texts, 3 buttons)
+[07_portal_confirm phone_19.5x9] OK (5 texts, 3 buttons)
+[07_portal_confirm phone_16x9] OK (5 texts, 3 buttons)
+[07_portal_confirm tablet_4x3] OK (5 texts, 3 buttons)
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

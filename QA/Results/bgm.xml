@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-18 01:57:59Z" end-time="2026-11-18 01:58:28Z" duration="28.7296745">
+  <test-suite type="TestSuite" id="1110" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="71" result="Failed" site="Child" start-time="2026-11-18 01:57:59Z" end-time="2026-11-18 01:58:28Z" duration="28.729675" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1098" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-11-18 01:57:59Z" end-time="2026-11-18 01:58:28Z" duration="28.696910" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="3696" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1099" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-11-18 01:57:59Z" end-time="2026-11-18 01:58:28Z" duration="28.691679" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1024" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-11-18 01:57:59Z" end-time="2026-11-18 01:58:28Z" duration="28.686135" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1091" name="UiTownScreensTests" fullname="AdventureKing.Tests.UiTownScreensTests" classname="AdventureKing.Tests.UiTownScreensTests" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2026-11-18 01:57:59Z" end-time="2026-11-18 01:58:28Z" duration="28.673128" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1092" name="Town_Screens_Pass_Ui_Audit_At_All_Resolutions" fullname="AdventureKing.Tests.UiTownScreensTests.Town_Screens_Pass_Ui_Audit_At_All_Resolutions" methodname="Town_Screens_Pass_Ui_Audit_At_All_Resolutions" classname="AdventureKing.Tests.UiTownScreensTests" runstate="Runnable" seed="1635399180" result="Failed" start-time="2026-11-18 01:57:59Z" end-time="2026-11-18 01:58:28Z" duration="28.651322" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  village BGM playing and audible
+  Expected: True
+  But was:  False
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.UiTownScreensTests+<Town_Screens_Pass_Ui_Audit_At_All_Resolutions>d__4.MoveNext () [0x00447] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\UiTownScreensTests.cs:78
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[[01_elder_dialog pc_1920x1080] OK (28 texts, 18 buttons)
+[01_elder_dialog pc_1366x768] OK (28 texts, 18 buttons)
+[01_elder_dialog phone_19.5x9] OK (28 texts, 18 buttons)
+[01_elder_dialog phone_16x9] OK (28 texts, 18 buttons)
+[01_elder_dialog tablet_4x3] OK (28 texts, 18 buttons)
+[02_hud pc_1920x1080] OK (40 texts, 18 buttons)
+[02_hud pc_1366x768] OK (40 texts, 18 buttons)
+[02_hud phone_19.5x9] OK (40 texts, 18 buttons)
+[02_hud phone_16x9] OK (40 texts, 18 buttons)
+[02_hud tablet_4x3] OK (40 texts, 18 buttons)
+[02b_settings pc_1920x1080] OK (9 texts, 8 buttons)
+[02b_settings pc_1366x768] OK (9 texts, 8 buttons)
+[02b_settings phone_19.5x9] OK (9 texts, 8 buttons)
+[02b_settings phone_16x9] OK (9 texts, 8 buttons)
+[02b_settings tablet_4x3] OK (9 texts, 8 buttons)
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

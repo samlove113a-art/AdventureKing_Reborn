@@ -1,0 +1,1068 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 3184)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 8940)
+VBCSCompiler prewarm took 6.79 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-17T12:18:58Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 8788)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
+-batchmode
+-nographics
+-quit
+-projectPath
+C:\AdventureKing_Reborn
+-executeMethod
+AdventureKing.ArtPipeline.Chibi2DArt.BuildAllFromCommandLine
+-logFile
+C:\AdventureKing_Reborn\QA\Logs\chibi2d_meshy6.log
+Successfully changed project path to: C:\AdventureKing_Reborn
+C:/AdventureKing_Reborn
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [13892]  Target information:
+
+Player connection [13892]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 1754357655 [EditorId] 1754357655 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [13892]  * "[IP] 100.91.134.127 [Port] 55504 [Flags] 2 [Guid] 1754357655 [EditorId] 1754357655 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [13892] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [13892] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-17T12:18:58.6276783Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 8788, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-16744" after 0.5 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              fc7e3a35518249ac99491c1bc8d1d103
+  Correlation Id:          f9e2e6e47539f13f376d6ca4c9dd0ff0
+  External correlation Id: 6640129856924314971
+  Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 0.57s, validation: 0.18s, handshake: 0.08s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-17T12:18:58.8882221Z"
+[Licensing::Module] Connected to LicensingClient (PId: 8788, launch time: 0.00, total connection time: 0.83s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968527504213-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.89s
+[Licensing::Module] Licensing is initialized (took 0.24s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/AdventureKing_RebornUnity Data Store running and initialised
+[Physics::Module] Selected backend (deferred post-plugins).
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.6.7f1 (b22767f04f04)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=262144, entitiesPerBlock=1024, blocksPerSlotPage=0, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/AdventureKing_Reborn/Assets
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56744
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.051776 seconds.
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.312 seconds
+Domain Reload Profiling: 2441ms
+	BeginReloadAssembly (267ms)
+		CreateAndSetChildDomain (17ms)
+	RebuildCommonClasses (14ms)
+	RebuildNativeTypeToScriptingClass (50ms)
+	initialDomainReloadingComplete (196ms)
+	LoadAllAssembliesAndSetupDomain (601ms)
+		LoadAssemblies (244ms)
+		TypeCache.Refresh (413ms)
+			TypeCache.ScanAssembly (388ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (1313ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (17ms)
+			BeforeProcessingInitializeOnLoad (170ms)
+			ProcessInitializeOnLoadAttributes (200ms)
+			ProcessInitializeOnLoadMethodAttributes (586ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 31 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.inputsystem@1.20.1 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.inputsystem@2436e68c60c4)
+    com.unity.searcher@4.9.5 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.profiling.core@1.0.3 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.sprite@752945c75a6f)
+    com.unity.2d.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.tilemap@f4c7bd71ac8a)
+    com.unity.render-pipelines.universal@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal@ffe395a3a1d1)
+    com.unity.test-framework@1.8.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework@ee3fe9477490)
+    com.unity.ugui@2.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ugui@eb824e41fbc7)
+    com.unity.modules.animation@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.audio@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.modules.physics@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.ext.nunit@2.1.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.render-pipelines.core@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.core@13460d8ea9e5)
+    com.unity.shadergraph@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.shadergraph@8b7e693cdbfe)
+    com.unity.render-pipelines.universal-config@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal-config@561422b74439)
+    com.unity.graph-authoring@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.graph-authoring@cfd2588851ee)
+    com.unity.burst@2.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.collections@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.collections@4920e8897b5a)
+    com.unity.test-framework.performance@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework.performance@e8b39e3ef3d9)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+DisplayProgressbar: Compiling Scripts
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\DotNetSdk\dotnet.exe "C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 4 Duration: 2s930ms
+[620/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+[626/804    2s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll (+2 others)
+Assets\Scripts\Gameplay\FontAtlasGuard.cs(38,85): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Scripts\Gameplay\FontAtlasGuard.cs(38,32): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Scripts\Gameplay\UiStandard.cs(34,108): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Scripts\Gameplay\UiStandard.cs(34,40): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Scripts\Gameplay\LoginBackdrop.cs(26,23): warning CS0414: The field 'LoginBackdrop.raysImg' is assigned but its value is never used
+*** Tundra requires additional run (2.89 seconds), 2 items updated, 624 evaluated
+ExitCode: 0 Duration: 1s445ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+ExitCode: 0 Duration: 1s53ms
+Finished compiling graph: 807 nodes, 14176 flattened edges (12130 ToBuild, 120 ToUse), maximum node priority 901
+[626/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[786/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.dll, with 148 defines and 279 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[787/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.EditMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.EditMode.dll, with 146 defines and 310 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[788/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.QA.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.QA.Editor.dll, with 146 defines and 313 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[795/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.PlayMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll, with 148 defines and 276 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[798/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Gameplay.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Gameplay.dll, with 148 defines and 280 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[799/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.pdb
+[800/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Gameplay.dll
+[801/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.ArtPipeline.Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.ArtPipeline.Editor.dll, with 146 defines and 314 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+*** Tundra build success (1.03 seconds), 9 items updated, 804 evaluated
+Assets\Scripts\Gameplay\FontAtlasGuard.cs(38,85): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Scripts\Gameplay\FontAtlasGuard.cs(38,32): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Scripts\Gameplay\UiStandard.cs(34,108): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Scripts\Gameplay\UiStandard.cs(34,40): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Scripts\Gameplay\LoginBackdrop.cs(26,23): warning CS0414: The field 'LoginBackdrop.raysImg' is assigned but its value is never used
+AssetDatabase: script compilation time: 6.230828s
+Begin MonoManager ReloadAssembly
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.371 seconds
+Domain Reload Profiling: 3028ms
+	BeginReloadAssembly (629ms)
+		DisableScriptedObjects (50ms)
+		CreateAndSetChildDomain (202ms)
+	RebuildCommonClasses (19ms)
+	RebuildNativeTypeToScriptingClass (40ms)
+	initialDomainReloadingComplete (106ms)
+	LoadAllAssembliesAndSetupDomain (862ms)
+		LoadAssemblies (525ms)
+		TypeCache.Refresh (206ms)
+			TypeCache.ScanAssembly (187ms)
+		AnalyzeDomain (78ms)
+			BuildScriptInfoCaches (64ms)
+			ResolveRequiredComponents (11ms)
+	FinalizeReload (1372ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (5ms)
+			InitializePlatformSupportModulesInManaged (17ms)
+			BeforeProcessingInitializeOnLoad (213ms)
+			ProcessInitializeOnLoadAttributes (297ms)
+			ProcessInitializeOnLoadMethodAttributes (376ms)
+			AfterProcessingInitializeOnLoad (11ms)
+		AwakeInstancesAfterBackupRestoration (45ms)
+Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
+Importing 'GUID: d19f4f8a13b6edb48b986a47ec96402e - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapShadowMaskIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+
+Compiling Ray Tracing Shader "LightmapShadowMaskIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: d19f4f8a13b6edb48b986a47ec96402e' -> (Import Result ID: '2f3428042ef776b2445864f04dea7da4') in 0.070 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fe79ce8b1775d15a9098dd546732b6b2 DependenciesID=f00697c43961a0ce847bf5438d93302a StaticDependenciesID=9fd4e9b2e1ad89e7cbffc601eff4d03f 
+Importing 'GUID: 737a1597422c12547a8714d76a9406ec - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapGBufferDebug.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapGBufferDebug.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 737a1597422c12547a8714d76a9406ec' -> (Import Result ID: '4faae373c20e920475af3438a55f2835') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8e1ffc81d707715a7c2c6eb16c27f594 DependenciesID=b7b67a9423e8fd61ef0281f5e0c5a859 StaticDependenciesID=b513b01e29d0aa4d28825e4d4fb57fb4 
+Importing 'GUID: f32463968f29423cad25aee15a14b9f1 - Path: Packages/com.unity.render-pipelines.core/Runtime/Lighting/SurfaceCache/PunctualLightSampling.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "PunctualLightSampling.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: f32463968f29423cad25aee15a14b9f1' -> (Import Result ID: '808d2c6c286e385bb24806fa45fdabb3') in 0.017 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dc620e6352d0653d228abbaf39fb6ecb DependenciesID=88b3a67e88eea3f2aaf8d05b4deb89d1 StaticDependenciesID=b63d74c4e924df89cb98a36e44fc1845 
+Importing 'GUID: 1451d029813b192429211be28181beab - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapNormalIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapNormalIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 1451d029813b192429211be28181beab' -> (Import Result ID: '313ad748a3afd249523d91148eea8632') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e8632c25a8d699cc14e2e4911deceb80 DependenciesID=de98d18079aebe80478006e0a746713c StaticDependenciesID=5afd8eadeec03e368f74c3a5603c453d 
+Importing 'GUID: 94a070d33e408384bafc1dea4a565df9 - Path: Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/RenderingLayerMask/TraceRenderingLayerMask.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "TraceRenderingLayerMask.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 94a070d33e408384bafc1dea4a565df9' -> (Import Result ID: '3695a812c910c4bdf7e7c4bde3209d34') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ad3913a4b37c16d360b3e42691417795 DependenciesID=d167a0b0fcbd189ed0a998cf363addac StaticDependenciesID=25a592d065c9c4788553066128367c57 
+Importing 'GUID: 94a39d12848d8d64ca962a72b74e7c50 - Path: Packages/com.unity.render-pipelines.core/Runtime/Lighting/SurfaceCache/Estimation.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "Estimation.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 94a39d12848d8d64ca962a72b74e7c50' -> (Import Result ID: '8ac7a0254bafc407e84673b826f4dff1') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=100a286d5a5df7b82e2f738a55f4efa3 DependenciesID=815715d87460adce1a7468daf8cd4f36 StaticDependenciesID=ffb0a11028fb7b99287455d15347e1d8 
+Importing 'GUID: f5ba4d424d4566249b3d94cf81a3e916 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapDirectDirectionalAndEnvironmentIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapDirectDirectionalAndEnvironmentIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: f5ba4d424d4566249b3d94cf81a3e916' -> (Import Result ID: '18bec3cecb087bae1eb8ed869fbee99a') in 0.022 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c24936f9b6c0025bda15f881253dc475 DependenciesID=7f817499d090c387e264267bbbeac88d StaticDependenciesID=d4bdfd2147f181839dcd88d16b4cc45b 
+Importing 'GUID: 7624adbeb148b5c48ab5ab660cc2602a - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapIndirectIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapIndirectIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 7624adbeb148b5c48ab5ab660cc2602a' -> (Import Result ID: '6bab631f1a5291e4a8426a7bab436302') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a46c982b3cd91111804d6768ef3dea8a DependenciesID=491888c60cfb7b27244195a605b3062f StaticDependenciesID=637eaa30376abb268136eb146f59c034 
+Importing 'GUID: 5951703b3d165764c95c653e98350884 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapDirectBRDFIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapDirectBRDFIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 5951703b3d165764c95c653e98350884' -> (Import Result ID: 'dcdb05bacf4926f5b22ebf99dda81ae2') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=47600d4c17c6bddeb71215de92920fff DependenciesID=071d7dc5315b9bbf201213b4cde4ed21 StaticDependenciesID=059ad849da4bff5dcc29e3cff7813344 
+Importing 'GUID: 99ac6221b6ecd7b479be13e8b9866300 - Path: Packages/com.unity.render-pipelines.core/Tests/Editor/PathTracing/Shaders/TerrainRayMarchingTest.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "TerrainRayMarchingTest.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 99ac6221b6ecd7b479be13e8b9866300' -> (Import Result ID: '98a99371ae547ceae628f11ee2965a50') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a909eb3ef327b28dc7998f8c6e710407 DependenciesID=11e63fc6c6dcfef221c312e2fa53ecae StaticDependenciesID=dc53200b7c0c8c0e6f9de4f99348b559 
+Importing 'GUID: e9f4de6d1e07fb94f9a60d35b618f724 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapGBufferIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapGBufferIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: e9f4de6d1e07fb94f9a60d35b618f724' -> (Import Result ID: 'a10a1cc2cca46a80cec61855da8e5fb4') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0d2a9fe9bebc4c98bb4326d916b30296 DependenciesID=188142c9b367112686ab9c506d6cc895 StaticDependenciesID=3c625e26646b7228663e0de2b2c1d69b 
+Importing 'GUID: 5a2a534753fbdb44e96c3c78b5a6999d - Path: Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/DynamicGI/DynamicGISkyOcclusion.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "DynamicGISkyOcclusion.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 5a2a534753fbdb44e96c3c78b5a6999d' -> (Import Result ID: '3b76fda8b52b8478d159cf6a03f22b8a') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fccf58ab5d54b568d245aaa218889099 DependenciesID=47df9d195770dc87f7eb3d8d4d8f930b StaticDependenciesID=72ee5fda06862b709c15f6cbb7db6f05 
+Importing 'GUID: 5bbebdef5916845478fcef13fa10d89f - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapDirectStochasticLightIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapDirectStochasticLightIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 5bbebdef5916845478fcef13fa10d89f' -> (Import Result ID: '32d18f8db0f8c684a6d49ae5311eed51') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4e705874699449607f4d268e399956ff DependenciesID=8bb46d65dbd10363ed8a0cc116ae2f29 StaticDependenciesID=471ca71b6b19c4611a46691a7356c8a6 
+Importing 'GUID: 1c410815c01ce1d4d82c645c0cd45747 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapAOIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapAOIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 1c410815c01ce1d4d82c645c0cd45747' -> (Import Result ID: 'de19482ed0e1590ecddc2ad39ea553f5') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9e61846f1a0b8e700d058eb75071cfa4 DependenciesID=17c798ff944ad04a03633c10d9f70f38 StaticDependenciesID=219d1b7269d01f2442d424f53e04d073 
+Importing 'GUID: 2c32233d92a2d0745930664c087c5c9a - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationValidity.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationValidity.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 2c32233d92a2d0745930664c087c5c9a' -> (Import Result ID: '370f3a5bec5d04f83793c5e3b89c0663') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9e9376567c433613a82e4047494e077b DependenciesID=b8b79f32e28a48a247a4581b2eb9da1b StaticDependenciesID=89ce6b5e76d568c473e42bb2e82d857d 
+Importing 'GUID: ace95ac84e213794891b4bd7c9b3c158 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/LightmapValidityIntegration.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "LightmapValidityIntegration.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: ace95ac84e213794891b4bd7c9b3c158' -> (Import Result ID: 'e555a79874d9aec39234a33726e80e37') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5bfb88e712dd47bb25e433965a827852 DependenciesID=9f1f1e0c09bc887ac0e05e494ea55c65 StaticDependenciesID=af3a8789fbe725883be9c99ebb7cf5e2 
+Importing 'GUID: 5ecdabd800f05984696f22ba95284516 - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationIndirect.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationIndirect.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 5ecdabd800f05984696f22ba95284516' -> (Import Result ID: '627ec9bf80ad1e2d7a2c34bd555ec237') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9c53a984f0e6e99603deb52f6fd5e147 DependenciesID=43aa4cee303d224a102ccbaefec5ae79 StaticDependenciesID=1ad901001e2e557153e1de5753d25220 
+Importing 'GUID: 6e0b547bab30a804c8123974120d583f - Path: Packages/com.unity.render-pipelines.core/Tests/Runtime/PathTracing/PathIteratorTest.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "PathIteratorTest.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 6e0b547bab30a804c8123974120d583f' -> (Import Result ID: 'b1ff768cdea10e6e1d38bea10d7c5b49') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4174e7fcbbeced04ce51308d4f9fe50d DependenciesID=47504f1d7fb8004a1103e30034f86e4d StaticDependenciesID=e24ea404bb4dabe55ffbcaa7b840b299 
+Importing 'GUID: de3013e16d99f2746ab1735ec06a660b - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationOcclusion.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationOcclusion.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: de3013e16d99f2746ab1735ec06a660b' -> (Import Result ID: 'cfffeb3d868f8b22f2d4164aa4579d58') in 0.018 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cc3d1c8885e48c33e757cf2d2a66c01f DependenciesID=c5d4ec4c208ddfd229b766db1439ce81 StaticDependenciesID=d23a0c4a2896e547ad436f2fd232bb27 
+Importing 'GUID: fe7f1a959d1d3f544a208b7e8805e6cd - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationDirectDirectionalAndEnvironment.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationDirectDirectionalAndEnvironment.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: fe7f1a959d1d3f544a208b7e8805e6cd' -> (Import Result ID: '4e720f2fef2df6e0efb50ed4f510b92b') in 0.019 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=199e9fa9ecb1c5ec24735011698e221a DependenciesID=b396252272d4f41532ebe26258f49d67 StaticDependenciesID=b8525778ccd6bf87644fae631483c773 
+Importing 'GUID: 1f9bfe60b4ad75943a5281839c1a4e5c - Path: Packages/com.unity.render-pipelines.core/Runtime/PathTracing/Shaders/ProbeIntegrationDirectStochasticLight.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "ProbeIntegrationDirectStochasticLight.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: 1f9bfe60b4ad75943a5281839c1a4e5c' -> (Import Result ID: '4ab41803b2af85dce64575d6ea7bdb9b') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ad0c520040a6664b9843421cd0ae8571 DependenciesID=e5922aa827603a7f28dcd72dcb142980 StaticDependenciesID=bb23e9aed0fe8778db1283cad6c57003 
+Importing 'GUID: ff2cbab5da58bf04d82c5f34037ed123 - Path: Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/VirtualOffset/TraceVirtualOffset.urtshader' with importer (ScriptedImporter : Unity.Rendering.LightTransport.Editor:UnityEditor.Rendering.UnifiedRayTracing:UnifiedRTShaderImporter)
+
+Compiling Ray Tracing Shader "TraceVirtualOffset.urtshader", keywords = <no keywords>
+    finished in 0.00 seconds. Local cache hits 1, remote cache hits 0, compiled 0 platform variants
+Imported 'GUID: ff2cbab5da58bf04d82c5f34037ed123' -> (Import Result ID: 'bf364475543c0cb9d6b6e47e14e8a47f') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b9c31dce0c4fbf21215b1dd71a483711 DependenciesID=76fb3071de7d54cba36396909d18bd50 StaticDependenciesID=577fb2ca56f9c9cef1dba593cc7f61b6 
+
+Asset Pipeline Refresh (id=a58527b65eb207248875e064e512856d): Total: 10.885 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=22 (actual=22, local cache=0, cache server=0)
+		Asset DB Process Time: managed=4 ms, native=2441 ms
+		Asset DB Callback time: managed=246 ms, native=137 ms
+		Scripting: domain reloads=1, domain reload time=1740 ms, compile time=6234 ms, other=80 ms
+		Project Asset Count: scripts=1047, non-scripts=3024
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 21.536ms
+	ApplyChangesToAssetFolders: 1.005ms
+	Scan: 166.996ms
+	Collect global state as custom dependencies: 40.608ms
+	OnSourceAssetsModified: 1.408ms
+	CategorizeScriptCompilationAssets: 37.383ms
+	ProcessAssetsWithTransientArtifactChanges: 87.442ms
+	CategorizeAssets: 74.242ms
+	CompileScripts: 6233.755ms
+	ImportOutOfDateAssets: 1769.796ms (1376.806ms without children)
+		ImportManagerImport: 383.676ms (2.417ms without children)
+			UpdateCategorizedAssets: 2.686ms
+		UnloadImportedAssets: 3.892ms
+		ReloadImportedAssets: 1.160ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.262ms
+		ImportSchedulerStart: 4.103ms
+	PostProcessAllAssets: 361.573ms
+		ComputeShaderImportPostprocess 59.921ms
+		RaytracingShaderImportPostprocess 53.053ms
+		VCAutoAddAssetPostprocess 1.193ms
+		XRBuildSystem.XRAssetImported 0.123ms
+		PostProcessCallbackCreateDeferredMaterials 0.100ms
+		ShaderAssetModifiedCallback 0.064ms
+		MonoPostProcessAllAssets: 245.414ms
+			AssetPostprocessor.OnPostprocessAllAssets 132.052ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 23.908ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 21.785ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 10.045ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 4.319ms
+			SyncVS.PostprocessSyncProject 3.695ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 3.642ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 3.234ms
+			AssetChangedListener.OnPostprocessAllAssets 3.217ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.762ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.021ms
+			MaterialPostprocessor.OnPostprocessAllAssets 1.947ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.375ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.191ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 1.067ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 1.039ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.803ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.744ms
+			PostProcessor.OnPostprocessAllAssets 0.740ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.700ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.645ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.492ms
+			AssetProcessor.OnPostprocessAllAssets 0.478ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.420ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.389ms
+			AssetEvents.OnPostprocessAllAssets 0.365ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.354ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.325ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.295ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.251ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.243ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.214ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.201ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.125ms
+	PostAssetChangesProfiler: 2.501ms
+	UnloadStreamsBegin: 4.373ms
+	PersistCurrentRevisions: 0.372ms
+	GenerateScriptTypeHashes: 2.235ms
+	GenerateScriptTypeSerializationHashes: 4.223ms
+	Untracked: 2074.640ms
+
+Application.AssetDatabase Initial Refresh End
+Shader Hidden/ChartRasterizerHardware is not supported: GPU does not support conservative rasterization
+Shader Hidden/ChartRasterizerHardware is not supported: GPU does not support conservative rasterization
+Scanning for USB devices : 2.969ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Adventure King Reborn
+Unloading 85 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4047 unused Assets / (6.4 MB). Loaded Objects now: 4965.
+Memory consumption went from 353.6 MB to 347.2 MB.
+Total: 14.942100 ms (FindLiveObjects: 0.724400 ms CreateObjectMapping: 0.562600 ms MarkObjects: 9.759800 ms  DeleteObjects: 3.613200 ms)
+
+Curl error 35: Recv failure: Connection was reset
+Importing 'GUID: 30319868b231d8b4f831bf08ed2d226b - Path: Assets/Art/Chibi2D/Mage/Mage_Idle.png' with importer (TextureImporter)
+Imported 'GUID: 30319868b231d8b4f831bf08ed2d226b' -> (Import Result ID: 'f23ddd31d02b5fb8ba4e64132acb2288') in 0.018 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=47c3ca344f10971032a81f2e852cd4e5 DependenciesID=996be8effd8b41b4865e521e1bcf126a StaticDependenciesID=e70b5d8754c05cc1b71103b489e76413 
+Asset Pipeline Refresh (id=aee9aceeadc7ab543930a3bbe1c89959): Total: 0.130 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 30319868b231d8b4f831bf08ed2d226b - Path: Assets/Art/Chibi2D/Mage/Mage_Idle.png' with importer (TextureImporter)
+Imported 'GUID: 30319868b231d8b4f831bf08ed2d226b' -> (Import Result ID: 'f23ddd31d02b5fb8ba4e64132acb2288') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=47c3ca344f10971032a81f2e852cd4e5 DependenciesID=996be8effd8b41b4865e521e1bcf126a StaticDependenciesID=e70b5d8754c05cc1b71103b489e76413 
+Asset Pipeline Refresh (id=2a4025ed50e9243439166ec495a3e26b): Total: 0.081 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=47c51edceed3c3c47b6b4b80d9a9b8f5): Total: 0.051 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=5f846a348790df04398ef6e50c20290f): Total: 0.061 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 69662f6a7e024c04085a9a6747096727 - Path: Assets/Art/Chibi2D/Mage/Mage_Run.png' with importer (TextureImporter)
+Imported 'GUID: 69662f6a7e024c04085a9a6747096727' -> (Import Result ID: 'd6c867447a699ecf23b2d78616c17ad7') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8abecc915c316d73290be5d69103c694 DependenciesID=462008b22803bb9cb006fdfd5a3805d9 StaticDependenciesID=d7d91a4932f9f016ec246dedd9e59945 
+Asset Pipeline Refresh (id=4c8f9c8fea0544246bdb33566ba1ffa3): Total: 0.038 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 69662f6a7e024c04085a9a6747096727 - Path: Assets/Art/Chibi2D/Mage/Mage_Run.png' with importer (TextureImporter)
+Imported 'GUID: 69662f6a7e024c04085a9a6747096727' -> (Import Result ID: 'd6c867447a699ecf23b2d78616c17ad7') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8abecc915c316d73290be5d69103c694 DependenciesID=462008b22803bb9cb006fdfd5a3805d9 StaticDependenciesID=d7d91a4932f9f016ec246dedd9e59945 
+Asset Pipeline Refresh (id=1ed320398be89da43ba98ea574a9cf71): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=6c55f936f5c8d3b44bae26f00918b29a): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=f4a675109e2803447a82b81f148da685): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 76c4dd39a2eeeb44990b59eebd0a2b3f - Path: Assets/Art/Chibi2D/Mage/Mage_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 76c4dd39a2eeeb44990b59eebd0a2b3f' -> (Import Result ID: 'cd911508a439a5fde62e42a1ab34c6cd') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=04f1e1e7dd3f170da670e8b3cd1e674d DependenciesID=97fc54b2d63499de5d44573c7539f11c StaticDependenciesID=c69a474a2f5d93b773dd11e225f2a1bd 
+Asset Pipeline Refresh (id=13e4210e6e441314bb1ae8d3fa808bcc): Total: 0.025 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 76c4dd39a2eeeb44990b59eebd0a2b3f - Path: Assets/Art/Chibi2D/Mage/Mage_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 76c4dd39a2eeeb44990b59eebd0a2b3f' -> (Import Result ID: 'cd911508a439a5fde62e42a1ab34c6cd') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=04f1e1e7dd3f170da670e8b3cd1e674d DependenciesID=97fc54b2d63499de5d44573c7539f11c StaticDependenciesID=c69a474a2f5d93b773dd11e225f2a1bd 
+Asset Pipeline Refresh (id=9b73143b801f29f4fa8bbbce665b4304): Total: 0.064 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=ca919074d0fa0f54e9b5a397d68ca0cf): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0f35228ae89b6c948a1ffb0132c19954): Total: 0.056 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 00521a109d98a1a4888c9446ffbac4e4 - Path: Assets/Art/Chibi2D/Mage/Mage_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 00521a109d98a1a4888c9446ffbac4e4' -> (Import Result ID: '9db429e018be33c77a116662fe1cb3c1') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2a87b1eb96c68db5f9d8cb08b26facc1 DependenciesID=de3a487ac45bef3f03ce0a29c8543c8d StaticDependenciesID=7554b881ac53fbd9671299d08260d02a 
+Asset Pipeline Refresh (id=6eb7fa597ba46e94bb2b06b0ed274476): Total: 0.023 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 00521a109d98a1a4888c9446ffbac4e4 - Path: Assets/Art/Chibi2D/Mage/Mage_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 00521a109d98a1a4888c9446ffbac4e4' -> (Import Result ID: '9db429e018be33c77a116662fe1cb3c1') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2a87b1eb96c68db5f9d8cb08b26facc1 DependenciesID=de3a487ac45bef3f03ce0a29c8543c8d StaticDependenciesID=7554b881ac53fbd9671299d08260d02a 
+Asset Pipeline Refresh (id=dbc02b031f8bb9f49a2dc0bdb91f2fb5): Total: 0.062 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=9150e3c4706195243a052fe818451e8b): Total: 0.047 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=37d8723cf50b3d1458d8222813cd02cc): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 3d280ce3e7d86bd4ab2550b0f0d432c0 - Path: Assets/Art/Chibi2D/Mage/Mage_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 3d280ce3e7d86bd4ab2550b0f0d432c0' -> (Import Result ID: '7ed640636a74a4f16bed32d6afcdb10f') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=759ab4145ec5d25161506b445ecd5a87 DependenciesID=6ff3f0e71d8a4ec6e98256e51b5f1181 StaticDependenciesID=ac6b004815bf864b23cf952451209878 
+Asset Pipeline Refresh (id=2b1715d87e3eef14e922437ccef07259): Total: 0.029 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 3d280ce3e7d86bd4ab2550b0f0d432c0 - Path: Assets/Art/Chibi2D/Mage/Mage_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 3d280ce3e7d86bd4ab2550b0f0d432c0' -> (Import Result ID: '7ed640636a74a4f16bed32d6afcdb10f') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=759ab4145ec5d25161506b445ecd5a87 DependenciesID=6ff3f0e71d8a4ec6e98256e51b5f1181 StaticDependenciesID=ac6b004815bf864b23cf952451209878 
+Asset Pipeline Refresh (id=874def51cdaf9a94b8018bc8545e791a): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=03b8989457e42044c86b048c249aa48e): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=ea42c8490164f8e4096d2c26fece97f3): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e3700021fb4d00b4f8e995ab44a6217f - Path: Assets/Art/Chibi2D/Mage/Mage_Hit.png' with importer (TextureImporter)
+Imported 'GUID: e3700021fb4d00b4f8e995ab44a6217f' -> (Import Result ID: '4648e93b5a986a695a87d9c31017c933') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f4378d6d7c4d21ae77e572673fc2f7ca DependenciesID=0b3d2f052022d9994a8d313da453cf81 StaticDependenciesID=1d84f2048f29d429f632ce05b0e79f99 
+Asset Pipeline Refresh (id=3bf9757a972f15e4696359b14870492b): Total: 0.024 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e3700021fb4d00b4f8e995ab44a6217f - Path: Assets/Art/Chibi2D/Mage/Mage_Hit.png' with importer (TextureImporter)
+Imported 'GUID: e3700021fb4d00b4f8e995ab44a6217f' -> (Import Result ID: '4648e93b5a986a695a87d9c31017c933') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f4378d6d7c4d21ae77e572673fc2f7ca DependenciesID=0b3d2f052022d9994a8d313da453cf81 StaticDependenciesID=1d84f2048f29d429f632ce05b0e79f99 
+Asset Pipeline Refresh (id=474ba853640181b4282562c479b446a8): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=c377325fa3517c644b12f697b684af00): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=c1cd43d665d495a4b8b21ad9a3bc2074): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e1badf7601bc2f64ba056983d43ca077 - Path: Assets/Art/Chibi2D/Mage/Mage_Death.png' with importer (TextureImporter)
+Imported 'GUID: e1badf7601bc2f64ba056983d43ca077' -> (Import Result ID: '852b6ddc535d19747f92a57681916752') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=96d881f28bd08514524ff544d6b8a077 DependenciesID=253ae6b6460344053b64487708e25fe7 StaticDependenciesID=23706452c1f75ceb9b23915eeed7c470 
+Asset Pipeline Refresh (id=ae7b95c94aeefb244bf67c6fb3e10de2): Total: 0.027 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e1badf7601bc2f64ba056983d43ca077 - Path: Assets/Art/Chibi2D/Mage/Mage_Death.png' with importer (TextureImporter)
+Imported 'GUID: e1badf7601bc2f64ba056983d43ca077' -> (Import Result ID: '852b6ddc535d19747f92a57681916752') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=96d881f28bd08514524ff544d6b8a077 DependenciesID=253ae6b6460344053b64487708e25fe7 StaticDependenciesID=23706452c1f75ceb9b23915eeed7c470 
+Asset Pipeline Refresh (id=2116933a121ac0142b0bd84e421344be): Total: 0.067 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Worker ready: AssetImportWorkerHW0 0
+Asset Pipeline Refresh (id=2e30bc097da119d4b91065e55a30e084): Total: 0.050 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=cf94f76430e08284f8e108667a304357): Total: 0.056 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: db913e994633d4a48ac6f770d14f5967 - Path: Assets/Art/Chibi2D/Mage/Mage_Attack.png' with importer (TextureImporter)
+Imported 'GUID: db913e994633d4a48ac6f770d14f5967' -> (Import Result ID: '734f0551e9a21781969038e6ee844433') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5ba67bc937ff3f4363feb149ef93f322 DependenciesID=da7667c96d1c784e962ef3f0c83112e0 StaticDependenciesID=2209e88353090b8c878640ccd47e3271 
+Asset Pipeline Refresh (id=1d3a5787e6a682543be35ba68d5854b5): Total: 0.027 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: db913e994633d4a48ac6f770d14f5967 - Path: Assets/Art/Chibi2D/Mage/Mage_Attack.png' with importer (TextureImporter)
+Imported 'GUID: db913e994633d4a48ac6f770d14f5967' -> (Import Result ID: '734f0551e9a21781969038e6ee844433') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5ba67bc937ff3f4363feb149ef93f322 DependenciesID=da7667c96d1c784e962ef3f0c83112e0 StaticDependenciesID=2209e88353090b8c878640ccd47e3271 
+Asset Pipeline Refresh (id=48c8e0bf80b256d49ae3a97f29a24894): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=2d4efa171589b324fb23f342e8151ed7): Total: 0.046 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=601aa311d45d2b54e8053bbbead06b3f): Total: 0.057 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 8c36462d43ad24f43a6427106c3fb5de - Path: Assets/Art/Chibi2D/Mage/Mage_Skill.png' with importer (TextureImporter)
+Imported 'GUID: 8c36462d43ad24f43a6427106c3fb5de' -> (Import Result ID: 'd755a8273ea6a6d6b507533c4349fe61') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ab07d7231668e1484371e4ea31a0f060 DependenciesID=9c1abd74f9181e98c98cc8eb9e77dacc StaticDependenciesID=443f920345287688c7d541622c314649 
+Asset Pipeline Refresh (id=05f969ffee3d60f4bba6451e421e4618): Total: 0.031 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 8c36462d43ad24f43a6427106c3fb5de - Path: Assets/Art/Chibi2D/Mage/Mage_Skill.png' with importer (TextureImporter)
+Imported 'GUID: 8c36462d43ad24f43a6427106c3fb5de' -> (Import Result ID: 'd755a8273ea6a6d6b507533c4349fe61') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ab07d7231668e1484371e4ea31a0f060 DependenciesID=9c1abd74f9181e98c98cc8eb9e77dacc StaticDependenciesID=443f920345287688c7d541622c314649 
+Asset Pipeline Refresh (id=c3c47ed009a477e439ca760c3aa16732): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=4d820fcbcd4766747b101dcfce7ec9b5): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=34f1cba9541607541b0d39814f3ce3e4): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=7f7b911c5d19aa242b9e90a00b08766f): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=bb82c1bae5c9259499a1d504debb07b3): Total: 0.056 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 22c277792eb494a41ad647f46eaaf396 - Path: Assets/Resources/Chibi2D/Mage_Visual2D.prefab' with importer (PrefabImporter)
+Imported 'GUID: 22c277792eb494a41ad647f46eaaf396' -> (Import Result ID: 'c744f72e2f3ceafd54576c4273ca4516') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8d7074fed2e9671a7aa2ffdb9bc578c1 DependenciesID=11b540b83b1b46ce018bbea106b65677 StaticDependenciesID=f6e8773499150cf06e0bae248eab6093 
+Asset Pipeline Refresh (id=e766a74e74e6c794a8fe3aec7e733d6e): Total: 0.050 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[CHIBI2D] Mage: 9 clips, ppu 85.3, pixel True, prefab Assets/Resources/Chibi2D/Mage_Visual2D.prefab
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.Chibi2DArt:Build (AdventureKing.Gameplay.HeroClass) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:122)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildAllFromCommandLine () (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/Chibi2DArt.cs Line: 122)
+
+Importing 'GUID: 9f7357f237e16194490435735f1ac056 - Path: Assets/Art/Chibi2D/Mage/Fx/cast_circle.png' with importer (TextureImporter)
+Imported 'GUID: 9f7357f237e16194490435735f1ac056' -> (Import Result ID: 'bf6252ce7cdc1fa4692838d6926af489') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=447dbd3565e9fec36d79161758669391 DependenciesID=162719e0042beeb5bc98b90f354ba11c StaticDependenciesID=88f27ea1ec50b4dc185c6f536a2230c0 
+Asset Pipeline Refresh (id=f75bd289977b1024d87278ba8a1de910): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 9f7357f237e16194490435735f1ac056 - Path: Assets/Art/Chibi2D/Mage/Fx/cast_circle.png' with importer (TextureImporter)
+Imported 'GUID: 9f7357f237e16194490435735f1ac056' -> (Import Result ID: 'bf6252ce7cdc1fa4692838d6926af489') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=447dbd3565e9fec36d79161758669391 DependenciesID=162719e0042beeb5bc98b90f354ba11c StaticDependenciesID=88f27ea1ec50b4dc185c6f536a2230c0 
+Asset Pipeline Refresh (id=b5c1073b566118c4da183037ace652fb): Total: 0.064 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=41daa762446475241822eb30539d5a08): Total: 0.009 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 84b4a7feef8b93a4ca39ea58bf134b77 - Path: Assets/Art/Chibi2D/Mage/Fx/arcane_orb.png' with importer (TextureImporter)
+Imported 'GUID: 84b4a7feef8b93a4ca39ea58bf134b77' -> (Import Result ID: '22dc844b2af14f368362134e403fe41f') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7273af4a2f12969c0f47b88b3f5444af DependenciesID=d671dafa5d4c26496b892bb5a7e2121e StaticDependenciesID=d2f96964442ac54a76320b332603d283 
+Asset Pipeline Refresh (id=796652ee91c7a5c4f92ca04232a27446): Total: 0.024 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 84b4a7feef8b93a4ca39ea58bf134b77 - Path: Assets/Art/Chibi2D/Mage/Fx/arcane_orb.png' with importer (TextureImporter)
+Imported 'GUID: 84b4a7feef8b93a4ca39ea58bf134b77' -> (Import Result ID: '22dc844b2af14f368362134e403fe41f') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7273af4a2f12969c0f47b88b3f5444af DependenciesID=d671dafa5d4c26496b892bb5a7e2121e StaticDependenciesID=d2f96964442ac54a76320b332603d283 
+Asset Pipeline Refresh (id=86fdd01d0864ab54f9accbe183f119d2): Total: 0.062 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=83cc537b81b77f846b5f9db326af50ab): Total: 0.009 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 120c098082d214747b7519685dcf8f5b - Path: Assets/Art/Chibi2D/Mage/Fx/hit_spark.png' with importer (TextureImporter)
+Imported 'GUID: 120c098082d214747b7519685dcf8f5b' -> (Import Result ID: '901281bd63b958139d51ffd62d121bd2') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2870f9188e49b9998134fe47bc6bbcc7 DependenciesID=ba862b222d3c87cd3bffec01b816d780 StaticDependenciesID=bd47e351c25a4b9bf5887d336fdecb5c 
+Asset Pipeline Refresh (id=27255dab5c3820b46aa37389d7a7b214): Total: 0.021 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 120c098082d214747b7519685dcf8f5b - Path: Assets/Art/Chibi2D/Mage/Fx/hit_spark.png' with importer (TextureImporter)
+Imported 'GUID: 120c098082d214747b7519685dcf8f5b' -> (Import Result ID: '901281bd63b958139d51ffd62d121bd2') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2870f9188e49b9998134fe47bc6bbcc7 DependenciesID=ba862b222d3c87cd3bffec01b816d780 StaticDependenciesID=bd47e351c25a4b9bf5887d336fdecb5c 
+Asset Pipeline Refresh (id=3af40ec7fc4b1624ea56bed11a357c04): Total: 0.063 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=82389f4c9f6a28145a4e03a06c2bdb5c): Total: 0.009 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[CHIBI2D] skill effects built
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildFx (string,single) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:207)
+AdventureKing.ArtPipeline.Chibi2DArt:Build (AdventureKing.Gameplay.HeroClass) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:123)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildAllFromCommandLine () (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/Chibi2DArt.cs Line: 207)
+
+Importing 'GUID: 13c3fa6453b809844853b1d922434782 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Idle.png' with importer (TextureImporter)
+Imported 'GUID: 13c3fa6453b809844853b1d922434782' -> (Import Result ID: '02b93ccb2109a439ac2327bc0d247008') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=09ae38ea79d13f4b27e8e9babc5529b7 DependenciesID=d8962772d200bbfaa23f9af1a39160fd StaticDependenciesID=3790007c4fe8c5554c8931f94f0037fd 
+Asset Pipeline Refresh (id=8dd0b4e45ac0826458e016485ccf18d2): Total: 0.033 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 13c3fa6453b809844853b1d922434782 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Idle.png' with importer (TextureImporter)
+Imported 'GUID: 13c3fa6453b809844853b1d922434782' -> (Import Result ID: '02b93ccb2109a439ac2327bc0d247008') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=09ae38ea79d13f4b27e8e9babc5529b7 DependenciesID=d8962772d200bbfaa23f9af1a39160fd StaticDependenciesID=3790007c4fe8c5554c8931f94f0037fd 
+Asset Pipeline Refresh (id=0d4334b22f0186e49a76cb9407e3adf5): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 55eda72588841ca46b826cfe38cd0e03 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Run.png' with importer (TextureImporter)
+Imported 'GUID: 55eda72588841ca46b826cfe38cd0e03' -> (Import Result ID: '5ee4bca3d1572d34f3cb1b9950b76846') in 0.019 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d68dde5d408b92eeea06737c44791d30 DependenciesID=864549f80c924a52a50db67527832a5c StaticDependenciesID=2dec3415da7768662b9b304cad3b56b3 
+Asset Pipeline Refresh (id=a98de2bb59c58684189128524d214a0d): Total: 0.038 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 55eda72588841ca46b826cfe38cd0e03 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Run.png' with importer (TextureImporter)
+Imported 'GUID: 55eda72588841ca46b826cfe38cd0e03' -> (Import Result ID: '5ee4bca3d1572d34f3cb1b9950b76846') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d68dde5d408b92eeea06737c44791d30 DependenciesID=864549f80c924a52a50db67527832a5c StaticDependenciesID=2dec3415da7768662b9b304cad3b56b3 
+Asset Pipeline Refresh (id=1179ea3d2d85605408a564f50f5fce26): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 627cfd614d2d1fa4fbced200ffe0f942 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 627cfd614d2d1fa4fbced200ffe0f942' -> (Import Result ID: '11d13576b21d79df68f3a8f05207e0f1') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3d9e27ab09d26cf75c7e685738938a13 DependenciesID=bd9cfa7743682b019be537142b6f7bcd StaticDependenciesID=cf7a083aa28faf49594664d43ca8a401 
+Asset Pipeline Refresh (id=f67438e0a1e8ce543a6fa0d6044092bf): Total: 0.030 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 627cfd614d2d1fa4fbced200ffe0f942 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 627cfd614d2d1fa4fbced200ffe0f942' -> (Import Result ID: '11d13576b21d79df68f3a8f05207e0f1') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3d9e27ab09d26cf75c7e685738938a13 DependenciesID=bd9cfa7743682b019be537142b6f7bcd StaticDependenciesID=cf7a083aa28faf49594664d43ca8a401 
+Asset Pipeline Refresh (id=01e9c16fd67553947bbb09d9d4210ac5): Total: 0.067 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e4e9abc34ec237148b9adc2b1158ce36 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Fall.png' with importer (TextureImporter)
+Imported 'GUID: e4e9abc34ec237148b9adc2b1158ce36' -> (Import Result ID: '15b308c3fdd4c62a63b88cdc052c6190') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8e68da14e11221738579ab0b8188da11 DependenciesID=dca385b078a17fd8ace90e13ef242743 StaticDependenciesID=1dcc058f7a059b2044ce2cec32c57ea2 
+Asset Pipeline Refresh (id=48d832494d194514a850da3d15dd6d73): Total: 0.024 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e4e9abc34ec237148b9adc2b1158ce36 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Fall.png' with importer (TextureImporter)
+Imported 'GUID: e4e9abc34ec237148b9adc2b1158ce36' -> (Import Result ID: '15b308c3fdd4c62a63b88cdc052c6190') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8e68da14e11221738579ab0b8188da11 DependenciesID=dca385b078a17fd8ace90e13ef242743 StaticDependenciesID=1dcc058f7a059b2044ce2cec32c57ea2 
+Asset Pipeline Refresh (id=43bab745f6b715a46b6dd534027e4338): Total: 0.095 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 1636389a19d4bb741a01aa4977879e9b - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 1636389a19d4bb741a01aa4977879e9b' -> (Import Result ID: 'b49dcde815f07daa80280946554e8cf1') in 0.017 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2925be4de0df427aa8eb1f28a47497f7 DependenciesID=1ca1e9dd511bf269e1f551cccefa0ee3 StaticDependenciesID=437fd5640da9589c9bfa4fe7cc200d95 
+Asset Pipeline Refresh (id=e015f21f7ecc4bf4d867df176359f1d8): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 1636389a19d4bb741a01aa4977879e9b - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 1636389a19d4bb741a01aa4977879e9b' -> (Import Result ID: 'b49dcde815f07daa80280946554e8cf1') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2925be4de0df427aa8eb1f28a47497f7 DependenciesID=1ca1e9dd511bf269e1f551cccefa0ee3 StaticDependenciesID=437fd5640da9589c9bfa4fe7cc200d95 
+Asset Pipeline Refresh (id=9ae436adbb8e08a48ac8080cba9c376f): Total: 0.085 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 8c2a8c0bc40920b4eb69fb8a7be4db16 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Hit.png' with importer (TextureImporter)
+Imported 'GUID: 8c2a8c0bc40920b4eb69fb8a7be4db16' -> (Import Result ID: 'a0574e94bc7e78d3d685974e3dd005a1') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=384c649822ee5260adc450dbc21e9d07 DependenciesID=164133e159fd4ca557df75fe37b96acc StaticDependenciesID=967d3c179dfeeea182e222bb55c35568 
+Asset Pipeline Refresh (id=c870124f45e353844a80480e8b7273ac): Total: 0.026 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 8c2a8c0bc40920b4eb69fb8a7be4db16 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Hit.png' with importer (TextureImporter)
+Imported 'GUID: 8c2a8c0bc40920b4eb69fb8a7be4db16' -> (Import Result ID: 'a0574e94bc7e78d3d685974e3dd005a1') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=384c649822ee5260adc450dbc21e9d07 DependenciesID=164133e159fd4ca557df75fe37b96acc StaticDependenciesID=967d3c179dfeeea182e222bb55c35568 
+Asset Pipeline Refresh (id=61b09732892e28d4d9e7d36917e5a34a): Total: 0.085 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 73346b3b3a9bb45499d4bc8231d6ffc1 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Death.png' with importer (TextureImporter)
+Imported 'GUID: 73346b3b3a9bb45499d4bc8231d6ffc1' -> (Import Result ID: '88da5c743ac5e539ce200b016f028d99') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9f5e4c8e384963a6ef516a572e136cee DependenciesID=6a4dae6820dfec5ad0226d6758cc623f StaticDependenciesID=5a0c39fcdffa0c97d053fc6f3c0a81cd 
+Asset Pipeline Refresh (id=d35aed815696c614eaccc4ae2235c6af): Total: 0.079 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 73346b3b3a9bb45499d4bc8231d6ffc1 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Death.png' with importer (TextureImporter)
+Imported 'GUID: 73346b3b3a9bb45499d4bc8231d6ffc1' -> (Import Result ID: '88da5c743ac5e539ce200b016f028d99') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9f5e4c8e384963a6ef516a572e136cee DependenciesID=6a4dae6820dfec5ad0226d6758cc623f StaticDependenciesID=5a0c39fcdffa0c97d053fc6f3c0a81cd 
+Asset Pipeline Refresh (id=b313ffa57a1809a41962dbe7a31f5df8): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 6d37422c63626ed4e8d992065e87b282 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Attack.png' with importer (TextureImporter)
+Imported 'GUID: 6d37422c63626ed4e8d992065e87b282' -> (Import Result ID: '6accedd884e6d0c1e655e02f2fd07737') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bf0f0abe9990de9876642e8e290f5c76 DependenciesID=6c435d448f5c3ed5ae9afad78508bffa StaticDependenciesID=4e39f203c73f8e40c292743d42f8d09e 
+Asset Pipeline Refresh (id=92a7df0c28944774397af85582fc08d3): Total: 0.035 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 6d37422c63626ed4e8d992065e87b282 - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Attack.png' with importer (TextureImporter)
+Imported 'GUID: 6d37422c63626ed4e8d992065e87b282' -> (Import Result ID: '6accedd884e6d0c1e655e02f2fd07737') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bf0f0abe9990de9876642e8e290f5c76 DependenciesID=6c435d448f5c3ed5ae9afad78508bffa StaticDependenciesID=4e39f203c73f8e40c292743d42f8d09e 
+Asset Pipeline Refresh (id=3227fa1f0a3f8434082c18b8e970cce7): Total: 0.069 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: d7dc77be848cc474c96fdd639820d1bd - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Skill.png' with importer (TextureImporter)
+Imported 'GUID: d7dc77be848cc474c96fdd639820d1bd' -> (Import Result ID: 'cbfbc15740db173cc1e6c3c0455ab163') in 0.017 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e611d6d55d35ea5f6f6aa273fc7acac6 DependenciesID=e3529c99a81bc9c0f5f747ddf3426e40 StaticDependenciesID=3cb137a1736452289762d8209804a2b9 
+Asset Pipeline Refresh (id=711d9597e2ff9894cb493245dec5f1ad): Total: 0.038 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: d7dc77be848cc474c96fdd639820d1bd - Path: Assets/Resources/Chibi2D/Paperdoll/fire_mage/Mage_Skill.png' with importer (TextureImporter)
+Imported 'GUID: d7dc77be848cc474c96fdd639820d1bd' -> (Import Result ID: 'cbfbc15740db173cc1e6c3c0455ab163') in 0.019 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e611d6d55d35ea5f6f6aa273fc7acac6 DependenciesID=e3529c99a81bc9c0f5f747ddf3426e40 StaticDependenciesID=3cb137a1736452289762d8209804a2b9 
+Asset Pipeline Refresh (id=220639bd036ae1945801b7bf78096eaa): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[CHIBI2D] paper-doll outfit fire_mage built
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildOutfits (string,System.Collections.Generic.Dictionary`2<string, AdventureKing.ArtPipeline.Chibi2DArt/ClipMeta>,single,single,UnityEngine.Vector2,bool) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:168)
+AdventureKing.ArtPipeline.Chibi2DArt:Build (AdventureKing.Gameplay.HeroClass) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:124)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildAllFromCommandLine () (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/Chibi2DArt.cs Line: 168)
+
+Importing 'GUID: 6d97ecae5940764448fa67a2f18488ae - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Idle.png' with importer (TextureImporter)
+Imported 'GUID: 6d97ecae5940764448fa67a2f18488ae' -> (Import Result ID: '697505c7ba990751d04e9657adc9c1b9') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=344d61d7cd6c29d1f6817078ead1443c DependenciesID=8b66f93b745bfba190b1530fc9f1d782 StaticDependenciesID=951aad5ddb4cc0f8e1d3ca399140eb6f 
+Asset Pipeline Refresh (id=93ebdb76dfb37ef4d9b4bedf20743af0): Total: 0.029 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 6d97ecae5940764448fa67a2f18488ae - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Idle.png' with importer (TextureImporter)
+Imported 'GUID: 6d97ecae5940764448fa67a2f18488ae' -> (Import Result ID: '697505c7ba990751d04e9657adc9c1b9') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=344d61d7cd6c29d1f6817078ead1443c DependenciesID=8b66f93b745bfba190b1530fc9f1d782 StaticDependenciesID=951aad5ddb4cc0f8e1d3ca399140eb6f 
+Asset Pipeline Refresh (id=a453edc9b435d0b4392de74ea0e12f46): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 15893c985a16d5a439b0698411055ff8 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Run.png' with importer (TextureImporter)
+Imported 'GUID: 15893c985a16d5a439b0698411055ff8' -> (Import Result ID: '34bd1eee847e171b859b3580119ef52d') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=392ae86ae7d9cea91da552607e9ab04f DependenciesID=03c4dd432c76a0e61b95c4c4dc5ae8bb StaticDependenciesID=f501123062022961ec67f1b299d6172e 
+Asset Pipeline Refresh (id=98e78441caf48db4ab2db9d506ec53ac): Total: 0.035 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 15893c985a16d5a439b0698411055ff8 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Run.png' with importer (TextureImporter)
+Imported 'GUID: 15893c985a16d5a439b0698411055ff8' -> (Import Result ID: '34bd1eee847e171b859b3580119ef52d') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=392ae86ae7d9cea91da552607e9ab04f DependenciesID=03c4dd432c76a0e61b95c4c4dc5ae8bb StaticDependenciesID=f501123062022961ec67f1b299d6172e 
+Asset Pipeline Refresh (id=7d6832a2e4738784b84028a8b9e47e0a): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: aa75aa1dd030e064c8fd311ff9e45f66 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Jump.png' with importer (TextureImporter)
+Imported 'GUID: aa75aa1dd030e064c8fd311ff9e45f66' -> (Import Result ID: '93e480cc2ec5446c2c253c1761a069ff') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=058ee86615c7b6d0f2d46746053b6ef1 DependenciesID=477840910870f2f55bbe9035a9432b24 StaticDependenciesID=1383fd7f0ceb9c32a56adc86bcd81748 
+Asset Pipeline Refresh (id=b4fa80a08314bb24bad9cfd65dcbf858): Total: 0.029 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: aa75aa1dd030e064c8fd311ff9e45f66 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Jump.png' with importer (TextureImporter)
+Imported 'GUID: aa75aa1dd030e064c8fd311ff9e45f66' -> (Import Result ID: '93e480cc2ec5446c2c253c1761a069ff') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=058ee86615c7b6d0f2d46746053b6ef1 DependenciesID=477840910870f2f55bbe9035a9432b24 StaticDependenciesID=1383fd7f0ceb9c32a56adc86bcd81748 
+Asset Pipeline Refresh (id=26a48e04570222342878082d93be8aa2): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 148fc7bffd641e945bcc4b34dedecee1 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 148fc7bffd641e945bcc4b34dedecee1' -> (Import Result ID: 'c5f160484c7226fe911bc5285218bf78') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8a20f79a040c33d9615825aa2e8c9a23 DependenciesID=ea4612a2aad159d4d05405fb4710a7bd StaticDependenciesID=3ba2a708165f0a59540b55f0bcc82147 
+Asset Pipeline Refresh (id=d9c1eb28b02ae5648b9b6e9de68a83bb): Total: 0.023 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 148fc7bffd641e945bcc4b34dedecee1 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 148fc7bffd641e945bcc4b34dedecee1' -> (Import Result ID: 'c5f160484c7226fe911bc5285218bf78') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8a20f79a040c33d9615825aa2e8c9a23 DependenciesID=ea4612a2aad159d4d05405fb4710a7bd StaticDependenciesID=3ba2a708165f0a59540b55f0bcc82147 
+Asset Pipeline Refresh (id=05df4cb5d76013648aa38820cab6a577): Total: 0.061 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 75bab2247e447574eb7aec4ed955d9c6 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 75bab2247e447574eb7aec4ed955d9c6' -> (Import Result ID: 'e6f36eceb533a45b84f7a71a31871878') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2dd663740cd4d5a0d4bbbc18e848e1fa DependenciesID=da32f4f2bcf83cff470ec607f79c0af4 StaticDependenciesID=3ce996d70d341fa506d69cb5efb17936 
+Asset Pipeline Refresh (id=34520d2c9c2dc67498ebebcaaa47869b): Total: 0.028 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 75bab2247e447574eb7aec4ed955d9c6 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 75bab2247e447574eb7aec4ed955d9c6' -> (Import Result ID: 'e6f36eceb533a45b84f7a71a31871878') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2dd663740cd4d5a0d4bbbc18e848e1fa DependenciesID=da32f4f2bcf83cff470ec607f79c0af4 StaticDependenciesID=3ce996d70d341fa506d69cb5efb17936 
+Asset Pipeline Refresh (id=b7d794506bec91342aaac9e4a227687e): Total: 0.077 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 841d660f3be62c244a820d1d826d0661 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Hit.png' with importer (TextureImporter)
+Imported 'GUID: 841d660f3be62c244a820d1d826d0661' -> (Import Result ID: '0e1717d5b7e32bb7123720851d8b8c98') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=43e7092c5cb6eeaacacaf06cd649b4c6 DependenciesID=7e897a24514940ca000f418f9fd53a80 StaticDependenciesID=d0d2c7fc4ae4d97033a42107eecd05b8 
+Asset Pipeline Refresh (id=2cc000745b7e8c44b9ad8cd5b55ec439): Total: 0.025 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 841d660f3be62c244a820d1d826d0661 - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Hit.png' with importer (TextureImporter)
+Imported 'GUID: 841d660f3be62c244a820d1d826d0661' -> (Import Result ID: '0e1717d5b7e32bb7123720851d8b8c98') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=43e7092c5cb6eeaacacaf06cd649b4c6 DependenciesID=7e897a24514940ca000f418f9fd53a80 StaticDependenciesID=d0d2c7fc4ae4d97033a42107eecd05b8 
+Asset Pipeline Refresh (id=ee8dd1cbcdf66a2438686089001a0b86): Total: 0.064 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 0a045e2bf07f61143804fab4d3b3989c - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Death.png' with importer (TextureImporter)
+Imported 'GUID: 0a045e2bf07f61143804fab4d3b3989c' -> (Import Result ID: '6ca6b8b762f49f5fa3929892187618a9') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9e32273a6e9c7dc1c24f9af44fc1c135 DependenciesID=f8180e2257904e14483fe3034c278f91 StaticDependenciesID=e119c6f3c881e0e5c8bb83695e419eb8 
+Asset Pipeline Refresh (id=551c00d52b87511499be0dcf4fe2fffd): Total: 0.033 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 0a045e2bf07f61143804fab4d3b3989c - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Death.png' with importer (TextureImporter)
+Imported 'GUID: 0a045e2bf07f61143804fab4d3b3989c' -> (Import Result ID: '6ca6b8b762f49f5fa3929892187618a9') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9e32273a6e9c7dc1c24f9af44fc1c135 DependenciesID=f8180e2257904e14483fe3034c278f91 StaticDependenciesID=e119c6f3c881e0e5c8bb83695e419eb8 
+Asset Pipeline Refresh (id=d8127410009c27643abdf6239c7cf308): Total: 0.077 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: d4544c42307d7ea409c5b533ccb8918c - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Attack.png' with importer (TextureImporter)
+Imported 'GUID: d4544c42307d7ea409c5b533ccb8918c' -> (Import Result ID: 'ce75a77bb4332156b4d12bb6b92d06e9') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4f2473d8d32177d13419bce2e37af2f8 DependenciesID=74eb8a29d1ac08822b6b00752ae4918d StaticDependenciesID=7d4304e6fd1a6739e4dbc76bd510a018 
+Asset Pipeline Refresh (id=1e1a70c5467b7bc47bc9f87b14340439): Total: 0.030 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: d4544c42307d7ea409c5b533ccb8918c - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Attack.png' with importer (TextureImporter)
+Imported 'GUID: d4544c42307d7ea409c5b533ccb8918c' -> (Import Result ID: 'ce75a77bb4332156b4d12bb6b92d06e9') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4f2473d8d32177d13419bce2e37af2f8 DependenciesID=74eb8a29d1ac08822b6b00752ae4918d StaticDependenciesID=7d4304e6fd1a6739e4dbc76bd510a018 
+Asset Pipeline Refresh (id=a1dc1c867c24df44697a28adb9d60006): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 524152725a41fc442b1471f75f07013b - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Skill.png' with importer (TextureImporter)
+Imported 'GUID: 524152725a41fc442b1471f75f07013b' -> (Import Result ID: '3830f19d685c1f8737cbb1bffd31552d') in 0.019 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0e0487f45b803ccc1fd4e91b7a6d6cc8 DependenciesID=59d9f6ddb3e161ccc96a8d169c367c04 StaticDependenciesID=2d064f7374b86d78fcf96d3c8570dee2 
+Asset Pipeline Refresh (id=2564f11253ac5674aaa3decf9390a5a5): Total: 0.036 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 524152725a41fc442b1471f75f07013b - Path: Assets/Resources/Chibi2D/Paperdoll/frost_mage/Mage_Skill.png' with importer (TextureImporter)
+Imported 'GUID: 524152725a41fc442b1471f75f07013b' -> (Import Result ID: '3830f19d685c1f8737cbb1bffd31552d') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0e0487f45b803ccc1fd4e91b7a6d6cc8 DependenciesID=59d9f6ddb3e161ccc96a8d169c367c04 StaticDependenciesID=2d064f7374b86d78fcf96d3c8570dee2 
+Asset Pipeline Refresh (id=e6809f755b90ea64eb00d416e5fabe4f): Total: 0.075 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[CHIBI2D] paper-doll outfit frost_mage built
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildOutfits (string,System.Collections.Generic.Dictionary`2<string, AdventureKing.ArtPipeline.Chibi2DArt/ClipMeta>,single,single,UnityEngine.Vector2,bool) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:168)
+AdventureKing.ArtPipeline.Chibi2DArt:Build (AdventureKing.Gameplay.HeroClass) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:124)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildAllFromCommandLine () (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/Chibi2DArt.cs Line: 168)
+
+Importing 'GUID: 2a20793036d45ff489a8aeed94f19210 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Idle.png' with importer (TextureImporter)
+Imported 'GUID: 2a20793036d45ff489a8aeed94f19210' -> (Import Result ID: '900edd4766b11fcf08f96758990b2cc4') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc9890af27f0bcd137be26c6d91e9ff DependenciesID=b08a891dfca6c1378e1cef30970b20a4 StaticDependenciesID=e3fce36b53d7a1e447de0f5ddeea8fb0 
+Asset Pipeline Refresh (id=783cf6972da2c824b939dd9e4e24f561): Total: 0.029 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2a20793036d45ff489a8aeed94f19210 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Idle.png' with importer (TextureImporter)
+Imported 'GUID: 2a20793036d45ff489a8aeed94f19210' -> (Import Result ID: '900edd4766b11fcf08f96758990b2cc4') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbc9890af27f0bcd137be26c6d91e9ff DependenciesID=b08a891dfca6c1378e1cef30970b20a4 StaticDependenciesID=e3fce36b53d7a1e447de0f5ddeea8fb0 
+Asset Pipeline Refresh (id=e63ba8f0cb9d3a241b0f9119afb688bc): Total: 0.069 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=fe81a4d0028b3d8418b95ba362f0c262): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=833ebbfa37374d442a4fe3df132f7310): Total: 0.058 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 72d25db84993c96448861f28fc0a6775 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Run.png' with importer (TextureImporter)
+Imported 'GUID: 72d25db84993c96448861f28fc0a6775' -> (Import Result ID: '4a041a967bdb513f2600492c1c1c7788') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9792b83c49c2dd9a5c2919664a422725 DependenciesID=6ec83fbbd681b25c287b6c2a96c9de15 StaticDependenciesID=810410837b2983441858a3ff497b4f77 
+Asset Pipeline Refresh (id=8b6898b4854409c4385fb4fa96bacd81): Total: 0.034 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 72d25db84993c96448861f28fc0a6775 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Run.png' with importer (TextureImporter)
+Imported 'GUID: 72d25db84993c96448861f28fc0a6775' -> (Import Result ID: '4a041a967bdb513f2600492c1c1c7788') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9792b83c49c2dd9a5c2919664a422725 DependenciesID=6ec83fbbd681b25c287b6c2a96c9de15 StaticDependenciesID=810410837b2983441858a3ff497b4f77 
+Asset Pipeline Refresh (id=b9469087293bf7b46b72bc4af6d6cd20): Total: 0.076 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=307fb0bc8a5d16942a705674448281d1): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=1cc76c822a55ed147b0400d9a0616bcc): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 1d811da0a7eec9e479ac473335784e8a - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 1d811da0a7eec9e479ac473335784e8a' -> (Import Result ID: 'f9ff0e7f3d1480f5d8450dac54ea149e') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=33c6bcec707b21c2e7c5fd8909a957d9 DependenciesID=1470d110f257764054de42c6cf579837 StaticDependenciesID=0124bacd14c798e9a3a2b08d888efec1 
+Asset Pipeline Refresh (id=624a44aaa34195341ac458ac6fe21ca5): Total: 0.023 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 1d811da0a7eec9e479ac473335784e8a - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 1d811da0a7eec9e479ac473335784e8a' -> (Import Result ID: 'f9ff0e7f3d1480f5d8450dac54ea149e') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=33c6bcec707b21c2e7c5fd8909a957d9 DependenciesID=1470d110f257764054de42c6cf579837 StaticDependenciesID=0124bacd14c798e9a3a2b08d888efec1 
+Asset Pipeline Refresh (id=d12d298ae32baa74aba03ef9ca52daf7): Total: 0.079 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=cd726fe817e89404e873a16ca30898a5): Total: 0.047 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=dbcfdf635fe4b944fbe56e1da26fb1bb): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5e3b19b30d4e3504b8c1dba026fb25d8 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 5e3b19b30d4e3504b8c1dba026fb25d8' -> (Import Result ID: '9cca92b519d21c1464bff70233734d83') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7bcc0992dd3a7b56527186c7b9a88a4b DependenciesID=c45febd1c2cce2b0fa9605011dfa0b03 StaticDependenciesID=d4b12307a770b60fc5006ce5136d21fd 
+Asset Pipeline Refresh (id=d41c697e59b6c9c4aae7cc12b4f7b6d2): Total: 0.023 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5e3b19b30d4e3504b8c1dba026fb25d8 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 5e3b19b30d4e3504b8c1dba026fb25d8' -> (Import Result ID: '9cca92b519d21c1464bff70233734d83') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7bcc0992dd3a7b56527186c7b9a88a4b DependenciesID=c45febd1c2cce2b0fa9605011dfa0b03 StaticDependenciesID=d4b12307a770b60fc5006ce5136d21fd 
+Asset Pipeline Refresh (id=27fdf6c0eb95788409bbee8ae6f5d257): Total: 0.064 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0074f20e115746b40b2198bef2a1fd96): Total: 0.047 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=cf32d416e3c8ced40bf2118411629caa): Total: 0.065 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 37223d15971615f4387d40f00e9027a2 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 37223d15971615f4387d40f00e9027a2' -> (Import Result ID: '8062a7e518c28d2625a4d344462f9d64') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9eacd3b0976a25c488931a06f99ccd93 DependenciesID=280992d5c2d57a155506e07e410b7cdb StaticDependenciesID=76f6aefcacbaf8e260637e7a8f876536 
+Asset Pipeline Refresh (id=08993a003f9baff4cae78ff4538c604c): Total: 0.032 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 37223d15971615f4387d40f00e9027a2 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 37223d15971615f4387d40f00e9027a2' -> (Import Result ID: '8062a7e518c28d2625a4d344462f9d64') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9eacd3b0976a25c488931a06f99ccd93 DependenciesID=280992d5c2d57a155506e07e410b7cdb StaticDependenciesID=76f6aefcacbaf8e260637e7a8f876536 
+Asset Pipeline Refresh (id=897f583d0a57cb84a99b6a5660509f43): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=cc06b0ddfacc91a4ab66873a854fe8a0): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=cdf4c3b838582044085c193d61a4d105): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: a542da3c46c48fd439bfadc2ce07379d - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Hit.png' with importer (TextureImporter)
+Imported 'GUID: a542da3c46c48fd439bfadc2ce07379d' -> (Import Result ID: '610ddfa79790cc46fc5a031498e24eef') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e9b940bd7665492ae35d1f1a32d47999 DependenciesID=7840b01f1057fb5299eee08ba5aa708c StaticDependenciesID=ada411c57ecdc1c4b94b6c2f90a1845f 
+Asset Pipeline Refresh (id=dcb67b68b55bd85428074cd92343a2fa): Total: 0.025 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: a542da3c46c48fd439bfadc2ce07379d - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Hit.png' with importer (TextureImporter)
+Imported 'GUID: a542da3c46c48fd439bfadc2ce07379d' -> (Import Result ID: '610ddfa79790cc46fc5a031498e24eef') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e9b940bd7665492ae35d1f1a32d47999 DependenciesID=7840b01f1057fb5299eee08ba5aa708c StaticDependenciesID=ada411c57ecdc1c4b94b6c2f90a1845f 
+Asset Pipeline Refresh (id=b81f1529d71860c418e9116c64e79d91): Total: 0.065 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=01bc592bdfc29ce4184667b1b3265256): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=f9c4b944ac3b58b42aa9dc82f114ade1): Total: 0.057 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2a294ec4b0c1e4641be25684b3e0ffe8 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Death.png' with importer (TextureImporter)
+Imported 'GUID: 2a294ec4b0c1e4641be25684b3e0ffe8' -> (Import Result ID: '88bb57fdfa7716e5ff09979869e52849') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ee2e67f1a670afdc318999019cfe32a6 DependenciesID=958d65c83f1f19b454d5866c8086c680 StaticDependenciesID=2cdd3eacfb029b1880c287773e4e1d2c 
+Asset Pipeline Refresh (id=a16212c9b22b1204990e292a377c4e08): Total: 0.030 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2a294ec4b0c1e4641be25684b3e0ffe8 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Death.png' with importer (TextureImporter)
+Imported 'GUID: 2a294ec4b0c1e4641be25684b3e0ffe8' -> (Import Result ID: '88bb57fdfa7716e5ff09979869e52849') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ee2e67f1a670afdc318999019cfe32a6 DependenciesID=958d65c83f1f19b454d5866c8086c680 StaticDependenciesID=2cdd3eacfb029b1880c287773e4e1d2c 
+Asset Pipeline Refresh (id=6bc4cf774884e7a4093c35f85ff0f2fb): Total: 0.068 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0cef5893b16bed848b5fb75b705842bc): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=10d7039db36a4d847a11a12b214cf489): Total: 0.057 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 33aafc37c86553d44ae5dac762ab00a7 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Attack.png' with importer (TextureImporter)
+Imported 'GUID: 33aafc37c86553d44ae5dac762ab00a7' -> (Import Result ID: 'e684519243fba3b04d175bec32ca99d5') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=50598c9e4c80bd141ffffcc311dbce88 DependenciesID=e2810c24ed259315266fcf54d3fca75c StaticDependenciesID=9902087599c24eadd384a774d416f9d9 
+Asset Pipeline Refresh (id=1f57bb39760f48345b20400a4e031d1a): Total: 0.028 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 33aafc37c86553d44ae5dac762ab00a7 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Attack.png' with importer (TextureImporter)
+Imported 'GUID: 33aafc37c86553d44ae5dac762ab00a7' -> (Import Result ID: 'e684519243fba3b04d175bec32ca99d5') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=50598c9e4c80bd141ffffcc311dbce88 DependenciesID=e2810c24ed259315266fcf54d3fca75c StaticDependenciesID=9902087599c24eadd384a774d416f9d9 
+Asset Pipeline Refresh (id=37b5c92dadda16c44a950d8bbbf66dce): Total: 0.067 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=ee4cbaf49c0b72b43b480a067b41d9d7): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=367bd6c677b3cf147aa8a7ced0c0bbaa): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: ef0d792da71b71f439ff74e0f9276997 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Skill.png' with importer (TextureImporter)
+Imported 'GUID: ef0d792da71b71f439ff74e0f9276997' -> (Import Result ID: '7a4ad2c565a9cf4e310bed5f4d35391a') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3f6efe759816b4361951bb2f37ff0972 DependenciesID=3f5df2ef4ace08eee2106d990bdd67cb StaticDependenciesID=10cea2dc3494d71419151fff31ce7251 
+Asset Pipeline Refresh (id=dd7ec75021a36514c949a7ae7e798aef): Total: 0.032 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: ef0d792da71b71f439ff74e0f9276997 - Path: Assets/Art/Chibi2D/Swordsman/Swordsman_Skill.png' with importer (TextureImporter)
+Imported 'GUID: ef0d792da71b71f439ff74e0f9276997' -> (Import Result ID: '7a4ad2c565a9cf4e310bed5f4d35391a') in 0.016 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3f6efe759816b4361951bb2f37ff0972 DependenciesID=3f5df2ef4ace08eee2106d990bdd67cb StaticDependenciesID=10cea2dc3494d71419151fff31ce7251 
+Asset Pipeline Refresh (id=b37640158568ae345a54d45750341944): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=71d0c943f64cd63418999d069440eaf6): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=233091729b43cd549bf988b173168f38): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=7559476cde0638a449624412c2fd8190): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=38bd023d050afbe46898ea9d37b07cae): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 54b9f1cc822046d41b4c2e2faed1f234 - Path: Assets/Resources/Chibi2D/Swordsman_Visual2D.prefab' with importer (PrefabImporter)
+Imported 'GUID: 54b9f1cc822046d41b4c2e2faed1f234' -> (Import Result ID: '081fab6d3e3fa6fd04f59810eead3de7') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=abbb8b37bfaa723d1bfbf12b43d351d8 DependenciesID=4a9e26b5ddf61a7afc2cf9bde8bbdd73 StaticDependenciesID=57c200de67784060e9555aec7935c0aa 
+Asset Pipeline Refresh (id=4414aa4f0da2b324bbadc155b63f0249): Total: 0.050 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[CHIBI2D] Swordsman: 9 clips, ppu 85.3, pixel True, prefab Assets/Resources/Chibi2D/Swordsman_Visual2D.prefab
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.Chibi2DArt:Build (AdventureKing.Gameplay.HeroClass) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:122)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildAllFromCommandLine () (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/Chibi2DArt.cs Line: 122)
+
+Importing 'GUID: d2621c8df78de9d4aa3c890c540b35eb - Path: Assets/Art/Chibi2D/Archer/Archer_Idle.png' with importer (TextureImporter)
+Imported 'GUID: d2621c8df78de9d4aa3c890c540b35eb' -> (Import Result ID: 'e4ac09be78500d397986ca0123f42bc4') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3be172abc0eae85d3c47f1c4f7752031 DependenciesID=9ccebd686bdce6d251785a421eae94cd StaticDependenciesID=6a392c658fcf56e3e2f1628f28bff1ba 
+Asset Pipeline Refresh (id=6991f64e13ace414fb60a4de54e57c21): Total: 0.027 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: d2621c8df78de9d4aa3c890c540b35eb - Path: Assets/Art/Chibi2D/Archer/Archer_Idle.png' with importer (TextureImporter)
+Imported 'GUID: d2621c8df78de9d4aa3c890c540b35eb' -> (Import Result ID: 'e4ac09be78500d397986ca0123f42bc4') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3be172abc0eae85d3c47f1c4f7752031 DependenciesID=9ccebd686bdce6d251785a421eae94cd StaticDependenciesID=6a392c658fcf56e3e2f1628f28bff1ba 
+Asset Pipeline Refresh (id=9dc36d24236b9744d8215cb2f3ddd48b): Total: 0.070 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=e472dd4575c57e940a29d97043cb8422): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=23853655dd0187641af3c777def8ddbc): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5e83d902c16822f43be0cd1ad68f4d32 - Path: Assets/Art/Chibi2D/Archer/Archer_Run.png' with importer (TextureImporter)
+Imported 'GUID: 5e83d902c16822f43be0cd1ad68f4d32' -> (Import Result ID: '443b8d3405ac247de94dfd56c24a6ab7') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c2b4e229c11c719bdfe4ffd34230407e DependenciesID=faa892b568c35a61cc34d18bf0938555 StaticDependenciesID=10a254cd6003b26b28a8b88202f2d5a8 
+Asset Pipeline Refresh (id=7b4d25868f7c2e9408e8c9b4021b91ca): Total: 0.031 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5e83d902c16822f43be0cd1ad68f4d32 - Path: Assets/Art/Chibi2D/Archer/Archer_Run.png' with importer (TextureImporter)
+Imported 'GUID: 5e83d902c16822f43be0cd1ad68f4d32' -> (Import Result ID: '443b8d3405ac247de94dfd56c24a6ab7') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c2b4e229c11c719bdfe4ffd34230407e DependenciesID=faa892b568c35a61cc34d18bf0938555 StaticDependenciesID=10a254cd6003b26b28a8b88202f2d5a8 
+Asset Pipeline Refresh (id=88fba5a2e7a0c314daf8965b5208faba): Total: 0.067 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=f9e3cd184cb9d6146b29329a19acec5e): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=1607a329a2e96444dad8f301cabd8eaf): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 27f4b2e6b78194148aaac84ac4706729 - Path: Assets/Art/Chibi2D/Archer/Archer_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 27f4b2e6b78194148aaac84ac4706729' -> (Import Result ID: 'fed7790d943459a6bc14797df3986032') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=562df864cb9402fca6c9cdbec012e92b DependenciesID=04a5bad87de0a69ef0e09c1df5a07386 StaticDependenciesID=ed4dc0721bd93b6da8daeed9066a03e2 
+Asset Pipeline Refresh (id=4e15444e5b7701f4b838ce55f8e645a9): Total: 0.026 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 27f4b2e6b78194148aaac84ac4706729 - Path: Assets/Art/Chibi2D/Archer/Archer_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 27f4b2e6b78194148aaac84ac4706729' -> (Import Result ID: 'fed7790d943459a6bc14797df3986032') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=562df864cb9402fca6c9cdbec012e92b DependenciesID=04a5bad87de0a69ef0e09c1df5a07386 StaticDependenciesID=ed4dc0721bd93b6da8daeed9066a03e2 
+Asset Pipeline Refresh (id=dda8b218d95f44f419bd63920d10416b): Total: 0.064 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=569798f0182d38044962e01930538522): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=021f8f5f79d973a4e999ac47cefaae09): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2939377a8ad2ecc4e876a8f789e6a5bd - Path: Assets/Art/Chibi2D/Archer/Archer_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 2939377a8ad2ecc4e876a8f789e6a5bd' -> (Import Result ID: '0885a580b04447fbb877a07af6286768') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7d2ba36adeafdd69a10062fb88fe62d9 DependenciesID=9990a15ecd33bdac9172e22a5aeae5b2 StaticDependenciesID=9a920ab6c2fc1e3dd20e5d9e94396f90 
+Asset Pipeline Refresh (id=51378cd35be6bb54cb0922e846e5842a): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 2939377a8ad2ecc4e876a8f789e6a5bd - Path: Assets/Art/Chibi2D/Archer/Archer_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 2939377a8ad2ecc4e876a8f789e6a5bd' -> (Import Result ID: '0885a580b04447fbb877a07af6286768') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7d2ba36adeafdd69a10062fb88fe62d9 DependenciesID=9990a15ecd33bdac9172e22a5aeae5b2 StaticDependenciesID=9a920ab6c2fc1e3dd20e5d9e94396f90 
+Asset Pipeline Refresh (id=ea10f9405389b4440a4e14e7bd98cf2d): Total: 0.061 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=938f8334d12b3544580aa09e6262b1e4): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=2a44360c641b98e499380d05781afcb8): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 671922b0b6dc65a42ad4211480b10506 - Path: Assets/Art/Chibi2D/Archer/Archer_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 671922b0b6dc65a42ad4211480b10506' -> (Import Result ID: '570a2335ad9c7e86fc31788818ad66b7') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=af43f2832237c8e631413edcb33afe40 DependenciesID=72befd782cf797e17619d1aa6d0e3626 StaticDependenciesID=8636de25d97d68db1787775edee81a60 
+Asset Pipeline Refresh (id=feb43819129f90245914290f960beb70): Total: 0.027 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 671922b0b6dc65a42ad4211480b10506 - Path: Assets/Art/Chibi2D/Archer/Archer_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 671922b0b6dc65a42ad4211480b10506' -> (Import Result ID: '570a2335ad9c7e86fc31788818ad66b7') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=af43f2832237c8e631413edcb33afe40 DependenciesID=72befd782cf797e17619d1aa6d0e3626 StaticDependenciesID=8636de25d97d68db1787775edee81a60 
+Asset Pipeline Refresh (id=644aaf4708ae56144a18a30cc1ec6fa7): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=7ed6cbedf5e13464ca10657d9e034f71): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=01258073fa24a1748be8200a6770a89f): Total: 0.057 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5e7b097c8e49a7a479ba5eee1996700a - Path: Assets/Art/Chibi2D/Archer/Archer_Hit.png' with importer (TextureImporter)
+Imported 'GUID: 5e7b097c8e49a7a479ba5eee1996700a' -> (Import Result ID: '51bf8de8d1f3935b9c58da72cf175892') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bdaacc200e58924e4cb745cc468d9af6 DependenciesID=a06fe7575ebe5a32eff03c1ff1573a64 StaticDependenciesID=63b2ee7c62a0bad79c666c19add5316e 
+Asset Pipeline Refresh (id=612a8f65980b775498ba8ae8717fb7d2): Total: 0.025 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 5e7b097c8e49a7a479ba5eee1996700a - Path: Assets/Art/Chibi2D/Archer/Archer_Hit.png' with importer (TextureImporter)
+Imported 'GUID: 5e7b097c8e49a7a479ba5eee1996700a' -> (Import Result ID: '51bf8de8d1f3935b9c58da72cf175892') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bdaacc200e58924e4cb745cc468d9af6 DependenciesID=a06fe7575ebe5a32eff03c1ff1573a64 StaticDependenciesID=63b2ee7c62a0bad79c666c19add5316e 
+Asset Pipeline Refresh (id=62e8faaf096ae33419fc27a440e783e8): Total: 0.064 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=2c276b34851413d42bb30390914eaa24): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=5a1a324f19cad394bb3f78b5076cf94b): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e59ae6b0b5cdc6c46b97eba8c0326df2 - Path: Assets/Art/Chibi2D/Archer/Archer_Death.png' with importer (TextureImporter)
+Imported 'GUID: e59ae6b0b5cdc6c46b97eba8c0326df2' -> (Import Result ID: '742c609e1cee0c430bb37e6beaaf97df') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e191c56ca17933a83d2c6f46397e49ad DependenciesID=5d247444a4e7ea03148528864473a4e4 StaticDependenciesID=2b4f89aa9722128dc3d94ef27ea193e3 
+Asset Pipeline Refresh (id=104fad40688a64a4da884eaba0f274c4): Total: 0.026 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e59ae6b0b5cdc6c46b97eba8c0326df2 - Path: Assets/Art/Chibi2D/Archer/Archer_Death.png' with importer (TextureImporter)
+Imported 'GUID: e59ae6b0b5cdc6c46b97eba8c0326df2' -> (Import Result ID: '742c609e1cee0c430bb37e6beaaf97df') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e191c56ca17933a83d2c6f46397e49ad DependenciesID=5d247444a4e7ea03148528864473a4e4 StaticDependenciesID=2b4f89aa9722128dc3d94ef27ea193e3 
+Asset Pipeline Refresh (id=4088aaee1df65ae45ad8773b15bf5eeb): Total: 0.065 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=1cf3aa7f7a622bd4ea7259b8dffeafd6): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=89526d1470dc7f64290a6a0fc042b696): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e968c6e4050c315468e1cfa74776cbaa - Path: Assets/Art/Chibi2D/Archer/Archer_Attack.png' with importer (TextureImporter)
+Imported 'GUID: e968c6e4050c315468e1cfa74776cbaa' -> (Import Result ID: '4e3ec17ffb9d67c02d83b6a2adc68f0a') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cdf2d62fac73d893be3195f3269c03a0 DependenciesID=b60d199e7c9df43c69111018f3886697 StaticDependenciesID=2134889f1883ab118a13b96afaf0b0b7 
+Asset Pipeline Refresh (id=1bf5ea45c7e25894fbaf84a985e2d62e): Total: 0.026 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e968c6e4050c315468e1cfa74776cbaa - Path: Assets/Art/Chibi2D/Archer/Archer_Attack.png' with importer (TextureImporter)
+Imported 'GUID: e968c6e4050c315468e1cfa74776cbaa' -> (Import Result ID: '4e3ec17ffb9d67c02d83b6a2adc68f0a') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cdf2d62fac73d893be3195f3269c03a0 DependenciesID=b60d199e7c9df43c69111018f3886697 StaticDependenciesID=2134889f1883ab118a13b96afaf0b0b7 
+Asset Pipeline Refresh (id=282aacc76a922b540aefdf67bc09e97b): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=ad8231933118bd242ae89cb78b6f7158): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=a57744112d268044d99e6c517cda9a5d): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 942f545ef89f5964cb0c1be4ae9f6e6b - Path: Assets/Art/Chibi2D/Archer/Archer_Skill.png' with importer (TextureImporter)
+Imported 'GUID: 942f545ef89f5964cb0c1be4ae9f6e6b' -> (Import Result ID: 'daadc7b67e59878722da8f20664f7a59') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=165530189c32fa96dd4546393b733788 DependenciesID=fbff527ded9b482ac76cc7cde0fb05e4 StaticDependenciesID=8363554b57b70b25c1ed1f2197086c0c 
+Asset Pipeline Refresh (id=fa940f59070be6946810321af724c13a): Total: 0.030 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 942f545ef89f5964cb0c1be4ae9f6e6b - Path: Assets/Art/Chibi2D/Archer/Archer_Skill.png' with importer (TextureImporter)
+Imported 'GUID: 942f545ef89f5964cb0c1be4ae9f6e6b' -> (Import Result ID: 'daadc7b67e59878722da8f20664f7a59') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=165530189c32fa96dd4546393b733788 DependenciesID=fbff527ded9b482ac76cc7cde0fb05e4 StaticDependenciesID=8363554b57b70b25c1ed1f2197086c0c 
+Asset Pipeline Refresh (id=e40943ff32e1c5f43a91b828d3291e69): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0946f34998137cb4e8ab8e0762d2cc83): Total: 0.050 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=37158608ba3ccda44bf31cdf72c6dcce): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=aa977e24e90472843bd3ad4095ea10e2): Total: 0.047 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=f58620ed9c5f5804fa519668ae9d9a11): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 571d3de19b33adb478d789e0dd8ea856 - Path: Assets/Resources/Chibi2D/Archer_Visual2D.prefab' with importer (PrefabImporter)
+Imported 'GUID: 571d3de19b33adb478d789e0dd8ea856' -> (Import Result ID: '0af24286190bb1de14e81e73f3b433a6') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cac1e1662abad24e548cdb874292306d DependenciesID=a85c3ff02733a5e005ea448bdcd26d2e StaticDependenciesID=fcc50b2707da5d2e5a5dde7a765be106 
+Asset Pipeline Refresh (id=2257590e365af5c44b812a90e388e259): Total: 0.046 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[CHIBI2D] Archer: 9 clips, ppu 85.3, pixel True, prefab Assets/Resources/Chibi2D/Archer_Visual2D.prefab
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.Chibi2DArt:Build (AdventureKing.Gameplay.HeroClass) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:122)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildAllFromCommandLine () (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/Chibi2DArt.cs Line: 122)
+
+Importing 'GUID: cb24a6cc852b9984f9443cf63d6334eb - Path: Assets/Art/Chibi2D/Assassin/Assassin_Idle.png' with importer (TextureImporter)
+Imported 'GUID: cb24a6cc852b9984f9443cf63d6334eb' -> (Import Result ID: 'c95ec1bb8c683942be6f74293d7d65f5') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=718aa62c13fd4586335c407e1f7c42f6 DependenciesID=b992a69a2b25fbb7f6b94c5025319689 StaticDependenciesID=b9bc044863ca2c2c136cfcfc4f380594 
+Asset Pipeline Refresh (id=e17c53260819fc044a1914fa35636c09): Total: 0.027 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: cb24a6cc852b9984f9443cf63d6334eb - Path: Assets/Art/Chibi2D/Assassin/Assassin_Idle.png' with importer (TextureImporter)
+Imported 'GUID: cb24a6cc852b9984f9443cf63d6334eb' -> (Import Result ID: 'c95ec1bb8c683942be6f74293d7d65f5') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=718aa62c13fd4586335c407e1f7c42f6 DependenciesID=b992a69a2b25fbb7f6b94c5025319689 StaticDependenciesID=b9bc044863ca2c2c136cfcfc4f380594 
+Asset Pipeline Refresh (id=ad1814b3965224d4099bfaf382d36840): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=bdcda51b053e8164a968de4ee94cab4b): Total: 0.046 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=f33d472176dd8534c88df11bb29bcb24): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 7338418592842ba4c84dde797c9d3db5 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Run.png' with importer (TextureImporter)
+Imported 'GUID: 7338418592842ba4c84dde797c9d3db5' -> (Import Result ID: '27748beb590cc5ed60089c271fd620fb') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f4b1ffa61f68a9426235a66e7abdb21a DependenciesID=bec670f244501e31b7aff72b79d46946 StaticDependenciesID=6fe3dcfdb7cc647d67c41b1f57d364e9 
+Asset Pipeline Refresh (id=dab815e9d708dac43ba5caa8c6c85bb4): Total: 0.031 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 7338418592842ba4c84dde797c9d3db5 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Run.png' with importer (TextureImporter)
+Imported 'GUID: 7338418592842ba4c84dde797c9d3db5' -> (Import Result ID: '27748beb590cc5ed60089c271fd620fb') in 0.014 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f4b1ffa61f68a9426235a66e7abdb21a DependenciesID=bec670f244501e31b7aff72b79d46946 StaticDependenciesID=6fe3dcfdb7cc647d67c41b1f57d364e9 
+Asset Pipeline Refresh (id=f7abb2123253ae149bcdf4d64fb05dd2): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0f24cfd4c3d375e42b42ece68a77f876): Total: 0.046 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0c1c4cc9df716c94ab4da3bf81b35487): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 370cd17ed57c18247bed780d21a18a95 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 370cd17ed57c18247bed780d21a18a95' -> (Import Result ID: '9e4e3d45abb148c12b2426cda92a815a') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=88de9426b910648e4b3b4da33ce5043a DependenciesID=e6ccfc2f1d389c65cd57100f7fe9047c StaticDependenciesID=0f91a62389cf164739c00407b10e1dfd 
+Asset Pipeline Refresh (id=fd6e2b2f4a674f24a967adc84c94acd6): Total: 0.024 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 370cd17ed57c18247bed780d21a18a95 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Jump.png' with importer (TextureImporter)
+Imported 'GUID: 370cd17ed57c18247bed780d21a18a95' -> (Import Result ID: '9e4e3d45abb148c12b2426cda92a815a') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=88de9426b910648e4b3b4da33ce5043a DependenciesID=e6ccfc2f1d389c65cd57100f7fe9047c StaticDependenciesID=0f91a62389cf164739c00407b10e1dfd 
+Asset Pipeline Refresh (id=cde55852111f4ee45a2a611c5decdf5d): Total: 0.061 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=bf89e19f201f40142a78be2219540bb2): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0f05e4142ca3e0c4b9d45a966f98c53b): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 7dd6a6fd3bf4bcd4e985fa760267d1e2 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 7dd6a6fd3bf4bcd4e985fa760267d1e2' -> (Import Result ID: '0352d566991588dd88db409c8f88332f') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=448b95ec7c8368f365c9b13868907b56 DependenciesID=a3ee41283d223aa0285755346f6ec42b StaticDependenciesID=392d5af4c26787da037de318a5704e3a 
+Asset Pipeline Refresh (id=3b187e411b50d724d972d6f94086787d): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 7dd6a6fd3bf4bcd4e985fa760267d1e2 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Fall.png' with importer (TextureImporter)
+Imported 'GUID: 7dd6a6fd3bf4bcd4e985fa760267d1e2' -> (Import Result ID: '0352d566991588dd88db409c8f88332f') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=448b95ec7c8368f365c9b13868907b56 DependenciesID=a3ee41283d223aa0285755346f6ec42b StaticDependenciesID=392d5af4c26787da037de318a5704e3a 
+Asset Pipeline Refresh (id=8a16da84786d12e4680a6fa269d37d87): Total: 0.061 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=e9d1a877da555134e907673fcf0b774f): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=5bffbbc1a038ca24da802143ab662929): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 88ed3fd29cce7f34facbed49208309f5 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 88ed3fd29cce7f34facbed49208309f5' -> (Import Result ID: '8311353402704a82fc6f4e1bde44a462') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3362b5b64151d82dc6e01182e64612bf DependenciesID=154876981106f4af1b4d4aa0fb710fb7 StaticDependenciesID=853a04bb58c36ee48cb96b32fd000275 
+Asset Pipeline Refresh (id=3019033439cc87d4297707639e915a68): Total: 0.026 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 88ed3fd29cce7f34facbed49208309f5 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Climb.png' with importer (TextureImporter)
+Imported 'GUID: 88ed3fd29cce7f34facbed49208309f5' -> (Import Result ID: '8311353402704a82fc6f4e1bde44a462') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3362b5b64151d82dc6e01182e64612bf DependenciesID=154876981106f4af1b4d4aa0fb710fb7 StaticDependenciesID=853a04bb58c36ee48cb96b32fd000275 
+Asset Pipeline Refresh (id=c5cdcb26f0614a7428e5a96204900fd6): Total: 0.064 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=fb356ac9151cd874cb7da312bd9ae6e8): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=cf38a81ee1e79474e90452310087c1a9): Total: 0.056 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: dc7652345d360b24cb30fa1b2d6129e6 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Hit.png' with importer (TextureImporter)
+Imported 'GUID: dc7652345d360b24cb30fa1b2d6129e6' -> (Import Result ID: 'f3b2698653e02d38791ef1f033716323') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bc84e8e798f04612b58ac819afd15bff DependenciesID=236e86c9beb967354d6b2efbea9998ec StaticDependenciesID=d40c5bd6bb47ae7ad1329ad53734ea0b 
+Asset Pipeline Refresh (id=a8e784f619d7bcb42a4bc4893f269783): Total: 0.026 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: dc7652345d360b24cb30fa1b2d6129e6 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Hit.png' with importer (TextureImporter)
+Imported 'GUID: dc7652345d360b24cb30fa1b2d6129e6' -> (Import Result ID: 'f3b2698653e02d38791ef1f033716323') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bc84e8e798f04612b58ac819afd15bff DependenciesID=236e86c9beb967354d6b2efbea9998ec StaticDependenciesID=d40c5bd6bb47ae7ad1329ad53734ea0b 
+Asset Pipeline Refresh (id=51f671ee6c8e093418bf26a86458d30d): Total: 0.062 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=f104ebebf81610d45a8b7804010d7219): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=6eb3cf5da0fe2c44f979eba568256ba1): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 7bda0359002fbd24fa4b9cbd69676c15 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Death.png' with importer (TextureImporter)
+Imported 'GUID: 7bda0359002fbd24fa4b9cbd69676c15' -> (Import Result ID: 'e815f6e49a740069e5d67032c7fef21f') in 0.009 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b571446090f3566bd499d904bc8abc9c DependenciesID=0be3ba42a9cf2f6ee3ce6ae6f6a23677 StaticDependenciesID=d957042e1db89861c9c006f174230486 
+Asset Pipeline Refresh (id=53f9ddb9f8c290b4abfdce2501c8728e): Total: 0.027 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 7bda0359002fbd24fa4b9cbd69676c15 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Death.png' with importer (TextureImporter)
+Imported 'GUID: 7bda0359002fbd24fa4b9cbd69676c15' -> (Import Result ID: 'e815f6e49a740069e5d67032c7fef21f') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b571446090f3566bd499d904bc8abc9c DependenciesID=0be3ba42a9cf2f6ee3ce6ae6f6a23677 StaticDependenciesID=d957042e1db89861c9c006f174230486 
+Asset Pipeline Refresh (id=914fc2b793eec98429c217de44d001a7): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=18a748a13d829764b83d9a9b462a24cc): Total: 0.043 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=4c676677edbdb0c4f886598cc4ebac22): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: f44bb04f6132ca84688da26a68822963 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Attack.png' with importer (TextureImporter)
+Imported 'GUID: f44bb04f6132ca84688da26a68822963' -> (Import Result ID: 'cb6094855d616ac214d6026aede9351f') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=eec386619f18d14a682e14a5b4e8f223 DependenciesID=19e8571821510f27f962c19ebdb85d0a StaticDependenciesID=458f9459107e3c20b4823a3a83bb67a7 
+Asset Pipeline Refresh (id=809befb6f88a6b44db0efdcd5fe66fe0): Total: 0.028 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: f44bb04f6132ca84688da26a68822963 - Path: Assets/Art/Chibi2D/Assassin/Assassin_Attack.png' with importer (TextureImporter)
+Imported 'GUID: f44bb04f6132ca84688da26a68822963' -> (Import Result ID: 'cb6094855d616ac214d6026aede9351f') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=eec386619f18d14a682e14a5b4e8f223 DependenciesID=19e8571821510f27f962c19ebdb85d0a StaticDependenciesID=458f9459107e3c20b4823a3a83bb67a7 
+Asset Pipeline Refresh (id=323f3e44cf6916048a3d12b7b06084a6): Total: 0.069 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=d5662eb2e6ec53f478308c33a49dfe53): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=e006035b96a3c4648a80b4e1c0b427fc): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e85f7ebb0c1a5164ea13557eaa83d64a - Path: Assets/Art/Chibi2D/Assassin/Assassin_Skill.png' with importer (TextureImporter)
+Imported 'GUID: e85f7ebb0c1a5164ea13557eaa83d64a' -> (Import Result ID: '4a015222552ad36d598e0c35ce5ec495') in 0.012 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0e7c7c902aa3b0a9fc9bb30aff8d59dd DependenciesID=59c7e1aa5198fba210e27b28e22e86d6 StaticDependenciesID=12b4af21d59889ee4c42fa7cd321e0f7 
+Asset Pipeline Refresh (id=29fb5fb9ffac8124cbaa33a58e1ed735): Total: 0.030 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: e85f7ebb0c1a5164ea13557eaa83d64a - Path: Assets/Art/Chibi2D/Assassin/Assassin_Skill.png' with importer (TextureImporter)
+Imported 'GUID: e85f7ebb0c1a5164ea13557eaa83d64a' -> (Import Result ID: '4a015222552ad36d598e0c35ce5ec495') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0e7c7c902aa3b0a9fc9bb30aff8d59dd DependenciesID=59c7e1aa5198fba210e27b28e22e86d6 StaticDependenciesID=12b4af21d59889ee4c42fa7cd321e0f7 
+Asset Pipeline Refresh (id=90dea44cec7e07c4ea79df60cfb45927): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=f8887f54ac1b1ca4eb45623ced548f95): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=bb5f6cd871433b54096de634a0b68d58): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=e22a891ff845a2c419c9a680d554e116): Total: 0.044 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=67bed7ac2d0edfb4c83b575934713a90): Total: 0.056 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: a618e141b9d2ae04088973f573d4aee0 - Path: Assets/Resources/Chibi2D/Assassin_Visual2D.prefab' with importer (PrefabImporter)
+Imported 'GUID: a618e141b9d2ae04088973f573d4aee0' -> (Import Result ID: '5ddb890f012eefaac01917dce8ab0f45') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7c397d217bd5b74504d3b7eb5ce583fd DependenciesID=09b8ae36cc3fe041da35a48d45342811 StaticDependenciesID=e9e1a78d396b8ce66bce3cbcbf458f36 
+Asset Pipeline Refresh (id=b501011359519ae488c01c84d55a8cb0): Total: 0.048 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[CHIBI2D] Assassin: 9 clips, ppu 85.3, pixel True, prefab Assets/Resources/Chibi2D/Assassin_Visual2D.prefab
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.ArtPipeline.Chibi2DArt:Build (AdventureKing.Gameplay.HeroClass) (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:122)
+AdventureKing.ArtPipeline.Chibi2DArt:BuildAllFromCommandLine () (at Assets/Editor/ArtPipeline/Chibi2DArt.cs:41)
+
+(Filename: Assets/Editor/ArtPipeline/Chibi2DArt.cs Line: 122)
+
+MonoPathRemapper: Attempts to remap: 8925; Successful remaps: 0
+Serialized file version minimum: 23, current 23
+Curl error 42: Callback aborted
+Killing ADB server in 2.087009 seconds.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-PC-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-PC channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794917971795,"processId":16744,"allocatedMemory":15925972,"memoryLabels":[{"Default":211665},{"Permanent":15516},{"NewDelete":85807},{"Thread":3895576},{"Manager":31709},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":843592},{"Material":132},{"GfxDevice":55968},{"Animation":1944},{"Audio":1272},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":16576},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1258384},{"BaseObject":351440},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":4416},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":924138},{"StaticString":3808},{"Utility":2673718},{"Curl":2559},{"PoolAlloc":2264},{"AI":80},{"TypeTree":23229},{"ScriptManager":12656},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":7304},{"CloudService":7152},{"WebRequest":709},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":592},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":114619},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4777588},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40441},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3614},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

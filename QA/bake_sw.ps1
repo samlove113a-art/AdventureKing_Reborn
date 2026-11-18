@@ -1,0 +1,1 @@
+$bl="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"; Set-Location C:\AdventureKing_Reborn; & $bl -b --factory-startup -P Tools\blender\bake_chibi_pixel.py -- Swordsman "-" "ArtSource/Chibi2D/_meshy/Swordsman.fbx" 2>&1 | Select-String "DONE|Traceback|rror" | % { $_.Line } | Set-Content QA\bake_sw.log

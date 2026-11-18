@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Failed(Child)" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 13:42:57Z" end-time="2026-11-17 13:46:19Z" duration="202.2427959">
+  <test-suite type="TestSuite" id="1110" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="71" result="Failed" site="Child" start-time="2026-11-17 13:42:57Z" end-time="2026-11-17 13:46:19Z" duration="202.242796" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1098" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-11-17 13:42:57Z" end-time="2026-11-17 13:46:19Z" duration="202.194887" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="20268" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1099" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-11-17 13:42:57Z" end-time="2026-11-17 13:46:19Z" duration="202.184082" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1024" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-11-17 13:42:57Z" end-time="2026-11-17 13:46:19Z" duration="202.176416" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1001" name="Chapter1Tests" fullname="AdventureKing.Tests.Chapter1Tests" classname="AdventureKing.Tests.Chapter1Tests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-17 13:42:57Z" end-time="2026-11-17 13:44:12Z" duration="74.980325" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1002" name="Hub_To_Meadow_To_Mushroom_Village_Fight_Talk_And_Quest_Saved" fullname="AdventureKing.Tests.Chapter1Tests.Hub_To_Meadow_To_Mushroom_Village_Fight_Talk_And_Quest_Saved" methodname="Hub_To_Meadow_To_Mushroom_Village_Fight_Talk_And_Quest_Saved" classname="AdventureKing.Tests.Chapter1Tests" runstate="Runnable" seed="406249654" result="Passed" start-time="2026-11-17 13:42:57Z" end-time="2026-11-17 13:44:12Z" duration="74.922529" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1034" name="HallTravelTests" fullname="AdventureKing.Tests.HallTravelTests" classname="AdventureKing.Tests.HallTravelTests" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2026-11-17 13:44:12Z" end-time="2026-11-17 13:45:50Z" duration="97.355979" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1035" name="Town_Portals_Lead_Into_Both_Halls_And_Back" fullname="AdventureKing.Tests.HallTravelTests.Town_Portals_Lead_Into_Both_Halls_And_Back" methodname="Town_Portals_Lead_Into_Both_Halls_And_Back" classname="AdventureKing.Tests.HallTravelTests" runstate="Runnable" seed="452409963" result="Failed" start-time="2026-11-17 13:44:12Z" end-time="2026-11-17 13:45:50Z" duration="97.338543" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  [02_guild_hud phone_19.5x9] TEXT OVERLAP: 'VIP' (HUD/SafeArea/TopRight/Shortcuts/Shortcut_vip/Caption) x '3 › 2 › 1' (HUD/SafeArea/ActionBar/Auto/Order) by 21x15
+[06b_wedding_hud phone_19.5x9] TEXT OVERLAP: 'VIP' (HUD/SafeArea/TopRight/Shortcuts/Shortcut_vip/Caption) x '3 › 2 › 1' (HUD/SafeArea/ActionBar/Auto/Order) by 21x15
+  Expected: <empty>
+  But was:  < "[02_guild_hud phone_19.5x9] TEXT OVERLAP: 'VIP' (HUD/SafeArea/TopRight/Shortcuts/Shortcut_vip/Caption) x '3 › 2 › 1' (HUD/SafeArea/ActionBar/Auto/Order) by 21x15", "[06b_wedding_hud phone_19.5x9] TEXT OVERLAP: 'VIP' (HUD/SafeArea/TopRight/Shortcuts/Shortcut_vip/Caption) x '3 › 2 › 1' (HUD/SafeArea/ActionBar/Auto/Order) by 21x15" >
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.HallTravelTests+<Town_Portals_Lead_Into_Both_Halls_And_Back>d__14.MoveNext () [0x00da9] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\HallTravelTests.cs:209
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[[02_guild_hud pc_1920x1080] OK (41 texts, 18 buttons)
+[02_guild_hud pc_1366x768] OK (41 texts, 18 buttons)
+[02_guild_hud phone_19.5x9] TEXT OVERLAP: 'VIP' (HUD/SafeArea/TopRight/Shortcuts/Shortcut_vip/Caption) x '3 › 2 › 1' (HUD/SafeArea/ActionBar/Auto/Order) by 21x15
+[02_guild_hud phone_16x9] OK (41 texts, 18 buttons)
+[02_guild_hud tablet_4x3] OK (41 texts, 18 buttons)
+[06b_wedding_hud pc_1920x1080] OK (41 texts, 18 buttons)
+[06b_wedding_hud pc_1366x768] OK (41 texts, 18 buttons)
+[06b_wedding_hud phone_19.5x9] TEXT OVERLAP: 'VIP' (HUD/SafeArea/TopRight/Shortcuts/Shortcut_vip/Caption) x '3 › 2 › 1' (HUD/SafeArea/ActionBar/Auto/Order) by 21x15
+[06b_wedding_hud phone_16x9] OK (41 texts, 18 buttons)
+[06b_wedding_hud tablet_4x3] OK (41 texts, 18 buttons)
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1091" name="UiTownScreensTests" fullname="AdventureKing.Tests.UiTownScreensTests" classname="AdventureKing.Tests.UiTownScreensTests" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2026-11-17 13:45:50Z" end-time="2026-11-17 13:46:19Z" duration="29.788156" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1092" name="Town_Screens_Pass_Ui_Audit_At_All_Resolutions" fullname="AdventureKing.Tests.UiTownScreensTests.Town_Screens_Pass_Ui_Audit_At_All_Resolutions" methodname="Town_Screens_Pass_Ui_Audit_At_All_Resolutions" classname="AdventureKing.Tests.UiTownScreensTests" runstate="Runnable" seed="1318723291" result="Failed" start-time="2026-11-17 13:45:50Z" end-time="2026-11-17 13:46:19Z" duration="29.779563" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  village BGM playing and audible
+  Expected: True
+  But was:  False
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.UiTownScreensTests+<Town_Screens_Pass_Ui_Audit_At_All_Resolutions>d__4.MoveNext () [0x00447] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\UiTownScreensTests.cs:78
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[[01_elder_dialog pc_1920x1080] OK (28 texts, 18 buttons)
+[01_elder_dialog pc_1366x768] OK (28 texts, 18 buttons)
+[01_elder_dialog phone_19.5x9] OK (28 texts, 18 buttons)
+[01_elder_dialog phone_16x9] OK (28 texts, 18 buttons)
+[01_elder_dialog tablet_4x3] OK (28 texts, 18 buttons)
+[02_hud pc_1920x1080] OK (40 texts, 18 buttons)
+[02_hud pc_1366x768] OK (40 texts, 18 buttons)
+[02_hud phone_19.5x9] TEXT OVERLAP: 'VIP' (HUD/SafeArea/TopRight/Shortcuts/Shortcut_vip/Caption) x '3 › 2 › 1' (HUD/SafeArea/ActionBar/Auto/Order) by 21x15
+[02_hud phone_16x9] OK (40 texts, 18 buttons)
+[02_hud tablet_4x3] OK (40 texts, 18 buttons)
+[02b_settings pc_1920x1080] OK (9 texts, 8 buttons)
+[02b_settings pc_1366x768] OK (9 texts, 8 buttons)
+[02b_settings phone_19.5x9] OK (9 texts, 8 buttons)
+[02b_settings phone_16x9] OK (9 texts, 8 buttons)
+[02b_settings tablet_4x3] OK (9 texts, 8 buttons)
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
