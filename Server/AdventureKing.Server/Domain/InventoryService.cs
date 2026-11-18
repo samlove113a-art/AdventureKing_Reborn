@@ -9,7 +9,7 @@ public sealed class ItemDef
     public string id { get; set; } = "";
     public string name { get; set; } = "";
     public string kind { get; set; } = "consumable"; // consumable | equipment | junk | material | ticket | petfood | quest
-    public string rarity { get; set; } = "white"; // white | green | purple | orange | red
+    public string rarity { get; set; } = "white"; // white | blue | purple | orange | red
     public string icon { get; set; } = "";
     public string desc { get; set; } = "";
     public int hp { get; set; }
@@ -55,7 +55,7 @@ public sealed class ItemConfig
         if (cfg.items.Select(i => i.id).Distinct().Count() != cfg.items.Length) throw new InvalidDataException("duplicate item id");
         foreach (ItemDef i in cfg.items)
         {
-            if (i.rarity is not ("white" or "green" or "purple" or "orange" or "red")) throw new InvalidDataException(i.id + ": bad rarity");
+            if (i.rarity is not ("white" or "blue" or "purple" or "orange" or "red")) throw new InvalidDataException(i.id + ": bad rarity");
             if (i.kind == "equipment" && i.equipSlot is not ("weapon" or "armor" or "accessory")) throw new InvalidDataException(i.id + ": bad equip slot");
             if (i.kind == "junk" && i.priceGold <= 0) throw new InvalidDataException(i.id + ": junk must have a sell value");
             // a ticket may only lead to a map the server really has (never to an unbuilt map)
@@ -405,7 +405,7 @@ public sealed class InventoryService
     public EnhanceResultDto Enhance(string accountId, string characterId, EnhanceRequestDto? req) => db.InTransaction((c, tx) =>
     {
         if (req == null || req.equipSlot is not ("weapon" or "armor" or "accessory")
-            || req.requestId.Length < 12 || req.requestId.Length > 80
+            || string.IsNullOrEmpty(req.requestId) || req.requestId.Length < 12 || req.requestId.Length > 80
             || req.requestId.Any(ch => !char.IsAsciiLetterOrDigit(ch) && ch != '-'))
             throw new GameError("bad_request", "Yêu cầu cường hóa không hợp lệ.", 400);
         int cls = ClassOf(c, tx, accountId, characterId); // verifies the owner before replay
