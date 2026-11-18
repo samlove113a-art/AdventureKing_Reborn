@@ -273,6 +273,12 @@ namespace AdventureKing.Gameplay
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/equip", JsonUtility.ToJson(new SlotBody { slot = slot }), true, (ok, json, err) =>
                 completed(ok, ok ? JsonUtility.FromJson<InventoryState>(json) : null, err));
 
+        [Serializable] private sealed class EnhanceBody { public string equipSlot, requestId; public bool protect; }
+        public void EnhanceItem(string characterId, string equipSlot, bool protect, string requestId, Action<bool, EnhanceResult, string> completed) =>
+            Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/enhance",
+                JsonUtility.ToJson(new EnhanceBody { equipSlot = equipSlot, protect = protect, requestId = requestId }), true,
+                (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<EnhanceResult>(json) : null, err));
+
         /// <summary>Buys one more bag cell with Gold (server price, up to 99 cells).</summary>
         public void ExpandBag(string characterId, Action<bool, ExpandResult, string> completed) =>
             Send("POST", "/characters/" + UnityWebRequest.EscapeURL(characterId) + "/inventory/expand", "{}", true, (ok, json, err) =>

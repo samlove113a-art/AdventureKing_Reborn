@@ -9,6 +9,7 @@ public sealed class ItemDef
     public string id { get; set; } = "";
     public string name { get; set; } = "";
     public string kind { get; set; } = "consumable"; // consumable | equipment | junk | material | ticket | petfood | quest
+    public string rarity { get; set; } = "white"; // white | blue | purple | orange | red
     public string icon { get; set; } = "";
     public string desc { get; set; } = "";
     public int hp { get; set; }
@@ -54,6 +55,7 @@ public sealed class ItemConfig
         if (cfg.items.Select(i => i.id).Distinct().Count() != cfg.items.Length) throw new InvalidDataException("duplicate item id");
         foreach (ItemDef i in cfg.items)
         {
+            if (i.rarity is not ("white" or "blue" or "purple" or "orange" or "red")) throw new InvalidDataException(i.id + ": bad rarity");
             if (i.kind == "equipment" && i.equipSlot is not ("weapon" or "armor" or "accessory")) throw new InvalidDataException(i.id + ": bad equip slot");
             if (i.kind == "junk" && i.priceGold <= 0) throw new InvalidDataException(i.id + ": junk must have a sell value");
             // a ticket may only lead to a map the server really has (never to an unbuilt map)
@@ -79,10 +81,13 @@ public sealed class BagSlotDto
     public string kind { get; set; } = "";
     public string icon { get; set; } = "";
     public string desc { get; set; } = "";
+    public string rarity { get; set; } = "white";
     public int qty { get; set; }
     public string equipSlot { get; set; } = "";
     public int attack { get; set; }
     public int defense { get; set; }
+    public int enhanceLevel { get; set; }
+    public int enhanceChance { get; set; }
     public bool usableByClass { get; set; } = true;
     public string destMap { get; set; } = "";
 }
@@ -100,6 +105,7 @@ public sealed class InventoryDto
     public EquippedDto[] equipped { get; set; } = Array.Empty<EquippedDto>();
     public int attackBonus { get; set; }
     public int defenseBonus { get; set; }
+    public int combatPower { get; set; }
 }
 
 /// <summary>force: drink even with a full bar (the player confirmed; nothing is restored above the maximum).</summary>
@@ -115,6 +121,22 @@ public sealed class UseItemResultDto
 public sealed class ExpandResultDto { public long priceGold { get; set; } public long gold { get; set; } public InventoryDto inventory { get; set; } = new(); }
 public sealed class EquipRequestDto { public int slot { get; set; } }
 public sealed class UnequipRequestDto { public string? equipSlot { get; set; } }
+public sealed class EnhanceRequestDto
+{
+    public string equipSlot { get; set; } = "";
+    public bool protect { get; set; }
+    public string requestId { get; set; } = "";
+}
+public sealed class EnhanceResultDto
+{
+    public bool success { get; set; }
+    public bool protectedLevel { get; set; }
+    public int beforeLevel { get; set; }
+    public int afterLevel { get; set; }
+    public int chancePercent { get; set; }
+    public bool replayed { get; set; }
+    public InventoryDto inventory { get; set; } = new();
+}
 
 /// <summary>
 /// Server-owned character bag (default 40 cells, up to 99 of a stackable item per cell; extra quantity spills into
@@ -129,6 +151,11 @@ public sealed class InventoryService
     private readonly Database db;
     private readonly FarmService farm;
     private readonly Func<long> now;
+    private readonly Func<int> enhanceRoll;
+    // Draft success rates for +1 to +15; validated exclusively on the server.
+    private static readonly int[] EnhanceChances = { 100, 95, 90, 85, 80, 70, 65, 55, 45, 40, 35, 30, 25, 20, 15 };
+    public static int SuccessChance(int currentLevel) => EnhanceChances[Math.Clamp(currentLevel, 0, 14)];
+    private static int Boost(int baseStat, int level) => baseStat > 0 ? baseStat + level : 0;
     private readonly Dictionary<string, long> potionReady = new();
     private readonly object gate = new();
     public ItemConfig Config { get; }
@@ -137,15 +164,16 @@ public sealed class InventoryService
     public int Capacity(SqliteConnection c, SqliteTransaction? tx, string characterId) =>
         Config.bagSlots + (int)Database.Scalar<long>(c, tx, "SELECT COALESCE((SELECT extra FROM bag_expansion WHERE character_id=$c),0)", ("$c", characterId));
 
-    public InventoryService(Database db, ItemConfig config, FarmService farm, Func<long>? clock = null)
+    public InventoryService(Database db, ItemConfig config, FarmService farm, Func<long>? clock = null, Func<int>? upgradeRoll = null)
     {
         this.db = db;
         Config = config;
         this.farm = farm;
         now = clock ?? Database.NowMs;
+        enhanceRoll = upgradeRoll ?? (() => System.Security.Cryptography.RandomNumberGenerator.GetInt32(100));
         farm.EquipmentBonus = Bonus;
         farm.GrantItem = (c, tx, _, characterId, itemId, qty) => Add(c, tx, characterId, itemId, qty);
-        farm.ItemInfo = id => Config.Get(id) is { } d ? (d.name, d.kind) : (id, "");
+        farm.ItemInfo = id => Config.Get(id) is { } d ? (d.name, d.kind, d.rarity) : (id, "", "white");
     }
 
     private int ClassOf(SqliteConnection c, SqliteTransaction? tx, string accountId, string characterId)
@@ -161,9 +189,9 @@ public sealed class InventoryService
     {
         using var c = db.Open();
         int atk = 0, def = 0;
-        using var cmd = Database.Command(c, null, "SELECT item_id FROM equipped WHERE character_id=$c", ("$c", characterId));
+        using var cmd = Database.Command(c, null, "SELECT item_id, enhance_level FROM equipped WHERE character_id=$c", ("$c", characterId));
         using var r = cmd.ExecuteReader();
-        while (r.Read()) { ItemDef? d = Config.Get(r.GetString(0)); if (d != null) { atk += d.attack; def += d.defense; } }
+        while (r.Read()) { ItemDef? d = Config.Get(r.GetString(0)); if (d != null) { int lvl = r.GetInt32(1); atk += Boost(d.attack, lvl); def += Boost(d.defense, lvl); } }
         return (atk, def);
     }
 
@@ -245,26 +273,34 @@ public sealed class InventoryService
 
     private InventoryDto Snapshot(SqliteConnection c, SqliteTransaction tx, string characterId, int heroClass)
     {
-        BagSlotDto Dto(int index, string itemId, int qty)
+        BagSlotDto Dto(int index, string itemId, int qty, int enhanced = 0)
         {
             ItemDef d = Config.Get(itemId) ?? new ItemDef { id = itemId, name = itemId };
             return new BagSlotDto
             {
-                index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, qty = qty,
-                equipSlot = d.equipSlot, attack = d.attack, defense = d.defense, destMap = d.destMap,
+                index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, rarity = d.rarity, qty = qty,
+                equipSlot = d.equipSlot, attack = Boost(d.attack, enhanced), defense = Boost(d.defense, enhanced), enhanceLevel = enhanced, enhanceChance = d.kind == "equipment" && enhanced < 15 ? SuccessChance(enhanced) : 0, destMap = d.destMap,
                 usableByClass = d.kind != "equipment" || d.classes.Length == 0 || d.classes.Contains(heroClass),
             };
         }
-        var slots = Bag(c, tx, characterId).OrderBy(kv => kv.Key).Select(kv => Dto(kv.Key, kv.Value.item, kv.Value.qty)).ToArray();
+        var levels = new Dictionary<int, int>();
+        using (var cmd = Database.Command(c, tx, "SELECT slot_index, enhance_level FROM bag_slots WHERE character_id=$c", ("$c", characterId)))
+        using (var rdr = cmd.ExecuteReader())
+            while (rdr.Read()) levels[rdr.GetInt32(0)] = rdr.GetInt32(1);
+        var slots = Bag(c, tx, characterId).OrderBy(kv => kv.Key)
+            .Select(kv => Dto(kv.Key, kv.Value.item, kv.Value.qty, levels.TryGetValue(kv.Key, out int lvl) ? lvl : 0)).ToArray();
         var eq = new List<EquippedDto>();
-        using (var cmd = Database.Command(c, tx, "SELECT equip_slot, item_id FROM equipped WHERE character_id=$c ORDER BY equip_slot", ("$c", characterId)))
+        using (var cmd = Database.Command(c, tx, "SELECT equip_slot, item_id, enhance_level FROM equipped WHERE character_id=$c ORDER BY equip_slot", ("$c", characterId)))
         using (var r = cmd.ExecuteReader())
-            while (r.Read()) eq.Add(new EquippedDto { equipSlot = r.GetString(0), item = Dto(-1, r.GetString(1), 1) });
+            while (r.Read()) eq.Add(new EquippedDto { equipSlot = r.GetString(0), item = Dto(-1, r.GetString(1), 1, r.GetInt32(2)) });
+        int level = (int)Database.Scalar<long>(c, tx, "SELECT level FROM characters WHERE id=$c", ("$c", characterId));
+        int atk = eq.Sum(e => e.item.attack), def = eq.Sum(e => e.item.defense);
         return new InventoryDto
         {
+            combatPower = FarmService.CombatPowerFromBonuses(heroClass, level, atk, def),
             capacity = Capacity(c, tx, characterId), maxCapacity = Config.maxBagSlots, stackMax = Config.stackMax, slots = slots, equipped = eq.ToArray(),
             nextExpandGold = Capacity(c, tx, characterId) >= Config.maxBagSlots ? 0 : Config.expandBaseGold + Config.expandStepGold * (Capacity(c, tx, characterId) - Config.bagSlots),
-            attackBonus = eq.Sum(e => e.item.attack), defenseBonus = eq.Sum(e => e.item.defense),
+            attackBonus = atk, defenseBonus = def,
         };
     }
 
@@ -338,12 +374,15 @@ public sealed class InventoryService
         ItemDef d = Config.Get(cell.item) ?? throw new GameError("item_unknown", "Vật phẩm không tồn tại.", 404);
         if (d.kind != "equipment") throw new GameError("not_equipment", "Vật phẩm này không trang bị được.", 409);
         if (d.classes.Length > 0 && !d.classes.Contains(cls)) throw new GameError("wrong_class", "Nghề của bạn không dùng được trang bị này.", 409);
+        int incomingLevel = (int)Database.Scalar<long>(c, tx, "SELECT enhance_level FROM bag_slots WHERE character_id=$c AND slot_index=$s", ("$c", characterId), ("$s", req.slot));
         string? old = Database.Scalar<string>(c, tx, "SELECT item_id FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", d.equipSlot));
+        int oldLevel = old == null ? 0 : (int)Database.Scalar<long>(c, tx,
+            "SELECT enhance_level FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", d.equipSlot));
         Database.Exec(c, tx, "DELETE FROM bag_slots WHERE character_id=$c AND slot_index=$s", ("$c", characterId), ("$s", req.slot));
         if (old != null)
-            Database.Exec(c, tx, "INSERT INTO bag_slots(character_id, slot_index, item_id, qty) VALUES($c,$s,$i,1)", ("$c", characterId), ("$s", req.slot), ("$i", old));
-        Database.Exec(c, tx, "INSERT INTO equipped(character_id, equip_slot, item_id) VALUES($c,$e,$i) ON CONFLICT(character_id, equip_slot) DO UPDATE SET item_id=excluded.item_id",
-            ("$c", characterId), ("$e", d.equipSlot), ("$i", d.id));
+            Database.Exec(c, tx, "INSERT INTO bag_slots(character_id, slot_index, item_id, qty, enhance_level) VALUES($c,$s,$i,1,$l)", ("$c", characterId), ("$s", req.slot), ("$i", old), ("$l", oldLevel));
+        Database.Exec(c, tx, "INSERT INTO equipped(character_id, equip_slot, item_id, enhance_level) VALUES($c,$e,$i,$l) ON CONFLICT(character_id, equip_slot) DO UPDATE SET item_id=excluded.item_id, enhance_level=excluded.enhance_level",
+            ("$c", characterId), ("$e", d.equipSlot), ("$i", d.id), ("$l", incomingLevel));
         return Snapshot(c, tx, characterId, cls);
     });
 
@@ -352,8 +391,72 @@ public sealed class InventoryService
         int cls = ClassOf(c, tx, accountId, characterId);
         string? item = Database.Scalar<string>(c, tx, "SELECT item_id FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req?.equipSlot ?? ""));
         if (item == null) throw new GameError("not_equipped", "Ô trang bị này đang trống.", 409);
-        Database.Exec(c, tx, "DELETE FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req!.equipSlot));
-        Add(c, tx, characterId, item, 1); // bag full -> GameError -> rollback (stays equipped)
+        int oldLevel = (int)Database.Scalar<long>(c, tx, "SELECT enhance_level FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req!.equipSlot));
+        var used = Bag(c, tx, characterId);
+        int cell = Enumerable.Range(0, Capacity(c, tx, characterId)).FirstOrDefault(i => !used.ContainsKey(i), -1);
+        if (cell < 0) throw new GameError("bag_full", "Túi đồ không đủ chỗ.", 409);
+        Database.Exec(c, tx, "DELETE FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req.equipSlot));
+        Database.Exec(c, tx, "INSERT INTO bag_slots(character_id, slot_index, item_id, qty, enhance_level) VALUES($c,$s,$i,1,$l)",
+            ("$c", characterId), ("$s", cell), ("$i", item), ("$l", oldLevel));
         return Snapshot(c, tx, characterId, cls);
+    });
+
+    /// <summary>Atomic +1..+15 upgrade of currently equipped gear. Stones and charms are real bag items;
+    /// a repeated requestId returns the receipt without charging or rolling twice.</summary>
+    public EnhanceResultDto Enhance(string accountId, string characterId, EnhanceRequestDto? req) => db.InTransaction((c, tx) =>
+    {
+        if (req == null || req.equipSlot is not ("weapon" or "armor" or "accessory")
+            || string.IsNullOrEmpty(req.requestId) || req.requestId.Length < 12 || req.requestId.Length > 80
+            || req.requestId.Any(ch => !char.IsAsciiLetterOrDigit(ch) && ch != '-' && ch != '_'))
+            throw new GameError("bad_request", "Yêu cầu cường hóa không hợp lệ.", 400);
+        int cls = ClassOf(c, tx, accountId, characterId); // verifies the owner before replay
+        using (var receipt = Database.Command(c, tx,
+            "SELECT prev_level,next_level,chance_percent,success,protected FROM enhancement_attempts WHERE character_id=$c AND request_id=$r",
+            ("$c", characterId), ("$r", req.requestId)))
+        using (var reader = receipt.ExecuteReader())
+            if (reader.Read())
+                return new EnhanceResultDto {
+                    beforeLevel = reader.GetInt32(0), afterLevel = reader.GetInt32(1), chancePercent = reader.GetInt32(2),
+                    success = reader.GetInt32(3) != 0, protectedLevel = reader.GetInt32(4) != 0, replayed = true,
+                    inventory = Snapshot(c, tx, characterId, cls)
+                };
+        string? itemId = null; int before = 0;
+        using (var command = Database.Command(c, tx,
+            "SELECT item_id,enhance_level FROM equipped WHERE character_id=$c AND equip_slot=$e",
+            ("$c", characterId), ("$e", req.equipSlot)))
+        using (var reader = command.ExecuteReader())
+            if (reader.Read()) { itemId = reader.GetString(0); before = reader.GetInt32(1); }
+        if (itemId == null) throw new GameError("not_equipped", "Hãy mặc trang bị trước khi cường hóa.", 409);
+        if (before >= 15) throw new GameError("enhance_max", "Trang bị đã đạt +15.", 409);
+
+        var bag = Bag(c, tx, characterId);
+        int stoneSlot = bag.Where(kv => kv.Value.item == "enhance_stone" && kv.Value.qty > 0)
+            .Select(kv => kv.Key).DefaultIfEmpty(-1).First();
+        if (stoneSlot < 0) throw new GameError("no_stone", "Thiếu Đá Cường Hóa.", 409);
+        int charmSlot = -1;
+        if (req.protect)
+        {
+            charmSlot = bag.Where(kv => kv.Value.item == "protection_charm" && kv.Value.qty > 0)
+                .Select(kv => kv.Key).DefaultIfEmpty(-1).First();
+            if (charmSlot < 0) throw new GameError("no_charm", "Thiếu Bùa Bảo Vệ.", 409);
+        }
+        // Consume in one transaction. Any failure rolls back both materials and the level.
+        RemoveFromSlot(c, tx, characterId, stoneSlot, "enhance_stone", 1);
+        if (req.protect) RemoveFromSlot(c, tx, characterId, charmSlot, "protection_charm", 1);
+        int chance = SuccessChance(before);
+        bool success = enhanceRoll() < chance;
+        int after = success ? before + 1 : (req.protect || before <= 5 ? before : before - 1);
+        Database.Exec(c, tx,
+            "UPDATE equipped SET enhance_level=$n WHERE character_id=$c AND equip_slot=$e",
+            ("$n", after), ("$c", characterId), ("$e", req.equipSlot));
+        Database.Exec(c, tx,
+            "INSERT INTO enhancement_attempts(character_id,request_id,equip_slot,prev_level,next_level,chance_percent,success,protected) VALUES($c,$r,$e,$p,$n,$q,$s,$g)",
+            ("$c", characterId), ("$r", req.requestId), ("$e", req.equipSlot), ("$p", before), ("$n", after),
+            ("$q", chance), ("$s", success ? 1 : 0), ("$g", req.protect ? 1 : 0));
+        AccountService.Audit(c, tx, accountId, "gear_enhance", $"{characterId} {itemId} +{before}->{after} success={success} protected={req.protect}");
+        return new EnhanceResultDto {
+            success = success, protectedLevel = req.protect, beforeLevel = before, afterLevel = after, chancePercent = chance,
+            inventory = Snapshot(c, tx, characterId, cls)
+        };
     });
 }

@@ -220,6 +220,8 @@ api.MapPost("/characters/{id}/inventory/expand", (string id, HttpContext ctx, Ac
     inv.Expand(accounts.Authenticate(Bearer(ctx)), id));
 api.MapPost("/characters/{id}/inventory/equip", (string id, EquipRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
     inv.Equip(accounts.Authenticate(Bearer(ctx)), id, body));
+api.MapPost("/characters/{id}/inventory/enhance", (string id, EnhanceRequestDto body, HttpContext ctx, AccountService accounts, InventoryService inv) =>
+    inv.Enhance(accounts.Authenticate(Bearer(ctx)), id, body));
 // ---------------------------------------------------------------- NPC shops + ticket travel
 api.MapGet("/shops/{shopId}", (string shopId, ShopService shops) => shops.Get(shopId));
 api.MapPost("/characters/{id}/shop/buy", (string id, BuyRequestDto body, HttpContext ctx, AccountService accounts, ShopService shops) =>

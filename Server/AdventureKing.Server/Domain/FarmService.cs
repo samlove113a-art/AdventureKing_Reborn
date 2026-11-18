@@ -91,6 +91,7 @@ public sealed class MonsterDto
     public int phase { get; set; } = 1;
     /// <summary>Time until this monster's next slam on the hero that fights it (0 = no slam): the client shows the telegraph.</summary>
     public long slamInMs { get; set; }
+    public float slamReach { get; set; }
 }
 
 public sealed class DropDto
@@ -104,6 +105,7 @@ public sealed class DropDto
     public string itemId { get; set; } = "";
     public string itemName { get; set; } = "";
     public string itemKind { get; set; } = "";
+    public string itemRarity { get; set; } = "white";
     public int qty { get; set; }
 }
 
@@ -165,7 +167,7 @@ public sealed class SkillConfig
 }
 
 public sealed class SkillRequestDto { public int slot { get; set; } public string? spawnId { get; set; } public float x { get; set; } public float y { get; set; } public int facing { get; set; } = 1; }
-public sealed class SkillHitDto { public MonsterDto monster { get; set; } = new(); public int damage { get; set; } public bool killed { get; set; } public DropDto? drop { get; set; } }
+public sealed class SkillHitDto { public MonsterDto monster { get; set; } = new(); public int damage { get; set; } public bool crit { get; set; } public bool killed { get; set; } public DropDto? drop { get; set; } }
 public sealed class SkillResultDto
 {
     public int slot { get; set; }
@@ -205,6 +207,7 @@ public sealed class AttackResultDto
 {
     public MonsterDto monster { get; set; } = new();
     public int damage { get; set; }
+    public bool crit { get; set; }
     public bool killed { get; set; }
     public DropDto? drop { get; set; }
     public HeroCombatDto hero { get; set; } = new();
@@ -233,8 +236,15 @@ public sealed class FarmService
     {
         var st = ClassStats[Math.Clamp(heroClass, 0, ClassStats.Length - 1)];
         var (atk, def) = Bonus(characterId);
-        double dps = (st.damage + atk) / st.interval;
-        return (int)Math.Round(dps * 10 + st.maxHp + (st.defense + def) * 5 + level * 25);
+        return CombatPowerFromBonuses(heroClass, level, atk, def);
+    }
+
+    /// <summary>Shared combat-power formula for inventory snapshots made inside a SQLite transaction.</summary>
+    public static int CombatPowerFromBonuses(int heroClass, int level, int attackBonus, int defenseBonus)
+    {
+        var s = ClassStats[Math.Clamp(heroClass, 0, ClassStats.Length - 1)];
+        double dps = (s.damage + attackBonus) / s.interval;
+        return (int)Math.Round(dps * 10 + s.maxHp + (s.defense + defenseBonus) * 5 + level * 25);
     }
 
     private static readonly (int damage, float interval, float range, int maxHp, int defense)[] ClassStats =
@@ -299,7 +309,7 @@ public sealed class FarmService
     /// <summary>Set by InventoryService: puts an item into the bag inside the pickup transaction (throws bag_full -> the drop stays on the ground).</summary>
     public Action<SqliteConnection, SqliteTransaction, string, string, string, int>? GrantItem { get; set; }
     /// <summary>Set by InventoryService: (name, kind) of an item for the drop display.</summary>
-    public Func<string, (string name, string kind)>? ItemInfo { get; set; }
+    public Func<string, (string name, string kind, string rarity)>? ItemInfo { get; set; }
 
     public FarmService(Database db, FarmConfig config, Func<long>? clock = null, Random? random = null, SkillConfig? skills = null)
     {
@@ -359,8 +369,8 @@ public sealed class FarmService
 
     private DropDto Dto(Drop d, long t)
     {
-        var (name, kind) = d.ItemId.Length > 0 && ItemInfo != null ? ItemInfo(d.ItemId) : ("", "");
-        return new() { id = d.Id, x = d.X, y = d.Y, amount = d.Amount, expiresInMs = Math.Max(0, d.ExpiresMs - t), itemId = d.ItemId, itemName = name, itemKind = kind, qty = d.Qty };
+        var (name, kind, rarity) = d.ItemId.Length > 0 && ItemInfo != null ? ItemInfo(d.ItemId) : ("", "", "white");
+        return new() { id = d.Id, x = d.X, y = d.Y, amount = d.Amount, expiresInMs = Math.Max(0, d.ExpiresMs - t), itemId = d.ItemId, itemName = name, itemKind = kind, itemRarity = rarity, qty = d.Qty };
     }
 
     /// <summary>Plausibility of a reported position: reachable from the last one at running speed.</summary>
@@ -586,10 +596,13 @@ public sealed class FarmService
             Live m = live[s.id];
             if (m.Hp <= 0) throw new GameError("monster_dead", "Quái vật đã bị hạ, chờ hồi sinh.", 409);
             lastSwing[characterId] = t;
-            int dmg = stats.damage + Bonus(characterId).attack;
+            int baseDamage = stats.damage + Bonus(characterId).attack;
+            bool crit = rng.NextDouble() < 0.12;
+            int dmg = crit ? (int)MathF.Round(baseDamage * 1.5f) : baseDamage;
             SkillHitDto hit = Damage(s, dmg, accountId, characterId, mapId, t);
+            hit.crit = crit;
             if (hit.killed) { Fire(accountId, characterId, "kill:" + s.type); Fire(accountId, characterId, "kill:any"); }
-            return new AttackResultDto { damage = dmg, killed = hit.killed, drop = hit.drop, monster = hit.monster, hero = Drain(h, t) };
+            return new AttackResultDto { damage = dmg, crit = crit, killed = hit.killed, drop = hit.drop, monster = hit.monster, hero = Drain(h, t) };
         }
     }
 
@@ -704,7 +717,13 @@ public sealed class FarmService
             h.Ready[i] = t + (long)(sk.cooldownSeconds * 1000f);
             h.GlobalReady = t + (long)(Skills.globalCooldownSeconds * 1000f);
             int dmg = (int)MathF.Round((stats.damage + Bonus(characterId).attack) * sk.damageMultiplier);
-            var hits = targets.Select(sp => Damage(sp, dmg, accountId, characterId, mapId, t)).ToArray();
+            var hits = targets.Select(sp =>
+            {
+                bool crit = rng.NextDouble() < 0.12;
+                var hit = Damage(sp, crit ? (int)MathF.Round(dmg * 1.5f) : dmg, accountId, characterId, mapId, t);
+                hit.crit = crit;
+                return hit;
+            }).ToArray();
             Fire(accountId, characterId, "skill:any");
             foreach (var (sp, h2) in targets.Zip(hits))
                 if (h2.killed) { Fire(accountId, characterId, "kill:" + sp.type); Fire(accountId, characterId, "kill:any"); }
@@ -785,7 +804,7 @@ public sealed class FarmService
                     if (GrantItem == null) throw new GameError("items_off", "Vật phẩm chưa sẵn sàng.", 503);
                     GrantItem(c, tx, accountId, characterId, d.ItemId, d.Qty); // throws bag_full: rolled back, the drop stays (until its 15 s end)
                     AccountService.Audit(c, tx, accountId, "loot_item", $"{characterId} {d.Id} {d.ItemId} x{d.Qty}");
-                    var (nm, _) = ItemInfo != null ? ItemInfo(d.ItemId) : (d.ItemId, "");
+                    var (nm, _, _) = ItemInfo != null ? ItemInfo(d.ItemId) : (d.ItemId, "", "white");
                     return new PickupResultDto { dropId = d.Id, amount = 0, gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)), itemId = d.ItemId, itemName = nm, qty = d.Qty, hero = heroDto };
                 }
                 LedgerResult r = Wallet.Gold(c, tx, accountId, characterId, d.Amount, "loot:" + d.Type, "loot:" + d.Id);

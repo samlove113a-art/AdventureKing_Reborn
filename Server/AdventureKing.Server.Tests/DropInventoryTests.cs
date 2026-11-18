@@ -80,7 +80,7 @@ public sealed class DropInventoryTests : IDisposable
         {
             ItemDef item = inv.Config.Get(d.itemId) ?? throw new Exception("unknown drop item " + d.itemId);
             Assert.InRange(d.chance, 0.0, 1.0);
-            Assert.True(item.kind is "junk" or "equipment", d.itemId);
+            Assert.True(item.kind is "junk" or "equipment" or "material", d.itemId);
         }
         Assert.All(inv.Config.items.Where(i => i.kind == "junk"), i => { Assert.True(i.priceGold > 0); Assert.True(inv.Config.Stackable(i)); });
         Assert.All(inv.Config.items.Where(i => i.kind == "equipment"), i => Assert.False(inv.Config.Stackable(i)));
