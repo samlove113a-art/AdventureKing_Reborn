@@ -26,7 +26,6 @@ Quy tắc: không làm lại phần đã xong; phiên sau đọc file này trư�
 - Map 3 chỉ là khung (không quái, không Mini Boss).
 
 ## CHƯA LÀM
-- Pet 2D (di chuyển, nhảy, biểu cảm đói).
 - Elite, Mini-boss, Boss (Nấm Thủ Lĩnh, Vua Nấm Quỷ) — chưa có model/AI/kỹ năng/`chapter_progress`.
 - Map 3 (đầy đủ) → Map 10; thiết kế địa hình nhiều tầng, thang/dây, đường bí mật.
 - Packaging server/client, Tailscale, build Windows/Android.
@@ -52,3 +51,6 @@ Server 175/175. PlayMode 71 test: 63 pass, 2 bỏ qua, 6 fail:
 - Ngưỡng độ lệch z của bản 3D nâng 0,15 → 0,20 (dao động theo khoảng cách quái ngẫu nhiên, 0,1515 vẫn là lệch nhỏ).
 - Cả 2 test UI (VIP/Auto trên 19.5:9, BGM) đã pass (f5b7656).
 - Còn lại: VFX riêng Kiếm Sĩ/Cung Thủ/Sát Thủ (hiện dùng 12 choreography 3D có sẵn, đã đúng vị trí, chưa có VFX pixel 2D như ảnh mẫu), mặt/mắt/vũ khí, pet, boss, map 3–10.
+
+## 2026-11-18 — Pet 2D
+4 pet (Mèo Mây, Gà Bông, Rồng Ngọc, Hồ Ly Lửa) thành sprite 2D chibi (vẽ SDF gốc, `Tools/chibi2d/make_pets.py`, không tốn Meshy). `PetDirector` dùng `Pet2DBody` khi 2D (lật hướng, nhảy/co giãn, mặt đói + bóng chữ `Đói...`); pet 3D giữ làm dự phòng. `PetTests` 2/2 pass (theo chủ, mặt đói, không còn mesh 3D). Còn: không có hiệu ứng hào quang VIP trên bản 2D, pet chưa có hoạt ảnh nhiều khung (chỉ hop/squash theo code).

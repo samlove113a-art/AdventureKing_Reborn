@@ -38,7 +38,7 @@ namespace AdventureKing.ArtPipeline
         ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildAllFromCommandLine</summary>
         public static void BuildAllFromCommandLine()
         {
-            try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin }) Build(c); BuildAllActors(); EditorApplication.Exit(0); }
+            try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin }) Build(c); BuildAllActors(); BuildPets(); EditorApplication.Exit(0); }
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
@@ -183,6 +183,49 @@ namespace AdventureKing.ArtPipeline
                 Debug.Log($"[CHIBI2D] actor {name} built (scale {scale})");
             }
             AssetDatabase.SaveAssets();
+        }
+
+        private static readonly (string id, string file)[] Pets =
+        {
+            ("pet_cloud_cat", "PetCloudCat"), ("pet_chick", "PetChick"), ("pet_jade_dragon", "PetJadeDragon"), ("pet_fire_fox", "PetFireFox"),
+        };
+
+        /// <summary>The four pets: ArtSource/Chibi2D/Pets/{Pet}.png (+ _hungry) from Tools/chibi2d/make_pets.py -> Resources/Chibi2D/Pets/{id}_Visual2D.prefab.</summary>
+        public static void BuildPets()
+        {
+            Directory.CreateDirectory($"{Dst}/Pets"); Directory.CreateDirectory($"{Res}/Pets");
+            foreach (var (id, file) in Pets)
+            {
+                Sprite[] two = new Sprite[2];
+                string[] names = { file, file + "_hungry" };
+                for (int i = 0; i < 2; i++)
+                {
+                    string dst = $"{Dst}/Pets/{names[i]}.png";
+                    File.Copy($"{Src}/Pets/{names[i]}.png", dst, true);
+                    AssetDatabase.ImportAsset(dst, ImportAssetOptions.ForceSynchronousImport);
+                    var ti = (TextureImporter)AssetImporter.GetAtPath(dst);
+                    ti.textureType = TextureImporterType.Sprite; ti.spriteImportMode = SpriteImportMode.Single; ti.spritePixelsPerUnit = 128f;
+                    ti.spritePivot = new Vector2(0.5f, 0.06f); ti.mipmapEnabled = false; ti.filterMode = FilterMode.Point; ti.alphaIsTransparency = true;
+                    ti.textureCompression = TextureImporterCompression.Uncompressed;
+                    var ts = new TextureImporterSettings(); ti.ReadTextureSettings(ts); ts.spriteAlignment = (int)SpriteAlignment.Custom; ti.SetTextureSettings(ts);
+                    ti.SaveAndReimport();
+                    two[i] = AssetDatabase.LoadAssetAtPath<Sprite>(dst);
+                }
+                var root = new GameObject(id + "_Visual2D");
+                var sg = new GameObject("Sprite"); sg.transform.SetParent(root.transform, false);
+                var sr = sg.AddComponent<SpriteRenderer>(); sr.sprite = two[0]; sr.sharedMaterial = PixelMaterial(); sr.sortingOrder = 4;
+                var body = root.AddComponent<Pet2DBody>(); body.Renderer = sr; body.Normal = two[0]; body.Hungry = two[1];
+                PrefabUtility.SaveAsPrefabAsset(root, $"{Res}/Pets/{id}_Visual2D.prefab");
+                UnityEngine.Object.DestroyImmediate(root);
+                Debug.Log("[CHIBI2D] pet " + id);
+            }
+            AssetDatabase.SaveAssets();
+        }
+
+        public static void BuildPetsFromCommandLine()
+        {
+            try { BuildPets(); EditorApplication.Exit(0); }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
         /// <summary>The unlit pixel-art sprite material (AdventureKing/PixelSprite), shared by every 2D body and effect.</summary>

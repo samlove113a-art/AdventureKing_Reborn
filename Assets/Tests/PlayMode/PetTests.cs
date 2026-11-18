@@ -73,6 +73,53 @@ namespace AdventureKing.Tests
         }
 
         [UnityTest]
+        public IEnumerator Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face()
+        {
+            HeroVisualStyle.Override = "2d";
+            try
+            {
+                yield return server.OpenGame();
+                yield return TestServer.RegisterCreateAndEnter("pet2d" + Random.Range(1000, 9999), "pet-pass-2026", HeroClass.Mage, "Chủ Gà 2D");
+                var world = AdventureWorldSession.Current;
+                motor = world.Player; input = motor.GetComponent<PlayerInput2D>();
+                var greeter = Object.FindAnyObjectByType<ElderGreeter>();
+                float until = Time.time + 20f;
+                while (greeter && !greeter.DialogOpen && Time.time < until) yield return null;
+                if (greeter && greeter.DialogOpen) greeter.Close();
+                until = Time.time + 15f;
+                while (greeter && !greeter.Done && Time.time < until) yield return null;
+                var panel = Object.FindAnyObjectByType<PetPanel>(); var dir = PetDirector.Current;
+                yield return Tap(PlayerInput2D.TouchAction.Pet);
+                until = Time.time + 5f;
+                while (dir.State == null && Time.time < until) yield return null;
+                panel.SetVip(false);
+                int chick = dir.State.catalog.Where(p => p.tier == "normal").ToList().FindIndex(p => p.id == "pet_chick");
+                panel.AskBuy(chick); panel.ConfirmBuy();
+                until = Time.time + 5f;
+                while ((panel.Busy || !dir.State.owned.Any()) && Time.time < until) yield return null;
+                panel.ToggleSummon(chick);
+                until = Time.time + 5f;
+                while (!dir.Pet && Time.time < until) yield return null;
+                panel.Close();
+                Assert.IsNotNull(dir.Pet, "pet spawned");
+                var body = dir.Pet.GetComponent<Pet2DBody>();
+                Assert.IsNotNull(body, "the pet is a 2D sprite body");
+                Assert.IsFalse(dir.Pet.GetComponentsInChildren<MeshRenderer>().Any(m => !m.GetComponent<TextMesh>()), "no 3D mesh left on a 2D pet (the speech bubble text only)");
+                yield return WalkTo(Pos.x + 6f, 10f);
+                yield return new WaitForSeconds(1.2f);
+                Assert.Less(Mathf.Abs(dir.Pet.position.x - Pos.x), 2.2f, "2D pet follows the hero");
+                Assert.IsFalse(body.Renderer.flipX, "pet faces right while following a hero walking right");
+                yield return Shot("04_pet_2d_follow");
+                body.Set(true, 1);
+                Assert.AreSame(body.Hungry, body.Renderer.sprite, "hungry pet shows the droopy face");
+                body.Set(false, -1);
+                Assert.AreSame(body.Normal, body.Renderer.sprite);
+                Assert.IsTrue(body.Renderer.flipX, "mirrored when facing left");
+            }
+            finally { HeroVisualStyle.Override = "3d"; }
+        }
+
+        [UnityTest]
         public IEnumerator Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold()
         {
             yield return server.OpenGame();

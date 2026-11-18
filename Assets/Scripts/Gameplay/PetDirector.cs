@@ -30,6 +30,7 @@ namespace AdventureKing.Gameplay
         public Sprite Portrait(string id) => pets.FirstOrDefault(p => p.id == id).portrait;
 
         private Transform body, head, eyeL, eyeR, aura;
+        private Pet2DBody body2D;
         private Transform[] tails = new Transform[0], wingsL = new Transform[0], wingsR = new Transform[0];
         private TextMesh bubble;
         private float x, y, groundY, hop, nextPoll, nextBlink, happyUntil, fetchCooldown, potionUntil;
@@ -79,10 +80,12 @@ namespace AdventureKing.Gameplay
             GameObject prefab = pets.FirstOrDefault(p => p.id == id).prefab;
             var w = World;
             if (!prefab || !w || !w.Player) return;
-            Pet = Instantiate(prefab).transform;
+            GameObject two = HeroVisualStyle.Chibi2D ? Pet2DBody.Load(id) : null;   // 2D chibi sprite by default; the 3D pet stays as fallback
+            Pet = Instantiate(two ? two : prefab).transform;
             Pet.name = "Pet_" + id;
-            Pet.localScale = Vector3.one * 1.1f;
-            body = Pet.Find("Body"); head = body ? body.Find("Head") : null;
+            body2D = two ? Pet.GetComponent<Pet2DBody>() : null;
+            Pet.localScale = Vector3.one * (body2D ? 0.9f : 1.1f);
+            body = body2D ? Pet.Find("Sprite") : Pet.Find("Body"); head = body && !body2D ? body.Find("Head") : null;
             eyeL = head ? head.Find("EyeL") : null; eyeR = head ? head.Find("EyeR") : null;
             aura = Pet.Find("Aura");
             tails = Pet.GetComponentsInChildren<Transform>().Where(t => t.name.StartsWith("Tail") && t.parent == body).ToArray();
@@ -152,7 +155,13 @@ namespace AdventureKing.Gameplay
             Pet.position = new Vector3(x, y + hopH + happyJump, -0.25f);
             float yaw = Mood == "happy" ? (happyUntil - Time.time) * 720f : facing > 0 ? 115f : 245f;
             if (!moving && Mood == "idle") yaw = Mathf.LerpAngle(facing > 0 ? 115f : 245f, 180f, 0.5f);
-            Pet.rotation = Quaternion.Slerp(Pet.rotation, Quaternion.Euler(0f, yaw + 180f, 0f), 1f - Mathf.Exp(-10f * dt));
+            if (body2D)
+            {
+                Pet.rotation = Quaternion.identity;
+                body2D.Set(hungry, facing);
+                if (Mood == "happy" || Mood == "potion") body2D.Renderer.flipX = Mathf.Sin(Time.time * 18f) > 0f ? facing < 0 : facing > 0;   // happy wiggle
+            }
+            else Pet.rotation = Quaternion.Slerp(Pet.rotation, Quaternion.Euler(0f, yaw + 180f, 0f), 1f - Mathf.Exp(-10f * dt));
             if (body)
             {
                 float squash = moving ? 1f + Mathf.Cos(hop * 2f) * 0.08f : 1f + Mathf.Sin(t * 2.2f) * 0.025f; // breathing
