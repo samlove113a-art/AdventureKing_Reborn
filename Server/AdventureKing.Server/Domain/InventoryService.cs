@@ -87,6 +87,7 @@ public sealed class BagSlotDto
     public int attack { get; set; }
     public int defense { get; set; }
     public int enhanceLevel { get; set; }
+    public int enhanceChance { get; set; }
     public bool usableByClass { get; set; } = true;
     public string destMap { get; set; } = "";
 }
@@ -278,7 +279,7 @@ public sealed class InventoryService
             return new BagSlotDto
             {
                 index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, rarity = d.rarity, qty = qty,
-                equipSlot = d.equipSlot, attack = Boost(d.attack, enhanced), defense = Boost(d.defense, enhanced), enhanceLevel = enhanced, destMap = d.destMap,
+                equipSlot = d.equipSlot, attack = Boost(d.attack, enhanced), defense = Boost(d.defense, enhanced), enhanceLevel = enhanced, enhanceChance = d.kind == "equipment" && enhanced < 15 ? SuccessChance(enhanced) : 0, destMap = d.destMap,
                 usableByClass = d.kind != "equipment" || d.classes.Length == 0 || d.classes.Contains(heroClass),
             };
         }
