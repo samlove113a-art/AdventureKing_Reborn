@@ -145,51 +145,58 @@ def main():
         scale = float(argv[argv.index("--ref-scale") + 1])
     print("scale", round(scale, 4))
 
-    items = []
-    for i, (x0, y0, x1, y1) in enumerate(cells):
-        if i == whiten:
-            items.append(None)
+    for _try in range(3):   # shrink the whole clip when a pose (lying death, long thrust) does not fit one cell
+        items = []
+        for i, (x0, y0, x1, y1) in enumerate(cells):
+            if i == whiten:
+                items.append(None)
+                continue
+            c = np.asarray(img.crop((x0 + 3, y0 + 3, x1 - 3, y1 - 3)))
+            k = key_magenta(c)
+            if '--deline' in argv:
+                k = remove_ground_lines(c, k)
+            m = largest_components(k, min_area=150)
+            if '--hero-only' in argv:
+                m = largest_components(m, min_area=int(m.sum() * 0.35))
+            ys, xs = np.where(m)
+            if len(ys) == 0:
+                sys.exit(f"empty frame {i}")
+            tile = scale_tile(c, m, (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1), scale)
+            lo = ys >= ys.max() - 0.3 * (ys.max() - ys.min())
+            cxb = float(xs[lo].mean()) if '--anchor-body' in argv else float(xs.mean())
+            items.append(dict(tile=tile, bx0=xs.min() * scale, bottom=(ys.max() + 1) * scale, top=ys.min() * scale,
+                              cx=cxb * scale))
+        real = [it for it in items if it]
+        base = float(np.median([it["bottom"] for it in real]))
+        anchor = float(np.median([it["cx"] for it in real]))
+    
+        def place(it):
+            h, w = it["tile"].shape[:2]
+            a = it["cx"] if '--anchor-body' in argv else anchor
+            return CELL // 2 - 20 * ('--anchor-body' in argv) + (it["bx0"] - a), (CELL - GROUND_PX) - (base - it["top"]), w, h
+    
+        # uniform shift so every frame fits inside the cell
+        minx = min(place(it)[0] for it in real)
+        maxx = max(place(it)[0] + place(it)[2] for it in real)
+        miny = min(place(it)[1] for it in real)
+        maxy = max(place(it)[1] + place(it)[3] for it in real)
+        sx = 0.0
+        if minx < 0:
+            sx = -minx
+        elif maxx > CELL:
+            sx = CELL - maxx
+        sy = 0.0
+        if miny < 0:
+            sy = -miny
+        elif maxy > CELL:
+            sy = CELL - maxy
+        print("fit", round(minx, 1), round(maxx, 1), round(miny, 1), round(maxy, 1), "shift", round(sx, 1), round(sy, 1))
+        span_x, span_y = maxx - minx, maxy - miny
+        if max(span_x, span_y) > CELL - 2 and "--ref-scale" not in argv:
+            scale *= (CELL - 2) / max(span_x, span_y)
+            print("too wide, rescale", round(scale, 4))
             continue
-        c = np.asarray(img.crop((x0 + 3, y0 + 3, x1 - 3, y1 - 3)))
-        k = key_magenta(c)
-        if '--deline' in argv:
-            k = remove_ground_lines(c, k)
-        m = largest_components(k, min_area=150)
-        if '--hero-only' in argv:
-            m = largest_components(m, min_area=int(m.sum() * 0.35))
-        ys, xs = np.where(m)
-        if len(ys) == 0:
-            sys.exit(f"empty frame {i}")
-        tile = scale_tile(c, m, (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1), scale)
-        lo = ys >= ys.max() - 0.3 * (ys.max() - ys.min())
-        cxb = float(xs[lo].mean()) if '--anchor-body' in argv else float(xs.mean())
-        items.append(dict(tile=tile, bx0=xs.min() * scale, bottom=(ys.max() + 1) * scale, top=ys.min() * scale,
-                          cx=cxb * scale))
-    real = [it for it in items if it]
-    base = float(np.median([it["bottom"] for it in real]))
-    anchor = float(np.median([it["cx"] for it in real]))
-
-    def place(it):
-        h, w = it["tile"].shape[:2]
-        a = it["cx"] if '--anchor-body' in argv else anchor
-        return CELL // 2 - 20 * ('--anchor-body' in argv) + (it["bx0"] - a), (CELL - GROUND_PX) - (base - it["top"]), w, h
-
-    # uniform shift so every frame fits inside the cell
-    minx = min(place(it)[0] for it in real)
-    maxx = max(place(it)[0] + place(it)[2] for it in real)
-    miny = min(place(it)[1] for it in real)
-    maxy = max(place(it)[1] + place(it)[3] for it in real)
-    sx = 0.0
-    if minx < 0:
-        sx = -minx
-    elif maxx > CELL:
-        sx = CELL - maxx
-    sy = 0.0
-    if miny < 0:
-        sy = -miny
-    elif maxy > CELL:
-        sy = CELL - maxy
-    print("fit", round(minx, 1), round(maxx, 1), round(miny, 1), round(maxy, 1), "shift", round(sx, 1), round(sy, 1))
+        break
 
     strip = Image.new("RGBA", (CELL * frames, CELL), (0, 0, 0, 0))
     for i, it in enumerate(items):

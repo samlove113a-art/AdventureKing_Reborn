@@ -128,13 +128,15 @@ def cmd_gen(cls):
     ref = os.path.join(REFDIR, cls + ".png")
     if not os.path.exists(ref):
         sys.exit("missing " + ref)
-    need_yes(len(CLIPS), "clip sheets")
+    only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
+    todo = [cl for cl in CLIPS if not only or cl[0] in only]
+    need_yes(len(todo), "clip sheets")
     b64 = base64.b64encode(open(ref, "rb").read()).decode()
     c = CLASSES[cls]
-    for n, f, lay, ar, fps, loop, tpl, wh in CLIPS:
+    for n, f, lay, ar, fps, loop, tpl, wh in todo:
         desc = tpl.format(**c)
         fr = f"{f} frames" if f else "6 or 7 frames"
-        body = dict(prompt=f"{SAME} Create a sprite sheet of {fr} arranged in {lay}, {desc}. Feet on the same baseline in every cell.",
+        body = dict(prompt=f"{SAME} Create a flat 2D sprite sheet image that fills the ENTIRE canvas edge to edge (not a tilted screen, no perspective, no mockup, no grey surround) of {fr} arranged in {lay}, {desc}. Feet on the same baseline in every cell.",
                     ai_model="nano-banana-2", reference_image_urls=["data:image/png;base64," + b64], aspect_ratio=ar)
         print(meshy_run("image-to-image", f"pixel_{cls.lower()}_{n.lower()}", body))
 
@@ -177,5 +179,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
