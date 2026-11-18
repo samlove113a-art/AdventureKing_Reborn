@@ -129,7 +129,7 @@ namespace AdventureKing.Gameplay
         public float x, y;
         public long amount, expiresInMs;
         /// <summary>Item piles (junk / equipment): itemId is set and amount is 0.</summary>
-        public string itemId, itemName, itemKind;
+        public string itemId, itemName, itemKind, itemRarity;
         public int qty;
         public bool IsItem => !string.IsNullOrEmpty(itemId);
     }
@@ -152,7 +152,7 @@ namespace AdventureKing.Gameplay
     [Serializable] public sealed class SkillDefDto { public int slot; public string id, name, shape; public float cooldownSeconds, range, radius, damageMultiplier; public int mpCost, maxTargets; }
     [Serializable] public sealed class ClassSkillsDto { public int heroClass; public string name; public int maxMp; public float mpRegenPerSecond; public SkillDefDto[] skills = new SkillDefDto[0]; }
     [Serializable] public sealed class SkillConfigDto { public float globalCooldownSeconds, mpCostPerLevel, maxMpPerLevel; public ClassSkillsDto[] classes = new ClassSkillsDto[0]; }
-    [Serializable] public sealed class SkillHitState { public FarmMonsterState monster; public int damage; public bool killed; public FarmDropState drop; public bool HasDrop => killed && drop != null && !string.IsNullOrEmpty(drop.id); }
+    [Serializable] public sealed class SkillHitState { public FarmMonsterState monster; public int damage; public bool crit; public bool killed; public FarmDropState drop; public bool HasDrop => killed && drop != null && !string.IsNullOrEmpty(drop.id); }
     [Serializable]
     public sealed class SkillCastResult
     {
@@ -168,14 +168,14 @@ namespace AdventureKing.Gameplay
     public sealed class BagSlotState
     {
         public int index, qty, attack, defense;
-        public string itemId, name, kind, icon, desc, equipSlot;
+        public string itemId, name, kind, icon, desc, equipSlot, rarity;
         public bool usableByClass = true;
     }
     [Serializable] public sealed class EquippedState { public string equipSlot; public BagSlotState item; }
     [Serializable]
     public sealed class InventoryState
     {
-        public int capacity, maxCapacity, stackMax, attackBonus, defenseBonus;
+        public int capacity, maxCapacity, stackMax, attackBonus, defenseBonus, combatPower;
         public long nextExpandGold; // 0 = bag fully expanded
         public BagSlotState[] slots = new BagSlotState[0];
         public EquippedState[] equipped = new EquippedState[0];
@@ -260,7 +260,7 @@ namespace AdventureKing.Gameplay
     {
         public FarmMonsterState monster;
         public int damage;
-        public bool killed;
+        public bool crit, killed;
         public FarmDropState drop;
         public HeroCombatState hero;
         public bool HasDrop => killed && drop != null && !string.IsNullOrEmpty(drop.id);
