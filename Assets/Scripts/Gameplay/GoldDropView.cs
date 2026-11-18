@@ -15,9 +15,13 @@ namespace AdventureKing.Gameplay
         /// <summary>Item pile (junk / equipment) instead of Gold; tinted by kind.</summary>
         public bool IsItem { get; private set; }
         public string ItemName { get; private set; }
+        public string Rarity { get; private set; }
 
         private float age, expiresAt, collectT = -1f;
         private Vector3 from;
+        private GameObject lightColumn;
+        private SpriteRenderer lightRenderer;
+        private static Sprite whiteSquare;
         private Transform target;
         private Transform[] sparkles = new Transform[0];
         private Vector3[] sparkleBase = new Vector3[0];
@@ -43,12 +47,38 @@ namespace AdventureKing.Gameplay
             expiresAt = Time.time + d.expiresInMs / 1000f;
             IsItem = d.IsItem;
             ItemName = d.itemName;
+            Rarity = string.IsNullOrEmpty(d.itemRarity) ? "white" : d.itemRarity;
+            if (IsItem && (Rarity == "purple" || Rarity == "orange" || Rarity == "red")) CreateRareColumn();
             if (IsItem)
             {
                 Color tint = d.itemKind == "equipment" ? new Color(0.72f, 0.62f, 1f) : new Color(0.62f, 0.78f, 0.58f); // equipment violet, junk moss green
                 foreach (Renderer r in GetComponentsInChildren<Renderer>(true)) if (r.material.HasProperty("_BaseColor")) r.material.SetColor("_BaseColor", tint);
             }
         }
+
+        private void CreateRareColumn()
+        {
+            if (!whiteSquare)
+            {
+                // A hard-edged 2D column, not a blurred 3D beam. Shared 1x1 sprite.
+                Texture2D texture = Texture2D.whiteTexture;
+                whiteSquare = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height),
+                    new Vector2(0.5f, 0.5f), 1f);
+            }
+            lightColumn = new GameObject("Rare_Item_Column");
+            lightColumn.transform.SetParent(transform.parent, false); // item spins; the beam stays upright
+            lightRenderer = lightColumn.AddComponent<SpriteRenderer>();
+            lightRenderer.sprite = whiteSquare;
+            lightRenderer.sortingOrder = 7;
+            lightRenderer.color = Rarity == "red" ? new Color(1f, 0.19f, 0.31f, 0.42f) :
+                Rarity == "orange" ? new Color(1f, 0.58f, 0.16f, 0.42f) :
+                new Color(0.66f, 0.31f, 1f, 0.4f);
+            lightColumn.transform.localScale = new Vector3(0.25f, 2.8f, 1f);
+            if (Camera.main && FarmField.CoinChime())
+                AudioSource.PlayClipAtPoint(FarmField.CoinChime(), Camera.main.transform.position, 0.23f);
+        }
+
+        private void OnDestroy() { if (lightColumn) Destroy(lightColumn); }
 
         public bool Expired => Time.time >= expiresAt;
 
@@ -57,6 +87,7 @@ namespace AdventureKing.Gameplay
         {
             target = hero;
             collectT = 0f;
+            if (lightColumn) lightColumn.SetActive(false);
         }
 
         private void Update()
@@ -74,6 +105,14 @@ namespace AdventureKing.Gameplay
             // a pile nobody picked up disappears with the server timer (15 s): free the object, not just hide it
             if (!Pending && Time.time >= expiresAt + 0.25f) { Destroy(gameObject); return; }
             age += dt;
+            if (lightColumn)
+            {
+                lightColumn.transform.position = new Vector3(Ground.x + 0.6f, Ground.y + 1.68f, 0.1f);
+                var col = lightRenderer.color;
+                col.a = (Time.time > expiresAt - 4f ? 0.18f : 0.4f) *
+                    (0.85f + 0.15f * Mathf.Sin(Time.time * 8f));
+                lightRenderer.color = col;
+            }
             // fly out in an arc, land and bounce twice (decaying), then rest spinning and bobbing
             Vector3 rest = new Vector3(Ground.x + 0.6f, Ground.y + 0.3f, 0.2f);
             if (age < 0.5f)
