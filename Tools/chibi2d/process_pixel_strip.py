@@ -57,6 +57,41 @@ def split_cells(img):
     return cells
 
 
+def single_hero(mask):
+    """Keep the biggest blob plus small blobs touching its (slightly grown) box; drops a second hero the generator drew in the same cell."""
+    h, w = mask.shape
+    lab = np.zeros((h, w), np.int32)
+    boxes = {}
+    n = 0
+    for y in range(h):
+        for x in range(w):
+            if mask[y, x] and lab[y, x] == 0:
+                n += 1
+                stack = [(y, x)]
+                lab[y, x] = n
+                x0 = x1 = x
+                y0 = y1 = y
+                cnt = 0
+                while stack:
+                    cy, cx = stack.pop()
+                    cnt += 1
+                    x0, x1, y0, y1 = min(x0, cx), max(x1, cx), min(y0, cy), max(y1, cy)
+                    for ny, nx in ((cy + 1, cx), (cy - 1, cx), (cy, cx + 1), (cy, cx - 1)):
+                        if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and lab[ny, nx] == 0:
+                            lab[ny, nx] = n
+                            stack.append((ny, nx))
+                boxes[n] = [cnt, x0, y0, x1, y1]
+    if not boxes:
+        return mask
+    big = max(boxes, key=lambda k: boxes[k][0])
+    _, bx0, by0, bx1, by1 = boxes[big]
+    keep = np.zeros_like(mask)
+    for k, (cnt, x0, y0, x1, y1) in boxes.items():
+        if k == big or (x1 >= bx0 - 6 and x0 <= bx1 + 6 and y1 >= by0 - 6 and y0 <= by1 + 6 and cnt < boxes[big][0] * 0.3):
+            keep |= lab == k
+    return keep
+
+
 def key_magenta(rgb):
     r, g, b = rgb[..., 0].astype(int), rgb[..., 1].astype(int), rgb[..., 2].astype(int)
     bg = (r > 120) & (b > 120) & (g < np.minimum(r, b) * 0.62) & (abs(r - b) < 90)
@@ -157,6 +192,8 @@ def main():
             if '--deline' in argv:
                 k = remove_ground_lines(c, k)
             m = largest_components(k, min_area=150)
+            if '--single' in argv:
+                m = single_hero(m)
             if '--hero-only' in argv:
                 m = largest_components(m, min_area=int(m.sum() * 0.35))
             ys, xs = np.where(m)
@@ -235,6 +272,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 

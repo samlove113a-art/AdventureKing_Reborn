@@ -192,7 +192,7 @@ def cmd_process(cls):
         if wh >= 0:
             args += ["--whiten", str(wh)]
         if cls in NPCS:
-            args += ["--target", str(NPCS[cls]["target"])]
+            args += ["--target", str(NPCS[cls]["target"]), "--single"]
         else:
             args += EXTRA.get(n, [])
         # frames=0 -> try 7 then 6 (the generator draws either)
@@ -222,6 +222,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 
