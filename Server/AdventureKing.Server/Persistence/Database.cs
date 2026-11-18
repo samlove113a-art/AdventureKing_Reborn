@@ -170,10 +170,26 @@ public sealed class Database
         if (version < 14)
         {
             using var tx = c.BeginTransaction();
+            // A restored DB or imported fixture can already contain some V14 columns
+            // while retaining an older user_version. Migrate idempotently in-place.
+            if (!HasColumn(c, tx, "bag_slots", "enhance_level"))
+                Exec(c, tx, "ALTER TABLE bag_slots ADD COLUMN enhance_level INTEGER NOT NULL DEFAULT 0 CHECK (enhance_level BETWEEN 0 AND 15);");
+            if (!HasColumn(c, tx, "equipped", "enhance_level"))
+                Exec(c, tx, "ALTER TABLE equipped ADD COLUMN enhance_level INTEGER NOT NULL DEFAULT 0 CHECK (enhance_level BETWEEN 0 AND 15);");
             Exec(c, tx, Schema.V14);
             Exec(c, tx, "PRAGMA user_version=14;");
             tx.Commit();
         }
+    }
+
+    private static bool HasColumn(SqliteConnection c, SqliteTransaction tx, string table, string column)
+    {
+        // Table names are fixed internal constants, never user-supplied.
+        using var cmd = Command(c, tx, "PRAGMA table_info(" + table + ");");
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+            if (reader.GetString(1) == column) return true;
+        return false;
     }
 
     public static int Exec(SqliteConnection c, SqliteTransaction? tx, string sql, params (string, object?)[] args)
@@ -210,9 +226,7 @@ internal static class Schema
     // V14: per-instance equipment +0..+15; upgrade receipts provide idempotency across network retries.
     // All resources, failure rolls, gear level and receipts change atomically in one transaction.
     public const string V14 = """
-    ALTER TABLE bag_slots ADD COLUMN enhance_level INTEGER NOT NULL DEFAULT 0 CHECK (enhance_level BETWEEN 0 AND 15);
-    ALTER TABLE equipped ADD COLUMN enhance_level INTEGER NOT NULL DEFAULT 0 CHECK (enhance_level BETWEEN 0 AND 15);
-    CREATE TABLE enhancement_attempts (
+    CREATE TABLE IF NOT EXISTS enhancement_attempts (
         character_id TEXT NOT NULL REFERENCES characters(id),
         request_id TEXT NOT NULL,
         equip_slot TEXT NOT NULL,
