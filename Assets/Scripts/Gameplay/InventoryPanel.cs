@@ -119,7 +119,12 @@ namespace AdventureKing.Gameplay
         private void Apply(InventoryState inv)
         {
             bool changed = State != null && inv != null && inv.combatPower != State.combatPower;
+            bool wasReady = State != null && State.slots.Any(x => x.itemId == "enhance_stone") &&
+                State.equipped != null && State.equipped.Length > 0;
+            bool isReady = inv != null && inv.slots.Any(x => x.itemId == "enhance_stone") &&
+                inv.equipped != null && inv.equipped.Length > 0;
             State = inv;
+            if (isReady && !wasReady) QuickGoalToast.Show("Đủ nguyên liệu cường hóa! Mở túi đồ để nâng cấp.");
             targetPower = inv != null ? inv.combatPower : 0;
             if (changed) powerPulseUntil = Time.unscaledTime + 0.85f;
             else if (displayedPower == 0) displayedPower = targetPower;
@@ -230,7 +235,7 @@ namespace AdventureKing.Gameplay
         {
             switch ((rarity ?? "white").ToLowerInvariant())
             {
-                case "green": return new Color(0.36f, 0.9f, 0.53f);
+                case "blue": return new Color(0.3f, 0.65f, 1f);
                 case "purple": return new Color(0.74f, 0.45f, 1f);
                 case "orange": return new Color(1f, 0.62f, 0.22f);
                 case "red": return new Color(1f, 0.29f, 0.36f);
