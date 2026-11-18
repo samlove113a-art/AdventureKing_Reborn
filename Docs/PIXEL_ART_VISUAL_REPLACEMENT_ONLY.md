@@ -13,6 +13,31 @@
 ## Art direction
 Use the user-provided **blond warrior pixel-art sprite reference** as the canonical visual target for the entire game: high-detail 2D fantasy chibi, crisp discrete pixels, readable silhouette, detailed class weapons/armor, rich saturated colors, hand-pixel-style clustered shadows, no 3D, blur or smooth gradient. Keep all classes visually distinct. A previously generated gold-knight overview image is a **concept board only** (contains text/background, frames not validated) and must NOT be imported as ready-made animation PNG.
 
+
+## NON-NEGOTIABLE: ALL FOUR PLAYABLE HEROES MUST MATCH REFERENCE QUALITY
+
+This applies **equally to all four existing playable classes**, not only Swordsman. `HeroClassCatalog.cs` confirms these classes and the existing class IDs must be preserved:
+
+| Existing class ID | Art concept | Quality bar |
+| --- | --- | --- |
+| `Swordsman` | Golden-haired armored fantasy sword knight with large ornate sword and readable crimson/original class accent | Same detail and polish as reference |
+| `Mage` | Distinctive high-detail chibi spellcaster, ornate staff/book, visible spellcasting poses, custom pixel spell VFX | Same detail and polish as reference |
+| `Assassin` | Distinctive high-detail chibi agile rogue, dual blades and fluid close-combat arcs | Same detail and polish as reference |
+| `Archer` | Distinctive high-detail chibi bow user, clear aiming, draw/release and projectile effects | Same detail and polish as reference |
+
+The reference image sets a **minimum art-direction target**, not a license to clone its exact character or reuse one character's animation for all four. Each character must have its own readable body, silhouette, outfit, weapon and class-specific effects. Do not ship three mediocre characters around one polished knight. No tall/thin generic pixel mannequins, blurry AI artifacts, static cutout animation, repeated near-identical frames, mismatched anatomy, clipped weapons, inconsistent faces or pixel sizes.
+
+For **each of the four heroes**, provide:
+- Original, genuinely transparent, consistent-scale frame images for Idle, Run, Jump/Fall, Attack, Skill, Hit, Death, Climb where supported by the existing game.
+- Appropriate class-specific attack/skill presentation and effects; do not modify ability logic or server-authoritative combat.
+- Proper visual continuity (hair, face, hands, gear) across every frame.
+- Unity sprite import settings, aligned pivot/feet, separate working AnimationClips and mapped preview+gameplay displays.
+- Side-by-side art-quality review against the approved sample and Play Mode verification.
+
+**Acceptance gate:** all four must reach comparable detail and animation quality. If even one class fails, mark the visual replacement task **INCOMPLETE** and identify missing assets. Never claim finished or replace the only working assets with unverified concept art. Work class by class, preserving existing visuals until that class passes validation.
+
+**Important:** The screenshot/reference and a previously generated concept sheet are NOT verified uniform-cell transparent production sprites. Claude must have the actual image files in its accessible workspace, inspect their image dimensions and alpha channel, and create/validate import-ready frames rather than just telling Unity to slice a concept-board image.
+
 ## Exact task for Claude
 1. Inspect current character sprite/model references, renderers, prefabs, animator parameters, class previews, Sorting Layers and graphical VFX references **in the local project**. Keep every gameplay component and existing GUID relationship intact.
 2. Create **real transparent PNG** sprites with consistent pixel scale, silhouette, colors and feet/pivot alignment; separate frame sequences for Idle, Run, Jump, Fall, Attack, Skill, Hit, Death and Climb (only for actions game already has). Draw/produce original graphics; no empty placeholders, label panels, checkerboard backgrounds, duplicated pseudo-frames, or cutting off weapons.
