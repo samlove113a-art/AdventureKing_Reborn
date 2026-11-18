@@ -161,7 +161,8 @@ def main():
                 m = largest_components(m, min_area=int(m.sum() * 0.35))
             ys, xs = np.where(m)
             if len(ys) == 0:
-                sys.exit(f"empty frame {i}")
+                print(f"empty cell {i} dropped")
+                continue
             tile = scale_tile(c, m, (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1), scale)
             lo = ys >= ys.max() - 0.3 * (ys.max() - ys.min())
             cxb = float(xs[lo].mean()) if '--anchor-body' in argv else float(xs.mean())
@@ -199,6 +200,7 @@ def main():
             continue
         break
 
+    frames = len(items)   # empty cells were dropped
     strip = Image.new("RGBA", (CELL * frames, CELL), (0, 0, 0, 0))
     for i, it in enumerate(items):
         if it is None:
@@ -226,6 +228,8 @@ def main():
             pxs[x, y] = (70, 70, 80, 255) if ((x // 16 + y // 16) & 1) else (110, 110, 120, 255)
     cb.alpha_composite(strip.resize((strip.width * z, strip.height * z), Image.NEAREST))
     cb.convert("RGB").save(os.path.join(out_dir, f"{cls}_{clip}_preview.png"))
+    with open(os.path.join(out_dir, f"{cls}_{clip}.count"), "w") as cf:
+        cf.write(str(frames))
     print("wrote", path, strip.size)
 
 

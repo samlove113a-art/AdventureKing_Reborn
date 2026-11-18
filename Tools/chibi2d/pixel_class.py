@@ -34,7 +34,7 @@ STYLE = ("high-detail 2D pixel art character sprite, dark fantasy action RPG, st
 SAME = ("Same character as the reference image, identical face, hair, outfit, colours and weapon in every frame. High-detail 2D pixel "
         "art, crisp pixels, dark selective outline, clustered shading, same pixel size and same character scale in every frame, "
         "character fully inside each cell, flat solid magenta #FF00FF background, thin black lines between cells, no text, no "
-        "shadow. Strict side view facing right unless stated.")
+        "shadow. Strict side view facing right unless stated. EVERY cell shows the COMPLETE character from the top of the head to the soles of the boots at EXACTLY the same size and scale as the reference: no zoom-in, no close-ups, no cropped feet, no cell with a bigger or smaller character.")
 
 CLASSES = {
     "Mage": dict(
@@ -196,10 +196,10 @@ def cmd_process(cls):
         else:
             args += EXTRA.get(n, [])
         # frames=0 -> try 7 then 6 (the generator draws either)
-        for attempt in dict.fromkeys(([cnt] if f else []) + [12, 9, 10, 8, 7, 6, 5, 4, 3, 2]):   # the generator sometimes draws a different count
+        for attempt in dict.fromkeys(([cnt] if f else []) + [12, 11, 9, 10, 8, 7, 6, 5, 4, 3, 2]):   # the generator sometimes draws a different count
             args[6] = str(attempt)
             if subprocess.call(args) == 0:
-                cnt = attempt
+                cnt = int(open(os.path.join(od, f"{cls}_{n}.count")).read())   # real frame count (empty cells dropped)
                 break
         else:
             sys.exit("could not cut " + n)
@@ -222,6 +222,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
+
 
 
 
