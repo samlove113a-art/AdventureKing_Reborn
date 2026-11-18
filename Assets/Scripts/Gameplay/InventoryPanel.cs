@@ -329,30 +329,62 @@ namespace AdventureKing.Gameplay
             card.color = panelSprite ? Color.white : new Color(0.1f, 0.12f, 0.2f, 0.97f);
             Transform c = card.transform;
             Color gold = new Color(1f, 0.85f, 0.45f), cream = new Color(1f, 0.96f, 0.88f);
-            Text title = Txt(c, "Title", "Túi Đồ", 40, gold, new Vector2(0.5f, 1f), new Vector2(0f, -84f), new Vector2(600f, 56f), TextAnchor.MiddleCenter);
+            Text title = Txt(c, "Title", "NHÂN VẬT  •  TÚI ĐỒ", 37, gold, new Vector2(0.5f, 1f), new Vector2(0f, -63f), new Vector2(720f, 56f), TextAnchor.MiddleCenter);
             title.fontStyle = FontStyle.Bold;
             Btn(c, "Close", "Đóng", new Vector2(1f, 1f), new Vector2(-120f, -56f), new Vector2(150f, 62f), new Color(0.55f, 0.3f, 0.3f), Close);
 
-            // equipment column (left)
-            Txt(c, "EquipTitle", "Trang bị", 28, gold, new Vector2(0f, 1f), new Vector2(170f, -120f), new Vector2(260f, 40f), TextAnchor.MiddleCenter);
+            // Left paperdoll panel. Existing 3 server-owned slots remain functional;
+            // future slots are explicitly locked instead of inventing equipment on the client.
+            Txt(c, "EquipTitle", "Nhân vật", 28, gold, new Vector2(0f, 1f), new Vector2(275f, -127f), new Vector2(380f, 44f), TextAnchor.MiddleCenter);
+            powerLabel = Txt(c, "CombatPower", "TỔNG LỰC CHIẾN", 28, gold,
+                new Vector2(0f, 1f), new Vector2(275f, -176f), new Vector2(490f, 48f), TextAnchor.MiddleCenter);
+            powerLabel.fontStyle = FontStyle.Bold;
+
+            Image stage = Make<Image>(c, "PaperdollPodium", new Vector2(0f, 1f), new Vector2(278f, -412f), new Vector2(256f, 318f));
+            stage.color = new Color(0.19f, 0.22f, 0.38f, 0.89f);
+            Image glow = Make<Image>(stage.transform, "PodiumGlow", new Vector2(0.5f, 0f), new Vector2(0f, 44f), new Vector2(190f, 27f));
+            glow.color = new Color(0.48f, 0.65f, 1f, 0.55f); glow.raycastTarget = false;
+            characterPreview = Make<Image>(stage.transform, "Hero2DPreview", new Vector2(0.5f, 0.5f),
+                new Vector2(0f, 18f), new Vector2(235f, 260f));
+            characterPreview.preserveAspect = true; characterPreview.raycastTarget = false; characterPreview.enabled = false;
+
+            var realPositions = new [] { new Vector2(88f, -277f), new Vector2(464f, -277f), new Vector2(88f, -448f) };
             for (int i = 0; i < EquipSlots.Length; i++)
             {
                 var (slot, label) = EquipSlots[i];
-                Image cell = Make<Image>(c, "Equip_" + slot, new Vector2(0f, 1f), new Vector2(170f, -215f - i * 150f), new Vector2(120f, 120f));
+                Image cell = Make<Image>(c, "Equip_" + slot, new Vector2(0f, 1f), realPositions[i], new Vector2(96f, 96f));
                 cell.sprite = cellSprite; cell.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple;
-                cell.color = new Color(0.75f, 0.8f, 1f);
+                cell.color = new Color(0.4f, 0.45f, 0.62f);
                 cell.gameObject.AddComponent<Button>().onClick.AddListener(() => SelectEquip(slot));
-                Image ic = Make<Image>(cell.transform, "Icon", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(96f, 96f));
+                var border = cell.gameObject.AddComponent<Outline>(); border.effectColor = gold;
+                border.effectDistance = new Vector2(2f, -2f);
+                Image ic = Make<Image>(cell.transform, "Icon", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(77f, 77f));
                 ic.preserveAspect = true; ic.raycastTarget = false; ic.enabled = false;
-                Text lab = Txt(cell.transform, "Label", label, 20, cream, new Vector2(0.5f, 0f), new Vector2(0f, -18f), new Vector2(200f, 28f), TextAnchor.MiddleCenter);
-                equipCells[slot] = (ic, lab);
+                Text labelText = Txt(cell.transform, "Label", label, 18, cream,
+                    new Vector2(0.5f, 0f), new Vector2(0f, -14f), new Vector2(154f, 29f), TextAnchor.MiddleCenter);
+                equipCells[slot] = (ic, labelText);
             }
-            statsLabel = Txt(c, "Stats", "", 22, cream, new Vector2(0f, 0f), new Vector2(170f, 70f), new Vector2(300f, 60f), TextAnchor.MiddleCenter);
+
+            string[] unavailable = { "Nón", "Giày", "Nhẫn", "Pet", "Hóa thân" };
+            var lockedPositions = new [] {
+                new Vector2(464f, -448f), new Vector2(88f, -574f), new Vector2(464f, -574f),
+                new Vector2(190f, -628f), new Vector2(365f, -628f)
+            };
+            for (int i = 0; i < unavailable.Length; i++)
+            {
+                Image locked = Make<Image>(c, "Locked_" + unavailable[i], new Vector2(0f, 1f), lockedPositions[i], new Vector2(88f, 73f));
+                locked.sprite = cellSprite; locked.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple;
+                locked.color = new Color(0.3f, 0.32f, 0.38f, 0.62f);
+                Txt(locked.transform, "LockedLabel", unavailable[i] + "\n(chưa mở)", 14,
+                    new Color(0.73f, 0.73f, 0.77f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(116f, 67f), TextAnchor.MiddleCenter);
+            }
+            statsLabel = Txt(c, "Stats", "", 19, cream, new Vector2(0f, 0f),
+                new Vector2(270f, 68f), new Vector2(360f, 49f), TextAnchor.MiddleCenter);
 
             // bag grid (right): a scroll view, so 40 base cells and up to 99 bought cells share one layout
-            const float cell0 = 104f, gap = 8f;
-            Image viewport = Make<Image>(c, "BagViewport", new Vector2(0f, 1f), Vector2.zero, new Vector2(Columns * (cell0 + gap), 580f));
-            var vrt = viewport.rectTransform; vrt.pivot = new Vector2(0f, 1f); vrt.anchoredPosition = new Vector2(360f, -112f);
+            const float cell0 = 75f, gap = 8f;
+            Image viewport = Make<Image>(c, "BagViewport", new Vector2(0f, 1f), Vector2.zero, new Vector2(Columns * (cell0 + gap), 470f));
+            var vrt = viewport.rectTransform; vrt.pivot = new Vector2(0f, 1f); vrt.anchoredPosition = new Vector2(650f, -150f);
             viewport.color = new Color(0f, 0f, 0f, 0.01f); // (needs a graphic so the mask and the drag area exist)
             viewport.gameObject.AddComponent<RectMask2D>();
             var contentGo = new GameObject("BagContent", typeof(RectTransform)) { layer = 5 }; // (AddComponent<RectTransform> on a UI object returns null)
@@ -369,10 +401,11 @@ namespace AdventureKing.Gameplay
                 int index = i;
                 float x = (i % Columns) * (cell0 + gap), y = -(i / Columns) * (cell0 + gap);
                 Image bg = Make<Image>(content, "Cell" + i, new Vector2(0f, 1f), new Vector2(x + cell0 / 2f, y - cell0 / 2f), new Vector2(cell0, cell0));
+                var edge = bg.gameObject.AddComponent<Outline>(); edge.effectDistance = new Vector2(2f, -2f); edge.effectColor = Color.white;
                 bg.sprite = cellSprite; bg.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple;
                 bg.color = new Color(0.55f, 0.6f, 0.78f, 0.9f);
                 bg.gameObject.AddComponent<Button>().onClick.AddListener(() => Select(index));
-                Image ic = Make<Image>(bg.transform, "Icon", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(84f, 84f));
+                Image ic = Make<Image>(bg.transform, "Icon", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(63f, 63f));
                 ic.preserveAspect = true; ic.raycastTarget = false; ic.enabled = false;
                 Text q = Txt(bg.transform, "Qty", "", 22, Color.white, new Vector2(1f, 0f), new Vector2(-30f, 16f), new Vector2(60f, 28f), TextAnchor.MiddleRight);
                 q.fontStyle = FontStyle.Bold;
@@ -381,17 +414,23 @@ namespace AdventureKing.Gameplay
             }
 
             // detail strip (bottom right)
-            nameLabel = Txt(c, "ItemName", "Chọn một vật phẩm", 28, gold, new Vector2(0f, 0f), new Vector2(620f, 150f), new Vector2(520f, 40f), TextAnchor.MiddleLeft);
+            nameLabel = Txt(c, "ItemName", "Chọn một vật phẩm", 28, gold, new Vector2(0f, 0f), new Vector2(645f, 146f), new Vector2(520f, 40f), TextAnchor.MiddleLeft);
             nameLabel.fontStyle = FontStyle.Bold;
-            descLabel = Txt(c, "ItemDesc", "", 22, cream, new Vector2(0f, 0f), new Vector2(620f, 100f), new Vector2(520f, 56f), TextAnchor.UpperLeft);
-            msgLabel = Txt(c, "Message", "", 22, new Color(1f, 0.75f, 0.6f), new Vector2(0f, 0f), new Vector2(620f, 52f), new Vector2(520f, 32f), TextAnchor.MiddleLeft);
-            expandButton = Btn(c, "Expand", "Mở rộng túi", new Vector2(0f, 0f), new Vector2(170f, 150f), new Vector2(280f, 66f), new Color(0.82f, 0.6f, 0.18f), Expand);
+            descLabel = Txt(c, "ItemDesc", "", 22, cream, new Vector2(0f, 0f), new Vector2(645f, 94f), new Vector2(520f, 56f), TextAnchor.UpperLeft);
+            msgLabel = Txt(c, "Message", "", 22, new Color(1f, 0.75f, 0.6f), new Vector2(0f, 0f), new Vector2(645f, 39f), new Vector2(520f, 32f), TextAnchor.MiddleLeft);
+            expandButton = Btn(c, "Expand", "Mở rộng túi", new Vector2(0f, 0f), new Vector2(270f, 143f), new Vector2(310f, 58f), new Color(0.82f, 0.6f, 0.18f), Expand);
             expandLabel = expandButton.GetComponentInChildren<Text>();
             expandLabel.fontSize = 20;
             useButton = Btn(c, "Use", "Dùng", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.25f, 0.6f, 0.4f), UseSelected);
             equipButton = Btn(c, "Equip", "Trang bị", new Vector2(1f, 0f), new Vector2(-270f, 110f), new Vector2(180f, 64f), new Color(0.3f, 0.45f, 0.75f), EquipSelected);
             useLabel = useButton.GetComponentInChildren<Text>();
             unequipButton = Btn(c, "Unequip", "Tháo", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.6f, 0.4f, 0.25f), () => { if (selectedEquip != null) Unequip(selectedEquip); });
+            enhanceButton = Btn(c, "Enhance", "Cường hóa", new Vector2(1f, 0f), new Vector2(-270f, 39f),
+                new Vector2(180f, 58f), new Color(0.75f, 0.44f, 0.12f), EnhanceSelected);
+            enhanceLabel = enhanceButton.GetComponentInChildren<Text>(); enhanceLabel.fontSize = 18;
+            protectionButton = Btn(c, "Protect", "Bùa: TẮT", new Vector2(1f, 0f), new Vector2(-470f, 39f),
+                new Vector2(180f, 58f), new Color(0.42f, 0.33f, 0.71f), ToggleProtection);
+            protectionLabel = protectionButton.GetComponentInChildren<Text>(); protectionLabel.fontSize = 18;
             root.SetActive(false);
             Redraw();
         }
