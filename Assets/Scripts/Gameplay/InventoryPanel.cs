@@ -451,17 +451,27 @@ namespace AdventureKing.Gameplay
                     qty.text = s.qty > 1 ? s.qty.ToString() : "";
                 }
                 else { icon.enabled = false; qty.text = ""; }
-                bg.color = i == SelectedIndex ? new Color(1f, 0.85f, 0.45f) : new Color(0.55f, 0.6f, 0.78f, 0.9f);
+                Color rarity = bySlot.TryGetValue(i, out BagSlotState held)
+                    ? TierColor(held.rarity) : new Color(0.59f, 0.61f, 0.7f);
+                bg.color = i == SelectedIndex ? new Color(1f, 0.85f, 0.45f)
+                    : Color.Lerp(new Color(0.22f, 0.25f, 0.34f), rarity, 0.44f);
+                Outline border = bg.GetComponent<Outline>();
+                if (border) border.effectColor = rarity;
             }
             foreach (var (slot, _) in EquipSlots)
             {
                 EquippedState e = State?.equipped?.FirstOrDefault(x => x.equipSlot == slot);
-                var (ic, _) = equipCells[slot];
+                var (ic, label) = equipCells[slot];
                 ic.enabled = e != null && Icon(e.item.icon);
                 if (e != null) ic.sprite = Icon(e.item.icon);
+                label.text = slot == "weapon" ? "Vũ khí" : slot == "armor" ? "Áo" : "Dây chuyền";
+                if (e != null && e.item.enhanceLevel > 0) label.text += " +" + e.item.enhanceLevel;
+                Image cell = ic.transform.parent.GetComponent<Image>();
+                if (cell) cell.color = e == null ? new Color(0.4f, 0.45f, 0.62f) :
+                    Color.Lerp(new Color(0.21f, 0.22f, 0.32f), TierColor(e.item.rarity), 0.55f);
             }
             if (statsLabel) statsLabel.text = State == null ? "" : $"Tấn công +{State.attackBonus}\nPhòng thủ +{State.defenseBonus}";
-            if (content) content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Ceil((State == null ? 40 : State.capacity) / (float)Columns) * 112f);
+            if (content) content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Ceil((State == null ? 40 : State.capacity) / (float)Columns) * 83f);
             if (expandButton)
             {
                 bool canBuy = State != null && State.nextExpandGold > 0;
@@ -474,14 +484,30 @@ namespace AdventureKing.Gameplay
             EquippedState selEq = selectedEquip != null ? State?.equipped?.FirstOrDefault(e => e.equipSlot == selectedEquip) : null;
             if (sel != null)
             {
-                nameLabel.text = sel.name + (sel.qty > 1 ? $"  ×{sel.qty}" : "");
+                nameLabel.text = sel.name + (sel.enhanceLevel > 0 ? $" +{sel.enhanceLevel}" : "") + (sel.qty > 1 ? $"  ×{sel.qty}" : "");
+                nameLabel.color = TierColor(sel.rarity);
                 descLabel.text = sel.desc + (sel.usableByClass ? "" : "  (Nghề của bạn không dùng được.)");
             }
-            else if (selEq != null) { nameLabel.text = selEq.item.name + " (đang mặc)"; descLabel.text = selEq.item.desc; }
-            else { nameLabel.text = State == null ? "Đang tải túi đồ..." : "Chọn một vật phẩm"; descLabel.text = State == null ? "" : $"{State.slots.Length}/{State.capacity} ô đã dùng · tối đa {State.stackMax}/ô"; }
+            else if (selEq != null) { nameLabel.text = selEq.item.name + (selEq.item.enhanceLevel > 0 ? $" +{selEq.item.enhanceLevel}" : "") + " (đang mặc)"; nameLabel.color = TierColor(selEq.item.rarity); descLabel.text = selEq.item.desc; }
+            else { nameLabel.color = new Color(1f, 0.85f, 0.45f); nameLabel.text = State == null ? "Đang tải túi đồ..." : "Chọn một vật phẩm"; descLabel.text = State == null ? "" : $"{State.slots.Length}/{State.capacity} ô đã dùng · tối đa {State.stackMax}/ô"; }
             useButton.gameObject.SetActive(sel != null && (sel.kind == "consumable" || sel.kind == "ticket"));
             equipButton.gameObject.SetActive(sel != null && sel.kind == "equipment" && sel.usableByClass);
             unequipButton.gameObject.SetActive(selEq != null);
+            int stones = State == null ? 0 : State.slots.Where(x => x.itemId == "enhance_stone").Sum(x => x.qty);
+            int charms = State == null ? 0 : State.slots.Where(x => x.itemId == "protection_charm").Sum(x => x.qty);
+            if (enhanceButton)
+            {
+                enhanceButton.gameObject.SetActive(selEq != null);
+                enhanceButton.interactable = selEq != null && stones > 0 && selEq.item.enhanceLevel < 15
+                    && !Busy && (!useProtection || charms > 0);
+                enhanceLabel.text = selEq == null ? "" : $"Lên +{selEq.item.enhanceLevel + 1} ({stones} đá)";
+            }
+            if (protectionButton)
+            {
+                protectionButton.gameObject.SetActive(selEq != null);
+                protectionButton.interactable = charms > 0 && !Busy;
+                protectionLabel.text = $"Bùa {(useProtection ? "BẬT" : "TẮT")} ({charms})";
+            }
         }
     }
 }
