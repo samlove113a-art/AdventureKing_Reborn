@@ -53,7 +53,7 @@ CLASSES = {
         skill="SKILL: vanish-dash forward with afterimages, then a spinning multi-slash with hard-edged pixel teal and white slash arcs",
         stash="daggers sheathed at the hips"),
     "Archer": dict(
-        ref=("a lean ranger archer, forest-green and brown leather armor with a feathered cap, a hooded cloak with leaf trim, "
+        ref=("a young woman, a slender female ranger archer with a beautiful, attractive, delicate face with large expressive eyes and a curvy hourglass figure with a fuller bust (fully clothed and tasteful, no cleavage), fitted forest-green and brown leather armor with a short skirt over leggings and tall boots, a feathered cap with long hair in a ponytail, a hooded cloak with leaf trim, "
              "quiver of fletched arrows on the back, leather bracers and boots, an ornate recurve bow held in the left hand, "
              "sharp focused eyes. Palette: forest green, leather brown, gold trim, cream feathers"),
         attack="BOW ATTACK: draw the string back with an arrow, aim, release the arrow (hard-edged pixel arrow in flight), recovery",
@@ -153,7 +153,7 @@ def cmd_process(cls):
             args += ["--whiten", str(wh)]
         args += EXTRA.get(n, [])
         # frames=0 -> try 7 then 6 (the generator draws either)
-        for attempt in dict.fromkeys(([cnt] if f else []) + [8, 7, 6, 5, 4, 3, 2]):   # the generator sometimes draws a different count
+        for attempt in dict.fromkeys(([cnt] if f else []) + [9, 10, 8, 7, 6, 5, 4, 3, 2]):   # the generator sometimes draws a different count
             args[6] = str(attempt)
             if subprocess.call(args) == 0:
                 cnt = attempt
@@ -179,6 +179,9 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
+
+
 
 
 

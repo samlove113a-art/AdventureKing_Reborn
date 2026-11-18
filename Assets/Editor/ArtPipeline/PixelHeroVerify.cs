@@ -15,7 +15,7 @@ namespace AdventureKing.ArtPipeline
         {
             var sb = new StringBuilder();
             bool ok = true;
-            foreach (string cls in new[] { "Swordsman", "Mage", "Assassin" })
+            foreach (string cls in new[] { "Swordsman", "Mage", "Assassin", "Archer" })
             {
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Resources/Chibi2D/{cls}_Visual2D.prefab");
                 if (!prefab) { sb.AppendLine($"[FAIL] {cls}: prefab missing"); ok = false; continue; }
@@ -55,4 +55,5 @@ namespace AdventureKing.ArtPipeline
         }
     }
 }
+
 

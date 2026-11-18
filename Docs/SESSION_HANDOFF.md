@@ -5,6 +5,15 @@
 > Phần dưới mục "TRẠNG THÁI HIỆN TẠI" là **lịch sử theo đợt** (mới → cũ); các trạng thái "chưa làm" trong đợt cũ có thể đã được làm ở đợt sau — tin mục hiện tại + `PROJECT_MASTER_CONTEXT.md`.
 
 ---
+## ▶▶▶ PIXEL HEROES (cập nhật 2026-11-19) — nhánh `feat/pixel-heroes-20261118`
+- **Hướng:** Pure 2D pixel-art Dark Fantasy, thon gọn (đầu ≈ 1/6). Kế hoạch + quy trình: `Docs/PIXEL_HERO_PIPELINE.md`, prompt: `Docs/PIXEL_HERO_PROMPTS.md`.
+- **Đã làm (4 class):** Kiếm Sĩ, Pháp Sư (nữ), Sát Thủ, Cung Thủ (nữ) — mỗi class 9 clip (Idle/Run/Jump/Fall/Climb/Attack/Skill/Hit/Death) bằng Meshy `image-to-image` từ 1 ảnh chuẩn → `Tools/chibi2d/pixel_class.py` + `process_pixel_strip.py` → `ArtSource/Chibi2D/{Class}/` → `Chibi2DArt.Build` (prefab `Resources/Chibi2D/{Class}_Visual2D`, event gameplay giữ nguyên).
+- **Kiểm tra:** `PixelHeroVerify.Run` (batchmode) PASS 4 class: không Missing Script, đủ clip + event, Point/không nén. **CHƯA kiểm Play Mode** (test PlayMode `Chibi2D*` treo ở TestServer >8 phút — chưa tìm nguyên nhân) và **chưa duyệt mỹ thuật**.
+- **Chưa làm:** clip nghi lễ (Walk/Kneel/Toast/Cheer/Bow/Heart…) vẫn là clip 3D cũ; skin shop (Paperdoll fire_mage/frost_mage) là hình cũ; NPC/quái/pet/tile; màn chọn nhân vật chưa kiểm; FX tích hợp trong khung có thể trùng VFX skill director.
+- **Credit Meshy:** Kiếm Sĩ 66, Pháp Sư 78, Sát Thủ 72, Cung Thủ 78 (số dư API ≈ 2.027 sau Cung Thủ). Lệnh sinh/tạo lại cần `--yes` (chỉ sau khi chủ dự án đồng ý).
+- Nhánh này KHÔNG có Lực Chiến HUD/Cường Hóa (ở `feat/chapter1-mushroom-kingdom`). Đã sửa 1 lỗi biên dịch cũ ở `SkillVfxDirector.Pixel.cs` (chuỗi `\n\n`).
+
+---
 ## ▶▶ TRẠNG THÁI HIỆN TẠI (cập nhật 2026-11-11, phiên khôi phục bối cảnh)
 - **Thư mục:** `C:\AdventureKing_Reborn` · **Repo:** `samlove113a-art/AdventureKing_Reborn` · **Nhánh:** `feat/chapter1-mushroom-kingdom`
 - **HEAD:** `7e9c174` (Skill sync) = `origin/feat/chapter1-mushroom-kingdom` theo ref đã fetch gần nhất. `git fetch` trong phiên này **thất bại** (shell không có credential GitHub) → chưa xác nhận được GitHub có commit mới hơn; chủ dự án kiểm tra bằng GitHub Desktop.
