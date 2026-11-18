@@ -406,7 +406,7 @@ public sealed class InventoryService
     {
         if (req == null || req.equipSlot is not ("weapon" or "armor" or "accessory")
             || string.IsNullOrEmpty(req.requestId) || req.requestId.Length < 12 || req.requestId.Length > 80
-            || req.requestId.Any(ch => !char.IsAsciiLetterOrDigit(ch) && ch != '-'))
+            || req.requestId.Any(ch => !char.IsAsciiLetterOrDigit(ch) && ch != '-' && ch != '_'))
             throw new GameError("bad_request", "Yêu cầu cường hóa không hợp lệ.", 400);
         int cls = ClassOf(c, tx, accountId, characterId); // verifies the owner before replay
         using (var receipt = Database.Command(c, tx,
