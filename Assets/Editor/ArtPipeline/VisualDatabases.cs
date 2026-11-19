@@ -98,6 +98,9 @@ namespace AdventureKing.ArtPipeline
                 foreach (string piece in it.pieces)
                     if (have.Add(FashionCatalog2D.PieceId(it.id, piece))) { db.items.Add(NewVisual(FashionCatalog2D.PieceId(it.id, piece), piece, false)); added++; }
             }
+            foreach (HeroClass c in new[] { HeroClass.Swordsman, HeroClass.Mage, HeroClass.Assassin, HeroClass.Archer })     // empty BaseBody slots for the owner's bare-headed strips
+                if (!db.noHatBaseSprites.Any(a => a != null && a.heroClass == c))
+                    db.noHatBaseSprites.Add(new FashionClassArt { heroClass = c, clips = Paperdoll2D.Clips.Select(cl => new FashionClipFrames { clip = cl }).ToArray() });
             ImportHats(db);
             EditorUtility.SetDirty(db);
             Debug.Log($"[VISUALS] FashionDatabase: {db.items.Count} entries ({added} added), sprites left empty for the owner");

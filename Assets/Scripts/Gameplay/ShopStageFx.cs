@@ -13,6 +13,8 @@ namespace AdventureKing.Gameplay
         private RectTransform[] motes;
         private float[] seeds;
         private static Texture2D glowTex, moteTex;
+        /// <summary>The project's existing soft_dot texture; when set it is used instead of generating a radial texture.</summary>
+        public static Texture2D Source;
 
         public static Texture2D Radial(int size, float power)
         {
@@ -31,8 +33,8 @@ namespace AdventureKing.Gameplay
         /// <summary>Builds the spotlight (behind <paramref name="before"/>) and the motes (in front of it).</summary>
         public void Build(RectTransform stage, Transform before)
         {
-            if (!glowTex) glowTex = Radial(128, 1.6f);
-            if (!moteTex) moteTex = Radial(32, 2.2f);
+            if (!glowTex) glowTex = Source ? Source : Radial(128, 1.6f);
+            if (!moteTex) moteTex = Source ? Source : Radial(32, 2.2f);
             spot = new GameObject("StageSpotlight", typeof(RectTransform)).AddComponent<RawImage>();
             spot.gameObject.layer = 5;
             spot.transform.SetParent(stage, false);
@@ -41,7 +43,7 @@ namespace AdventureKing.Gameplay
             sr.anchorMin = new Vector2(0.05f, 0.2f); sr.anchorMax = new Vector2(0.95f, 0.95f);
             sr.offsetMin = sr.offsetMax = Vector2.zero;
             spot.texture = glowTex;
-            spot.color = new Color(1f, 0.9f, 0.65f, 0.55f);
+            spot.color = new Color(0.78f, 0.62f, 1f, 0.45f);
             spot.raycastTarget = false;
             motes = new RectTransform[14];
             seeds = new float[motes.Length];
@@ -65,7 +67,7 @@ namespace AdventureKing.Gameplay
         {
             if (!spot) return;
             float t = Time.unscaledTime;
-            spot.color = new Color(1f, 0.9f, 0.65f, 0.45f + 0.12f * Mathf.Sin(t * 1.3f));
+            spot.color = new Color(0.78f, 0.62f, 1f, 0.40f + 0.10f * Mathf.Sin(t * 1.3f));
             for (int i = 0; i < motes.Length; i++)
             {
                 float life = Mathf.Repeat(t * 0.16f + seeds[i], 1f);           // 0..1 rise

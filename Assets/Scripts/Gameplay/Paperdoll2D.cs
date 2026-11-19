@@ -172,13 +172,35 @@ namespace AdventureKing.Gameplay
         }
 
         /// <summary>Sprite pixels the added hat / mask sits lower than the measured head top (the Mage's tall hat and the Archer's feather count as head top).</summary>
-        private static float HatDrop(string hero) => hero == "Mage" ? 20f : hero == "Archer" ? 11f : 0f;
+        private static float HatDrop(string hero) => hero == "Mage" ? 26f : hero == "Archer" ? 20f : 0f;
         private static float MaskDrop(string hero) => hero == "Mage" ? 6f : hero == "Archer" ? 9f : 0f;
 
         private static int Index(string spriteName) => int.TryParse(spriteName.Substring(spriteName.LastIndexOf('_') + 1), out int i) ? i : 0;
 
         private void LateUpdate() => Sync();
 
+        private Sprite lastBase, originalBody;
+
+        /// <summary>
+        /// Paper-doll base body: while a Hat is worn and the owner assigned a bare-headed BaseBody for this class (FashionDatabase.noHatBaseSprites), the body shows that sprite
+        /// (same clip / frame, full face and hair, no default hat). Without a BaseBody the original hero stays untouched (nothing is ever cut) and the new hat just sits on the head anchor.
+        /// </summary>
+        private void ApplyBaseBody(string hero, string clip, int frame)
+        {
+            if (body.sprite != lastBase) originalBody = body.sprite;               // the animation moved on: this is the real current frame
+            bool hatWorn = layers.TryGetValue(PaperSlot.Hat, out Layer h) && h.ItemId != null && h.Visual != null && h.Visual.frames != null && h.Visual.frames.Length > 0;
+            Sprite[] strip = hatWorn ? FashionCatalog2D.Database?.BaseBodyFor(hero, clip) : null;
+            if (strip != null && strip.Length > 0 && strip[Mathf.Min(frame, strip.Length - 1)] != null)
+            {
+                lastBase = strip[Mathf.Min(frame, strip.Length - 1)];
+                body.sprite = lastBase;
+            }
+            else if (lastBase != null)
+            {
+                if (body.sprite == lastBase && originalBody != null) body.sprite = originalBody;
+                lastBase = null;
+            }
+        }
         private void Sync()
         {
             if (!body || !body.sprite || layers.Count == 0) return;
@@ -190,6 +212,7 @@ namespace AdventureKing.Gameplay
             string clip = n.Substring(hero.Length + 1, last - hero.Length - 1);
             Vector2 pivot = body.sprite.pivot;
             float ppu = body.sprite.pixelsPerUnit;
+            ApplyBaseBody(hero, clip, frame);
             foreach (KeyValuePair<PaperSlot, Layer> kv in layers)
             {
                 Layer l = kv.Value;
@@ -225,7 +248,8 @@ namespace AdventureKing.Gameplay
                     {
                         if (v.frames == null || v.frames.Length == 0 || !FashionCatalog2D.TryAnchor(hero, clip, frame, out BodyAnchor a)) { l.Renderer.sprite = null; break; }
                         Vector2 p = kv.Key == PaperSlot.Mask ? a.Face : kv.Key == PaperSlot.Wings ? a.Shoulder : a.Head;
-                        p.y -= kv.Key == PaperSlot.Hat ? HatDrop(hero) : kv.Key == PaperSlot.Mask ? MaskDrop(hero) : 0f;   // the measured head top includes the hero's own hat / feather
+                        p.y -= kv.Key == PaperSlot.Hat ? HatDrop(hero) : kv.Key == PaperSlot.Mask ? MaskDrop(hero) : kv.Key == PaperSlot.Wings ? 20f : 0f;
+                        if (kv.Key == PaperSlot.Wings) p.x += 8f;   // the wing root sits on the back, not behind the head
                         t.localPosition = new Vector3((p.x - pivot.x) / ppu, (p.y - pivot.y) / ppu + liftLocal, 0f);
                         float fps = kv.Key == PaperSlot.Wings ? (clip == "Run" ? v.fps * 1.5f : v.fps) : 1f;
                         l.Renderer.sprite = v.frames[v.frames.Length > 1 ? Mathf.FloorToInt(Time.time * fps) % v.frames.Length : 0];

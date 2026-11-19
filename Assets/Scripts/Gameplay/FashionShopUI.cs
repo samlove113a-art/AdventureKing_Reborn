@@ -48,6 +48,8 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Sprite[] poseIcons = new Sprite[4];
         [Tooltip("Baked dawn backdrop layers (sky, hills, mid, near) shown behind the fitting-room hero.")]
         [SerializeField] private Texture2D[] backdropLayers = new Texture2D[0];
+        [Tooltip("The project's existing soft radial dot (Art/VFX/Textures/soft_dot): used for the pedestal contact shadow and the spotlight.")]
+        [SerializeField] private Texture2D softDot;
 
         public enum Tab { Gold, Premium, Wardrobe }
 
@@ -536,6 +538,39 @@ namespace AdventureKing.Gameplay
             foreach (Transform t in PreviewModel.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = previewLayer;
         }
 
+        /// <summary>Podium (the project's own 9-slice item-cell skin as a stone slab) + soft contact shadow (soft_dot) under the hero's feet line. Sits behind the preview picture, same size and aspect.</summary>
+        private void BuildPedestal(Transform stageParent, Transform before)
+        {
+            var host = new GameObject("PedestalLayer", typeof(RectTransform)) { layer = 5 };
+            host.transform.SetParent(stageParent, false);
+            host.transform.SetSiblingIndex(before.GetSiblingIndex());
+            var hr = (RectTransform)host.transform;
+            UiKit.Stretch(hr, 0f, 110f, 0f, 0f);
+            var fit = host.AddComponent<AspectRatioFitter>();
+            fit.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            fit.aspectRatio = 720f / 900f;
+            const float FeetY = 0.2388f;                                   // where the camera puts the hero's feet (see the camera setup)
+            var slab = new GameObject("PodiumSlab", typeof(RectTransform), typeof(Image)) { layer = 5 };
+            slab.transform.SetParent(host.transform, false);
+            var sr = (RectTransform)slab.transform;
+            sr.anchorMin = new Vector2(0.12f, FeetY - 0.075f); sr.anchorMax = new Vector2(0.88f, FeetY + 0.004f);
+            sr.offsetMin = sr.offsetMax = Vector2.zero;
+            var si = slab.GetComponent<Image>();
+            si.raycastTarget = false;
+            if (!Skin(si, "item_cell")) si.color = new Color(0.34f, 0.3f, 0.5f);
+            else si.color = new Color(0.78f, 0.74f, 0.95f, 1f);
+            if (softDot)
+            {
+                var sh = new GameObject("ContactShadow", typeof(RectTransform), typeof(RawImage)) { layer = 5 };
+                sh.transform.SetParent(host.transform, false);
+                var shr = (RectTransform)sh.transform;
+                shr.anchorMin = new Vector2(0.27f, FeetY - 0.028f); shr.anchorMax = new Vector2(0.73f, FeetY + 0.028f);
+                shr.offsetMin = shr.offsetMax = Vector2.zero;
+                var raw = sh.GetComponent<RawImage>();
+                raw.texture = softDot; raw.color = new Color(0f, 0f, 0f, 0.7f); raw.raycastTarget = false;
+            }
+        }
+
         /// <summary>Tap the hero to turn it around (the 2D body is mirrored, never rotated).</summary>
         public void TurnPreview()
         {
@@ -686,7 +721,7 @@ namespace AdventureKing.Gameplay
                 l.transform.SetParent(stageBg.transform, false);
                 l.texture = layer;
                 l.raycastTarget = false;
-                l.color = new Color(0.86f, 0.86f, 0.92f, 1f);
+                l.color = new Color(0.55f, 0.52f, 0.66f, 1f);   // dimmed: edges stay dark (vignette), the soft spotlight lifts the centre behind the hero
                 var fit = l.gameObject.AddComponent<AspectRatioFitter>();
                 fit.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
                 fit.aspectRatio = layer.width / (float)layer.height;
@@ -696,6 +731,8 @@ namespace AdventureKing.Gameplay
             previewImage.transform.SetParent(stageBg.transform, false);
             UiKit.Stretch(previewImage.rectTransform, 0f, 110f, 0f, 0f);
             previewImage.texture = previewRT;
+            ShopStageFx.Source = softDot;
+            BuildPedestal(stageBg.transform, previewImage.transform);   // podium + contact shadow behind the hero, at the line the hero's feet stand on
             stageBg.AddComponent<ShopStageFx>().Build(stageBg.GetComponent<RectTransform>(), previewImage.transform); // spotlight behind, motes in front
             previewImage.gameObject.AddComponent<TapTurn>().shop = this;
             var fitter = previewImage.gameObject.AddComponent<AspectRatioFitter>();
@@ -711,7 +748,7 @@ namespace AdventureKing.Gameplay
                 Skin(bi, "stage_bezel");
             }
             else Rim(stageBg.transform, 0.9f);
-            Text hint = Label(stageBg.transform, "Hint", "Chạm để quay mặt", 18, new Color(1f, 1f, 1f, 0.85f), new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(300f, 28f), true);
+            Text hint = Label(stageBg.transform, "Hint", "Chạm để đổi hướng", 18, new Color(1f, 1f, 1f, 0.85f), new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(300f, 28f), true);
             hint.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.7f);
             // pose bar: round icon buttons with captions
             var poseBar = Panel(stageBg.transform, "PoseBar", new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, Vector2.zero, new Color(0.05f, 0.06f, 0.14f, 0.82f), null);
@@ -749,7 +786,7 @@ namespace AdventureKing.Gameplay
             stage.position = new Vector3(0f, -400f, 0f);
             var camGo = new GameObject("FittingRoomCamera");
             camGo.transform.SetParent(transform, false);
-            camGo.transform.position = stage.position + new Vector3(0f, 0.78f, -10f);
+            camGo.transform.position = stage.position + new Vector3(0f, 0.63f, -10f);   // feet at ~22 % of the picture height: the hero stands low on the podium
             previewCam = camGo.AddComponent<Camera>();
             previewCam.orthographic = true;
             previewCam.orthographicSize = 1.12f;                 // 2.24 m tall: a hero (1.25 m) on a mount (+0.5 m) still fits, wings and hats included

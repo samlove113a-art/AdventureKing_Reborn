@@ -8,6 +8,12 @@ Shader "AdventureKing/PixelSprite"
         [PerRendererData] _MainTex ("Sprite", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
         _MaxLuma ("Max brightness (under the bloom threshold)", Range(0.5,1)) = 0.84
+        // SpriteMask support (SpriteRenderer.maskInteraction drives these): used to hide the hero's own hat under a worn hat
+        [HideInInspector] _StencilComp ("Stencil Comparison", Float) = 8
+        [HideInInspector] _Stencil ("Stencil ID", Float) = 0
+        [HideInInspector] _StencilOp ("Stencil Operation", Float) = 0
+        [HideInInspector] _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        [HideInInspector] _StencilReadMask ("Stencil Read Mask", Float) = 255
     }
     SubShader
     {
@@ -16,6 +22,7 @@ Shader "AdventureKing/PixelSprite"
         {
             Name "PixelSprite"
             Tags { "LightMode"="UniversalForward" }
+            Stencil { Ref [_Stencil] Comp [_StencilComp] Pass [_StencilOp] ReadMask [_StencilReadMask] WriteMask [_StencilWriteMask] }
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
             Cull Off

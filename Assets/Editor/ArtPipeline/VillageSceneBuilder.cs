@@ -1119,6 +1119,7 @@ namespace AdventureKing.ArtPipeline
             sk.arraySize = shopSkins.Length;
             for (int i = 0; i < shopSkins.Length; i++) sk.GetArrayElementAtIndex(i).objectReferenceValue = FrameArt.Get(shopSkins[i]);
             so.FindProperty("previewLayer").intValue = 30;
+            so.FindProperty("softDot").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/VFX/Textures/soft_dot.png");
             so.FindProperty("coinIcon").objectReferenceValue = HudArt.Get("coin");
             so.FindProperty("diamondIcon").objectReferenceValue = HudArt.Get("diamond");
             var pi = so.FindProperty("poseIcons");
@@ -1126,9 +1127,9 @@ namespace AdventureKing.ArtPipeline
             pi.arraySize = poses.Length;
             for (int i = 0; i < poses.Length; i++) pi.GetArrayElementAtIndex(i).objectReferenceValue = HudArt.Get("icon_pose_" + poses[i]);
             var bl = so.FindProperty("backdropLayers");
-            string[] layers = { "sky", "hills", "mid", "near" };
-            bl.arraySize = layers.Length;
-            for (int i = 0; i < layers.Length; i++) bl.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Texture2D>($"{LoginBackdropBaker.Dir}/{layers[i]}.png");
+            // fitting-room backdrop: the existing dark-fantasy pixel-art panorama (violet haunted forest), not the smooth illustrated bridge/tree of the login screen
+            bl.arraySize = 1;
+            bl.GetArrayElementAtIndex(0).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/World/Generated/c1_m07_pixel_panorama_v2.png");
             so.ApplyModifiedPropertiesWithoutUndo();
 
             // "E · Nói chuyện" bubble above the name plate (world space; shown only while the hero is in range)
