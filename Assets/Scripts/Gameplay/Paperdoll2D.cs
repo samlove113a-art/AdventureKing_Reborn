@@ -172,7 +172,8 @@ namespace AdventureKing.Gameplay
         }
 
         /// <summary>Sprite pixels the added hat / mask sits lower than the measured head top (the Mage's tall hat and the Archer's feather count as head top).</summary>
-        private static float HatDrop(string hero) => hero == "Mage" ? 26f : hero == "Archer" ? 20f : 0f;
+        private static float HatDrop(string hero) => hero == "Mage" ? 17f : hero == "Archer" ? 20f : 0f;
+        private static float HeadDx(string hero) => hero == "Mage" ? 14f : hero == "Archer" ? 12f : 0f;
         private static float MaskDrop(string hero) => hero == "Mage" ? 6f : hero == "Archer" ? 9f : 0f;
 
         private static int Index(string spriteName) => int.TryParse(spriteName.Substring(spriteName.LastIndexOf('_') + 1), out int i) ? i : 0;
@@ -249,7 +250,9 @@ namespace AdventureKing.Gameplay
                         if (v.frames == null || v.frames.Length == 0 || !FashionCatalog2D.TryAnchor(hero, clip, frame, out BodyAnchor a)) { l.Renderer.sprite = null; break; }
                         Vector2 p = kv.Key == PaperSlot.Mask ? a.Face : kv.Key == PaperSlot.Wings ? a.Shoulder : a.Head;
                         p.y -= kv.Key == PaperSlot.Hat ? HatDrop(hero) : kv.Key == PaperSlot.Mask ? MaskDrop(hero) : kv.Key == PaperSlot.Wings ? 20f : 0f;
-                        if (kv.Key == PaperSlot.Wings) p.x += 8f;   // the wing root sits on the back, not behind the head
+                        if (kv.Key == PaperSlot.Hat) p.x += HeadDx(hero);
+                        else if (kv.Key == PaperSlot.Mask) p.x += hero == "Mage" ? 1f : HeadDx(hero);  // the measured head x follows the baked hat's bent tip / feather, behind the real head
+                        if (kv.Key == PaperSlot.Wings) p.x += 8f;  // the wing root sits on the back, not behind the head
                         t.localPosition = new Vector3((p.x - pivot.x) / ppu, (p.y - pivot.y) / ppu + liftLocal, 0f);
                         float fps = kv.Key == PaperSlot.Wings ? (clip == "Run" ? v.fps * 1.5f : v.fps) : 1f;
                         l.Renderer.sprite = v.frames[v.frames.Length > 1 ? Mathf.FloorToInt(Time.time * fps) % v.frames.Length : 0];
