@@ -437,7 +437,7 @@ namespace AdventureKing.Gameplay
             // detail strip (bottom right)
             nameLabel = Txt(c, "ItemName", "Chọn một vật phẩm", 28, gold, new Vector2(0f, 0f), new Vector2(705f, 146f), new Vector2(520f, 40f), TextAnchor.MiddleLeft);   // clear of the locked slot column on the left
             nameLabel.fontStyle = FontStyle.Bold;
-            descLabel = Txt(c, "ItemDesc", "", 22, cream, new Vector2(0f, 0f), new Vector2(645f, 94f), new Vector2(520f, 56f), TextAnchor.UpperLeft);
+            descLabel = Txt(c, "ItemDesc", "", 22, cream, new Vector2(705f, 94f), new Vector2(470f, 56f), TextAnchor.UpperLeft);
             msgLabel = Txt(c, "Message", "", 22, new Color(1f, 0.75f, 0.6f), new Vector2(0f, 0f), new Vector2(645f, 39f), new Vector2(520f, 32f), TextAnchor.MiddleLeft);
             expandButton = Btn(c, "Expand", "Mở rộng túi", new Vector2(0f, 0f), new Vector2(270f, 118f), new Vector2(310f, 62f), new Color(0.82f, 0.6f, 0.18f), Expand);   // 62: still >= 40 px on the 16:9 phone scale
             expandLabel = expandButton.GetComponentInChildren<Text>();
