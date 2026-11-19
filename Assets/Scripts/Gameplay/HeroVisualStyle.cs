@@ -15,6 +15,10 @@ namespace AdventureKing.Gameplay
         /// <summary>QA / tests: force a style for this run (null = use the saved choice).</summary>
         public static string Override;
 
+        /// <summary>A QA / test override never survives into the next play session (a leaked "3d" made the editor show 3D heroes).</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetOverride() => Override = null;
+
         public static bool Chibi2D
         {
             get

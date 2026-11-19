@@ -33,7 +33,7 @@ namespace AdventureKing.Tests
         [UnityTearDown]
         public IEnumerator TearDown()
         {
-            HeroVisualStyle.Override = "3d";
+            HeroVisualStyle.Override = null;
             if (input) foreach (PlayerInput2D.TouchAction a in System.Enum.GetValues(typeof(PlayerInput2D.TouchAction))) input.SetTouchHeld(a, false);
             yield return TestRunnerGuard.CloseGame();
             server.Stop();

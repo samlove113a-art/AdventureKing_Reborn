@@ -37,7 +37,7 @@ namespace AdventureKing.Tests
             if (input) foreach (PlayerInput2D.TouchAction a in System.Enum.GetValues(typeof(PlayerInput2D.TouchAction))) input.SetTouchHeld(a, false);
             yield return TestRunnerGuard.CloseGame();
             server.Stop();
-            HeroVisualStyle.Override = "3d";
+            HeroVisualStyle.Override = null;
         }
 
         private Vector2 Pos => motor.transform.position;
