@@ -202,6 +202,15 @@ MONSTERS["DarkMushroom"] = dict(target=204, cell=384, attack="rears back then sl
                                      "huge mouth full of sharp fangs, a faint crimson aura around it, cracked ground under its heavy feet, a wide menacing "
                                      "power stance, overwhelming and terrifying dark-fantasy pixel style, side view facing right. "
                                      "Palette: black-purple, crimson red glow, bone white horns, pale lavender, dark outline"))
+MONSTERS["MushroomChief"] = dict(target=340, cell=384, attack="swings its heavy gnarled wooden staff in a wide crushing overhead strike, then recovers",
+                                 death="its staff drops, the leaf crown wilts, the great cap sags and it collapses to its knees then falls face-forward, spores drifting up",
+                                 skill="WAR CALL: it raises its glowing purple-orb staff high and slams it into the ground, a hard-edged pixel ring of purple energy and thorny green roots bursts outward while the leaf crown flares",
+                                 ref=("a COLOSSAL, hulking, extremely powerful mushroom tribe chieftain boss (Mushroom Chief): a gigantic broad-shouldered muscular "
+                                      "mushroom warlord with an enormous rust-brown cap spotted with cream, a crown of sharp green leaves on top of the cap, a "
+                                      "heavy tattered dark-green war cape, a thick bulging-muscled cream body with deep battle scars, massive tree-trunk arms and giant fists, an immense, monstrous, towering hulking silhouette that fills the whole canvas and dwarfs everything, a swirling aura of dark purple energy and drifting glowing green toxic spores and floating embers surrounding its whole body, cracks of purple light in the ground beneath its giant feet, glowing purple veins pulsing across its muscles, glaring blood-red menacing eyes, a snarling mouth with huge tusks, a crown of iron spikes and bones tied to the cap, "
+                                      "tusked mouth, wielding a huge gnarled wooden staff topped by a glowing purple orb, a wide commanding power stance, "
+                                      "overwhelming dark-fantasy pixel style, side view facing right. "
+                                      "Palette: rust brown, cream, leaf green, dark green cape, glowing purple, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
@@ -333,6 +342,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
+
 
 
 
