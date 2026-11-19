@@ -85,8 +85,8 @@ namespace AdventureKing.Gameplay
             "pet_ink_dragon" => MoveStyle.Glide,
             _ => MoveStyle.Walk,
         };
-        /// <summary>Cycle order of the walk / flap frames: A B C B A B C B ... (2 frames: A B A B).</summary>
-        private static int PingPong(int step, int n) { if (n <= 2) return step % n; int period = 2 * n - 2; int k = step % period; return k < n ? k : period - k; }
+        /// <summary>Cycle order of the walk / flap frames: A B C B A B C B ... (2 frames: A B A B; 5 or more frames: a plain loop).</summary>
+        private static int PingPong(int step, int n) { if (n <= 2 || n >= 4) return step % n; int period = 2 * n - 2; int k = step % period; return k < n ? k : period - k; }
 
         public MoveStyle Style;
         public bool Moving;          // set by the director before Set(): walk / flap frames only play while moving

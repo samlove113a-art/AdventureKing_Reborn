@@ -57,7 +57,7 @@ namespace AdventureKing.ArtPipeline
             const string dir = "Assets/Resources/Pets";
             if (!Directory.Exists(dir)) return;
             int n = 0;
-            foreach (string file in Directory.GetFiles(dir, "pet_*.png").OrderBy(f => f.EndsWith("_c.png") ? 2 : f.EndsWith("_b.png") ? 1 : 0).ThenBy(f => f))
+            foreach (string file in Directory.GetFiles(dir, "pet_*.png").OrderBy(f => System.Text.RegularExpressions.Regex.IsMatch(f, "_[b-f]\\.png$") ? f[f.Length - 5] - 'a' : 0).ThenBy(f => f))
             {
                 string path = file.Replace('\\', '/');
                 var ti = (TextureImporter)AssetImporter.GetAtPath(path);
@@ -69,11 +69,11 @@ namespace AdventureKing.ArtPipeline
                 ti.spritePivot = new Vector2(0.5f, 0.04f);
                 ti.SaveAndReimport();
                 var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
-                string stem = Path.GetFileNameWithoutExtension(path); bool hungryPic = stem.EndsWith("_hungry"), walkB = stem.EndsWith("_b") || stem.EndsWith("_c");
+                string stem = Path.GetFileNameWithoutExtension(path); bool hungryPic = stem.EndsWith("_hungry"), walkB = System.Text.RegularExpressions.Regex.IsMatch(stem, "_[b-f]$");
                 PetVisual v = db.pets.FirstOrDefault(p => p != null && p.petId == (hungryPic ? stem.Substring(0, stem.Length - 7) : walkB ? stem.Substring(0, stem.Length - 2) : stem));
                 if (v == null || !sp) { Debug.LogWarning("[VISUALS] no pet entry for " + path); continue; }
                 if (hungryPic) { if (!v.hungry) v.hungry = sp; n++; continue; }
-                if (walkB) { if (v.idleFrames != null && v.idleFrames.Length == (stem.EndsWith("_c") ? 2 : 1)) v.idleFrames = v.idleFrames.Concat(new[] { sp }).ToArray(); n++; continue; }   // second frame of the walk / flap cycle
+                if (walkB) { if (v.idleFrames != null && v.idleFrames.Length == stem[stem.Length - 1] - 'a') v.idleFrames = v.idleFrames.Concat(new[] { sp }).ToArray(); n++; continue; }   // second frame of the walk / flap cycle
                 if (!v.portrait) v.portrait = sp;
                 if (v.idleFrames == null || v.idleFrames.Length == 0) v.idleFrames = new[] { sp };
                 n++;
