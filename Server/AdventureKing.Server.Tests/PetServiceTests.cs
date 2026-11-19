@@ -36,12 +36,13 @@ public sealed class PetServiceTests : IDisposable
     private long Gold(string id) { using var c = t.Db.Open(); return Database.Scalar<long>(c, null, "SELECT gold FROM characters WHERE id=$c", ("$c", id)); }
 
     [Fact]
-    public void Catalog_has_twelve_pets_with_rarity_and_buffs_and_a_buffed_pet_reaches_further()
+    public void Catalog_has_many_pets_with_rarity_and_buffs_and_a_buffed_pet_reaches_further()
     {
-        Assert.Equal(12, pets.Config.pets.Length);
-        Assert.Equal(6, pets.Config.pets.Count(p => p.tier == "normal"));   // 6 for Gold
-        Assert.Equal(6, pets.Config.pets.Count(p => p.tier == "vip"));      // 6 for Diamonds
+        Assert.Equal(24, pets.Config.pets.Length);
+        Assert.Equal(9, pets.Config.pets.Count(p => p.tier == "normal"));   // 9 for Gold
+        Assert.Equal(15, pets.Config.pets.Count(p => p.tier == "vip"));     // 15 for Diamonds (8 dragons among them)
         Assert.Contains(pets.Config.pets, p => p.rarity == "legendary");
+        Assert.True(pets.Config.pets.Count(p => p.id.EndsWith("_dragon")) >= 8, "dragons");
         Assert.All(pets.Config.pets, p => Assert.True(p.reachBonus <= 4f && p.potionCooldownPct <= 50));
 
         var (acc, id) = Hero("pet09");

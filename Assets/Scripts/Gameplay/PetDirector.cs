@@ -27,7 +27,7 @@ namespace AdventureKing.Gameplay
         public OwnedPetState SummonedState => State?.owned?.FirstOrDefault(o => o.summoned);
         public int Collected { get; private set; }
         public string Mood { get; private set; } = "idle"; // idle | follow | fetch | happy | hungry
-        public Sprite Portrait(string id) { Sprite s = pets.FirstOrDefault(p => p.id == id).portrait; return s ? s : Pet2DBody.PortraitOf(id); }
+        public Sprite Portrait(string id) { Sprite o = Pet2DBody.OwnerPortrait(id); if (o) return o; Sprite s = pets.FirstOrDefault(p => p.id == id).portrait; return s ? s : Pet2DBody.PortraitOf(id); }
 
         private Transform body, head, eyeL, eyeR, aura;
         private Pet2DBody body2D;
@@ -82,8 +82,9 @@ namespace AdventureKing.Gameplay
             GameObject two = HeroVisualStyle.Chibi2D || !prefab ? Pet2DBody.Load(id) : null;   // 2D sprite by default
             if (!w || !w.Player) return;
             // pets without any prefab (added later) are built from the owner's PetVisual pictures: 2D only, never a 3D fallback
-            Pet = (two ? Instantiate(two) : prefab ? Instantiate(prefab) : Pet2DBody.Create(id)).transform;
-            two = two ? two : (prefab ? null : Pet.gameObject);
+            bool style2D = HeroVisualStyle.Chibi2D;
+            Pet = (two ? Instantiate(two) : prefab && !style2D ? Instantiate(prefab) : Pet2DBody.Create(id)).transform;   // 2D style never falls back to a 3D prefab
+            two = two ? two : (prefab && !style2D ? null : Pet.gameObject);
             Pet.name = "Pet_" + id;
             body2D = two ? Pet.GetComponent<Pet2DBody>() : null;
             Pet.localScale = Pet.localScale * (body2D ? 0.9f : 1.1f);

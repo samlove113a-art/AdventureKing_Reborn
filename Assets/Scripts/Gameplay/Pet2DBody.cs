@@ -12,7 +12,16 @@ namespace AdventureKing.Gameplay
         [Tooltip("Optional idle animation: cycled while the pet is fed.")] public Sprite[] Frames = new Sprite[0];
         public float Fps = 3f;
 
-        public static GameObject Load(string petId) => Resources.Load<GameObject>("Chibi2D/Pets/" + petId + "_Visual2D");
+        private static GameObject LoadPrefab(string petId) => Resources.Load<GameObject>("Chibi2D/Pets/" + petId + "_Visual2D");
+
+        /// <summary>The older prefab of a pet, unless the owner already put pictures into the database for it (those win).</summary>
+        public static GameObject Load(string petId) => OwnerArt(petId) ? null : LoadPrefab(petId);
+
+        private static bool OwnerArt(string petId)
+        {
+            PetVisual v = ItemIconBook.Database ? ItemIconBook.Database.Pet(petId) : null;
+            return v != null && (v.portrait || (v.idleFrames != null && v.idleFrames.Length > 0));
+        }
 
         /// <summary>A pet that has no prefab: a body built at runtime from its PetVisual (pictures from the owner's database; may be empty).</summary>
         public static GameObject Create(string petId)
@@ -23,7 +32,7 @@ namespace AdventureKing.Gameplay
             sg.transform.SetParent(root.transform, false);
             var sr = sg.AddComponent<SpriteRenderer>();
             sr.sortingOrder = 4;
-            var template = Load("pet_cloud_cat");                                   // same unlit pixel material as the other pets
+            var template = LoadPrefab("pet_cloud_cat");                                   // same unlit pixel material as the other pets
             var tr = template ? template.GetComponentInChildren<SpriteRenderer>() : null;
             if (tr) sr.sharedMaterial = tr.sharedMaterial;
             var body = root.AddComponent<Pet2DBody>();
@@ -41,6 +50,14 @@ namespace AdventureKing.Gameplay
         }
 
         /// <summary>The pet's picture for menus: prefab sprite, else the owner's portrait / first idle frame.</summary>
+        /// <summary>The owner's database picture of this pet (portrait, else first idle frame), or null.</summary>
+        public static Sprite OwnerPortrait(string petId)
+        {
+            PetVisual v = ItemIconBook.Database ? ItemIconBook.Database.Pet(petId) : null;
+            if (v == null) return null;
+            return v.portrait ? v.portrait : v.idleFrames != null && v.idleFrames.Length > 0 ? v.idleFrames[0] : null;
+        }
+
         public static Sprite PortraitOf(string petId)
         {
             GameObject g = Load(petId);

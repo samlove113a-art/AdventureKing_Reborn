@@ -51,6 +51,41 @@ namespace AdventureKing.ArtPipeline
             ImportFolder(db, "Assets/Resources/Fashion/Wings", new Vector2(0.9f, 0.3f));    // pivot = where the wings join (lower right): sits on the shoulder anchor
         }
 
+        /// <summary>Imports the Meshy pet pictures (Assets/Resources/Pets/&lt;petId&gt;.png): Sprite, Point, hero scale, pivot at the feet; assigns portrait + idle frame of the matching PetVisual. Never overwrites a picture the owner already set.</summary>
+        private static void ImportPets(ItemVisualDatabase db)
+        {
+            const string dir = "Assets/Resources/Pets";
+            if (!Directory.Exists(dir)) return;
+            int n = 0;
+            foreach (string file in Directory.GetFiles(dir, "pet_*.png"))
+            {
+                string path = file.Replace('\\', '/');
+                var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+                if (ti == null) continue;
+                ti.textureType = TextureImporterType.Sprite; ti.spriteImportMode = SpriteImportMode.Single;
+                ti.spritePixelsPerUnit = 192f / 1.9f; ti.filterMode = FilterMode.Point; ti.mipmapEnabled = false; ti.alphaIsTransparency = true;
+                ti.textureCompression = TextureImporterCompression.Uncompressed;
+                var st = new TextureImporterSettings(); ti.ReadTextureSettings(st); st.spriteAlignment = (int)SpriteAlignment.Custom; ti.SetTextureSettings(st);
+                ti.spritePivot = new Vector2(0.5f, 0.04f);
+                ti.SaveAndReimport();
+                var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                PetVisual v = db.pets.FirstOrDefault(p => p != null && p.petId == Path.GetFileNameWithoutExtension(path));
+                if (v == null || !sp) { Debug.LogWarning("[VISUALS] no pet entry for " + path); continue; }
+                if (!v.portrait) v.portrait = sp;
+                if (v.idleFrames == null || v.idleFrames.Length == 0) v.idleFrames = new[] { sp };
+                n++;
+            }
+            Debug.Log("[VISUALS] pet pictures assigned: " + n);
+        }
+
+        /// <summary>One-off: the mount pictures were withdrawn (the animals became pets): clears them from the Fashion Database and restores the default saddle lift.</summary>
+        public static void ClearMountArtCommandLine()
+        {
+            var db = AssetDatabase.LoadAssetAtPath<FashionDatabase>(FashionPath);
+            foreach (FashionVisual v in db.items.Where(i => i != null && i.slot == "mount")) { v.icon = null; v.frames = new Sprite[0]; v.runFrames = new Sprite[0]; v.liftPixels = 52f; }
+            EditorUtility.SetDirty(db); AssetDatabase.SaveAssets();
+            EditorApplication.Exit(0);
+        }
         private static void ImportFolder(FashionDatabase db, string dir, Vector2 pivot)
         {
             if (!Directory.Exists(dir)) return;
@@ -128,6 +163,7 @@ namespace AdventureKing.ArtPipeline
                 string id = m.Groups[1].Value;
                 if (db.pets.All(p => p == null || p.petId != id)) { db.pets.Add(new PetVisual { petId = id }); added++; }
             }
+            ImportPets(db);
             EditorUtility.SetDirty(db);
             Debug.Log($"[VISUALS] ItemVisuals: {db.items.Count} items, {db.pets.Count} pets ({added} added), sprites left empty for the owner");
         }
