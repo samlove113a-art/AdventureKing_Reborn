@@ -152,6 +152,11 @@ MONSTERS["FlowerBee"] = dict(target=82, attack="darts forward and jabs with its 
                              ref=("a hostile giant forest bee monster (Flower Bee): a chubby round bee body with black and golden-yellow stripes, a pink flower-petal "
                                   "wing pair (translucent pink-white), a round head with an angry face, curled antennae, a sharp stinger at the tail, tiny "
                                   "legs, hovering in the air, side view facing right, dark-fantasy pixel style. Palette: golden yellow, black, pink wings, dark outline"))
+MONSTERS["CrystalBat"] = dict(target=71, attack="swoops forward with fangs bared and slashes with its crystal wing tips, then flutters back",
+                              death="its wings fold, crystals dim and crack, it tumbles down and lies motionless on the ground",
+                              ref=("a hostile crystal cave bat monster (Crystal Bat): a plump indigo-purple bat body with a round head, two sharp pointed horns, big "
+                                   "yellow glowing eyes, small fangs, and two wings made of pale cyan-blue crystal shards with glassy facets, hovering in the air, "
+                                   "side view facing right, dark-fantasy pixel style. Palette: deep indigo purple, cyan crystal wings, yellow eyes, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
