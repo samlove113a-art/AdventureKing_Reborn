@@ -1,4 +1,4 @@
-"""Dark-fantasy PIXEL UI frames, drawn on a coarse grid (4 px cells) and scaled with nearest neighbour, so edges stay crisp and the 9-slice
+﻿"""Dark-fantasy PIXEL UI frames, drawn on a coarse grid (4 px cells) and scaled with nearest neighbour, so edges stay crisp and the 9-slice
 borders (taken from each sprite's .meta) stretch only flat colour. Same file names / sizes / borders as the old smooth skin: no code change.
 
   python make_pixel_skin.py            # writes Assets/Art/UI/Skin/<name>.png and sets filterMode Point in the .meta
@@ -134,6 +134,66 @@ def tab(w, h, on):
     return Image.fromarray(img, "RGBA").resize((w, h), Image.NEAREST)
 
 
+
+BTN = {   # name: (hi, mid, lo, text-friendly body)  -- pixel dark-fantasy buttons, same 192x96 / 40-38 border as the old smooth ones
+    "btn_gold": ("#f3d98a", "#c9a24a", "#7a5a22"),
+    "btn_jade": ("#7be0c0", "#2f8a6a", "#16463a"),
+    "btn_azure": ("#8fc8ff", "#3a78c0", "#1c3c6a"),
+    "btn_slate": ("#aab4c4", "#566073", "#2a303c"),
+    "btn_royal": ("#c9a8ff", "#6a4ab8", "#32225e"),
+    "btn_crimson": ("#ff9a8a", "#b83a3a", "#5e1c22"),
+    "btn_white": ("#ffffff", "#d8d2c4", "#8a8272"),
+}
+
+
+def button(w, h, hi, mid, lo):
+    cw, ch = w // S, h // S
+    a = np.zeros((ch, cw, 4), np.uint8)
+    O = PAL["outline"]
+    hi, mid, lo = hexc(hi), hexc(mid), hexc(lo)
+    for y in range(ch):
+        for x in range(cw):
+            if y < 1 or y >= ch - 1 or x < 1 or x >= cw - 1:
+                a[y, x] = O
+            elif y == 1 or x == 1:
+                a[y, x] = hi                              # lit top / left edge
+            elif y == ch - 2 or x == cw - 2:
+                a[y, x] = lo                              # shaded bottom / right edge
+            elif y < ch // 2 - 1:
+                a[y, x] = mid if (x + y) % 9 else hi if y < 4 else mid   # upper body, a hint of dither near the top
+            else:
+                a[y, x] = tuple(int(c * 0.82) for c in mid[:3]) + (255,)  # lower body a shade darker
+    for (cx, cy) in ((0, 0), (cw - 1, 0), (0, ch - 1), (cw - 1, ch - 1)):
+        a[cy, cx] = (0, 0, 0, 0)
+    for (cx, cy) in ((1, 1), (cw - 2, 1), (1, ch - 2), (cw - 2, ch - 2)):
+        a[cy, cx] = O
+    return Image.fromarray(a, "RGBA").resize((w, h), Image.NEAREST)
+
+
+def ghost(w, h):
+    cw, ch = w // S, h // S
+    a = np.zeros((ch, cw, 4), np.uint8)
+    O = PAL["outline"]; edge = hexc("#7a7090")
+    for y in range(ch):
+        for x in range(cw):
+            if y in (0, ch - 1) or x in (0, cw - 1):
+                a[y, x] = O if (x + y) % 2 == 0 or True else (0, 0, 0, 0)
+            elif y in (1, ch - 2) or x in (1, cw - 2):
+                a[y, x] = edge
+            else:
+                a[y, x] = hexc("#120e1c", 150)
+    for (cx, cy) in ((0, 0), (cw - 1, 0), (0, ch - 1), (cw - 1, ch - 1)):
+        a[cy, cx] = (0, 0, 0, 0)
+    return Image.fromarray(a, "RGBA").resize((w, h), Image.NEAREST)
+
+
+def field(w, h):
+    return frame(w, h, "slot", metal="iron", trim="", ornament="", inset=True)
+
+
+def chip(w, h, on):
+    return tab(w, h, on)
+
 def save(name, im):
     path = os.path.join(SKIN, name + ".png")
     im.save(path)
@@ -154,7 +214,17 @@ def main():
     save("item_cell_set", frame(128, 160, "slot", metal="iron", trim="", ornament="", inset=True, glow=hexc("#7be0c0")))
     save("shop_tab", tab(128, 64, False))
     save("shop_tab_on", tab(128, 64, True))
+    save("auth_card", frame(256, 256, "velvet", metal="iron", trim="gold", ornament="gems"))
+    save("hall_card", frame(128, 128, "slot", metal="iron", trim="", ornament="", inset=True))
+    save("hall_card_on", frame(128, 128, "slot", metal="iron", trim="", ornament="", inset=True, glow=PAL["gold"]))
+    for name, (hi, mid, lo) in BTN.items():
+        save(name, button(192, 96, hi, mid, lo))
+    save("btn_ghost", ghost(192, 96))
+    save("field", field(128, 64))
+    save("chip", chip(96, 48, False))
+    save("chip_on", chip(96, 48, True))
 
 
 if __name__ == "__main__":
     main()
+

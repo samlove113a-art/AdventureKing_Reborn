@@ -21,7 +21,6 @@ namespace AdventureKing.ArtPipeline
     public static partial class EntrySceneBuilder
     {
         public const string ScenePath = "Assets/Scenes/AK_Entry.unity";
-        public const int PreviewLayer = 29;
         private const string UiDir = "Assets/Art/UI";
         private static Font font;
         private static Sprite panelSprite, pillSprite;
@@ -216,7 +215,6 @@ namespace AdventureKing.ArtPipeline
 
         public static void Build()
         {
-            EnsureLayer();
             InitUi();
             if (!File.Exists(LogoArt.OutPath) && File.Exists(LogoArt.OwnerSource)) LogoArt.Build(); // owner's title logo, cut out
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -224,8 +222,7 @@ namespace AdventureKing.ArtPipeline
             // ---------------------------------------------------------------- audio + input
             new GameObject("AudioDirector").AddComponent<AdventureAudioDirector>();
             AudioLibrary.AssignTo(Object.FindAnyObjectByType<AdventureAudioDirector>());
-            // Main camera only clears the screen and hosts the AudioListener (UI is Screen Space Overlay,
-            // the hero stage renders through its own camera into a RenderTexture).
+            // Main camera only clears the screen and hosts the AudioListener (the whole flow is Screen Space Overlay UI).
             var mainCam = new GameObject("MainCamera") { tag = "MainCamera" };
             var mc = mainCam.AddComponent<Camera>();
             mc.clearFlags = CameraClearFlags.SolidColor;
@@ -235,12 +232,6 @@ namespace AdventureKing.ArtPipeline
             var es = new GameObject("EventSystem");
             es.AddComponent<EventSystem>();
             es.AddComponent<InputSystemUIInputModule>();
-
-            // ---------------------------------------------------------------- 3D preview stage
-            var stage = new GameObject("HeroPreviewStage");
-            stage.transform.position = new Vector3(0f, -200f, 0f);
-            RenderTexture rt = PreviewTexture();
-            Camera previewCam = BuildStage(stage.transform, rt, out Transform mount);
 
             // ---------------------------------------------------------------- UI
             var canvasGo = new GameObject("EntryCanvas", typeof(RectTransform));
@@ -254,28 +245,25 @@ namespace AdventureKing.ArtPipeline
             canvasGo.AddComponent<GraphicRaycaster>();
             var flow = canvasGo.AddComponent<AdventureEntryFlow>();
 
-            BuildBackdrop(canvasGo.transform); // fantasy dawn village behind login + hero hall (splash covers it)
+            // 100% 2D: one pixel backdrop under every screen (login, hall), then the five screens on top.
+            BuildPixelBackdrop(canvasGo.transform);
 
-            // Studio splash: the owner-provided SAM logo (dark metal + black lettering) on a warm ivory field.
-            GameObject splash = Panel(canvasGo.transform, "SplashRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.965f, 0.955f, 0.935f, 1f), null);
-            Sprite ownerLogo = OwnerLogo();
-            var logo = Img(splash.transform, "OfficialLogo", new Vector2(0.5f, 0.52f), new Vector2(640, 640), Color.white, null);
-            logo.sprite = ownerLogo;
-            logo.type = Image.Type.Simple;
-            logo.preserveAspect = true;
-            logo.enabled = ownerLogo; // never substituted: without the owner's file the splash stays plain
-            logo.gameObject.AddComponent<CanvasGroup>();
-            logo.gameObject.AddComponent<SplashLogoFade>();
+            Sprite gameLogo = LogoArt.Sprite(); // official game logo (Assets/Art/Branding/AK_TitleLogo.png), never redrawn
+            GameObject splash = BuildIntro(canvasGo.transform, gameLogo, out LogoAssemblyIntro intro);
+            GameObject loadingRoot = BuildLoading(canvasGo.transform, out LoadingScreen2D loading);
+            GameObject titleRoot = BuildTitle(canvasGo.transform, flow, out EntryServerPicker picker);
 
             GameObject auth = BuildAuth(canvasGo.transform, out InputField acc, out InputField pwd, out InputField confirm, out Text authStatus, out GameObject registerFields, flow);
-            GameObject selection = BuildSelection(canvasGo.transform, rt, previewCam, mount, flow, out HeroSelectionPreview3D preview,
+            GameObject selection = BuildSelection(canvasGo.transform, flow, out HeroSelectionPreview2D preview,
                 out Text heroName, out Text heroDesc, out Text heroStats, out InputField charName, out Text[] slots, out Text existing, out Text selStatus);
 
             // status text is shared: auth status for auth screen; selection uses its own footer
             var so = new SerializedObject(flow);
             void R(string p, Object o) => so.FindProperty(p).objectReferenceValue = o;
             R("splashRoot", splash); R("authRoot", auth); R("selectionRoot", selection);
-            R("splashLogo", logo); R("officialAdventureKingLogo", ownerLogo);
+            R("loadingRoot", loadingRoot); R("titleRoot", titleRoot);
+            R("intro", intro); R("loading", loading); R("serverPicker", picker);
+            R("officialAdventureKingLogo", gameLogo);
             so.FindProperty("gameplaySceneName").stringValue = VillageSceneBuilder.SceneName;
             R("accountInput", acc); R("passwordInput", pwd); R("confirmPasswordInput", confirm);
             R("statusText", authStatus); R("selectionStatusText", selStatus); R("registerFields", registerFields);
@@ -284,7 +272,7 @@ namespace AdventureKing.ArtPipeline
             var sl = so.FindProperty("slotLabels");
             sl.arraySize = 4;
             for (int i = 0; i < 4; i++) sl.GetArrayElementAtIndex(i).objectReferenceValue = slots[i];
-            so.FindProperty("splashDurationSeconds").floatValue = 2.5f;
+            so.FindProperty("splashDurationSeconds").floatValue = 4.5f;
             so.ApplyModifiedPropertiesWithoutUndo();
 
             // Composition root: the real local server (Server/AdventureKing.Server). If it is not running,
@@ -300,162 +288,6 @@ namespace AdventureKing.ArtPipeline
             AssetDatabase.SaveAssets();
             VillageSceneBuilder.RegisterBuildScenes();
             Debug.Log("[ENTRY] Scene built: " + ScenePath);
-        }
-
-        // ================================================================== stage
-        private static RenderTexture PreviewTexture()
-        {
-            string path = "Assets/Art/UI/HeroPreview_RT.renderTexture";
-            Directory.CreateDirectory(UiDir);
-            var rt = AssetDatabase.LoadAssetAtPath<RenderTexture>(path);
-            if (!rt)
-            {
-                rt = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4, name = "HeroPreview_RT" };
-                AssetDatabase.CreateAsset(rt, path);
-            }
-            return rt;
-        }
-
-        private static Camera BuildStage(Transform stage, RenderTexture rt, out Transform mount)
-        {
-            int L = PreviewLayer;
-            Material Toon(string name, Color c, float outline = 0f)
-            {
-                string p = $"{UiDir}/{name}.mat";
-                var m = AssetDatabase.LoadAssetAtPath<Material>(p);
-                if (!m) { m = new Material(Shader.Find(HeroArtPipeline.ToonShader)); AssetDatabase.CreateAsset(m, p); }
-                m.SetColor("_BaseColor", c);
-                m.SetFloat("_OutlineWidth", outline);
-                m.SetFloat("_RimStrength", 0.12f);
-                EditorUtility.SetDirty(m);
-                return m;
-            }
-
-            GameObject Prim(PrimitiveType t, string name, Vector3 pos, Vector3 scale, Material m, Transform parent)
-            {
-                var go = GameObject.CreatePrimitive(t);
-                go.name = name;
-                Object.DestroyImmediate(go.GetComponent<Collider>());
-                go.transform.SetParent(parent, false);
-                go.transform.localPosition = pos;
-                go.transform.localScale = scale;
-                go.GetComponent<Renderer>().sharedMaterial = m;
-                go.layer = L;
-                return go;
-            }
-
-            // Tiered stone dais with a gold inlay ring and soft glyph glow.
-            Prim(PrimitiveType.Cylinder, "DaisBase", new Vector3(0, -0.18f, 0), new Vector3(2.6f, 0.12f, 2.6f), Toon("stage_stone_dark", new Color(0.32f, 0.36f, 0.44f), 0.004f), stage);
-            Prim(PrimitiveType.Cylinder, "DaisTop", new Vector3(0, -0.04f, 0), new Vector3(2.1f, 0.06f, 2.1f), Toon("stage_stone", new Color(0.4f, 0.42f, 0.5f), 0.004f), stage);
-            Prim(PrimitiveType.Cylinder, "DaisInlay", new Vector3(0, 0.0f, 0), new Vector3(1.75f, 0.022f, 1.75f), Toon("stage_gold", new Color(0.95f, 0.76f, 0.38f)), stage);
-            Prim(PrimitiveType.Cylinder, "DaisCenter", new Vector3(0, 0.008f, 0), new Vector3(1.6f, 0.022f, 1.6f), Toon("stage_stone_light", new Color(0.46f, 0.48f, 0.55f)), stage);
-            var glyph = new GameObject("DaisGlyph");
-            glyph.layer = L;
-            glyph.transform.SetParent(stage, false);
-            glyph.transform.localPosition = new Vector3(0, 0.03f, 0);
-            glyph.transform.localRotation = Quaternion.Euler(90, 0, 0);
-            glyph.transform.localScale = Vector3.one * 1.55f;
-            glyph.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Quad.fbx");
-            var gmr = glyph.AddComponent<MeshRenderer>();
-            gmr.sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/VFX/Materials/rune_add.mat");
-            gmr.shadowCastingMode = ShadowCastingMode.Off;
-            var spin = glyph.AddComponent<UiSpinner3D>();
-            var sso = new SerializedObject(spin);
-            sso.FindProperty("degreesPerSecond").vector3Value = new Vector3(0, 0, 10f);
-            sso.FindProperty("tint").colorValue = new Color(0.55f, 0.85f, 1f, 0.55f);
-            sso.ApplyModifiedPropertiesWithoutUndo();
-
-            // No wall / pillars / floor any more: the camera clears to transparent and the shared fantasy backdrop
-            // (LoginBackdrop) is visible behind the dais and the hero.
-            var motes = new GameObject("Motes");
-            motes.layer = L;
-            motes.transform.SetParent(stage, false);
-            motes.transform.localPosition = new Vector3(0, 1.4f, 2.5f);
-            var ps = motes.AddComponent<ParticleSystem>();
-            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            var main = ps.main;
-            main.loop = true; main.startLifetime = 6f; main.startSpeed = 0.12f; main.startSize = new ParticleSystem.MinMaxCurve(0.03f, 0.07f);
-            main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.85f, 0.5f, 0.8f), new Color(0.6f, 0.85f, 1f, 0.7f));
-            main.maxParticles = 120; main.prewarm = true; main.simulationSpace = ParticleSystemSimulationSpace.World;
-            var em = ps.emission; em.rateOverTime = 16f;
-            var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Box; sh.scale = new Vector3(9, 4, 4);
-            var col = ps.colorOverLifetime; col.enabled = true;
-            var g = new Gradient();
-            g.SetKeys(new[] { new GradientColorKey(Color.white, 0), new GradientColorKey(Color.white, 1) },
-                new[] { new GradientAlphaKey(0, 0), new GradientAlphaKey(1, 0.3f), new GradientAlphaKey(0, 1) });
-            col.color = g;
-            var pr = motes.GetComponent<ParticleSystemRenderer>();
-            pr.sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/VFX/Materials/dot_add.mat");
-
-            // Light: warm key with soft shadows; ambient set for the whole scene.
-            var key = new GameObject("PreviewKeyLight");
-            key.transform.SetParent(stage, false);
-            key.transform.rotation = Quaternion.Euler(38f, -28f, 0f);
-            var kl = key.AddComponent<Light>();
-            kl.type = LightType.Directional;
-            kl.intensity = 1.0f;
-            kl.color = new Color(1f, 0.9f, 0.8f);
-            kl.shadows = LightShadows.Soft;
-            kl.shadowStrength = 0.65f;
-            RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.45f, 0.58f, 0.85f);
-            RenderSettings.ambientEquatorColor = new Color(0.4f, 0.42f, 0.55f);
-            RenderSettings.ambientGroundColor = new Color(0.2f, 0.18f, 0.22f);
-            RenderSettings.fog = false;
-            RenderSettings.ambientSkyColor = new Color(0.86f, 0.78f, 0.78f); // warm dawn, matches the backdrop
-            RenderSettings.ambientEquatorColor = new Color(0.72f, 0.66f, 0.66f);
-
-            var mountGo = new GameObject("ModelMount");
-            mountGo.layer = L;
-            mountGo.transform.SetParent(stage, false);
-            mountGo.transform.localScale = Vector3.one * 1.45f;
-            mount = mountGo.transform;
-
-            var camGo = new GameObject("HeroPreviewCamera");
-            camGo.transform.SetParent(stage, false);
-            camGo.transform.localPosition = new Vector3(0f, 1.05f, -5.2f);
-            camGo.transform.localRotation = Quaternion.Euler(6.5f, 0f, 0f);
-            var cam = camGo.AddComponent<Camera>();
-            cam.fieldOfView = 26f;
-            cam.cullingMask = 1 << L;
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = new Color(0f, 0f, 0f, 0f); // transparent: backdrop shows through
-            cam.targetTexture = rt;
-            var camData = camGo.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
-            camData.renderPostProcessing = false; // keeps the alpha channel
-            cam.nearClipPlane = 0.1f;
-            cam.farClipPlane = 40f;
-            return cam;
-        }
-
-        private static Material GradientMaterial()
-        {
-            string tp = $"{UiDir}/hall_gradient.png";
-            var t = new Texture2D(4, 256, TextureFormat.RGBA32, false);
-            for (int y = 0; y < 256; y++)
-            {
-                float v = y / 255f;
-                Color c = Color.Lerp(new Color(0.09f, 0.11f, 0.2f), new Color(0.2f, 0.3f, 0.46f), Mathf.SmoothStep(0, 1, v));
-                c = Color.Lerp(c, new Color(0.36f, 0.42f, 0.55f), Mathf.Exp(-Mathf.Pow((v - 0.42f) * 6f, 2)) * 0.5f);
-                for (int x = 0; x < 4; x++) t.SetPixel(x, y, c);
-            }
-            t.Apply();
-            File.WriteAllBytes(tp, t.EncodeToPNG());
-            Object.DestroyImmediate(t);
-            AssetDatabase.ImportAsset(tp, ImportAssetOptions.ForceSynchronousImport);
-            var ti = (TextureImporter)AssetImporter.GetAtPath(tp);
-            ti.wrapMode = TextureWrapMode.Clamp;
-            ti.SaveAndReimport();
-            string mp = $"{UiDir}/hall_gradient.mat";
-            var m = AssetDatabase.LoadAssetAtPath<Material>(mp);
-            if (!m) { m = new Material(Shader.Find("AdventureKing/VFX")); AssetDatabase.CreateAsset(m, mp); }
-            m.SetTexture("_MainTex", AssetDatabase.LoadAssetAtPath<Texture2D>(tp));
-            m.SetFloat("_SrcBlend", (float)BlendMode.One);
-            m.SetFloat("_DstBlend", (float)BlendMode.Zero);
-            m.SetFloat("_Intensity", 1f);
-            m.renderQueue = 1000;
-            EditorUtility.SetDirty(m);
-            return m;
         }
 
         // ================================================================== auth screen
@@ -492,6 +324,26 @@ namespace AdventureKing.ArtPipeline
             if (!Skin(card, "auth_card")) Frame(card, 2.6f);
             RectTransform content = FramedContent(card, 6f, topBand: 52f);
             VStack(content, 12f, TextAnchor.MiddleCenter);
+
+            // tabs: Đăng nhập | Đăng ký on the same frame
+            RectTransform tabRow = HRow(content, "Tabs", 64f, 10f);
+            Button tabLogin = Btn(tabRow, "TabLogin", "Đăng nhập", Vector2.zero, new Vector2(270, 64), new Color(0.2f, 0.26f, 0.38f), Cream);
+            Size(tabLogin, 64f, 270f, 1f);
+            Button tabRegister = Btn(tabRow, "TabRegister", "Đăng ký", Vector2.zero, new Vector2(270, 64), new Color(0.2f, 0.26f, 0.38f), Cream);
+            Size(tabRegister, 64f, 270f, 1f);
+            Image tabLoginImg = tabLogin.GetComponent<Image>(), tabRegImg = tabRegister.GetComponent<Image>();
+            Sprite chip = FrameArt.Get("chip"), chipOn = FrameArt.Get("chip_on");
+            if (chip) { tabLoginImg.sprite = chipOn ? chipOn : chip; tabRegImg.sprite = chip; tabLoginImg.type = tabRegImg.type = Image.Type.Sliced; tabLoginImg.color = tabRegImg.color = Color.white; }
+            UnityEventTools.AddPersistentListener(tabLogin.onClick, flow.ShowLoginTab);
+            UnityEventTools.AddPersistentListener(tabRegister.onClick, flow.ShowRegisterTab);
+            {
+                var tso = new SerializedObject(flow);
+                tso.FindProperty("loginTab").objectReferenceValue = tabLoginImg;
+                tso.FindProperty("registerTab").objectReferenceValue = tabRegImg;
+                tso.FindProperty("tabSprite").objectReferenceValue = chip;
+                tso.FindProperty("tabOnSprite").objectReferenceValue = chipOn;
+                tso.ApplyModifiedPropertiesWithoutUndo();
+            }
 
             Text title = BlockLabel(content, "Title", "Đăng nhập", 44, Gold, 58f, FontStyle.Bold);
             var tOutline = title.gameObject.AddComponent<Outline>();
@@ -553,20 +405,44 @@ namespace AdventureKing.ArtPipeline
         }
 
         // ================================================================== selection hall
-        private static GameObject BuildSelection(Transform canvas, RenderTexture rt, Camera cam, Transform mount, AdventureEntryFlow flow,
-            out HeroSelectionPreview3D preview, out Text heroName, out Text heroDesc, out Text heroStats, out InputField charName,
+        private static Sprite[] ClassFrames(HeroClass c, string clip)
+        {
+            string path = $"Assets/Art/Chibi2D/{c}/{c}_{clip}.png";
+            var list = new System.Collections.Generic.List<Sprite>();
+            foreach (Object o in AssetDatabase.LoadAllAssetsAtPath(path))
+                if (o is Sprite s) list.Add(s);
+            list.Sort((a, b) => string.CompareOrdinal(a.name.PadLeft(40, '0'), b.name.PadLeft(40, '0')));
+            // natural order by trailing index (Swordsman_Idle_2 before _10)
+            list.Sort((a, b) => FrameIndex(a.name).CompareTo(FrameIndex(b.name)));
+            return list.ToArray();
+        }
+
+        private static int FrameIndex(string n)
+        {
+            int u = n.LastIndexOf('_');
+            return u >= 0 && int.TryParse(n.Substring(u + 1), out int i) ? i : 0;
+        }
+
+        private static GameObject BuildSelection(Transform canvas, AdventureEntryFlow flow,
+            out HeroSelectionPreview2D preview, out Text heroName, out Text heroDesc, out Text heroStats, out InputField charName,
             out Text[] slots, out Text existing, out Text status)
         {
             GameObject root = new GameObject("SelectionRoot", typeof(RectTransform));
             root.transform.SetParent(canvas, false);
             Stretch((RectTransform)root.transform);
 
-            var raw = new GameObject("HeroPreviewImage", typeof(RectTransform)).AddComponent<RawImage>();
-            raw.transform.SetParent(root.transform, false);
-            Stretch(raw.rectTransform);
-            raw.texture = rt;
-            raw.raycastTarget = true;
-            preview = raw.gameObject.AddComponent<HeroSelectionPreview3D>();
+            // 2D hero: the class's pixel idle strip as a UI Image, centred between the panels (tap = turn around)
+            var heroImg = new GameObject("HeroPreviewImage", typeof(RectTransform), typeof(Image)).GetComponent<Image>();
+            heroImg.gameObject.layer = 5;
+            heroImg.transform.SetParent(root.transform, false);
+            var hrt = heroImg.rectTransform;
+            hrt.anchorMin = hrt.anchorMax = new Vector2(0.5f, 0.5f);
+            hrt.sizeDelta = new Vector2(576f, 576f);
+            hrt.anchoredPosition = new Vector2(0f, 70f);
+            heroImg.preserveAspect = true;
+            heroImg.raycastTarget = true;
+            var heroFit = heroImg.gameObject.AddComponent<ResponsiveLogoFit>(); // shrinks on narrow screens
+            preview = heroImg.gameObject.AddComponent<HeroSelectionPreview2D>();
 
             Text hallTitle = Label(root.transform, "HallTitle", "Chọn Anh Hùng", 52, Gold, new Vector2(0.5f, 1f), new Vector2(0, -64), new Vector2(760, 70), FontStyle.Bold);
             hallTitle.raycastTarget = false;
@@ -665,17 +541,17 @@ namespace AdventureKing.ArtPipeline
             }
             bso.FindProperty("preview").objectReferenceValue = preview;
             bso.ApplyModifiedPropertiesWithoutUndo();
-            BlockLabel(infoC, "DragHint", "Kéo nhân vật để xoay", 18, Muted, 26f).raycastTarget = false;
+            BlockLabel(infoC, "DragHint", "Chạm nhân vật để quay mặt", 18, Muted, 26f).raycastTarget = false;
             RectTransform actions = HRow(infoC, "PreviewActions", 62f, 8f);
             Button atk = Btn(actions, "TryAttack", "Đòn đánh", Vector2.zero, new Vector2(120, 62), new Color(0.2f, 0.26f, 0.38f, 0.95f), Cream);
             Size(atk, 62f, 120f, 1f);
             Button skl = Btn(actions, "TrySkill", "Kỹ năng", Vector2.zero, new Vector2(120, 62), new Color(0.48f, 0.3f, 0.7f, 0.95f), Cream);
             Size(skl, 62f, 120f, 1f);
-            Button rst = Btn(actions, "ResetView", "Góc nhìn", Vector2.zero, new Vector2(120, 62), new Color(0.2f, 0.26f, 0.38f, 0.95f), Muted);
+            Button rst = Btn(actions, "ResetView", "Quay lại", Vector2.zero, new Vector2(120, 62), new Color(0.2f, 0.26f, 0.38f, 0.95f), Muted);
             Size(rst, 62f, 120f, 1f);
             UnityEventTools.AddPersistentListener(atk.onClick, preview.PlayAttackPreview);
             UnityEventTools.AddPersistentListener(skl.onClick, preview.PlaySkillPreview);
-            UnityEventTools.AddPersistentListener(rst.onClick, preview.ResetRotation);
+            UnityEventTools.AddPersistentListener(rst.onClick, preview.ResetFacing);
 
             // ---- slots + naming (bottom bar, stretched between the safe margins)
             GameObject bottom = Panel(root.transform, "SlotBar", new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, Vector2.zero, Ink, panelSprite);
@@ -734,13 +610,8 @@ namespace AdventureKing.ArtPipeline
 
             // Wire the preview component.
             var pso = new SerializedObject(preview);
-            pso.FindProperty("modelMount").objectReferenceValue = mount;
-            pso.FindProperty("previewCamera").objectReferenceValue = cam;
-            pso.FindProperty("previewTexture").objectReferenceValue = rt;
-            pso.FindProperty("targetImage").objectReferenceValue = raw;
+            pso.FindProperty("target").objectReferenceValue = heroImg;
             pso.FindProperty("previewMessage").objectReferenceValue = status;
-            pso.FindProperty("previewLayer").intValue = PreviewLayer;
-            pso.FindProperty("defaultYaw").floatValue = 200f;
             var entries = pso.FindProperty("classes");
             entries.arraySize = 4;
             int k = 0;
@@ -748,24 +619,20 @@ namespace AdventureKing.ArtPipeline
             {
                 var e = entries.GetArrayElementAtIndex(k++);
                 e.FindPropertyRelative("heroClass").enumValueIndex = (int)c;
-                e.FindPropertyRelative("modelPrefab").objectReferenceValue = AssetDatabase.LoadAssetAtPath<GameObject>(HeroArtPipeline.PrefabPath(c));
-                e.FindPropertyRelative("idleState").stringValue = "Idle";
-                e.FindPropertyRelative("attackState").stringValue = "Attack";
-                e.FindPropertyRelative("skillState").stringValue = "Skill";
+                void Frames(string prop, string clip)
+                {
+                    Sprite[] fr = ClassFrames(c, clip);
+                    var arr = e.FindPropertyRelative(prop);
+                    arr.arraySize = fr.Length;
+                    for (int i = 0; i < fr.Length; i++) arr.GetArrayElementAtIndex(i).objectReferenceValue = fr[i];
+                }
+                Frames("idle", "Idle"); Frames("attack", "Attack"); Frames("skill", "Skill");
             }
             pso.ApplyModifiedPropertiesWithoutUndo();
             return root;
         }
 
         // ================================================================== UI helpers
-        private static void EnsureLayer()
-        {
-            var tm = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
-            var p = tm.FindProperty("layers").GetArrayElementAtIndex(PreviewLayer);
-            if (string.IsNullOrEmpty(p.stringValue)) p.stringValue = "HeroPreview";
-            tm.ApplyModifiedPropertiesWithoutUndo();
-        }
-
         internal static Sprite RoundedSprite(string name, int size, int radius)
         {
             Directory.CreateDirectory(UiDir);

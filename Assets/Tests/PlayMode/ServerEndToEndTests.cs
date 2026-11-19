@@ -140,7 +140,7 @@ namespace AdventureKing.Tests
             yield return OpenGame();
             AdventureEntryFlow flow = Flow;
             Assert.AreEqual(EntryScreen.Splash, flow.CurrentScreen);
-            Assert.IsTrue(Ui<Image>("OfficialLogo").enabled && Ui<Image>("OfficialLogo").sprite, "owner logo on splash");
+            Assert.IsNotNull(Object.FindAnyObjectByType<LogoAssemblyIntro>(), "official logo intro on the first screen");
             flow.SkipSplash();
             yield return null;
             flow.SetRegisterMode(true);

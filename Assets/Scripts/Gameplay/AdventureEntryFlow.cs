@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 
 namespace AdventureKing.Gameplay
 {
-    public enum EntryScreen { Splash, Authentication, CharacterSelection }
+    /// <summary>Splash = the logo intro. Order of the player's journey: Splash -> Loading -> Title -> Authentication -> CharacterSelection.</summary>
+    public enum EntryScreen { Splash, Authentication, CharacterSelection, Loading, Title }
 
     public enum SignInMethod { PasswordLogin, PasswordRegister, Google, Facebook }
 
@@ -31,9 +32,17 @@ namespace AdventureKing.Gameplay
     {
         [Header("Screens")]
         [SerializeField] private GameObject splashRoot;
+        [SerializeField] private GameObject loadingRoot;
+        [SerializeField] private GameObject titleRoot;
         [SerializeField] private GameObject authRoot;
         [SerializeField] private GameObject selectionRoot;
-        [SerializeField, Min(0f)] private float splashDurationSeconds = 2.5f;
+        [SerializeField, Min(0f)] private float splashDurationSeconds = 4.5f;   // safety net: the intro ends itself in ~3 s
+        [SerializeField] private LogoAssemblyIntro intro;
+        [SerializeField] private LoadingScreen2D loading;
+        [SerializeField] private EntryServerPicker serverPicker;
+        [Tooltip("Optional: login / register tabs (highlighted by mode).")]
+        [SerializeField] private Image loginTab, registerTab;
+        [SerializeField] private Sprite tabSprite, tabOnSprite;
 
         [Header("Branding")]
         [SerializeField] private Image splashLogo;
@@ -61,7 +70,7 @@ namespace AdventureKing.Gameplay
         [SerializeField] private InputField characterNameInput;
         [SerializeField] private Text[] slotLabels = new Text[4];
         [SerializeField] private Text existingCharacterDetails;
-        [SerializeField] private HeroSelectionPreview3D heroPreview;
+        [SerializeField] private HeroSelectionPreview2D heroPreview;
         // Selection highlight: class cards (HeroClass order) and slot buttons swap to the gold-rimmed "on" skin.
         [SerializeField] private Image[] classCards = new Image[0];
         [SerializeField] private Image[] slotCards = new Image[0];
@@ -116,11 +125,41 @@ namespace AdventureKing.Gameplay
             else Show(EntryScreen.Splash);
         }
 
+        private void OnEnable()
+        {
+            if (intro) intro.Finished += OnIntroFinished;
+            if (loading) loading.Completed += OnLoadingCompleted;
+        }
+
+        private void OnDisable()
+        {
+            if (intro) intro.Finished -= OnIntroFinished;
+            if (loading) loading.Completed -= OnLoadingCompleted;
+        }
+
+        private void OnIntroFinished() { if (screen == EntryScreen.Splash) Show(EntryScreen.Loading); }
+        private void OnLoadingCompleted() { if (screen == EntryScreen.Loading) Show(EntryScreen.Title); }
+
         private IEnumerator Start()
         {
             yield return new WaitForSecondsRealtime(splashDurationSeconds);
-            if (screen == EntryScreen.Splash) Show(EntryScreen.Authentication);
+            if (screen == EntryScreen.Splash) Show(EntryScreen.Loading);   // safety net if the intro component is missing
         }
+
+        /// <summary>Intro (logo assembly) -> Loading, e.g. from a tap. The intro component also calls this when it finishes.</summary>
+        public void SkipIntro()
+        {
+            if (screen != EntryScreen.Splash) return;
+            if (intro) intro.Skip(); else Show(EntryScreen.Loading);
+        }
+
+        /// <summary>Title screen "BẮT ĐẦU": on to the login / register card.</summary>
+        public void StartGame()
+        {
+            if (screen == EntryScreen.Title) Show(EntryScreen.Authentication);
+        }
+
+        public EntryServerPicker ServerPicker => serverPicker;
 
         /// <summary>
         /// Call from a trusted startup composition root after configuring real auth.
@@ -138,9 +177,10 @@ namespace AdventureKing.Gameplay
             profiles = service;
         }
 
+        /// <summary>Developer / test shortcut: jump over the whole pre-login sequence (intro, loading, title) straight to the login card.</summary>
         public void SkipSplash()
         {
-            if (screen == EntryScreen.Splash) Show(EntryScreen.Authentication);
+            if (screen == EntryScreen.Splash || screen == EntryScreen.Loading || screen == EntryScreen.Title) Show(EntryScreen.Authentication);
         }
 
         public void SetRegisterMode(bool register)
@@ -152,11 +192,15 @@ namespace AdventureKing.Gameplay
             // one clear primary action per mode
             if (loginButton) loginButton.gameObject.SetActive(!register);
             if (registerButton) registerButton.gameObject.SetActive(register);
+            if (loginTab && tabSprite && tabOnSprite) loginTab.sprite = register ? tabSprite : tabOnSprite;
+            if (registerTab && tabSprite && tabOnSprite) registerTab.sprite = register ? tabOnSprite : tabSprite;
             SetStatus("");
         }
 
         /// <summary>"Chưa có tài khoản? Tạo mới" / "Đã có tài khoản? Đăng nhập".</summary>
         public void ToggleRegisterMode() => SetRegisterMode(!RegisterMode);
+        public void ShowLoginTab() => SetRegisterMode(false);
+        public void ShowRegisterTab() => SetRegisterMode(true);
 
         public void LoginPassword() => PasswordAuth(SignInMethod.PasswordLogin);
         public void RegisterPassword() => PasswordAuth(SignInMethod.PasswordRegister);
@@ -465,14 +509,16 @@ namespace AdventureKing.Gameplay
         {
             screen = destination;
             if (splashRoot) splashRoot.SetActive(destination == EntryScreen.Splash);
+            if (loadingRoot) loadingRoot.SetActive(destination == EntryScreen.Loading);
+            if (titleRoot) titleRoot.SetActive(destination == EntryScreen.Title);
             if (authRoot) authRoot.SetActive(destination == EntryScreen.Authentication);
             if (selectionRoot) selectionRoot.SetActive(destination == EntryScreen.CharacterSelection);
             SetStatus("");
             if (AdventureAudioDirector.Instance)
             {
-                AdventureMusicStage stage = destination == EntryScreen.Splash
+                AdventureMusicStage stage = destination == EntryScreen.Splash || destination == EntryScreen.Loading
                     ? AdventureMusicStage.Splash :
-                    destination == EntryScreen.Authentication
+                    destination == EntryScreen.Authentication || destination == EntryScreen.Title
                         ? AdventureMusicStage.Authentication
                         : AdventureMusicStage.CharacterSelection;
                 AdventureAudioDirector.Instance.PlayStage(stage);

@@ -92,6 +92,55 @@ namespace AdventureKing.Tests
         }
 
         [UnityTest]
+        public IEnumerator Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D()
+        {
+            var flow = Find<AdventureEntryFlow>();
+            Find<AdventureServerConnection>().SetBaseUrl("http://127.0.0.1:9/api/v1");
+            Assert.AreEqual(EntryScreen.Splash, flow.CurrentScreen);
+            // 1. intro: tap to skip -> Loading (never straight to login)
+            var intro = Find<LogoAssemblyIntro>();
+            var cap = new LobbyCapture();
+            Directory.CreateDirectory("QA/LobbyCaptures");
+            yield return new WaitForSeconds(0.9f);
+            Assert.IsFalse(intro.Done, "intro still assembling the logo");
+            yield return cap.Save("QA/LobbyCaptures/flow1_intro_mid.png", false);
+            yield return new WaitForSeconds(2.2f);
+            yield return cap.Save("QA/LobbyCaptures/flow1_intro_done.png", false);
+            flow.SkipIntro();
+            yield return null;
+            Assert.AreEqual(EntryScreen.Loading, flow.CurrentScreen);
+            yield return new WaitForSeconds(0.5f);
+            yield return cap.Save("QA/LobbyCaptures/flow2_loading.png", false);
+            // 2. loading finishes by itself -> Title
+            float until = Time.realtimeSinceStartup + 20f;
+            while (flow.CurrentScreen == EntryScreen.Loading && Time.realtimeSinceStartup < until) yield return null;
+            Assert.AreEqual(EntryScreen.Title, flow.CurrentScreen, "loading never completed");
+            // 3. title: server picker above the BẮT ĐẦU button, one default server
+            var picker = Find<EntryServerPicker>();
+            Assert.IsNotNull(picker.Selected, "a default server is selected");
+            float serverY = Find<RectTransform>("ServerBar").position.y, startY = Find<RectTransform>("StartButton").position.y;
+            Assert.Greater(serverY, startY, "server selector sits above BẮT ĐẦU");
+            yield return new WaitForSeconds(0.5f);
+            yield return cap.Save("QA/LobbyCaptures/flow3_title.png", false);
+            flow.StartGame();
+            yield return null;
+            Assert.AreEqual(EntryScreen.Authentication, flow.CurrentScreen);
+            yield return cap.Save("QA/LobbyCaptures/flow4_login.png", false);
+            // 4. login / register tabs
+            flow.ShowRegisterTab();
+            yield return cap.Save("QA/LobbyCaptures/flow4_register.png", false);
+            Assert.IsTrue(Find<InputField>("ConfirmPasswordInput").gameObject.activeInHierarchy, "register tab shows the confirm field");
+            flow.ShowLoginTab();
+            Assert.IsFalse(Find<InputField>("ConfirmPasswordInput").gameObject.activeInHierarchy);
+            // 100% 2D: nothing 3D anywhere in the entry scene
+            Assert.AreEqual(0, Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include).Length, "MeshRenderer in entry scene");
+            Assert.AreEqual(0, Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Include).Length, "SkinnedMeshRenderer in entry scene");
+            Assert.AreEqual(0, Object.FindObjectsByType<Light>(FindObjectsInactive.Include).Length, "Light in entry scene");
+            cap.Dispose();
+            Assert.AreEqual(1, Object.FindObjectsByType<Camera>(FindObjectsInactive.Include).Count(c => c.name != "QA_UICapture"), "only the screen-clearing main camera");
+        }
+
+        [UnityTest]
         public IEnumerator Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact()
         {
             // INTERNAL QA ONLY: reveal the hall directly (bypassing login is test-only, never in product code).
@@ -102,7 +151,7 @@ namespace AdventureKing.Tests
             Find<RectTransform>("SplashRoot").gameObject.SetActive(false);
             Find<RectTransform>("AuthRoot").gameObject.SetActive(false);
             Find<RectTransform>("SelectionRoot").gameObject.SetActive(true);
-            var preview = Find<HeroSelectionPreview3D>();
+            var preview = Find<HeroSelectionPreview2D>();
             var capture = new LobbyCapture();
             Directory.CreateDirectory("QA/LobbyCaptures");
 
@@ -111,38 +160,36 @@ namespace AdventureKing.Tests
                 flow.SelectClass(c);
                 yield return new WaitForSeconds(1.0f);
                 Assert.AreEqual(c, preview.ActiveClass);
-                Assert.IsTrue(preview.ActiveModel, c + " model not shown");
-                Assert.IsTrue(preview.ActiveModel.GetComponentsInChildren<SkinnedMeshRenderer>().Length >= 2, c + " body + weapon");
+                Assert.IsTrue(preview.Target && preview.Target.enabled && preview.Target.sprite, c + " 2D sprite not shown");
+                Assert.AreEqual(HeroSelectionPreview2D.PreviewState.Idle, preview.State);
+                int idleFrame0 = preview.Frame;
+                yield return new WaitForSeconds(0.4f);
+                Assert.AreNotEqual(idleFrame0, preview.Frame, c + " idle is not animating");
                 Assert.AreEqual(HeroClassCatalog.Get(c).displayName, Find<Text>("HeroName").text);
                 yield return capture.Save($"QA/LobbyCaptures/{c}_idle.png");
 
-                var events = preview.ActiveModel.GetComponentInChildren<CharacterAnimationEvents>();
-                int attackHits = 0, skillHits = 0, skillCasts = 0;
-                events.AttackImpact += () => attackHits++;
-                events.SkillImpact += () => skillHits++;
-                events.SkillCast += () => skillCasts++;
+                int attackHits = 0, skillHits = 0;
+                System.Action onAttack = () => attackHits++, onSkill = () => skillHits++;
+                preview.AttackImpact += onAttack;
+                preview.SkillImpact += onSkill;
 
                 preview.PlayAttackPreview();
                 float end = Time.time + 3f;
                 while (attackHits == 0 && Time.time < end) yield return null;
                 Assert.Greater(attackHits, 0, c + " attack never reached its contact frame");
                 yield return new WaitForSeconds(0.08f);
-                int previewLayer = preview.ActiveModel.layer;
-                bool visibleFx =
-                    Object.FindObjectsByType<VfxAutoDestroy>(FindObjectsInactive.Exclude).Any(v => v.gameObject.layer == previewLayer) ||
-                    Object.FindObjectsByType<VfxProjectile>(FindObjectsInactive.Exclude).Any(v => v.gameObject.layer == previewLayer);
-                Assert.IsTrue(visibleFx, c + " attack VFX missing or not on the preview camera's layer");
                 yield return capture.Save($"QA/LobbyCaptures/{c}_attack.png");
                 yield return new WaitForSeconds(1.6f);
 
                 preview.PlaySkillPreview();
                 end = Time.time + 6f;
                 while (skillHits == 0 && Time.time < end) yield return null;
-                Assert.Greater(skillCasts, 0, c + " skill cast event missing");
                 Assert.Greater(skillHits, 0, c + " skill never reached its impact frame");
                 yield return new WaitForSeconds(0.1f);
                 yield return capture.Save($"QA/LobbyCaptures/{c}_skill.png");
-                yield return new WaitForSeconds(3.5f);
+                yield return new WaitForSeconds(1.2f);
+                preview.AttackImpact -= onAttack;
+                preview.SkillImpact -= onSkill;
             }
             capture.Dispose();
         }
@@ -169,12 +216,15 @@ namespace AdventureKing.Tests
                 cam.enabled = false;
             }
 
-            public IEnumerator Save(string path)
+            public IEnumerator Save(string path, bool requireHall = true)
             {
                 // Batchmode has no game-view frame end, so WaitForEndOfFrame never resumes; render manually.
                 yield return null;
-                Assert.IsTrue(Find<RectTransform>("SelectionRoot").gameObject.activeInHierarchy, "hall not visible for " + path);
-                Assert.IsFalse(Find<RectTransform>("AuthRoot").gameObject.activeInHierarchy, "auth overlay visible for " + path);
+                if (requireHall)
+                {
+                    Assert.IsTrue(Find<RectTransform>("SelectionRoot").gameObject.activeInHierarchy, "hall not visible for " + path);
+                    Assert.IsFalse(Find<RectTransform>("AuthRoot").gameObject.activeInHierarchy, "auth overlay visible for " + path);
+                }
                 var prevMode = canvas.renderMode;
                 canvas.renderMode = RenderMode.ScreenSpaceCamera;
                 canvas.worldCamera = cam;

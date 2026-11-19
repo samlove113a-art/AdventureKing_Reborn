@@ -9,7 +9,7 @@ namespace AdventureKing.Gameplay
     /// </summary>
     public sealed class HeroStatBars : MonoBehaviour
     {
-        [SerializeField] private HeroSelectionPreview3D preview;
+        [SerializeField] private HeroSelectionPreview2D preview;
         [SerializeField] private RectTransform[] fills = new RectTransform[4];
         [SerializeField, Min(1f)] private float fullWidth = 200f;
         [SerializeField, Min(0.1f)] private float animateSpeed = 6f;
