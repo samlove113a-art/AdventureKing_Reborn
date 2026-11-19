@@ -71,6 +71,8 @@ namespace AdventureKing.ArtPipeline
         /// <summary>Meshy module at its exported size × <paramref name="scale"/>, optional tint (recolour, no new credits).</summary>
         private static GameObject C1Prop(Transform parent, string name, float x, float z, float scale = 1f, bool flip = false, float y = 0f, Color? tint = null, float yaw = 0f)
         {
+            GameObject pixel = PixelProp(parent, name, x, z, scale, flip, y, tint);   // Map 1 pilot: pixel-art prop instead of the glossy 3D module
+            if (pixel) return pixel;
             if (!File.Exists($"{C1PropDir}/{name}/{name}.fbx")) { Debug.LogWarning("[CH1] prop missing: " + name); return null; }
             GameObject go = Prop(parent, name, x, z, 1f, flip, y, C1PropDir, yaw);
             if (!go) return null;
@@ -101,7 +103,7 @@ namespace AdventureKing.ArtPipeline
             Transform art = Group(world, "Scenery"), solids = Group(world, "Collision"), play = Group(world, "Gameplay");
             float minX = TownLayout.Ch1Village.MinX, maxX = TownLayout.Ch1Village.MaxX;
             Ground(art, solids, minX, maxX, stream: false);
-            foreach (var d in TownLayout.Ch1Village.Decks) Deck(art, solids, d, d.Top >= 6f ? "deck_high" : "deck");
+            foreach (var d in TownLayout.Ch1Village.Decks) { if (UsePixelGround) PixelDeck(art, solids, d); else Deck(art, solids, d, d.Top >= 6f ? "deck_high" : "deck"); }
             foreach (var c in TownLayout.Ch1Village.Climbs) ClimbZone(art, play, c);
 
             // ---- village square (safe zone, west): houses at the back, fountain + elder in the middle, stalls, lamps
@@ -129,8 +131,8 @@ namespace AdventureKing.ArtPipeline
             C1Prop(art, "ch1_giant_mushroom_tree", 90f, 12f, 1.1f, false, tint: warmRed);
             C1Prop(art, "ch1_mushroom_house", 58f, 18f, 0.8f, true);
             C1Prop(art, "ch1_mushroom_house", 80f, 17f, 0.75f, false, tint: amber);
-            Prop(art, "crates", 50f, 2.6f, 2f, true);
-            Prop(art, "planter", 70f, 2.4f, 1.3f, false);
+            if (PixelProp(art, "crates", 50f, 2.6f, 1.2f, true, 0f, null) == null) Prop(art, "crates", 50f, 2.6f, 2f, true);
+            if (PixelProp(art, "planter", 70f, 2.4f, 1f, false, 0f, null) == null) Prop(art, "planter", 70f, 2.4f, 1.3f, false);
             Signboard(art, 86.5f, 2.6f, "Đồng Cỏ\nXanh\n→"); // Map 2 gate (ch1_village_east_m02, x 92)
 
             // ---- the chapter guide: Trưởng Làng Nấm by the fountain (quest giver, "!" / "?" from the server log)
