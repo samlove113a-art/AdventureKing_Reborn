@@ -72,7 +72,7 @@ namespace AdventureKing.Gameplay
         {
             if (!Renderer) return;
             Sprite s = hungry && Hungry ? Hungry : Normal;
-            if (!hungry && Frames != null && Frames.Length > 1) s = Moving ? Frames[Mathf.FloorToInt(Time.time * 7f) % Frames.Length] : Frames[0];   // frame B only while the pet walks / flies
+            if (!hungry && Frames != null && Frames.Length > 1) s = Moving ? Frames[PingPong(Mathf.FloorToInt(Time.time * 8f), Frames.Length)] : Frames[0];   // frame B only while the pet walks / flies
             if (Renderer.sprite != s) Renderer.sprite = s;
             Renderer.flipX = facing < 0;
         }
@@ -85,6 +85,9 @@ namespace AdventureKing.Gameplay
             "pet_ink_dragon" => MoveStyle.Glide,
             _ => MoveStyle.Walk,
         };
+        /// <summary>Cycle order of the walk / flap frames: A B C B A B C B ... (2 frames: A B A B).</summary>
+        private static int PingPong(int step, int n) { if (n <= 2) return step % n; int period = 2 * n - 2; int k = step % period; return k < n ? k : period - k; }
+
         public MoveStyle Style;
         public bool Moving;          // set by the director before Set(): walk / flap frames only play while moving
         public float HoverHeight = 0.9f;

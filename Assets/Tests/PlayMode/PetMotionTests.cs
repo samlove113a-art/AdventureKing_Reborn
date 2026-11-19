@@ -64,6 +64,10 @@ namespace AdventureKing.Tests.PlayMode
             Assert.AreEqual(Width(pets["pet_ember_tiger"]), Width(pets["pet_night_horse"]), 0.03f, "tiger and horse the same width");
             Assert.Greater(Width(pets["pet_war_dragon"]), Width(pets["pet_ink_dragon"]) * 1.3f, "the war dragon is bigger than the Eastern dragon");
 
+            // the featured pets have three pictures: a four-step cycle A B C B
+            foreach (string id in new[] { "pet_ember_tiger", "pet_night_horse", "pet_snow_wolf", "pet_war_dragon", "pet_phoenix" })
+                Assert.AreEqual(3, pets.ContainsKey(id) ? pets[id].Frames.Length : Pet2DBody.Create(id).GetComponent<Pet2DBody>().Frames.Length, id + ": three animation frames (four-step cycle)");
+
             // contact picture for the owner: pets beside a hero
             Directory.CreateDirectory("QA/Pets");
             var camGo = new GameObject("PetCam");
