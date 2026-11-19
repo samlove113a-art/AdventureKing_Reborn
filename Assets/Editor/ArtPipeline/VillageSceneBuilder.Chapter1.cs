@@ -358,6 +358,15 @@ namespace AdventureKing.ArtPipeline
         private static void C1VillagePanorama()
         {
             const string name = "c1_m01_mushroom_panorama_v1";
+            // pixel-art Dark Fantasy panorama (Meshy text-to-image, cleaned by hand): when it exists it wins over the procedural painting below
+            const string pixelName = "c1_m01_pixel_panorama_v2";
+            if (System.IO.File.Exists($"{WorldDir}/Generated/{pixelName}.png"))
+            {
+                var bd = GameObject.Find("Backdrop_Painting");
+                if (!bd) throw new System.InvalidOperationException("Backdrop_Painting not found after FinishWorld");
+                bd.GetComponent<MeshRenderer>().sharedMaterial = CutoutMat($"{WorldDir}/Generated/{pixelName}.png", 0f, fogAmount: 0f, cutoff: 0f);
+                return;
+            }
             float Ridge(float u, float baseV, float a1, float f1, float a2, float f2, float ph) => baseV + a1 * Mathf.Sin(u * f1 + ph) + a2 * Mathf.Sin(u * f2 + ph * 1.7f);
             Color sky0 = new Color(1f, 0.86f, 0.74f), sky1 = new Color(0.55f, 0.74f, 0.9f);
             Color[] hill = { new Color(0.56f, 0.48f, 0.66f), new Color(0.44f, 0.5f, 0.62f), new Color(0.34f, 0.5f, 0.5f) };
