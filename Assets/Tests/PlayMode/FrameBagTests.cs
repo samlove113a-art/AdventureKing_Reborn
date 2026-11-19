@@ -88,7 +88,9 @@ namespace AdventureKing.Tests
             until = Time.time + 6f;
             while (plate.EquippedTitle != "VIP_15" && Time.time < until) yield return null;
             Assert.AreEqual("VIP_15", plate.EquippedTitle, "worn");
-            Assert.IsTrue(plate.FrameShown, "the frame is shown above the name");
+            Assert.IsTrue(plate.FrameShown, "the frame is shown");
+            Assert.AreEqual("Khung Tên", plate.Shown, "the name is still the character name");
+            Assert.AreSame(plate.GetComponentInChildren<UnityEngine.UI.Text>(true).transform.parent, plate.GetComponentsInChildren<UnityEngine.UI.Image>(true).First(i => i.name == "TitleFrame").transform, "the name sits INSIDE the frame");
             yield return new WaitForSeconds(1f);
             Assert.IsTrue(bag.State.slots.Single(s => s.itemId == "VIP_15").worn, "bag marks it worn");
             bag.Close();

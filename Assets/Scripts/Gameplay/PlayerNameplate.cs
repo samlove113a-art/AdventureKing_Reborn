@@ -19,7 +19,7 @@ namespace AdventureKing.Gameplay
         private Text label;
         private Transform head;
         private RectTransform plate;
-        private Image frame;
+        private Image frame, plainPlate;
 
         public string Shown => label ? label.text : "";
         public string EquippedTitle { get; private set; }
@@ -37,10 +37,24 @@ namespace AdventureKing.Gameplay
             if (!frame) return;
             frame.sprite = s;
             frame.gameObject.SetActive(s);
+            if (plainPlate) plainPlate.enabled = !s;                    // a worn frame REPLACES the plain plate: the name sits inside the frame
+            if (!label) return;
             if (s)
             {
-                float h = 92f;
-                frame.rectTransform.sizeDelta = new Vector2(h * s.rect.width / s.rect.height, h);
+                float w = 330f;
+                frame.rectTransform.anchorMin = frame.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                frame.rectTransform.pivot = new Vector2(0.5f, 0.3f);    // the dark name slot of the artwork is at ~30 % of its height: put it on the plate centre
+                frame.rectTransform.anchoredPosition = Vector2.zero;
+                frame.rectTransform.sizeDelta = new Vector2(w, w * s.rect.height / s.rect.width);
+                label.transform.SetParent(frame.transform, false);
+                label.rectTransform.anchorMin = new Vector2(0.2f, 0.12f); label.rectTransform.anchorMax = new Vector2(0.8f, 0.42f);
+                label.rectTransform.offsetMin = label.rectTransform.offsetMax = Vector2.zero;
+            }
+            else
+            {
+                label.transform.SetParent(plate, false);
+                label.rectTransform.anchorMin = Vector2.zero; label.rectTransform.anchorMax = Vector2.one;
+                label.rectTransform.offsetMin = new Vector2(16f, 2f); label.rectTransform.offsetMax = new Vector2(-16f, -2f);
             }
         }
 
@@ -73,6 +87,7 @@ namespace AdventureKing.Gameplay
             if (plateSprite) { bg.sprite = plateSprite; bg.type = Image.Type.Sliced; bg.color = new Color(1f, 1f, 1f, 0.92f); }
             else bg.color = new Color(0.06f, 0.08f, 0.16f, 0.75f);
             bg.raycastTarget = false;
+            plainPlate = bg;
             label = new GameObject("Name", typeof(RectTransform)).AddComponent<Text>();
             label.transform.SetParent(plate, false);
             label.rectTransform.anchorMin = Vector2.zero; label.rectTransform.anchorMax = Vector2.one;
