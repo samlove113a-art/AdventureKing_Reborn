@@ -397,7 +397,7 @@ namespace AdventureKing.Gameplay
                 locked.sprite = cellSprite; locked.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple;
                 locked.color = new Color(0.3f, 0.32f, 0.38f, 0.62f);
                 Txt(locked.transform, "LockedLabel", unavailable[i] + "\n(chưa mở)", 14,
-                    new Color(0.73f, 0.73f, 0.77f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(116f, 67f), TextAnchor.MiddleCenter);
+                    new Color(0.73f, 0.73f, 0.77f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(84f, 67f), TextAnchor.MiddleCenter);   // stays inside its 88 px cell (was 116 px wide: it spilled over the item name)
             }
             statsLabel = Txt(c, "Stats", "", 19, cream, new Vector2(0f, 0f),
                 new Vector2(270f, 68f), new Vector2(360f, 49f), TextAnchor.MiddleCenter);
@@ -435,11 +435,11 @@ namespace AdventureKing.Gameplay
             }
 
             // detail strip (bottom right)
-            nameLabel = Txt(c, "ItemName", "Chọn một vật phẩm", 28, gold, new Vector2(0f, 0f), new Vector2(645f, 146f), new Vector2(520f, 40f), TextAnchor.MiddleLeft);
+            nameLabel = Txt(c, "ItemName", "Chọn một vật phẩm", 28, gold, new Vector2(0f, 0f), new Vector2(675f, 146f), new Vector2(520f, 40f), TextAnchor.MiddleLeft);   // clear of the locked slot column on the left
             nameLabel.fontStyle = FontStyle.Bold;
             descLabel = Txt(c, "ItemDesc", "", 22, cream, new Vector2(0f, 0f), new Vector2(645f, 94f), new Vector2(520f, 56f), TextAnchor.UpperLeft);
             msgLabel = Txt(c, "Message", "", 22, new Color(1f, 0.75f, 0.6f), new Vector2(0f, 0f), new Vector2(645f, 39f), new Vector2(520f, 32f), TextAnchor.MiddleLeft);
-            expandButton = Btn(c, "Expand", "Mở rộng túi", new Vector2(0f, 0f), new Vector2(270f, 143f), new Vector2(310f, 58f), new Color(0.82f, 0.6f, 0.18f), Expand);
+            expandButton = Btn(c, "Expand", "Mở rộng túi", new Vector2(0f, 0f), new Vector2(270f, 143f), new Vector2(310f, 62f), new Color(0.82f, 0.6f, 0.18f), Expand);   // 62: still >= 40 px on the 16:9 phone scale
             expandLabel = expandButton.GetComponentInChildren<Text>();
             expandLabel.fontSize = 20;
             useButton = Btn(c, "Use", "Dùng", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.25f, 0.6f, 0.4f), UseSelected);
