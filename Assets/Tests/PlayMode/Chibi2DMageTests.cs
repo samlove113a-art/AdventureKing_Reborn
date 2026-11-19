@@ -41,7 +41,7 @@ namespace AdventureKing.Tests
 
         private static IEnumerator Shot(string name, int w = 1280, int h = 720)
         {
-            yield return new WaitForEndOfFrame();
+            if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();   // -batchmode never reaches end-of-frame
             var rt = new RenderTexture(w, h, 24) { antiAliasing = 4 };
             GameplayRecorder.Capture(Camera.main, rt);
             RenderTexture.active = rt;
@@ -68,7 +68,7 @@ namespace AdventureKing.Tests
             var sr = world.HeroModel.GetComponentInChildren<SpriteRenderer>();
             Assert.IsTrue(sr && sr.sprite, "sprite shown");
             Assert.AreEqual(FilterMode.Point, sr.sprite.texture.filterMode, "pixel art is drawn with point filtering (crisp, never smoothed)");
-            Assert.AreEqual(128, sr.sprite.texture.height, "128 px pixel-art frames cut from the owner design sheet");
+            Assert.AreEqual(192, sr.sprite.texture.height, "192 px pixel-art frames (new set)");
             foreach (string fx in new[] { "cast_circle", "arcane_orb", "hit_spark" })
             {
                 var prefab = Resources.Load<GameObject>("Chibi2D/Fx/" + fx);

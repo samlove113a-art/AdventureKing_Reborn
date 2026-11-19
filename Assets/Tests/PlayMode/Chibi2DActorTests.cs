@@ -37,7 +37,7 @@ namespace AdventureKing.Tests
 
         private static IEnumerator Shot(string name, int w = 1280, int h = 720)
         {
-            yield return new WaitForEndOfFrame();
+            if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();   // -batchmode never reaches end-of-frame
             var rt = new RenderTexture(w, h, 24) { antiAliasing = 4 };
             GameplayRecorder.Capture(Camera.main, rt);
             RenderTexture.active = rt;
