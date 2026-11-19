@@ -23,6 +23,9 @@ namespace AdventureKing.Gameplay
                  "down through a deck). -1 = feature off.")]
         [SerializeField] private int oneWayLayer = -1;
 
+        /// <summary>Passive run-speed bonus of the worn fashion (set / mount / wings): 1 = none. The server allows the same bonus in its movement check.</summary>
+        public float SpeedMultiplier { get; set; } = 1f;
+
         private LadderZone2D ladder;
         private float normalGravity;
         private float lastGroundAt = float.NegativeInfinity;
@@ -105,7 +108,7 @@ namespace AdventureKing.Gameplay
                 }
                 else
                 {
-                    body.linearVelocity = new Vector2(controls.Horizontal * runSpeed * 0.7f,
+                    body.linearVelocity = new Vector2(controls.Horizontal * runSpeed * SpeedMultiplier * 0.7f,
                         controls.Vertical * climbSpeed);
                     UpdateFacing();
                     return;
@@ -113,7 +116,7 @@ namespace AdventureKing.Gameplay
             }
 
             float x = Mathf.MoveTowards(body.linearVelocity.x,
-                controls.Horizontal * runSpeed,
+                controls.Horizontal * runSpeed * SpeedMultiplier,
                 (IsGrounded ? groundAcceleration : airAcceleration) * Time.fixedDeltaTime);
 
             float y = body.linearVelocity.y;

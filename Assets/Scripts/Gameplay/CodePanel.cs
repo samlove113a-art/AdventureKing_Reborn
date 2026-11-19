@@ -33,10 +33,10 @@ namespace AdventureKing.Gameplay
         }
 
         private InventoryPanel iconSource;
-        protected Sprite ItemIcon(string icon)
+        protected Sprite ItemIcon(string icon, string itemId = null)
         {
             if (!iconSource) iconSource = FindAnyObjectByType<InventoryPanel>(FindObjectsInactive.Include);
-            return iconSource ? iconSource.IconSprite(icon) : null;
+            return iconSource ? iconSource.IconSprite(icon, itemId) : null;
         }
 
         /// <summary>Shows the reward as icons; returns how many cells are used.</summary>
@@ -53,7 +53,7 @@ namespace AdventureKing.Gameplay
                 n++;
             }
             if (gold > 0) Put(coinSprite, gold >= 1000 ? (gold / 1000f).ToString("0.#") + "K" : gold.ToString());
-            if (items != null) foreach (RewardViewState it in items) Put(ItemIcon(it.icon), "x" + it.qty);
+            if (items != null) foreach (RewardViewState it in items) Put(ItemIcon(it.icon, it.itemId), "x" + it.qty);
             for (int i = n; i < s.Cells.Length; i++) s.Cells[i].gameObject.SetActive(false);
             return n;
         }

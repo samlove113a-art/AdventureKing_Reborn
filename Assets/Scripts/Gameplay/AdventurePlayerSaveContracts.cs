@@ -84,6 +84,7 @@ namespace AdventureKing.Gameplay
         public int[] classes = new int[0];
         public bool owned, equipped, usableByCharacter;
         public string rarity = "common"; // display only (common / rare / epic / legendary)
+        public string skillName, skillDesc; // passive effect of a set / mount / wings (server-owned numbers, shown as text)
         public bool IsSet => kind == "cosmetic_set";
         public bool ForDiamonds => currency == "diamonds";
     }
@@ -168,6 +169,7 @@ namespace AdventureKing.Gameplay
     public sealed class BagSlotState
     {
         public int index, qty, attack, defense, enhanceLevel, enhanceChance;
+        public long enhanceGold;   // Blacksmith fee for the next +1 (server-owned)
         public string itemId, name, kind, icon, desc, equipSlot, rarity;
         public bool usableByClass = true;
     }
@@ -180,7 +182,7 @@ namespace AdventureKing.Gameplay
         public BagSlotState[] slots = new BagSlotState[0];
         public EquippedState[] equipped = new EquippedState[0];
     }
-    [Serializable] public sealed class EnhanceResult { public bool success, protectedLevel, replayed; public int beforeLevel, afterLevel, chancePercent; public InventoryState inventory; }
+    [Serializable] public sealed class EnhanceResult { public bool success, protectedLevel, replayed; public int beforeLevel, afterLevel, chancePercent; public long goldSpent, gold; public InventoryState inventory; }
     [Serializable] public sealed class ExpandResult { public long priceGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class SellJunkResult { public int stacksSold, itemsSold; public long totalGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class UseItemResult { public string itemId; public int restoredHp, restoredMp; public HeroCombatState hero; public InventoryState inventory; }
@@ -193,7 +195,7 @@ namespace AdventureKing.Gameplay
     [Serializable] public sealed class TicketResult { public AdventureCharacterSnapshot character; public InventoryState inventory; }
 
     // ---------------------------------------------------------------- pets
-    [Serializable] public sealed class PetDefState { public string id, name, tier, currency, desc; public long price; }
+    [Serializable] public sealed class PetDefState { public string id, name, tier, currency, desc, rarity; public long price; public float reachBonus; public int potionCooldownPct; }
     [Serializable] public sealed class OwnedPetState { public string petId, name, tier; public bool summoned, hungry; public long satietyMs; }
     [Serializable]
     public sealed class PetsState

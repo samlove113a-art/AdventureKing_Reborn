@@ -23,7 +23,8 @@ namespace AdventureKing.Gameplay
         public bool Busy { get; private set; }
 
         private GameObject root, confirm;
-        private Text goldLabel, msgLabel, confirmText;
+        private Text goldLabel, msgLabel, confirmText, pageLabel;
+        private Button prevButton, nextButton;
         private readonly Button[] tabs = new Button[2];
         private sealed class Card { public GameObject Go; public Image Portrait; public Text Name, Desc, Price, Sat; public Image SatFill; public Button Buy, Summon, Feed; public Text SummonLabel; }
         private readonly Card[] cards = new Card[2];
@@ -134,18 +135,21 @@ namespace AdventureKing.Gameplay
             for (int i = 0; i < 2; i++)
             {
                 bool vip = i == 1;
-                tabs[i] = Btn(c, "Tab" + i, vip ? "Pet VIP (Kim Cương)" : "Pet thường (Vàng)", new Vector2(0.5f, 1f), new Vector2(-170f + i * 340f, -180f), new Vector2(320f, 62f), new Color(0.3f, 0.36f, 0.55f), () => { Vip = vip; Redraw(); });
+                tabs[i] = Btn(c, "Tab" + i, vip ? "Pet VIP (Kim Cương)" : "Pet thường (Vàng)", new Vector2(0.5f, 1f), new Vector2(-170f + i * 340f, -180f), new Vector2(320f, 62f), new Color(0.3f, 0.36f, 0.55f), () => { Vip = vip; Page = 0; Redraw(); });
             }
+            prevButton = Btn(c, "PagePrev", "‹", new Vector2(0.5f, 1f), new Vector2(-480f, -180f), new Vector2(110f, 62f), new Color(0.3f, 0.36f, 0.55f), PrevPage);
+            nextButton = Btn(c, "PageNext", "›", new Vector2(0.5f, 1f), new Vector2(480f, -180f), new Vector2(110f, 62f), new Color(0.3f, 0.36f, 0.55f), NextPage);
+            pageLabel = Txt(c, "PageLabel", "", 20, cream, new Vector2(0.5f, 1f), new Vector2(0f, -226f), new Vector2(400f, 26f), TextAnchor.MiddleCenter);
             for (int i = 0; i < 2; i++)
             {
                 var k = new Card();
-                Image bg = Make<Image>(c, "PetCard" + i, new Vector2(0.5f, 0.5f), new Vector2(-290f + i * 580f, -5f), new Vector2(540f, 440f));
+                Image bg = Make<Image>(c, "PetCard" + i, new Vector2(0.5f, 0.5f), new Vector2(-290f + i * 580f, -16f), new Vector2(540f, 440f));
                 bg.sprite = cellSprite; bg.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple; bg.color = new Color(0.55f, 0.6f, 0.78f, 0.95f);
                 k.Go = bg.gameObject;
                 Transform t = bg.transform;
                 k.Portrait = Make<Image>(t, "Portrait", new Vector2(0f, 1f), new Vector2(130f, -118f), new Vector2(190f, 190f)); k.Portrait.preserveAspect = true; k.Portrait.raycastTarget = false;
                 k.Name = Txt(t, "Name", "", 28, gold, new Vector2(0f, 1f), new Vector2(380f, -50f), new Vector2(300f, 40f), TextAnchor.MiddleLeft, true);
-                k.Desc = Txt(t, "Desc", "", 19, cream, new Vector2(0f, 1f), new Vector2(380f, -130f), new Vector2(300f, 110f), TextAnchor.UpperLeft);
+                k.Desc = Txt(t, "Desc", "", 18, cream, new Vector2(0f, 1f), new Vector2(380f, -136f), new Vector2(300f, 112f), TextAnchor.UpperLeft);
                 k.Price = Txt(t, "Price", "", 24, gold, new Vector2(0f, 1f), new Vector2(380f, -210f), new Vector2(300f, 36f), TextAnchor.MiddleLeft, true);
                 Image track = Make<Image>(t, "SatTrack", new Vector2(0.5f, 0f), new Vector2(0f, 170f), new Vector2(480f, 18f)); track.color = new Color(0f, 0f, 0f, 0.45f); track.raycastTarget = false;
                 k.SatFill = Make<Image>(track.transform, "SatFill", new Vector2(0f, 0.5f), new Vector2(240f, 0f), new Vector2(480f, 18f));
@@ -201,9 +205,28 @@ namespace AdventureKing.Gameplay
         public void Close() { if (root) root.SetActive(false); SetInput(true); }
         private static void SetInput(bool on) { var w = AdventureWorldSession.Current; var pi = w && w.Player ? w.Player.GetComponent<PlayerInput2D>() : null; if (pi) pi.enabled = on; }
         private void Message(string m) { LastMessage = m ?? ""; if (msgLabel) msgLabel.text = LastMessage; }
-        public void SetVip(bool v) { Vip = v; Redraw(); }
+        public void SetVip(bool v) { Vip = v; Page = 0; Redraw(); }
 
-        private PetDefState[] Shown() => Director?.State?.catalog?.Where(p => (p.tier == "vip") == Vip).Take(2).ToArray() ?? new PetDefState[0];
+        public const int PerPage = 2;
+        public int Page { get; private set; }
+        private PetDefState[] Tier() => Director?.State?.catalog?.Where(p => (p.tier == "vip") == Vip).ToArray() ?? new PetDefState[0];
+        public int PageCount => Mathf.Max(1, Mathf.CeilToInt(Tier().Length / (float)PerPage));
+        private PetDefState[] Shown() => Tier().Skip(Page * PerPage).Take(PerPage).ToArray();
+        public void SetPage(int p) { Page = Mathf.Clamp(p, 0, PageCount - 1); Redraw(); }
+        public void NextPage() => SetPage(Page + 1);
+        public void PrevPage() => SetPage(Page - 1);
+
+        private static string RarityColor(string rarity) => rarity == "legendary" ? "#FFB347" : rarity == "epic" ? "#C79BFF" : rarity == "rare" ? "#7FB8FF" : "#FFF5E0";
+        private static string RarityName(string rarity) => rarity == "legendary" ? "Huyền thoại" : rarity == "epic" ? "Sử thi" : rarity == "rare" ? "Hiếm" : "Thường";
+
+        /// <summary>The support buffs of a pet as one readable line (server numbers; shown, never computed by the client).</summary>
+        public static string BuffLine(PetDefState d)
+        {
+            var parts = new System.Collections.Generic.List<string>();
+            if (d.reachBonus > 0f) parts.Add($"Nhặt xa +{d.reachBonus:0.#} m");
+            if (d.potionCooldownPct > 0) parts.Add($"Bơm thuốc nhanh {d.potionCooldownPct}%");
+            return parts.Count == 0 ? "Hỗ trợ: nhặt Vàng / vật phẩm giúp chủ" : "Hỗ trợ: " + string.Join(" · ", parts);
+        }
         private OwnedPetState Owned(string id) => Director?.State?.owned?.FirstOrDefault(o => o.petId == id);
 
         private void Redraw()
@@ -222,6 +245,12 @@ namespace AdventureKing.Gameplay
             }
             if (autoInfo) autoInfo.text = ap == null ? "" : s.summoned == "" ? "Triệu hồi một thú cưng để dùng tính năng này."
                 : $"Dùng thuốc trong túi khi dưới ngưỡng · {ap.cooldownSeconds:0.#} giây/lần · pet phải đang theo và còn no · chỉ ở bản đồ săn quái";
+            Page = Mathf.Clamp(Page, 0, PageCount - 1);
+            if (pageLabel) pageLabel.text = $"Trang {Page + 1}/{PageCount}  ·  {Tier().Length} thú cưng";
+            if (prevButton) prevButton.gameObject.SetActive(PageCount > 1);
+            if (nextButton) nextButton.gameObject.SetActive(PageCount > 1);
+            if (prevButton) prevButton.interactable = Page > 0;
+            if (nextButton) nextButton.interactable = Page < PageCount - 1;
             PetDefState[] list = Shown();
             for (int i = 0; i < cards.Length; i++)
             {
@@ -232,8 +261,8 @@ namespace AdventureKing.Gameplay
                 PetDefState d = list[i];
                 OwnedPetState o = Owned(d.id);
                 k.Portrait.sprite = Director ? Director.Portrait(d.id) : null;
-                k.Name.text = d.name;
-                k.Desc.text = d.desc;
+                k.Name.text = $"<color={RarityColor(d.rarity)}>{d.name}</color>";
+                k.Desc.text = $"<color={RarityColor(d.rarity)}>{RarityName(d.rarity)}</color> · {d.desc}\n<color=#A8F0A0>{BuffLine(d)}</color>";
                 k.Price.text = o != null ? "<color=#a8f0a0>Đã sở hữu</color>" : $"{d.price:N0} {(d.currency == "gold" ? "Vàng" : "Kim Cương")}";
                 k.Buy.gameObject.SetActive(o == null);
                 k.Summon.gameObject.SetActive(o != null);

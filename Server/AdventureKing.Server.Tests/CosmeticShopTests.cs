@@ -34,20 +34,63 @@ public class CosmeticShopTests : IDisposable
     private void GiveDiamonds(long n) { t.Db.InTransaction((c, tx) => Wallet.Diamonds(c, tx, acc, n, "test", "test:" + Rid())); }
 
     [Fact]
-    public void Real_Catalog_Is_Valid_Gold_Pieces_And_Diamond_Sets()
+    public void Real_Catalog_Is_Valid_And_Has_Ten_2D_Sets_Per_Class_In_Gold_Or_Diamonds()
     {
         CosmeticCatalog cat = CosmeticCatalog.Load(CatalogPath);
-        Assert.All(cat.items.Where(i => i.kind == ItemKinds.Cosmetic), i => Assert.Equal("gold", i.currency));
-        Assert.All(cat.items.Where(i => i.kind == ItemKinds.CosmeticSet), i => Assert.Equal("diamonds", i.currency));
-        // Every class has several Gold pieces to choose from.
-        for (int k = 0; k < 4; k++) Assert.True(cat.items.Count(i => i.listed && i.currency == "gold" && i.classes.Contains(k)) >= 6);
-        // A catalog that would sell a piece for Diamonds or for free is refused at startup.
-        var bad = new CosmeticCatalog { items = new[] { new CatalogItem { id = "x", slot = "head", currency = "diamonds", price = 5, classes = new[] { 0 } } } };
+        // 2D pixel fashion: 10 full outfits per class, each owned by exactly one class, sold for Gold or Diamonds per item
+        var sets = cat.items.Where(i => i.art == "2d" && i.kind == ItemKinds.CosmeticSet).ToList();
+        Assert.Equal(40, sets.Count);
+        for (int k = 0; k < 4; k++) Assert.Equal(10, sets.Count(s => s.classes.Length == 1 && s.classes[0] == k));
+        Assert.Contains(sets, s => s.currency == "gold");
+        Assert.Contains(sets, s => s.currency == "diamonds");
+        Assert.All(sets, s => { Assert.NotNull(s.skill); Assert.False(string.IsNullOrWhiteSpace(s.skill!.name)); Assert.True(s.skill.damagePct + s.skill.critPct + s.skill.reducePct + s.skill.moveSpeedPct > 0); });
+        // layered slots: hats, masks, tops, bottoms, wings and mounts exist (class-free) and mounts / some wings carry a speed bonus
+        foreach (string slot in new[] { "head", "mask", "top", "bottom", "wings", "mount" })
+            Assert.Contains(cat.items, i => i.art == "2d" && i.slot == slot && i.kind == ItemKinds.Cosmetic && i.listed);
+        Assert.All(cat.items.Where(i => i.art == "2d" && i.slot == "mount"), m => Assert.True(m.skill!.moveSpeedPct >= 10));
+        // A catalog that would sell something for free or with an absurd effect is refused at startup.
+        var bad = new CosmeticCatalog { items = new[] { new CatalogItem { id = "x", slot = "head", currency = "gold", price = 0, classes = new[] { 0 } } } };
         Assert.Throws<InvalidDataException>(bad.Validate);
-        bad.items[0].currency = "gold"; bad.items[0].price = 0;
+        bad.items[0].price = 5; bad.items[0].skill = new StyleSkill { name = "n", damagePct = 90 };
         Assert.Throws<InvalidDataException>(bad.Validate);
     }
 
+    [Fact]
+    public void A_Worn_Set_And_Mount_Give_Capped_Passive_Effects_And_Equip_Is_Class_Checked()
+    {
+        CosmeticCatalog cat = CosmeticCatalog.Load(CatalogPath);
+        // hero is class 1 (Pháp Sư): buy a Mage Gold set, wear it with a mount and read the effect the combat would use
+        CatalogItem set = cat.items.First(i => i.art == "2d" && i.kind == ItemKinds.CosmeticSet && i.classes[0] == hero.heroClass && i.currency == "gold" && i.price <= 100000);
+        CatalogItem otherClass = cat.items.First(i => i.art == "2d" && i.kind == ItemKinds.CosmeticSet && i.classes[0] != hero.heroClass && i.currency == "gold");
+        CatalogItem mount = cat.items.First(i => i.art == "2d" && i.slot == "mount" && i.currency == "gold");
+        t.Db.InTransaction((c, tx) => Wallet.Gold(c, tx, acc, hero.characterId, 500000, "test", "test:" + Rid()));
+        Assert.Equal("class_restricted", Assert.Throws<GameError>(() =>
+            shop.Purchase(acc, hero.characterId, new PurchaseRequestDto { itemId = otherClass.id, requestId = Rid() })).Code);
+        Assert.Equal(StyleBonus.None, shop.StyleOf(hero.characterId));
+        shop.Purchase(acc, hero.characterId, new PurchaseRequestDto { itemId = set.id, requestId = Rid(), equip = true });
+        StyleBonus sb = shop.StyleOf(hero.characterId);
+        Assert.Equal(set.skill!.damagePct, sb.damagePct);
+        Assert.Equal(set.skill.critPct, sb.critPct);
+        // the set is worn as separate pieces (one per slot), each of which can be taken off or replaced on its own
+        OutfitDto worn = shop.Wardrobe(acc, hero.characterId).outfit;
+        Assert.Equal(set.id, worn.set);
+        foreach (string piece in set.pieces) Assert.Equal(CosmeticShop.PieceId(set.id, piece), worn.slots.Single(s => s.slot == piece).itemId);
+        OutfitDto withoutTop = new OutfitDto { set = set.id, slots = worn.slots.Where(s => s.slot != "top").ToArray() };
+        shop.Equip(acc, hero.characterId, withoutTop);
+        Assert.Equal(StyleBonus.None, shop.StyleOf(hero.characterId));                                   // incomplete set: no skill
+        Assert.DoesNotContain(shop.Wardrobe(acc, hero.characterId).outfit.slots, s => s.slot == "top");  // the other pieces stay
+        shop.Equip(acc, hero.characterId, worn);
+        Assert.Equal(set.skill.critPct, shop.StyleOf(hero.characterId).critPct);                          // whole set again: skill back
+        Assert.Equal("slot_mismatch", Assert.Throws<GameError>(() => shop.Equip(acc, hero.characterId,
+            new OutfitDto { slots = new[] { new OutfitSlotDto { slot = "mask", itemId = CosmeticShop.PieceId(set.id, "top") } } })).Code);
+        shop.Purchase(acc, hero.characterId, new PurchaseRequestDto { itemId = mount.id, requestId = Rid(), equip = true });
+        Assert.Equal(set.skill.moveSpeedPct + mount.skill!.moveSpeedPct, shop.StyleOf(hero.characterId).moveSpeedPct);   // set + mount add up (cap 40)
+        // taking everything off removes the effects at once (no stale cache)
+        shop.Equip(acc, hero.characterId, new OutfitDto());
+        Assert.Equal(StyleBonus.None, shop.StyleOf(hero.characterId));
+        // the wardrobe shows the skill text for the shop
+        Assert.Equal(set.skill.name, shop.Wardrobe(acc, hero.characterId).items.Single(i => i.id == set.id).skillName);
+    }
     [Fact]
     public void New_Character_Gets_Starter_Gold_Exactly_Once()
     {

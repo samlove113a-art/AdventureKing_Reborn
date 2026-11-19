@@ -88,6 +88,8 @@ public sealed class BagSlotDto
     public int defense { get; set; }
     public int enhanceLevel { get; set; }
     public int enhanceChance { get; set; }
+    /// <summary>Gold the Blacksmith charges for the next +1 attempt (0 when not enhanceable).</summary>
+    public long enhanceGold { get; set; }
     public bool usableByClass { get; set; } = true;
     public string destMap { get; set; } = "";
 }
@@ -135,6 +137,9 @@ public sealed class EnhanceResultDto
     public int afterLevel { get; set; }
     public int chancePercent { get; set; }
     public bool replayed { get; set; }
+    /// <summary>Gold charged for this attempt (success or failure) and the balance afterwards.</summary>
+    public long goldSpent { get; set; }
+    public long gold { get; set; }
     public InventoryDto inventory { get; set; } = new();
 }
 
@@ -155,6 +160,9 @@ public sealed class InventoryService
     // Draft success rates for +1 to +15; validated exclusively on the server.
     private static readonly int[] EnhanceChances = { 100, 95, 90, 85, 80, 70, 65, 55, 45, 40, 35, 30, 25, 20, 15 };
     public static int SuccessChance(int currentLevel) => EnhanceChances[Math.Clamp(currentLevel, 0, 14)];
+    // Draft Gold fee per attempt from +0 -> +1 up to +14 -> +15 (charged on success AND failure, like the stone). Balance proposal: change here.
+    private static readonly long[] EnhanceGold = { 50, 80, 120, 180, 260, 380, 550, 800, 1100, 1500, 2100, 2800, 3800, 5000, 7000 };
+    public static long GoldCost(int currentLevel) => EnhanceGold[Math.Clamp(currentLevel, 0, 14)];
     private static int Boost(int baseStat, int level) => baseStat > 0 ? baseStat + level : 0;
     private readonly Dictionary<string, long> potionReady = new();
     private readonly object gate = new();
@@ -279,7 +287,7 @@ public sealed class InventoryService
             return new BagSlotDto
             {
                 index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, rarity = d.rarity, qty = qty,
-                equipSlot = d.equipSlot, attack = Boost(d.attack, enhanced), defense = Boost(d.defense, enhanced), enhanceLevel = enhanced, enhanceChance = d.kind == "equipment" && enhanced < 15 ? SuccessChance(enhanced) : 0, destMap = d.destMap,
+                equipSlot = d.equipSlot, attack = Boost(d.attack, enhanced), defense = Boost(d.defense, enhanced), enhanceLevel = enhanced, enhanceChance = d.kind == "equipment" && enhanced < 15 ? SuccessChance(enhanced) : 0, enhanceGold = d.kind == "equipment" && enhanced < 15 ? GoldCost(enhanced) : 0, destMap = d.destMap,
                 usableByClass = d.kind != "equipment" || d.classes.Length == 0 || d.classes.Contains(heroClass),
             };
         }
@@ -418,6 +426,7 @@ public sealed class InventoryService
                 return new EnhanceResultDto {
                     beforeLevel = reader.GetInt32(0), afterLevel = reader.GetInt32(1), chancePercent = reader.GetInt32(2),
                     success = reader.GetInt32(3) != 0, protectedLevel = reader.GetInt32(4) != 0, replayed = true,
+                    goldSpent = GoldCost(reader.GetInt32(0)), gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)),
                     inventory = Snapshot(c, tx, characterId, cls)
                 };
         string? itemId = null; int before = 0;
@@ -440,7 +449,9 @@ public sealed class InventoryService
                 .Select(kv => kv.Key).DefaultIfEmpty(-1).First();
             if (charmSlot < 0) throw new GameError("no_charm", "Thiếu Bùa Bảo Vệ.", 409);
         }
-        // Consume in one transaction. Any failure rolls back both materials and the level.
+        // Consume in one transaction. Any failure rolls back materials, Gold and the level.
+        long fee = GoldCost(before);
+        LedgerResult paid = Wallet.Gold(c, tx, accountId, characterId, -fee, "enhance:" + itemId, "enhance:" + characterId + ":" + req.requestId);
         RemoveFromSlot(c, tx, characterId, stoneSlot, "enhance_stone", 1);
         if (req.protect) RemoveFromSlot(c, tx, characterId, charmSlot, "protection_charm", 1);
         int chance = SuccessChance(before);
@@ -456,6 +467,7 @@ public sealed class InventoryService
         AccountService.Audit(c, tx, accountId, "gear_enhance", $"{characterId} {itemId} +{before}->{after} success={success} protected={req.protect}");
         return new EnhanceResultDto {
             success = success, protectedLevel = req.protect, beforeLevel = before, afterLevel = after, chancePercent = chance,
+            goldSpent = fee, gold = paid.Balance,
             inventory = Snapshot(c, tx, characterId, cls)
         };
     });

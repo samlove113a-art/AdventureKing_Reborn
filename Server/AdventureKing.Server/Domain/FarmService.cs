@@ -336,9 +336,15 @@ public sealed class FarmService
     public Func<string, (int attack, int defense)>? EquipmentBonus { get; set; }
     private (int attack, int defense) Bonus(string characterId) => EquipmentBonus?.Invoke(characterId) ?? (0, 0);
 
+    /// <summary>Passive effects of the worn fashion set / mount / wings (CosmeticShop.StyleOf); none when fashion is not wired.</summary>
+    public Func<string, StyleBonus>? StyleOf { get; set; }
+    private StyleBonus Style(string characterId) => StyleOf?.Invoke(characterId) ?? StyleBonus.None;
+
     /// <summary>Pet hooks (wired to PetService): satiety drain per heartbeat, and whether a fed pet is out.</summary>
     public Action<string>? PetTick { get; set; }
     public Func<string, bool>? PetCanCollect { get; set; }
+    /// <summary>Per-owner pickup reach of the summoned pet (base + the pet's own bonus); null = the global PetReach.</summary>
+    public Func<string, float>? PetReachOf { get; set; }
     public float PetReach { get; set; } = 8f;
 
     /// <summary>Quest progress hook (accountId, characterId, event, amount): kills, pickups, skills that hit.</summary>
@@ -382,7 +388,7 @@ public sealed class FarmService
         {
             float dt = Math.Max(0f, (t - p.ms) / 1000f);
             float dist = MathF.Sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y));
-            if (dist > MaxSpeed * dt + PositionSlack) throw new GameError("moved_too_fast", "Vị trí thay đổi bất thường, thao tác bị từ chối.", 409);
+            if (dist > MaxSpeed * (1f + Style(characterId).moveSpeedPct / 100f) * dt + PositionSlack) throw new GameError("moved_too_fast", "Vị trí thay đổi bất thường, thao tác bị từ chối.", 409);
         }
         presence[key] = (x, y, t);
     }
@@ -430,6 +436,7 @@ public sealed class FarmService
     {
         bool known = presence.TryGetValue(characterId + "|" + mapId, out var p);
         int defenseBonus = Bonus(characterId).defense;
+        float taken = 1f - Style(characterId).reducePct / 100f;       // worn set: less damage taken
         RegenMp(h, t);
         foreach (SpawnPoint s in Config.spawns.Where(s => s.mapId == mapId))
         {
@@ -451,7 +458,7 @@ public sealed class FarmService
                     bool caught = MathF.Abs(p.x - monsterX) <= ty.slamReach && MathF.Abs(p.y - s.y) <= 2f;
                     if (caught)
                     {
-                        int sd = Math.Max(1, (int)(ty.slamDamage * mul) - (h.Defense + defenseBonus) / 2);
+                        int sd = Math.Max(1, (int)MathF.Round((Math.Max(1, (int)(ty.slamDamage * mul) - (h.Defense + defenseBonus) / 2)) * taken));
                         h.Hp -= sd; h.Pending += sd; h.HitBy.Add(s.id); h.LastDamageMs = m.NextSlamMs;
                         if (h.Hp <= 0) { h.Hp = 0; h.Dead = true; }
                     }
@@ -461,7 +468,7 @@ public sealed class FarmService
             if (!inReach) { m.NextHitMs = Math.Max(m.NextHitMs, t + step / 2); continue; } // must close in again (wind-up)
             while (m.NextHitMs <= t && !h.Dead)
             {
-                int dmg = Math.Max(1, (int)(ty.attack * mul) - (h.Defense + defenseBonus) / 2);
+                int dmg = Math.Max(1, (int)MathF.Round(Math.Max(1, (int)(ty.attack * mul) - (h.Defense + defenseBonus) / 2) * taken));
                 h.Hp -= dmg;
                 h.Pending += dmg;
                 h.HitBy.Add(s.id);
@@ -596,8 +603,9 @@ public sealed class FarmService
             Live m = live[s.id];
             if (m.Hp <= 0) throw new GameError("monster_dead", "Quái vật đã bị hạ, chờ hồi sinh.", 409);
             lastSwing[characterId] = t;
-            int baseDamage = stats.damage + Bonus(characterId).attack;
-            bool crit = rng.NextDouble() < 0.12;
+            StyleBonus style = Style(characterId);
+            int baseDamage = (int)MathF.Round((stats.damage + Bonus(characterId).attack) * (1f + style.damagePct / 100f));
+            bool crit = rng.NextDouble() < 0.12 + style.critPct / 100.0;
             int dmg = crit ? (int)MathF.Round(baseDamage * 1.5f) : baseDamage;
             SkillHitDto hit = Damage(s, dmg, accountId, characterId, mapId, t);
             hit.crit = crit;
@@ -716,10 +724,11 @@ public sealed class FarmService
             h.Mp -= cost;
             h.Ready[i] = t + (long)(sk.cooldownSeconds * 1000f);
             h.GlobalReady = t + (long)(Skills.globalCooldownSeconds * 1000f);
-            int dmg = (int)MathF.Round((stats.damage + Bonus(characterId).attack) * sk.damageMultiplier);
+            StyleBonus style = Style(characterId);
+            int dmg = (int)MathF.Round((stats.damage + Bonus(characterId).attack) * sk.damageMultiplier * (1f + style.damagePct / 100f));
             var hits = targets.Select(sp =>
             {
-                bool crit = rng.NextDouble() < 0.12;
+                bool crit = rng.NextDouble() < 0.12 + style.critPct / 100.0;
                 var hit = Damage(sp, crit ? (int)MathF.Round(dmg * 1.5f) : dmg, accountId, characterId, mapId, t);
                 hit.crit = crit;
                 return hit;
@@ -791,7 +800,7 @@ public sealed class FarmService
             if (req?.dropId == null || !drops.TryGetValue(req.dropId, out d!) || d.Picked || d.ExpiresMs <= t)
                 throw new GameError("drop_gone", "Vàng này không còn trên mặt đất.", 409);
             if (d.Owner != characterId || d.MapId != mapId) throw new GameError("not_your_drop", "Đây không phải vàng của bạn.", 403);
-            float reach = byPet ? PetReach : PickupReach;
+            float reach = byPet ? (PetReachOf?.Invoke(characterId) ?? PetReach) : PickupReach;
             if (MathF.Abs(req.x - d.X) > reach || MathF.Abs(req.y - d.Y) > (byPet ? 4f : 2.5f)) throw new GameError("too_far", byPet ? "Vàng ở quá xa thú cưng." : "Hãy lại gần hơn để nhặt.", 409);
             d.Picked = true; // claimed: a second request (double click, replay) can never reach the wallet
         }

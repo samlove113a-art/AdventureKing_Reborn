@@ -12,6 +12,11 @@ public sealed class PetDef
     public string currency { get; set; } = "gold"; // gold | diamonds
     public long price { get; set; }
     public string desc { get; set; } = "";
+    /// <summary>common / rare / epic / legendary: display + how strong the support buff may be.</summary>
+    public string rarity { get; set; } = "common";
+    /// <summary>Support buffs while this pet is out AND fed. Never creates Gold: only longer pickup reach and a faster auto-potion.</summary>
+    public float reachBonus { get; set; }
+    public int potionCooldownPct { get; set; }
 }
 public sealed class AutoPotionConfig { public float cooldownSeconds { get; set; } = 8f; public int minPercent { get; set; } = 10; public int maxPercent { get; set; } = 90; }
 public sealed class PetConfig
@@ -31,6 +36,10 @@ public sealed class PetConfig
             throw new InvalidDataException("bad pet autoPotion config");
         foreach (PetDef p in cfg.pets)
             if (p.price <= 0 || p.currency is not ("gold" or "diamonds") || p.tier is not ("normal" or "vip")) throw new InvalidDataException(p.id + ": bad pet");
+        foreach (PetDef p in cfg.pets)
+            if (p.rarity is not ("common" or "rare" or "epic" or "legendary") || p.reachBonus is < 0f or > 4f || p.potionCooldownPct is < 0 or > 50)
+                throw new InvalidDataException(p.id + ": bad pet rarity / buff");
+        if (cfg.pets.Select(p => p.id).Distinct().Count() != cfg.pets.Length) throw new InvalidDataException("duplicate pet id");
         return cfg;
     }
 }
@@ -110,7 +119,7 @@ public sealed class PetService
         return new PetStateDto
         {
             catalog = Config.pets, owned = owned.ToArray(), summoned = owned.FirstOrDefault(o => o.summoned)?.petId ?? "",
-            maxSatietyMs = Config.MaxSatietyMs, pickupReach = Config.pickupReach,
+            maxSatietyMs = Config.MaxSatietyMs, pickupReach = Config.pickupReach + owned.Where(o => o.summoned && !o.hungry).Select(o => Config.pets.FirstOrDefault(p => p.id == o.petId)?.reachBonus ?? 0f).FirstOrDefault(),
             gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)),
             diamonds = Database.Scalar<long>(c, tx, "SELECT diamonds FROM accounts WHERE id=$a", ("$a", accountId)),
             autoPotion = AutoSettings(c, tx, characterId),
@@ -175,7 +184,7 @@ public sealed class PetService
                 var pick = fit.item != null ? fit : choices.OrderBy(x => x.amount).ThenBy(x => x.slot).First();
                 inv.RemoveFromSlot(c, tx, characterId, pick.slot, pick.item, 1);
                 var (hp, mp, after) = restore(bar == BarHp ? pick.amount : 0, bar == BarMp ? pick.amount : 0);
-                lock (gate) ready[characterId] = t + (long)(Config.autoPotion.cooldownSeconds * 1000f);
+                lock (gate) ready[characterId] = t + PotionCooldownMs(c, tx, characterId);
                 hero.hp = after.hp; hero.mp = after.mp;
                 int left = inv.Cells(c, tx, characterId).Values.Where(v => v.item == pick.item).Sum(v => v.qty);
                 return new PetDrinkDto { itemId = pick.item, itemName = pick.name, hp = hp, mp = mp, left = left };
@@ -255,6 +264,22 @@ public sealed class PetService
     }
 
     /// <summary>A summoned pet with satiety left can collect for this character.</summary>
+    /// <summary>Pickup reach for this owner's summoned pet (base reach + the pet's own bonus).</summary>
+    public float ReachOf(string characterId)
+    {
+        using var c = db.Open();
+        string? id = Database.Scalar<string?>(c, null, "SELECT pet_id FROM pets_owned WHERE character_id=$c AND summoned=1", ("$c", characterId));
+        return Config.pickupReach + (Config.pets.FirstOrDefault(p => p.id == id)?.reachBonus ?? 0f);
+    }
+
+    /// <summary>Auto-potion cooldown in ms after the summoned pet's potionCooldownPct.</summary>
+    private long PotionCooldownMs(SqliteConnection c, SqliteTransaction tx, string characterId)
+    {
+        string? id = Database.Scalar<string?>(c, tx, "SELECT pet_id FROM pets_owned WHERE character_id=$c AND summoned=1", ("$c", characterId));
+        int pct = Config.pets.FirstOrDefault(p => p.id == id)?.potionCooldownPct ?? 0;
+        return (long)(Config.autoPotion.cooldownSeconds * 1000f * (100 - pct) / 100f);
+    }
+
     public bool CanCollect(string characterId)
     {
         using var c = db.Open();

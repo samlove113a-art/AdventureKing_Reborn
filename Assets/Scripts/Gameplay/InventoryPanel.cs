@@ -72,7 +72,8 @@ namespace AdventureKing.Gameplay
             return s ? s : (string.IsNullOrEmpty(name) ? null : Resources.Load<Sprite>("ItemIcons/" + name)); // icons added after the scene was built
         }
         /// <summary>Item icon by its server icon key (shared with the reward windows).</summary>
-        public Sprite IconSprite(string name) => Icon(name);
+        public Sprite IconSprite(string name, string itemId = null) => IconOf(itemId, name);
+        private Sprite IconOf(string itemId, string key) { Sprite s = ItemIconBook.Load(itemId); return s ? s : Icon(key); }
 
         private void Start() => Build();
 
@@ -281,6 +282,7 @@ namespace AdventureKing.Gameplay
                 Busy = false;
                 if (!ok || r == null) { Message(err ?? "Mất kết nối. Nhấn lại để kiểm tra cùng giao dịch."); return; }
                 pendingEnhanceId = null; // confirmed receipt; next click is a new attempt
+                world.Character.gold = r.gold; // the Blacksmith's fee was charged (server-confirmed balance)
                 Apply(r.inventory);
                 Message(r.success ? $"Cường hóa thành công +{r.afterLevel}!" :
                     r.afterLevel < r.beforeLevel ? $"Thất bại, tụt còn +{r.afterLevel}." : "Thất bại, giữ nguyên cấp.");
@@ -468,7 +470,7 @@ namespace AdventureKing.Gameplay
                 bg.gameObject.SetActive(State == null ? i < 40 : used);
                 if (bySlot.TryGetValue(i, out BagSlotState s))
                 {
-                    icon.sprite = Icon(s.icon); icon.enabled = icon.sprite;
+                    icon.sprite = IconOf(s.itemId, s.icon); icon.enabled = icon.sprite;
                     icon.color = s.usableByClass ? Color.white : new Color(1f, 1f, 1f, 0.45f);
                     qty.text = s.qty > 1 ? s.qty.ToString() : "";
                 }
@@ -489,8 +491,8 @@ namespace AdventureKing.Gameplay
             {
                 EquippedState e = State?.equipped?.FirstOrDefault(x => x.equipSlot == slot);
                 var (ic, label) = equipCells[slot];
-                ic.enabled = e != null && Icon(e.item.icon);
-                if (e != null) ic.sprite = Icon(e.item.icon);
+                ic.enabled = e != null && IconOf(e.item.itemId, e.item.icon);
+                if (e != null) ic.sprite = IconOf(e.item.itemId, e.item.icon);
                 label.text = slot == "weapon" ? "Vũ khí" : slot == "armor" ? "Áo" : "Phụ kiện";
                 if (e != null && e.item.enhanceLevel > 0) label.text += " +" + e.item.enhanceLevel;
                 Image cell = ic.transform.parent.GetComponent<Image>();

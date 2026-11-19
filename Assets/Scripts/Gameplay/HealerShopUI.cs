@@ -40,6 +40,7 @@ namespace AdventureKing.Gameplay
         private Button buyButton;
 
         private Sprite Icon(string name) => icons.FirstOrDefault(i => i.name == name).sprite;
+        private Sprite IconOf(string itemId, string key) { Sprite s = ItemIconBook.Load(itemId); return s ? s : Icon(key); }
 
         private T Make<T>(Transform parent, string name, Vector2 anchor, Vector2 pos, Vector2 size) where T : Component
         {
@@ -229,14 +230,14 @@ namespace AdventureKing.Gameplay
                 bool on = i < items.Length;
                 bg.gameObject.SetActive(on);
                 if (!on) continue;
-                ic.sprite = Icon(items[i].icon); ic.enabled = ic.sprite;
+                ic.sprite = IconOf(items[i].itemId, items[i].icon); ic.enabled = ic.sprite;
                 nm.text = items[i].name;
                 pr.text = items[i].priceGold + " Vàng";
                 bg.color = items[i] == Selected ? new Color(1f, 0.85f, 0.45f) : new Color(0.55f, 0.6f, 0.78f, 0.9f);
             }
             if (Selected != null)
             {
-                detailIcon.sprite = Icon(Selected.icon); detailIcon.enabled = detailIcon.sprite;
+                detailIcon.sprite = IconOf(Selected.itemId, Selected.icon); detailIcon.enabled = detailIcon.sprite;
                 nameLabel.text = Selected.name;
                 descLabel.text = Selected.desc + (Selected.kind == "ticket" && !string.IsNullOrEmpty(Selected.destName) ? $"\nĐích: {Selected.destName} (cấp {Selected.minLevel}+)" : "");
             }

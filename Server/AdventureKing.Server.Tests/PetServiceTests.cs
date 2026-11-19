@@ -36,6 +36,26 @@ public sealed class PetServiceTests : IDisposable
     private long Gold(string id) { using var c = t.Db.Open(); return Database.Scalar<long>(c, null, "SELECT gold FROM characters WHERE id=$c", ("$c", id)); }
 
     [Fact]
+    public void Catalog_has_twelve_pets_with_rarity_and_buffs_and_a_buffed_pet_reaches_further()
+    {
+        Assert.Equal(12, pets.Config.pets.Length);
+        Assert.Equal(6, pets.Config.pets.Count(p => p.tier == "normal"));   // 6 for Gold
+        Assert.Equal(6, pets.Config.pets.Count(p => p.tier == "vip"));      // 6 for Diamonds
+        Assert.Contains(pets.Config.pets, p => p.rarity == "legendary");
+        Assert.All(pets.Config.pets, p => Assert.True(p.reachBonus <= 4f && p.potionCooldownPct <= 50));
+
+        var (acc, id) = Hero("pet09");
+        pets.Buy(acc, id, new PetBuyDto { petId = "pet_chick", requestId = "r-1" });
+        pets.Summon(acc, id, new PetIdDto { petId = "pet_chick" });
+        Assert.Equal(pets.Config.pickupReach, pets.ReachOf(id));                              // plain pet: base reach
+        pets.Dismiss(acc, id);
+        pets.Buy(acc, id, new PetBuyDto { petId = "pet_radish_bunny", requestId = "r-2" });  // 2200 Gold
+        PetStateDto s = pets.Summon(acc, id, new PetIdDto { petId = "pet_radish_bunny" });
+        Assert.Equal(pets.Config.pickupReach + 0.5f, pets.ReachOf(id));
+        Assert.Equal(pets.Config.pickupReach + 0.5f, s.pickupReach);                          // the client plans its fetches with it
+    }
+
+    [Fact]
     public void Pets_are_bought_once_with_the_right_currency_and_never_charged_twice()
     {
         var (acc, id) = Hero("pet01");

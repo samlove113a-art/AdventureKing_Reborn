@@ -92,6 +92,34 @@ public sealed class EnhancementTests : IDisposable
     }
 
     [Fact]
+    public void Blacksmith_fee_is_charged_once_on_success_and_failure_and_refused_without_gold()
+    {
+        var (account, hero) = Make("enh05");
+        InventoryDto d = upgrades.Get(account, hero);
+        upgrades.Equip(account, hero, new EquipRequestDto { slot = d.slots.Single(s => s.itemId == "gear_novice_staff").index });
+        t.Db.InTransaction((c, tx) => { upgrades.Add(c, tx, hero, "enhance_stone", 15); return 0; });
+        Assert.Equal(InventoryService.GoldCost(0), upgrades.Get(account, hero).equipped.Single().item.enhanceGold);
+
+        var ok = upgrades.Enhance(account, hero, new EnhanceRequestDto { equipSlot = "weapon", requestId = "fee_success_0001" });
+        Assert.Equal(InventoryService.GoldCost(0), ok.goldSpent);
+        Assert.Equal(5000 - ok.goldSpent, ok.gold);
+        var replay = upgrades.Enhance(account, hero, new EnhanceRequestDto { equipSlot = "weapon", requestId = "fee_success_0001" });
+        Assert.Equal(ok.gold, replay.gold);                                   // replay: no second charge
+
+        var failing = new InventoryService(t.Db, upgrades.Config, farm, upgradeRoll: () => 99);
+        var lost = failing.Enhance(account, hero, new EnhanceRequestDto { equipSlot = "weapon", requestId = "fee_failure_0001" });
+        Assert.False(lost.success);
+        Assert.Equal(ok.gold - InventoryService.GoldCost(1), lost.gold);      // a failed attempt still costs the fee
+
+        // broke: refused, nothing consumed
+        t.Db.InTransaction((c, tx) => { Wallet.Gold(c, tx, account, hero, -lost.gold, "test:broke", "test-broke-enh05"); return 0; });
+        int stones = Count(upgrades.Get(account, hero), "enhance_stone");
+        Assert.Equal("insufficient_gold", Assert.Throws<GameError>(() =>
+            upgrades.Enhance(account, hero, new EnhanceRequestDto { equipSlot = "weapon", requestId = "fee_broke_00001" })).Code);
+        Assert.Equal(stones, Count(upgrades.Get(account, hero), "enhance_stone"));
+    }
+
+    [Fact]
     public void Cannot_upgrade_someone_elses_gear_or_upgrade_past_plus_15()
     {
         var (owner, hero) = Make("enh03");

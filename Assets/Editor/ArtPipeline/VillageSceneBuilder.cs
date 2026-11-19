@@ -246,6 +246,7 @@ namespace AdventureKing.ArtPipeline
             }
             SetupFashionShop(hud);
             SetupHealer(hud);
+            SetupBlacksmith(hud);
             SetupQuestNpcs();
             var sfx = hud.AddComponent<AudioSource>();
             sfx.playOnAwake = false;
@@ -1040,6 +1041,28 @@ namespace AdventureKing.ArtPipeline
             hso.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        /// <summary>Blacksmith forge window (HUD canvas) wired to the Thợ Rèn NPC placed in the hub (+ enhance at the NPC, with Gold fee).</summary>
+        private static void SetupBlacksmith(GameObject hud)
+        {
+            NpcActor smith = Object.FindObjectsByType<NpcActor>(FindObjectsInactive.Include).FirstOrDefault(a => a.name == "NpcSmith");
+            if (!smith) return;
+            var go = new GameObject("BlacksmithWindow", typeof(RectTransform)) { layer = 5 };
+            go.transform.SetParent(hud.transform, false);
+            var ui = go.AddComponent<BlacksmithUI>();
+            var so = new SerializedObject(ui);
+            so.FindProperty("panelSprite").objectReferenceValue = FrameArt.Get("shop_window");
+            so.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("item_cell");
+            so.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
+            so.FindProperty("coinSprite").objectReferenceValue = HudArt.Get("coin");
+            so.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            so.ApplyModifiedPropertiesWithoutUndo();
+            var npc = smith.gameObject.AddComponent<BlacksmithNpc>();
+            var nso = new SerializedObject(npc);
+            nso.FindProperty("actor").objectReferenceValue = smith;
+            nso.FindProperty("forge").objectReferenceValue = ui;
+            nso.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         /// <summary>Elder: E to talk any time (quest "Gặp / Báo cáo Trưởng Làng") + "!"/"?" marks; tailor gets a mark too.</summary>
         private static void SetupQuestNpcs()
         {
@@ -1440,30 +1463,17 @@ namespace AdventureKing.ArtPipeline
         {
             var root = new GameObject("GoldDropTemplate");
             root.transform.SetParent(parent, false);
-            Material gold = FarmMat("coin", new Color(1f, 0.78f, 0.25f), new Color(0.25f, 0.16f, 0.02f));
-            Blob(root.transform, "Coin0", PrimitiveType.Cylinder, Vector3.zero, new Vector3(0.36f, 0.025f, 0.36f), gold, new Vector3(90f, 0f, 0f));
-            Blob(root.transform, "Coin1", PrimitiveType.Cylinder, new Vector3(0.16f, -0.08f, 0.05f), new Vector3(0.3f, 0.022f, 0.3f), gold, new Vector3(80f, 20f, 0f));
-            Blob(root.transform, "Coin2", PrimitiveType.Cylinder, new Vector3(-0.14f, -0.1f, 0.03f), new Vector3(0.28f, 0.02f, 0.28f), gold, new Vector3(100f, -15f, 0f));
-            Blob(root.transform, "Coin3", PrimitiveType.Cylinder, new Vector3(0.02f, 0.14f, -0.02f), new Vector3(0.26f, 0.02f, 0.26f), gold, new Vector3(70f, 40f, 0f));
-            // twinkling sparkles (additive soft glow, faces the camera; animated by GoldDropView)
-            string sp = $"{MatDir}/farm_sparkle_add.mat";
-            var sm = AssetDatabase.LoadAssetAtPath<Material>(sp);
-            if (!sm) { sm = new Material(Shader.Find("AdventureKing/VFX")); AssetDatabase.CreateAsset(sm, sp); }
-            sm.shader = Shader.Find("AdventureKing/VFX");
-            sm.SetTexture("_MainTex", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Art/VFX/Textures/soft_dot.png"));
-            sm.SetColor("_TintColor", new Color(1f, 0.92f, 0.55f, 1f));
-            sm.SetFloat("_Intensity", 2.2f);
-            sm.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            sm.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.One);
-            EditorUtility.SetDirty(sm);
-            Vector3[] spots = { new Vector3(0.22f, 0.18f, -0.15f), new Vector3(-0.2f, 0.05f, -0.15f), new Vector3(0.05f, 0.3f, -0.15f) };
-            for (int i = 0; i < spots.Length; i++)
-            {
-                var s = Blob(root.transform, "Sparkle" + i, PrimitiveType.Quad, spots[i], Vector3.one * (0.22f - i * 0.04f), sm);
-                s.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            }
-            root.transform.localScale = Vector3.one * 1.7f; // must read at gameplay distance
-            return root.AddComponent<GoldDropView>();
+            // 100% 2D: one SpriteRenderer shows the drop's own pixel icon (set per drop by GoldDropView), a soft ground shadow and pixel twinkles.
+            var icon = new GameObject("Icon", typeof(SpriteRenderer));
+            icon.transform.SetParent(root.transform, false);
+            icon.GetComponent<SpriteRenderer>().sortingOrder = 8;
+            root.transform.localScale = Vector3.one * 1.5f;
+            var view = root.AddComponent<GoldDropView>();
+            var vso = new SerializedObject(view);
+            vso.FindProperty("icon").objectReferenceValue = icon.GetComponent<SpriteRenderer>();
+            vso.FindProperty("goldFallback").objectReferenceValue = HudArt.Get("coin");   // existing HUD coin until coin sprites are set in ItemVisuals
+            vso.ApplyModifiedPropertiesWithoutUndo();
+            return view;
         }
 
         private static void FarmSetup(Transform play)

@@ -6,9 +6,12 @@ namespace AdventureKing.Gameplay
     [ExecuteAlways, DisallowMultipleComponent]
     public sealed class ResponsiveLogoFit : MonoBehaviour
     {
-        [SerializeField, Range(0.3f, 1f)] private float maxWidthShare = 0.84f, maxHeightShare = 0.46f;
+        [SerializeField, Range(0.3f, 1.2f)] private float maxWidthShare = 0.84f, maxHeightShare = 0.46f;
         private RectTransform rt;
         private Vector2 baseSize;
+
+        /// <summary>Fits a window instead of a logo: never larger than these shares of the Canvas (scale only goes down, never up).</summary>
+        public ResponsiveLogoFit Configure(float widthShare, float heightShare) { maxWidthShare = widthShare; maxHeightShare = heightShare; return this; }
 
         private void OnEnable() { rt = (RectTransform)transform; baseSize = rt.sizeDelta; Apply(); }
 

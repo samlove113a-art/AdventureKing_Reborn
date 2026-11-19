@@ -159,6 +159,14 @@ namespace AdventureKing.Tests
             Assert.IsTrue(farm.Drops.Values.Any(d => d && !d.IsItem), "the Gold pile is still there");
             string junkName = junk.ItemName; string junkId = junk.DropId;
             Debug.Log("[DROPS] item pile: " + junkName);
+            // 2D loot: each drop shows ITS OWN pixel sprite (the item's icon / a coin), never a shared box, and nothing 3D
+            Assert.IsNotNull(junk.ShownSprite, "junk drop shows a sprite");
+            Assert.AreSame(ItemIconBook.WorldSprite(junk.ItemId, "item_junk"), junk.ShownSprite, "the junk drop shows the worldSprite / icon of " + junk.ItemId + " (shared item_junk until the owner assigns one)");
+            Assert.AreEqual(0, junk.GetComponentsInChildren<MeshRenderer>(true).Length, "no 3D mesh in a drop");
+            GoldDropView coinPile = farm.Drops.Values.First(d => d && !d.IsItem);
+            Assert.IsNotNull(coinPile.ShownSprite, "gold drop shows coins");
+            
+            Assert.AreNotSame(coinPile.ShownSprite, junk.ShownSprite, "item and coin drops look different");
 
             // ---- pick the junk up: gone from the ground at once, in the bag
             yield return new WaitForSeconds(1.2f);

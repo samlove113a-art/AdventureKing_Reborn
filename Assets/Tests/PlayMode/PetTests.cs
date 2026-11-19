@@ -142,7 +142,8 @@ namespace AdventureKing.Tests
             Assert.IsTrue(panel.IsOpen, "pet window open");
             until = Time.time + 5f;
             while (dir.State == null && Time.time < until) yield return null;
-            Assert.AreEqual(4, dir.State.catalog.Length, "2 Gold pets + 2 VIP pets");
+            Assert.AreEqual(12, dir.State.catalog.Length, "6 Gold pets + 6 VIP pets (the original 4 + 8 new)");
+            Assert.AreEqual(3, panel.PageCount, "6 pets per tab = 3 pages of 2");
             yield return Shot("01_pet_shop");
             long gold0 = world.Character.gold;
             panel.SetVip(false);

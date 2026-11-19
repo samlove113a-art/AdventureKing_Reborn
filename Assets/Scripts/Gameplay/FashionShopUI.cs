@@ -61,7 +61,7 @@ namespace AdventureKing.Gameplay
         public bool AllClasses { get; private set; }
         public string Selected { get; private set; }
         public string Status => status ? status.text : "";
-        public HeroOutfit PreviewOutfit { get; private set; }
+        public Paperdoll2D PreviewDoll { get; private set; }
         public GameObject PreviewModel { get; private set; }
         public int PurchaseRequestsSent { get; private set; }
         public event Action<WardrobeSnapshot> Purchased;
@@ -87,23 +87,22 @@ namespace AdventureKing.Gameplay
         private RenderTexture previewRT;
         private Transform stage;
         private Animator previewAnim;
-        private float yaw = 160f;
         private Action confirmAction;
 
         private static readonly Color Ink = new Color(0.07f, 0.09f, 0.16f, 0.96f), Cream = new Color(1f, 0.97f, 0.9f),
             Gold = new Color(1f, 0.84f, 0.45f), Teal = new Color(0.26f, 0.56f, 0.62f), Plum = new Color(0.45f, 0.3f, 0.62f),
             Muted = new Color(0.34f, 0.36f, 0.44f), Rose = new Color(0.72f, 0.3f, 0.36f);
 
+        // the 2D paper-doll slots (each is its own layer on the hero): full set, hat, mask, top, bottom, wings, mount
         public static readonly (string slot, string label)[] SlotChips =
         {
-            ("", "Tất cả"), ("hair", "Tóc"), ("head", "Mũ"), ("top", "Áo"), ("bottom", "Quần/Váy"), ("gloves", "Găng"),
-            ("shoes", "Giày"), ("accessory", "Phụ kiện"), ("back", "Choàng/Cánh"), ("weapon", "Vũ khí"), ("set", "Bộ nguyên set"),
+            ("", "Tất cả"), ("set", "Bộ trang phục"), ("head", "Mũ"), ("mask", "Mặt nạ"), ("top", "Áo"), ("bottom", "Quần/Váy"), ("wings", "Cánh"), ("mount", "Thú cưỡi"),
         };
 
         public static string SlotName(string slot) => slot switch
         {
-            "head" => "Mũ / Trang sức đầu", "top" => "Áo", "bottom" => "Quần / Váy", "gloves" => "Găng tay", "shoes" => "Giày",
-            "accessory" => "Phụ kiện", "back" => "Áo choàng / Cánh", "hair" => "Tóc", "weapon" => "Ngoại hình vũ khí", "set" => "Skin nguyên bộ", _ => slot,
+            "head" => "Mũ", "mask" => "Mặt nạ", "top" => "Áo", "bottom" => "Quần / Váy", "wings" => "Cánh", "mount" => "Thú cưỡi",
+            "set" => "Bộ trang phục", _ => slot,
         };
 
         public static string Money(long v) => v.ToString("#,0").Replace(',', '.');
@@ -158,7 +157,7 @@ namespace AdventureKing.Gameplay
             SetHud(true);
             if (PreviewModel) Destroy(PreviewModel);
             PreviewModel = null;
-            PreviewOutfit = null;
+            PreviewDoll = null;
             if (previewCam) previewCam.enabled = false;
             setPlayerInput?.Invoke(true);
             Closed?.Invoke();
@@ -183,21 +182,19 @@ namespace AdventureKing.Gameplay
                 if (confirm.activeSelf) confirm.SetActive(false); else Close();
             }
 #endif
-            if (stage) stage.localRotation = Quaternion.Euler(0f, yaw, 0f);
         }
 
         // ================================================================= catalogue view
         public IEnumerable<WardrobeItem> Visible()
         {
             if (Wardrobe == null) return Enumerable.Empty<WardrobeItem>();
-            CosmeticLibrary lib = CosmeticLibrary.Load();
             return Wardrobe.items.Where(i =>
             {
-                if (lib == null || lib.Get(i.id) == null) return false; // never sell what the client cannot show
+                if (!FashionCatalog2D.Has(i.id)) return false; // never sell what the 2D client cannot show
                 switch (CurrentTab)
                 {
-                    case Tab.Gold: if (i.IsSet || i.ForDiamonds) return false; break;
-                    case Tab.Premium: if (!i.IsSet) return false; break;
+                    case Tab.Gold: if (i.ForDiamonds) return false; break;       // priced in Gold (single pieces and sets)
+                    case Tab.Premium: if (!i.ForDiamonds) return false; break;   // priced in Diamonds (rare / special effect)
                     case Tab.Wardrobe: if (!i.owned) return false; break;
                 }
                 if (SlotFilter == "set" ? !i.IsSet : SlotFilter.Length > 0 && i.slot != SlotFilter) return false;
@@ -221,12 +218,10 @@ namespace AdventureKing.Gameplay
             foreach (Transform c in grid) Destroy(c.gameObject);
             cards.Clear();
             var list = Visible().ToList();
-            CosmeticLibrary lib = CosmeticLibrary.Load();
-            foreach (WardrobeItem it in list) cards[it.id] = Card(it, lib.Get(it.id));
+            foreach (WardrobeItem it in list) cards[it.id] = Card(it);
             emptyText.gameObject.SetActive(Wardrobe != null && list.Count == 0);
             emptyText.text = CurrentTab == Tab.Wardrobe && SlotFilter.Length == 0 ? "Tủ đồ còn trống — hãy ghé gian Thời Trang nhé!"
-                : SlotFilter is "hair" or "weapon" ? "Kiểu tóc và ngoại hình vũ khí đang được thiết kế — chưa có món nào đạt chuẩn để mở bán."
-                : CurrentTab == Tab.Premium ? "Chưa có skin đặc biệt nào trong mục này." : "Chưa có món nào trong mục này.";
+                : CurrentTab == Tab.Premium ? "Chưa có món Kim Cương nào trong mục này." : "Chưa có món nào trong mục này.";
             if (Selected != null && !list.Any(i => i.id == Selected)) Selected = null;
             if (Selected == null && list.Count > 0 && CurrentTab != Tab.Wardrobe) Select(list[0].id, false);
             else Highlight();
@@ -240,14 +235,10 @@ namespace AdventureKing.Gameplay
             "rare" => new Color(0.36f, 0.66f, 1f), "epic" => new Color(0.74f, 0.46f, 1f), "legendary" => new Color(1f, 0.74f, 0.3f), _ => new Color(0.66f, 0.72f, 0.8f),
         };
 
-        /// <summary>This item as worn by THIS class's hero (per-class render), falling back to the generic icon.</summary>
-        private Sprite IconFor(string id)
-        {
-            CosmeticArt art = CosmeticLibrary.Load()?.Get(id);
-            return art?.For(heroClass)?.icon ? art.For(heroClass).icon : art?.icon;
-        }
+        /// <summary>The item's 2D pixel icon (tops / bottoms are drawn on THIS class's body, sets show the outfit on the hero).</summary>
+        private Sprite IconFor(string id) => FashionCatalog2D.Icon(id, heroClass);
 
-        private Button Card(WardrobeItem it, CosmeticArt art)
+        private Button Card(WardrobeItem it)
         {
             Color rc = RarityColor(it.rarity);
             var go = new GameObject("Card_" + it.id, typeof(RectTransform));
@@ -356,7 +347,8 @@ namespace AdventureKing.Gameplay
             rarityLabel.text = RarityName(it.rarity);
             rarityLabel.transform.parent.GetComponent<Image>().color = RarityColor(it.rarity) * 0.75f;
             string classes = it.classes.Length >= 4 ? "Mọi nghề" : string.Join(", ", it.classes.Select(c => HeroClassCatalog.Get((HeroClass)c).displayName));
-            detailDesc.text = $"<color=#C9D6E8>{SlotName(it.slot)} · {classes}</color>\n{it.description}";
+            string skill = string.IsNullOrEmpty(it.skillName) ? "" : $"\n<color=#9CFFB4><b>Kỹ năng · {it.skillName}</b></color>\n{it.skillDesc}";
+            detailDesc.text = $"<color=#C9D6E8>{SlotName(it.slot)} · {classes}</color>\n{it.description}{skill}";
             detailPrice.text = it.owned ? (IsWorn(it) ? "<color=#9CFFB4>Đang mặc</color>" : "<color=#9CFFB4>Đã sở hữu</color>")
                 : it.ForDiamonds ? $"<color=#9FE6FF>{Money(it.price)} Kim Cương</color>" : $"<color=#FFD873>{Money(it.price)} Vàng</color>";
         }
@@ -389,7 +381,7 @@ namespace AdventureKing.Gameplay
             WardrobeItem it = Selected != null ? Wardrobe?.Find(Selected) : null;
             if (it == null || !it.usableByCharacter) return;
             bool on = IsTried(it);
-            TryOn = it.IsSet ? TryOn.WithSet(on ? "" : it.id) : TryOn.With(it.slot, on ? Wardrobe.outfit.Get(it.slot) == it.id ? null : Wardrobe.outfit.Get(it.slot) : it.id);
+            TryOn = it.IsSet ? (on ? FashionCatalog2D.WithoutSet(TryOn, it.id) : FashionCatalog2D.WithSet(TryOn, it.id)) : TryOn.With(it.slot, on ? Wardrobe.outfit.Get(it.slot) == it.id ? null : Wardrobe.outfit.Get(it.slot) : it.id);
             ApplyPreview();
             ShowDetail();
             RefreshButtons();
@@ -450,7 +442,7 @@ namespace AdventureKing.Gameplay
                     Wardrobe = result;
                     // keep other un-bought try-ons on the preview, but the bought item is now really worn
                     WardrobeItem it = result.Find(itemId);
-                    TryOn = it != null && it.IsSet ? TryOn.WithSet(itemId) : TryOn.With(it?.slot ?? "", itemId);
+                    TryOn = it != null && it.IsSet ? FashionCatalog2D.WithSet(TryOn, itemId) : TryOn.With(it?.slot ?? "", itemId);
                     ApplyPreview();
                     AdventureWorldSession.Current?.ApplyServerOutfit(result.outfit, result.gold, result.diamonds, result.serverRevision);
                     SetStatus(result.replayed ? "Giao dịch đã được ghi nhận trước đó." : $"Đã mua {it?.name}! Món đồ đã vào tủ và được mặc lên.");
@@ -476,7 +468,7 @@ namespace AdventureKing.Gameplay
             WardrobeItem it = Selected != null ? Wardrobe?.Find(Selected) : null;
             if (it == null || !it.owned || Busy) return;
             bool worn = IsWorn(it);
-            OutfitLoadout next = it.IsSet ? Wardrobe.outfit.WithSet(worn ? "" : it.id) : Wardrobe.outfit.With(it.slot, worn ? null : it.id);
+            OutfitLoadout next = it.IsSet ? (worn ? FashionCatalog2D.WithoutSet(Wardrobe.outfit, it.id) : FashionCatalog2D.WithSet(Wardrobe.outfit, it.id)) : Wardrobe.outfit.With(it.slot, worn ? null : it.id);
             SaveOutfit(next, worn ? $"Đã tháo {it.name}." : $"Đã mặc {it.name}.");
         }
 
@@ -505,38 +497,53 @@ namespace AdventureKing.Gameplay
 
         private void SetStatus(string s) { if (status) status.text = s; }
 
-        // ================================================================= 3D fitting room
+        // ================================================================= 2D fitting room
+        /// <summary>The fitting-room hero: the real 2D pixel body of the class with its Paperdoll2D, drawn by a small orthographic sprite camera.</summary>
         private void SpawnPreview(AdventureWorldSession world)
         {
             if (PreviewModel) Destroy(PreviewModel);
-            GameObject prefab = world.HeroPrefabs != null && (int)heroClass < world.HeroPrefabs.Length ? world.HeroPrefabs[(int)heroClass] : null;
+            GameObject prefab = Resources.Load<GameObject>($"Chibi2D/{heroClass}_Visual2D");
             if (!prefab) return;
             PreviewModel = Instantiate(prefab, stage, false);
             PreviewModel.name = "FittingRoomHero";
             PreviewModel.transform.localPosition = Vector3.zero;
             PreviewModel.transform.localRotation = Quaternion.identity;
-            foreach (Transform t in PreviewModel.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = previewLayer;
-            HeroCombatPresentation pres = PreviewModel.GetComponent<HeroCombatPresentation>();
-            if (pres) pres.ProjectileRangeScale = 0.3f;
+            facing = 1;
+            PreviewModel.transform.localScale = Vector3.one * Chibi2DMarker.ScaleOf(PreviewModel);
             previewAnim = PreviewModel.GetComponentInChildren<Animator>();
             if (previewAnim)
             {
                 previewAnim.cullingMode = AnimatorCullingMode.AlwaysAnimate;
                 previewAnim.SetBool("Grounded", true);
             }
-            PreviewOutfit = AdventureWorldSession.DressHero(PreviewModel, heroClass);
-            yaw = 160f;
+            PreviewDoll = PreviewModel.GetComponent<Paperdoll2D>();
             previewCam.enabled = true;
+            SetPreviewLayer();
             PlayPose("Idle");
         }
 
         private void ApplyPreview()
         {
-            if (!PreviewOutfit) return;
-            PreviewOutfit.Apply(TryOn);
-            foreach (GameObject p in PreviewOutfit.Pieces)
-                if (p) foreach (Transform t in p.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = previewLayer;
+            if (!PreviewDoll) return;
+            PreviewDoll.ApplyLoadout(TryOn);
+            SetPreviewLayer();
         }
+
+        /// <summary>Everything of the preview hero (body + the paper-doll layers made later) renders only for the fitting-room camera.</summary>
+        private void SetPreviewLayer()
+        {
+            if (!PreviewModel) return;
+            foreach (Transform t in PreviewModel.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = previewLayer;
+        }
+
+        /// <summary>Tap the hero to turn it around (the 2D body is mirrored, never rotated).</summary>
+        public void TurnPreview()
+        {
+            facing = -facing;
+            if (PreviewModel) PreviewModel.transform.localScale = new Vector3(facing, 1f, 1f) * Chibi2DMarker.ScaleOf(PreviewModel);
+        }
+        private int facing = 1;
+        public int PreviewFacing => facing;
 
         private Coroutine poseRoutine;
 
@@ -554,26 +561,22 @@ namespace AdventureKing.Gameplay
             a.SetFloat("Speed", 0f);
             a.SetFloat("VerticalSpeed", 0f);
             a.SetBool("Grounded", true);
-            if (PreviewOutfit) { PreviewOutfit.SpeedOverride = 0f; PreviewOutfit.Airborne = false; }
             switch (pose)
             {
                 case "Run":
                     a.SetFloat("Speed", 4.5f);
                     if (HasParam(a, "RunPlayback")) a.SetFloat("RunPlayback", 1.2f);
-                    if (PreviewOutfit) PreviewOutfit.SpeedOverride = 4.5f;
                     break;
                 case "Jump":
                     for (int k = 0; k < 2; k++)
                     {
                         a.SetBool("Grounded", false);
                         a.SetFloat("VerticalSpeed", 6f);
-                        if (PreviewOutfit) PreviewOutfit.Airborne = true;
                         yield return new WaitForSeconds(0.38f);
                         a.SetFloat("VerticalSpeed", -6f);
                         yield return new WaitForSeconds(0.38f);
                         a.SetBool("Grounded", true);
                         a.SetFloat("VerticalSpeed", 0f);
-                        if (PreviewOutfit) PreviewOutfit.Airborne = false;
                         yield return new WaitForSeconds(0.45f);
                     }
                     break;
@@ -593,14 +596,12 @@ namespace AdventureKing.Gameplay
             return false;
         }
 
-        /// <summary>Drag on the preview (mouse or finger) turns the model.</summary>
-        private sealed class DragRotate : MonoBehaviour, IDragHandler
+        /// <summary>A click / tap on the preview turns the hero around.</summary>
+        private sealed class TapTurn : MonoBehaviour, IPointerClickHandler
         {
             public FashionShopUI shop;
-            public void OnDrag(PointerEventData e) => shop.yaw -= e.delta.x * 0.45f;
+            public void OnPointerClick(PointerEventData e) => shop.TurnPreview();
         }
-
-        public void RotatePreview(float degrees) => yaw += degrees;
 
         // ================================================================= build
         /// <summary>Shared overlay canvas (the shop window and the merchant's talk menu live on it).</summary>
@@ -696,7 +697,7 @@ namespace AdventureKing.Gameplay
             UiKit.Stretch(previewImage.rectTransform, 0f, 110f, 0f, 0f);
             previewImage.texture = previewRT;
             stageBg.AddComponent<ShopStageFx>().Build(stageBg.GetComponent<RectTransform>(), previewImage.transform); // spotlight behind, motes in front
-            previewImage.gameObject.AddComponent<DragRotate>().shop = this;
+            previewImage.gameObject.AddComponent<TapTurn>().shop = this;
             var fitter = previewImage.gameObject.AddComponent<AspectRatioFitter>();
             fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
             fitter.aspectRatio = 720f / 900f;
@@ -710,7 +711,7 @@ namespace AdventureKing.Gameplay
                 Skin(bi, "stage_bezel");
             }
             else Rim(stageBg.transform, 0.9f);
-            Text hint = Label(stageBg.transform, "Hint", "Kéo để xoay", 18, new Color(1f, 1f, 1f, 0.85f), new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(300f, 28f), true);
+            Text hint = Label(stageBg.transform, "Hint", "Chạm để quay mặt", 18, new Color(1f, 1f, 1f, 0.85f), new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(300f, 28f), true);
             hint.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.7f);
             // pose bar: round icon buttons with captions
             var poseBar = Panel(stageBg.transform, "PoseBar", new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, Vector2.zero, new Color(0.05f, 0.06f, 0.14f, 0.82f), null);
@@ -742,56 +743,26 @@ namespace AdventureKing.Gameplay
                 cap.gameObject.AddComponent<FitOneLine>().Configure(18, 12);
             }
 
-            // stage: far below the world, own layer, own key light, transparent clear (backdrop shows through)
+            // stage: far below the world, own layer, orthographic sprite camera (no light, no mesh), transparent clear (backdrop shows through)
             stage = new GameObject("FittingRoomStage").transform;
             stage.SetParent(transform, false);
             stage.position = new Vector3(0f, -400f, 0f);
             var camGo = new GameObject("FittingRoomCamera");
             camGo.transform.SetParent(transform, false);
-            camGo.transform.position = stage.position + new Vector3(0f, 0.6f, -3.05f);
-            camGo.transform.rotation = Quaternion.Euler(4f, 0f, 0f);
+            camGo.transform.position = stage.position + new Vector3(0f, 0.78f, -10f);
             previewCam = camGo.AddComponent<Camera>();
+            previewCam.orthographic = true;
+            previewCam.orthographicSize = 1.12f;                 // 2.24 m tall: a hero (1.25 m) on a mount (+0.5 m) still fits, wings and hats included
+            previewCam.nearClipPlane = 0.1f; previewCam.farClipPlane = 30f;
             previewCam.cullingMask = 1 << previewLayer;
             previewCam.clearFlags = CameraClearFlags.SolidColor;
             previewCam.backgroundColor = new Color(0f, 0f, 0f, 0f);
-            previewCam.fieldOfView = 24f;
             previewCam.targetTexture = previewRT;
             previewCam.enabled = false;
             var camData = camGo.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
             camData.renderPostProcessing = false; // keep the alpha channel
-            var key = new GameObject("FittingRoomLight").AddComponent<Light>();
-            key.transform.SetParent(transform, false);
-            key.type = LightType.Directional;
-            key.intensity = 1.1f;
-            key.color = new Color(1f, 0.93f, 0.85f);
-            key.cullingMask = 1 << previewLayer;
-            key.transform.rotation = Quaternion.Euler(32f, 25f, 0f);
-            // stone dais with a gold inlay ring (toon)
-            Shader toon = Shader.Find("AdventureKing/Toon");
-            void Dais(string name, float y, float scale, float h, Color c)
-            {
-                var d = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                Destroy(d.GetComponent<Collider>());
-                d.name = name;
-                d.layer = previewLayer;
-                d.transform.SetParent(transform, false);
-                d.transform.position = stage.position + new Vector3(0f, y, 0f);
-                d.transform.localScale = new Vector3(scale, h, scale);
-                if (toon)
-                {
-                    var m = new Material(toon);
-                    m.SetColor("_BaseColor", c);
-                    m.SetFloat("_OutlineWidth", 0.004f);
-                    d.GetComponent<Renderer>().sharedMaterial = m;
-                }
-            }
-            // lavender moonstone dais: wide base, gold inlay, jade inner ring, pale top
-            Dais("DaisBase", -0.11f, 1.3f, 0.06f, new Color(0.34f, 0.29f, 0.5f));
-            Dais("DaisStep", -0.06f, 1.14f, 0.03f, new Color(0.46f, 0.4f, 0.64f));
-            Dais("DaisRing", -0.032f, 1.06f, 0.012f, new Color(1f, 0.8f, 0.4f));
-            Dais("DaisTop", -0.028f, 0.98f, 0.012f, new Color(0.45f, 0.4f, 0.66f));
-            Dais("DaisJade", -0.024f, 0.6f, 0.012f, new Color(0.3f, 0.78f, 0.68f));
-            Dais("DaisCore", -0.021f, 0.54f, 0.012f, new Color(0.52f, 0.47f, 0.72f));
+
+
 
             // ---- right: catalogue
             var right = new GameObject("Catalogue", typeof(RectTransform));
@@ -802,7 +773,7 @@ namespace AdventureKing.Gameplay
             rr.offsetMin = new Vector2(16f, 38f); rr.offsetMax = new Vector2(-38f, -112f);
             UiKit.VStack(rr, 10f);
             RectTransform tabRow = UiKit.HRow(rr, "Tabs", 64f, 12f, TextAnchor.MiddleLeft);
-            (Tab t, string label)[] tabDefs = { (Tab.Gold, "Thời Trang · Vàng"), (Tab.Premium, "Skin Đặc Biệt · Kim Cương"), (Tab.Wardrobe, "Tủ Đồ Của Tôi") };
+            (Tab t, string label)[] tabDefs = { (Tab.Gold, "Thời Trang · Vàng"), (Tab.Premium, "Hiếm · Kim Cương"), (Tab.Wardrobe, "Tủ Đồ Của Tôi") };
             foreach (var (t, label) in tabDefs)
             {
                 Tab tt = t;

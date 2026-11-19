@@ -15,6 +15,9 @@ namespace AdventureKing.Gameplay
         /// <summary>Item pile (junk / equipment) instead of Gold; tinted by kind.</summary>
         public bool IsItem { get; private set; }
         public string ItemName { get; private set; }
+        public string ItemId { get; private set; }
+        /// <summary>The 2D sprite this drop shows (coin / pile / bag for Gold, the item's own icon for an item).</summary>
+        public Sprite ShownSprite => icon ? icon.sprite : null;
         public string Rarity { get; private set; }
 
         private float age, expiresAt, collectT = -1f;
@@ -23,6 +26,9 @@ namespace AdventureKing.Gameplay
         private SpriteRenderer lightRenderer;
         private static Sprite whiteSquare;
         private Transform target;
+        private float iconBase = 1f;
+        [SerializeField] private SpriteRenderer icon;      // the drop's own 2D sprite (coin / the item's worldSprite or icon)
+        [SerializeField] private Sprite goldFallback;       // the project's existing coin sprite, used until coin sprites are set in ItemVisuals
         private Transform[] sparkles = new Transform[0];
         private Vector3[] sparkleBase = new Vector3[0];
 
@@ -47,13 +53,25 @@ namespace AdventureKing.Gameplay
             expiresAt = Time.time + d.expiresInMs / 1000f;
             IsItem = d.IsItem;
             ItemName = d.itemName;
+            ItemId = d.itemId;
             Rarity = string.IsNullOrEmpty(d.itemRarity) ? "white" : d.itemRarity;
             if (IsItem && (Rarity == "purple" || Rarity == "orange" || Rarity == "red")) CreateRareColumn();
-            if (IsItem)
-            {
-                Color tint = d.itemKind == "equipment" ? new Color(0.72f, 0.62f, 1f) : new Color(0.62f, 0.78f, 0.58f); // equipment violet, junk moss green
-                foreach (Renderer r in GetComponentsInChildren<Renderer>(true)) if (r.material.HasProperty("_BaseColor")) r.material.SetColor("_BaseColor", tint);
-            }
+            ShowIcon(d);
+        }
+
+        /// <summary>Gold shows coins (small / pile / bag by amount); an item shows exactly its own icon (never a shared box).</summary>
+        private void ShowIcon(FarmDropState d)
+        {
+            if (!icon) icon = GetComponentInChildren<SpriteRenderer>(true);
+            if (!icon) return;
+            // the owner's per-item worldSprite / icon (Resources/ItemVisuals.asset); until it is filled: the shared icon of the kind (item_junk) / the HUD coin
+            Sprite s;
+            if (IsItem) s = ItemIconBook.WorldSprite(d.itemId, "item_junk");
+            else { s = ItemIconBook.Coins(d.amount); if (!s) s = goldFallback; }
+            icon.sprite = s;
+            icon.enabled = s;
+            if (s) iconBase = 0.9f / Mathf.Max(0.01f, Mathf.Max(s.bounds.size.x, s.bounds.size.y));   // whatever picture is assigned reads as ~0.9 m on the ground
+            icon.sortingOrder = 8;
         }
 
         private void CreateRareColumn()
@@ -128,7 +146,10 @@ namespace AdventureKing.Gameplay
                 Landed = true;
             }
             else transform.position = rest + Vector3.up * (Mathf.Sin(age * 3f) * 0.08f);
-            transform.rotation = Quaternion.Euler(0f, age * 140f, 0f);
+            // 2D: stays upright; a quick tilt while it flies out, then a little squash when it lands
+            float tilt = age < 0.5f ? Mathf.Sin(age * 28f) * 14f : 0f;
+            transform.rotation = Quaternion.Euler(0f, 0f, tilt);
+            if (icon) icon.transform.localScale = Vector3.one * iconBase * (age > 0.5f && age < 0.62f ? 1.18f : 1f);
             // sparkles: twinkle around the pile, always facing the camera
             for (int i = 0; i < sparkles.Length; i++)
             {

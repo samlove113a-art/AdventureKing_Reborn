@@ -27,7 +27,7 @@ namespace AdventureKing.Gameplay
         public OwnedPetState SummonedState => State?.owned?.FirstOrDefault(o => o.summoned);
         public int Collected { get; private set; }
         public string Mood { get; private set; } = "idle"; // idle | follow | fetch | happy | hungry
-        public Sprite Portrait(string id) => pets.FirstOrDefault(p => p.id == id).portrait;
+        public Sprite Portrait(string id) { Sprite s = pets.FirstOrDefault(p => p.id == id).portrait; return s ? s : Pet2DBody.PortraitOf(id); }
 
         private Transform body, head, eyeL, eyeR, aura;
         private Pet2DBody body2D;
@@ -79,12 +79,14 @@ namespace AdventureKing.Gameplay
             if (string.IsNullOrEmpty(id)) return;
             GameObject prefab = pets.FirstOrDefault(p => p.id == id).prefab;
             var w = World;
-            if (!prefab || !w || !w.Player) return;
-            GameObject two = HeroVisualStyle.Chibi2D ? Pet2DBody.Load(id) : null;   // 2D chibi sprite by default; the 3D pet stays as fallback
-            Pet = Instantiate(two ? two : prefab).transform;
+            GameObject two = HeroVisualStyle.Chibi2D || !prefab ? Pet2DBody.Load(id) : null;   // 2D sprite by default
+            if (!w || !w.Player) return;
+            // pets without any prefab (added later) are built from the owner's PetVisual pictures: 2D only, never a 3D fallback
+            Pet = (two ? Instantiate(two) : prefab ? Instantiate(prefab) : Pet2DBody.Create(id)).transform;
+            two = two ? two : (prefab ? null : Pet.gameObject);
             Pet.name = "Pet_" + id;
             body2D = two ? Pet.GetComponent<Pet2DBody>() : null;
-            Pet.localScale = Vector3.one * (body2D ? 0.9f : 1.1f);
+            Pet.localScale = Pet.localScale * (body2D ? 0.9f : 1.1f);
             body = body2D ? Pet.Find("Sprite") : Pet.Find("Body"); head = body && !body2D ? body.Find("Head") : null;
             eyeL = head ? head.Find("EyeL") : null; eyeR = head ? head.Find("EyeR") : null;
             aura = Pet.Find("Aura");

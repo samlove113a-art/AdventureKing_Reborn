@@ -156,6 +156,7 @@ namespace AdventureKing.Gameplay
             Outfit = DressHero(HeroModel, character.heroClass);
             Outfit.Apply(character.outfit);
             HeroModel.GetComponent<Paperdoll2D>()?.ApplyLoadout(character.outfit);   // 2D body: the same server outfit drives the paper-doll layers
+            ApplyStyleSpeed();
             // class-based pools for the HUD (HP from the class table; MP is a balance proposal until skills land)
             if (player)
             {
@@ -182,6 +183,13 @@ namespace AdventureKing.Gameplay
             return o;
         }
 
+        /// <summary>The worn set / mount / wings run faster (the same percentage the server accepts in its movement check).</summary>
+        public void ApplyStyleSpeed()
+        {
+            PlayerMotor2D motor = Player;
+            if (motor) motor.SpeedMultiplier = 1f + FashionCatalog2D.MoveSpeedPct(character?.outfit) / 100f;
+        }
+
         /// <summary>Called only with a server-confirmed outfit (purchase / equip response).</summary>
         public void ApplyServerOutfit(OutfitLoadout outfit, long gold, long diamonds, long revision)
         {
@@ -192,6 +200,7 @@ namespace AdventureKing.Gameplay
             character.serverRevision = revision;
             if (Outfit) Outfit.Apply(character.outfit);
             if (HeroModel) HeroModel.GetComponent<Paperdoll2D>()?.ApplyLoadout(character.outfit);
+            ApplyStyleSpeed();
         }
 
         private void FixedUpdate()

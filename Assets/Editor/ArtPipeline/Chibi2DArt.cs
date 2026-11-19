@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,6 +54,27 @@ namespace AdventureKing.ArtPipeline
         public static void BuildAllFromCommandLine()
         {
             try { foreach (HeroClass c in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin }) Build(c); BuildAllActors(); BuildPets(); BuildFx2(); EditorApplication.Exit(0); }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
+        /// <summary>Only the paper-doll outfit / top / bottom layers of all four classes (ArtSource/Chibi2D/{Class}/Outfits/*), without rebuilding the heroes.
+        ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.Chibi2DArt.BuildOutfitsFromCommandLine</summary>
+        public static void BuildOutfitsFromCommandLine()
+        {
+            try
+            {
+                foreach (HeroClass cls in new[] { HeroClass.Mage, HeroClass.Swordsman, HeroClass.Archer, HeroClass.Assassin })
+                {
+                    string name = cls.ToString();
+                    string json = File.ReadAllText($"{Src}/{name}/{name}_frames.json");
+                    float cell = ReadFloat(json, "cell"), frameM = ReadFloat(json, "frame_m"), ground = ReadFloat(json, "ground_from_bottom_m");
+                    bool pixel = System.Text.RegularExpressions.Regex.IsMatch(json, "\"pixel\":\\s*true");
+                    BuildOutfits(name, ParseClips(json), cell, cell / frameM, new Vector2(0.5f, ground / frameM), pixel);
+                }
+                BuildPets();                                   // the eight pixel pets ride along (same tool run)
+                AssetDatabase.SaveAssets();
+                EditorApplication.Exit(0);
+            }
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 

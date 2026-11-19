@@ -110,6 +110,8 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
     farmSvc.ChapterBossKilled = chapters.RecordBossKill;
     farmSvc.PetTick = pets.Tick;
     farmSvc.PetCanCollect = pets.CanCollect;
+    farmSvc.PetReachOf = pets.ReachOf;
+    farmSvc.StyleOf = app.Services.GetRequiredService<CosmeticShop>().StyleOf;   // worn fashion set / mount / wings: small passive bonuses
     farmSvc.PetReach = pets.Config.pickupReach;
     farmSvc.PetAutoPotion = pets.AutoPotion;
     // skills the server accepted are replayed by the other players on the map (presentation sync)
