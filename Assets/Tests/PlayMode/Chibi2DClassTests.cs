@@ -57,7 +57,7 @@ namespace AdventureKing.Tests
         {
             string n = cls.ToString();
             yield return server.OpenGame();
-            yield return TestServer.RegisterCreateAndEnter("c2" + n.Substring(0, 2).ToLower() + Random.Range(1000, 9999), "chibi-pass-2026", cls, cls == HeroClass.Swordsman ? "Kiếm Sĩ Pixel" : cls == HeroClass.Archer ? "Cung Thủ Pixel" : "Sát Thủ Pixel");
+            yield return TestServer.RegisterCreateAndEnter("c2" + n.Substring(0, 2).ToLower() + Random.Range(1000, 9999), "chibi-pass-2026", cls, cls == HeroClass.Swordsman ? "Kiếm Sĩ Pixel" : cls == HeroClass.Archer ? "Cung Thủ Pixel" : "Sát Thủ Pix");
             var world = AdventureWorldSession.Current;
             var motor = world.Player; input = motor.GetComponent<PlayerInput2D>();
             Assert.AreEqual(cls, world.Character.heroClass);

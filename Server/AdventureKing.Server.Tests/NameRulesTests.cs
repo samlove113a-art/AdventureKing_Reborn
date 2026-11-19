@@ -8,7 +8,7 @@ public class NameRulesTests
 
     [Theory]
     [InlineData("Hùng Dũng")]
-    [InlineData("Nguyễn Văn An")]
+    [InlineData("Nguyễn Văn")]
     [InlineData("Đặng Thảo")]
     [InlineData("Lớn")]          // innocent word that shares a skeleton with a profanity
     [InlineData("Grape")]        // contains "rape" as a substring
@@ -27,6 +27,7 @@ public class NameRulesTests
     [Theory]
     [InlineData("ab", "length")]
     [InlineData("Một Hai Ba Bốn Năm", "length")]   // 18 characters
+    [InlineData("Mười Ba Ký Tự Dài", "length")]    // over the 12-character cap
     [InlineData("9Lives", "start")]
     [InlineData("Hùng  Dũng", "spaces")]
     [InlineData("Hu​ng", "invalid_char")]       // zero-width space
@@ -52,9 +53,9 @@ public class NameRulesTests
     [InlineData("HungGM")]
     [InlineData("Hùng Gm")]
     [InlineData("Mod Linh")]
-    [InlineData("Quản Trị Viên")]
-    [InlineData("Nhà Phát Hành")]
-    [InlineData("AdventureKing")]
+    [InlineData("QuảnTrịViên")]
+    [InlineData("NhàPhátHành")]
+    [InlineData("Hỗ Trợ Game")]   // (names are capped at 12 so they fit the name-plate frames)
     [InlineData("Hỗ Trợ Game")]
     public void Rejects_Staff_Impersonation(string name)
     {

@@ -9,7 +9,7 @@ public sealed record NameCheck(bool Ok, string Code, string Message, string Norm
 /// Server-side character name policy (Part 5 of the spec).
 ///  - NFC; Vietnamese/Latin letters, digits and single spaces only (any other script is rejected,
 ///    which removes Cyrillic/Greek/fullwidth homoglyph attacks outright).
-///  - 3–16 visible characters, must start with a letter, at most 2 combining marks per letter
+///  - 3–12 visible characters, must start with a letter, at most 2 combining marks per letter
 ///    (Vietnamese never needs more), no zero-width / control characters.
 ///  - Reserved: GM / Admin / staff / publisher impersonation, checked on a folded "skeleton" that
 ///    strips diacritics, case, spaces, leetspeak (0→o, 1/l/|→i, 3→e, 4→a, 5→s, 7→t) and repeats.
@@ -21,7 +21,7 @@ public sealed record NameCheck(bool Ok, string Code, string Message, string Norm
 /// </summary>
 public sealed class NameRules
 {
-    public const int MinLength = 3, MaxLength = 16;
+    public const int MinLength = 3, MaxLength = 12;   // 12: the longest name that still fits inside the name slot of every name-plate frame
 
     // Combining marks used by Vietnamese (and common Latin accents): grave, acute, circumflex, tilde, breve, hook, horn, dot below.
     private static readonly HashSet<char> AllowedMarks = new() { '̀', '́', '̂', '̃', '̆', '̉', '̛', '̣' };

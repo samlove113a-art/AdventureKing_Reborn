@@ -331,7 +331,7 @@ namespace AdventureKing.Tests
         public IEnumerator Green_Meadow_East_Gate_To_Glow_Forest_Keeps_State_And_Each_Map_Has_Its_Own_Parallax()
         {
             yield return server.OpenGame();
-            yield return TestServer.RegisterCreateAndEnter("ch1p" + Random.Range(1000, 9999), "ch1-pass-2026", HeroClass.Mage, "Lữ Khách Rừng");
+            yield return TestServer.RegisterCreateAndEnter("ch1p" + Random.Range(1000, 9999), "ch1-pass-2026", HeroClass.Mage, "Lữ Khách Rư");
             Bind();
             var greeter = Object.FindAnyObjectByType<ElderGreeter>();
             float until = Time.time + 20f;

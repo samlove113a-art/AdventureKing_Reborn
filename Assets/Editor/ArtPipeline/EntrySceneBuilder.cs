@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using AdventureKing.Gameplay;
 using UnityEditor;
 using UnityEditor.Events;
@@ -580,7 +580,7 @@ namespace AdventureKing.ArtPipeline
                     default: UnityEventTools.AddPersistentListener(s.onClick, flow.SelectSlot3); break;
                 }
             }
-            charName = Field(slotRow, "CharacterNameInput", "Tên nhân vật (3–16 ký tự)", Vector2.zero, false, new Vector2(340, 72), new Vector2(0.5f, 0.5f));
+            charName = Field(slotRow, "CharacterNameInput", "Tên nhân vật (3–12 ký tự)", Vector2.zero, false, new Vector2(340, 72), new Vector2(0.5f, 0.5f));
             Size(charName, 72f, 400f, 1.6f, 320f);
             Button create = Btn(slotRow, "CreateAndEnter", "Tạo & vào game", Vector2.zero, new Vector2(220, 72), Gold, new Color(0.15f, 0.1f, 0.05f));
             Size(create, 72f, 220f, 0.4f, 170f);

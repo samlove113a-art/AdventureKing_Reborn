@@ -50,7 +50,7 @@ namespace AdventureKing.Tests
         {
             var problems = new List<string>();
             yield return server.OpenGame();
-            yield return TestServer.RegisterCreateAndEnter("welfare" + Random.Range(1000, 9999), "welfare-pass-2026", HeroClass.Swordsman, "Phúc Lợi Kiếm");
+            yield return TestServer.RegisterCreateAndEnter("welfare" + Random.Range(1000, 9999), "welfare-pass-2026", HeroClass.Swordsman, "Phúc Lợi Kiê");
             var world = AdventureWorldSession.Current;
             var greeter = Object.FindAnyObjectByType<ElderGreeter>();
             yield return Until(() => greeter && greeter.DialogOpen, 20f);
@@ -130,7 +130,7 @@ namespace AdventureKing.Tests
             var rank = Object.FindAnyObjectByType<RankingPanel>();
             Icon("ranking").onClick.Invoke();
             yield return Until(() => rank.State != null);
-            Assert.IsTrue(rank.State.rows.Any(r => r.me && r.name == "Phúc Lợi Kiếm"), "my character on the level board");
+            Assert.IsTrue(rank.State.rows.Any(r => r.me && r.name == "Phúc Lợi Kiê"), "my character on the level board");
             yield return UiAudit.Screen(Dir, "08_rank_level", problems);
             rank.Show("power");
             yield return Until(() => rank.State != null);

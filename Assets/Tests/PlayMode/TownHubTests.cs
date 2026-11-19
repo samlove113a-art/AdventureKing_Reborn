@@ -218,7 +218,7 @@ namespace AdventureKing.Tests
         public IEnumerator Town_Pc_Frame_Rate()
         {
             yield return server.OpenGame();
-            yield return TestServer.RegisterCreateAndEnter("fps.tester@test.vn", "fps-pass-2026", HeroClass.Mage, "Đo Khung Hình");
+            yield return TestServer.RegisterCreateAndEnter("fps.tester@test.vn", "fps-pass-2026", HeroClass.Mage, "Đo Khung");
             Bind();
             var greeter = Object.FindAnyObjectByType<ElderGreeter>();
             float until = Time.time + 20f;

@@ -66,7 +66,7 @@ namespace AdventureKing.Tests
         public IEnumerator Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works()
         {
             yield return server.OpenGame();
-            yield return TestServer.RegisterCreateAndEnter("smith.tester@test.vn", "smith-pass-2026", HeroClass.Swordsman, "Khách Thợ Rèn");
+            yield return TestServer.RegisterCreateAndEnter("smith.tester@test.vn", "smith-pass-2026", HeroClass.Swordsman, "Khách Rèn");
             var world = AdventureWorldSession.Current;
             var motor = world.Player;
             var input = motor.GetComponent<PlayerInput2D>();

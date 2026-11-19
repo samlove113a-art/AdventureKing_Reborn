@@ -84,7 +84,7 @@ public sealed class SkillSyncTests : IDisposable
     public void Practice_casts_in_the_safe_hub_are_shown_once_per_counter_and_rate_limited()
     {
         var a = Hero("sksync03", "Kiếm Tập", 0);
-        var b = Hero("sksync04", "Người Xem Hai", 2);
+        var b = Hero("sksync04", "Người XemHai", 2);
         Beat(a, 0f); Beat(b, 3f);
         Beat(a, 0f, practiceSlot: 2, practiceSeq: 1);
         PeerDto seen = Assert.Single(Beat(b, 3f).peers);

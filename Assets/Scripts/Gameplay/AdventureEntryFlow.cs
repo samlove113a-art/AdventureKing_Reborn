@@ -115,6 +115,7 @@ namespace AdventureKing.Gameplay
         {
             if (splashLogo && officialAdventureKingLogo)
                 splashLogo.sprite = officialAdventureKingLogo;
+            if (characterNameInput) characterNameInput.characterLimit = 12;   // the typing box stops at 12: longer names would not fit inside the name-plate frames
             SetRegisterMode(false);
             if (ReturningFromWorld)
             {
@@ -377,9 +378,9 @@ namespace AdventureKing.Gameplay
                 return;
             }
             string name = characterNameInput ? characterNameInput.text.Trim() : "";
-            if (name.Length < 3 || name.Length > 16)
+            if (name.Length < 3 || name.Length > 12)
             {
-                SetStatus("Tên nhân vật phải từ 3 đến 16 ký tự.");
+                SetStatus("Tên nhân vật phải từ 3 đến 12 ký tự.");
                 return;
             }
 

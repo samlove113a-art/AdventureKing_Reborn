@@ -34,7 +34,7 @@ public sealed class ShopQuestTests : IDisposable
     private (string acc, string id) Hero(string login, int heroClass = 0)
     {
         string acc = accounts.Register(login, "Kh0ng-Trung-Ten-2026").AccountId;
-        var c = chars.Create(acc, "Thử Nghiệm " + login.Substring(login.Length - 2), heroClass, 0);
+        var c = chars.Create(acc, "ThuNghiem" + login.Substring(login.Length - 2), heroClass, 0);
         return (acc, c.characterId);
     }
 

@@ -153,8 +153,8 @@ public sealed class SocialServicesTests : IDisposable
     public void Guild_lifecycle_roles_requests_quests_ranking_and_private_hall_instance()
     {
         var lead = Player("soc08", "Bang Chủ An");
-        var vice = Player("soc09", "Phó Bang Bình");
-        var mem = Player("soc10", "Thành Viên Chi");
+        var vice = Player("soc09", "Phó Bình");
+        var mem = Player("soc10", "Viên Chi");
         var other = Player("soc11", "Khách Dũng");
         long g0 = Gold(lead.id);
         GuildViewDto v = guilds.Create(lead.acc, lead.id, new GuildCreateDto { name = "Gió Ngàn", emblem = "bell", requestId = "create-giongan" });
@@ -167,7 +167,7 @@ public sealed class SocialServicesTests : IDisposable
         guilds.Apply(vice.acc, vice.id, new GuildTargetDto { id = gid });
         Assert.Single(guilds.Get(lead.acc, lead.id).guild!.applications);
         guilds.Review(lead.acc, lead.id, new GuildTargetDto { id = vice.id, accept = true });
-        guilds.Invite(lead.acc, lead.id, new GuildTargetDto { name = "Thành Viên Chi" });
+        guilds.Invite(lead.acc, lead.id, new GuildTargetDto { name = "Viên Chi" });
         Assert.Single(guilds.Get(mem.acc, mem.id).invites);
         guilds.RespondInvite(mem.acc, mem.id, new GuildTargetDto { id = gid, accept = true });
         Assert.Equal(3, guilds.Get(lead.acc, lead.id).guild!.members.Length);
@@ -235,7 +235,7 @@ public sealed class SocialServicesTests : IDisposable
     {
         var a = Player("soc13", "Chú Rể Long");
         var b = Player("soc14", "Cô Dâu Mai", 1);
-        var c = Player("soc15", "Khách Mời Hoa", 2);
+        var c = Player("soc15", "Khách MờiHoa", 2);
         Assert.Equal("not_friends", Assert.Throws<GameError>(() => marriage.Propose(a.acc, a.id, new ProposeDto { name = "Cô Dâu Mai" })).Code);
         friends.Request(a.acc, a.id, new NameDto { name = "Cô Dâu Mai" });
         friends.Respond(b.acc, b.id, new IdDto { id = a.id }, true);
