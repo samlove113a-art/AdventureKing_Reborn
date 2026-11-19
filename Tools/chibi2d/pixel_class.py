@@ -119,6 +119,7 @@ MONSTER_CLIPS = [
     ("Attack", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 12, False, "ATTACK: {attack}", -1),
     ("Hit", 3, "one horizontal row of 3 equal cells", "16:9", 10, False, "HIT REACTION: flinching backward in pain (the middle frame is replaced by a white flash in code)", 1),
     ("Death", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, False, "DEATH: {death}", -1),
+    ("Skill", 8, "a grid of 4 columns and 2 rows, equal cells", "16:9", 12, False, "BOSS SPECIAL SKILL: {skill}", -1),
 ]
 MONSTERS = {
     "MonsterNamNon": dict(target=82, attack="lunges forward and head-butts with its mushroom cap, then recovers",
@@ -192,6 +193,15 @@ MONSTERS["RoyalGuard"] = dict(target=92, attack="thrusts its long spear forward 
                                    "silver-gray center boss and a sharp red spike on top, a grim armored face with two small angry eyes under the rim, a pale "
                                    "gray ornate plate-armored body with engraved gold-trimmed steel pauldrons and a short crimson tabard, tall greaves and boots, a plumed crimson crest, and a long gold-ornamented steel-tipped spear held upright-forward in its right hand, "
                                    "side view facing right, menacing dark-fantasy pixel style. Palette: crimson red, steel gray, dark gray, dark outline"))
+MONSTERS["DarkMushroom"] = dict(target=204, cell=384, attack="rears back then slams forward with its horned cap in a violent head-butt, dark spores bursting out, then recovers",
+                                death="roars, its horns crack and the cap sags, it keels over backward and lies still while a cloud of dark spores rises",
+                                skill="DARK SPORE ERUPTION: it raises both huge arms overhead while dark crimson energy gathers glowing inside its cap, then slams both fists into the ground and a hard-edged pixel ring shockwave of dark crimson spores and jagged spiked roots erupts across the ground in front of it",
+                                ref=("a COLOSSAL, hulking, extremely powerful dark mushroom boss (Dark Mushroom): a gigantic muscular corrupted mushroom monster, very broad and heavy, "
+                                     "with an enormous black-purple cap studded with glowing crimson-red spots and three huge curved pale-bone horns, a massive "
+                                     "bulging-muscled pale lavender body with arms thick as tree trunks and giant clawed fists, glaring blazing crimson eyes, a "
+                                     "huge mouth full of sharp fangs, a faint crimson aura around it, cracked ground under its heavy feet, a wide menacing "
+                                     "power stance, overwhelming and terrifying dark-fantasy pixel style, side view facing right. "
+                                     "Palette: black-purple, crimson red glow, bone white horns, pale lavender, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
@@ -207,7 +217,7 @@ ACTOR_FLAGS = {("FlowerBee", "Walk"): ["--deline"]}
 def clips_for(cls):
     if cls in MONSTERS:
         only = MONSTERS[cls].get("clips")
-        return [c for c in MONSTER_CLIPS if not only or c[0] in only]
+        return [c for c in MONSTER_CLIPS if (c[0] in only if only else (c[0] != "Skill" or MONSTERS[cls].get("skill")))]
     return NPC_CLIPS if cls in NPCS else CLIPS
 
 
@@ -279,7 +289,8 @@ def cmd_gen(cls):
 def cmd_process(cls):
     od = os.path.join(OUT, cls)
     os.makedirs(od, exist_ok=True)
-    meta = {"cell": 192, "pixel": True, "frame_m": 1.9, "ground_from_bottom_m": 0.099, "clips": {}}
+    cellpx = int((MONSTERS.get(cls) or {}).get("cell", 192))   # bosses: 384 (same 101 px per metre)
+    meta = {"cell": cellpx, "pixel": True, "frame_m": round(cellpx / 101.05, 3), "ground_from_bottom_m": round(0.099 * cellpx / 192, 4), "clips": {}}
     for n, f, lay, ar, fps, loop, tpl, wh in clips_for(cls):
         src = os.path.join(RAW, f"pixel_{cls.lower()}_{n.lower()}", "image_0.png")
         cnt = f if f else 7
@@ -287,6 +298,8 @@ def cmd_process(cls):
         if wh >= 0:
             args += ["--whiten", str(wh)]
         args += ACTOR_FLAGS.get((cls, n), [])
+        if cellpx != 192:
+            args += ["--cell", str(cellpx)]
         if (cls, n) in KEEP:
             args += ["--keep", KEEP[(cls, n)]]
         if cls in NPCS or cls in MONSTERS:
@@ -320,6 +333,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 

@@ -167,8 +167,13 @@ def scale_tile(c, m, b, scale):
 
 
 def main():
+    global CELL, GROUND_PX   # big bosses use a 384 cell (same px/metre): --cell 384
+    if "--cell" in sys.argv:
+        n = int(sys.argv[sys.argv.index("--cell") + 1])
+        GROUND_PX = GROUND_PX * n // CELL
+        CELL = n
     argv = sys.argv
-    args = [a for i, a in enumerate(argv[1:], 1) if not a.startswith("--") and not argv[i - 1] in ("--whiten", "--ref-scale", "--copy", "--target", "--keep")]
+    args = [a for i, a in enumerate(argv[1:], 1) if not a.startswith("--") and not argv[i - 1] in ("--whiten", "--ref-scale", "--copy", "--target", "--keep", "--cell")]
     sheet, out_dir, cls, clip, frames = args[0], args[1], args[2], args[3], int(args[4])
     whiten = int(argv[argv.index("--whiten") + 1]) if "--whiten" in argv else -1
     img = Image.open(sheet).convert("RGB")
@@ -280,6 +285,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
