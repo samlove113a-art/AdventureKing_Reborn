@@ -87,6 +87,7 @@ namespace AdventureKing.Gameplay
             two = two ? two : (prefab && !style2D ? null : Pet.gameObject);
             Pet.name = "Pet_" + id;
             body2D = two ? Pet.GetComponent<Pet2DBody>() : null;
+            if (body2D) { body2D.Style = Pet2DBody.StyleOf(id); body2D.HoverHeight = id == "pet_war_dragon" ? 1.25f : id == "pet_rainbow_cloud" || id == "pet_lantern_wisp" ? 0.7f : 0.95f; }
             Pet.localScale = Pet.localScale * (body2D ? 0.9f : 1.1f);
             body = body2D ? Pet.Find("Sprite") : Pet.Find("Body"); head = body && !body2D ? body.Find("Head") : null;
             eyeL = head ? head.Find("EyeL") : null; eyeR = head ? head.Find("EyeR") : null;
@@ -152,10 +153,12 @@ namespace AdventureKing.Gameplay
 
             // ---- procedural animation
             hop = moving ? hop + dt * (target ? 14f : 10f) : Mathf.MoveTowards(hop, Mathf.Round(hop / Mathf.PI) * Mathf.PI, dt * 6f);
-            float hopH = moving ? Mathf.Abs(Mathf.Sin(hop)) * 0.18f : 0f;
+            bool walker = !body2D || body2D.Style == Pet2DBody.MoveStyle.Walk;
+            float hopH = moving && walker ? Mathf.Abs(Mathf.Sin(hop)) * 0.18f : 0f;
             float happyJump = Mood == "happy" ? Mathf.Abs(Mathf.Sin((happyUntil - Time.time) * 9f)) * 0.35f
                 : Mood == "potion" ? Mathf.Abs(Mathf.Sin((potionUntil - Time.time) * 5.2f)) * 0.5f : 0f; // two big hops: the toss
-            Pet.position = new Vector3(x, y + hopH + happyJump, -0.25f);
+            float flyH = body2D ? body2D.Animate(hungry, moving, hop, x, facing) : 0f;   // dragons fly, the Eastern dragon glides in waves
+            Pet.position = new Vector3(x, y + hopH + flyH + happyJump, -0.25f);
             float yaw = Mood == "happy" ? (happyUntil - Time.time) * 720f : facing > 0 ? 115f : 245f;
             if (!moving && Mood == "idle") yaw = Mathf.LerpAngle(facing > 0 ? 115f : 245f, 180f, 0.5f);
             if (body2D)

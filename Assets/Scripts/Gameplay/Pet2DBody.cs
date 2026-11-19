@@ -75,11 +75,53 @@ namespace AdventureKing.Gameplay
             if (!hungry && Frames != null && Frames.Length > 1) s = Frames[Mathf.FloorToInt(Time.time * Fps) % Frames.Length];
             if (Renderer.sprite != s) Renderer.sprite = s;
             Renderer.flipX = facing < 0;
-            // pets with a single picture still breathe: a gentle squash and stretch from the feet (slower and smaller when hungry). Movement only, no drawing.
-            bool single = Frames == null || Frames.Length <= 1;
-            float t = Time.time * (hungry ? 1.2f : 3f);
-            float k = single ? (hungry ? 0.012f : 0.035f) * Mathf.Sin(t) : 0f;
-            Renderer.transform.localScale = new Vector3(1f - k * 0.5f, 1f + k, 1f);
+        }
+
+        public enum MoveStyle { Walk, Fly, Glide }
+        /// <summary>How the pet gets around: dragons fly (the big war dragon, phoenix, owl, lantern, cloud hover), baby dragons and animals walk, the Eastern dragon glides in S waves.</summary>
+        public static MoveStyle StyleOf(string id) => id switch
+        {
+            "pet_war_dragon" or "pet_phoenix" or "pet_night_owl" or "pet_lantern_wisp" or "pet_rainbow_cloud" => MoveStyle.Fly,
+            "pet_ink_dragon" => MoveStyle.Glide,
+            _ => MoveStyle.Walk,
+        };
+        public MoveStyle Style;
+        public float HoverHeight = 0.9f;
+
+        /// <summary>Procedural movement of the (single) picture: returns the extra height above the ground. Walk = step rocking, Fly = hovering with wing-beat pulses, Glide = S-wave.</summary>
+        public float Animate(bool hungry, bool moving, float step, float worldX, int facing)
+        {
+            if (!Renderer) return 0f;
+            float t = Time.time, lift = 0f, rot = 0f, sx = 1f, sy = 1f;
+            switch (Style)
+            {
+                case MoveStyle.Fly:
+                {
+                    lift = hungry ? 0.12f : HoverHeight + Mathf.Sin(t * 2.4f) * 0.08f;
+                    float beat = Mathf.Sin(t * (moving ? 16f : 9f)) * (hungry ? 0.02f : 0.07f);
+                    sy = 1f + beat; sx = 1f - beat * 0.6f;
+                    rot = moving && !hungry ? -9f * facing : Mathf.Sin(t * 1.7f) * 2f;
+                    break;
+                }
+                case MoveStyle.Glide:
+                {
+                    float wave = Mathf.Sin(t * (moving ? 3.2f : 1.6f) + worldX * 1.6f);
+                    lift = hungry ? 0.15f : HoverHeight + wave * (moving ? 0.24f : 0.1f);
+                    rot = hungry ? 0f : Mathf.Cos(t * (moving ? 3.2f : 1.6f) + worldX * 1.6f) * (moving ? 15f : 6f) * facing;
+                    sx = 1f + wave * 0.035f; sy = 1f - wave * 0.03f;
+                    break;
+                }
+                default:
+                {
+                    float breathe = Mathf.Sin(t * (hungry ? 1.2f : 3f)) * (hungry ? 0.012f : 0.03f);
+                    rot = moving ? Mathf.Sin(step) * 4f : 0f;                 // left-right rocking with every step
+                    sy = 1f + (moving ? Mathf.Abs(Mathf.Sin(step)) * -0.05f : breathe); sx = 1f - (sy - 1f) * 0.5f;
+                    break;
+                }
+            }
+            Renderer.transform.localRotation = Quaternion.Euler(0f, 0f, rot);
+            Renderer.transform.localScale = new Vector3(sx, sy, 1f);
+            return lift;
         }
     }
 }
