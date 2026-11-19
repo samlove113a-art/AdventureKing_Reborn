@@ -102,7 +102,7 @@ namespace AdventureKing.Gameplay
                 if (!head) return;
             }
             // follow the head (x) at a steady height above it, unaffected by the hero turning
-            plate.position = new Vector3(head.position.x, head.position.y + aboveHead, transform.position.z - 0.3f);
+            plate.position = new Vector3(head.position.x, head.position.y + aboveHead + 0.45f,transform.position.z - 0.3f);
             plate.rotation = Quaternion.identity;
         }
     }
