@@ -174,6 +174,12 @@ MONSTERS["ToxicSlime"] = dict(target=72, attack="lunges forward and spits a glob
                                    "darker green spots inside, a small purple spotted mushroom growing on top of its head, two small dark eyes with a mean "
                                    "frown and a tiny dark mouth, dripping toxic green goo at the edges, sitting on the ground, side view facing right, "
                                    "dark-fantasy pixel style. Palette: toxic lime green, darker green, purple mushroom cap with cream spots, dark outline"))
+MONSTERS["ToxicElite"] = dict(target=149, attack="rears up and slams down with its spiked cap, releasing a puff of toxic green spores, then recovers",
+                              death="roars, its spikes droop and the purple cap cracks, it topples over and lies still releasing a last green spore cloud",
+                              ref=("an elite hostile poisonous mushroom monster (Toxic Elite): a stout muscular mushroom brute with a big dark-purple cap covered in "
+                                   "sharp toxic-green spikes along its top and glowing lime spots, a pale lavender stalk body with two glowing yellow-green angry "
+                                   "eyes, a fanged frown, thick arms, and heavy brown feet, menacing dark-fantasy pixel style, side view facing right. "
+                                   "Palette: dark purple, toxic lime green spikes, pale lavender, brown, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
