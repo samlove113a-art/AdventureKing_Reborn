@@ -731,6 +731,7 @@ namespace AdventureKing.ArtPipeline
 
         private static void Deck(Transform art, Transform solids, TownLayout.Deck d, string style)
         {
+            if (UsePixelGround) { PixelDeck(art, solids, d); return; }   // Chapter 1 pixel look: plank sprites + posts, same collider
             Solid(solids, d.Name, d.XMin, d.XMax, d.Top, 0.4f, true);
             float cx = (d.XMin + d.XMax) * 0.5f, w = d.XMax - d.XMin;
             var root = Group(art, "Deck_" + d.Name);
@@ -1156,6 +1157,8 @@ namespace AdventureKing.ArtPipeline
         /// </summary>
         private static GameObject Prop(Transform parent, string name, float x, float z, float height, bool flip, float y = 0f, string dir = null, float yawOffset = 0f)
         {
+            GameObject pixelProp = PixelPropByHeight(parent, name, x, z, height, flip, y);   // Chapter 1 pixel look: sprite instead of the 3D prop
+            if (pixelProp) return pixelProp;
             dir ??= PropDir;
             string fbx = $"{dir}/{name}/{name}.fbx";
             var mi = AssetImporter.GetAtPath(fbx) as ModelImporter;

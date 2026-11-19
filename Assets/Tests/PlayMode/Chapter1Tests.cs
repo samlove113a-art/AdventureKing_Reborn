@@ -281,8 +281,9 @@ namespace AdventureKing.Tests
                 Assert.IsTrue(hit.collider && Mathf.Abs(hit.point.y - d.Top) < 0.3f, $"deck {d.Name} has a real collider at y={d.Top}");
             }
             Assert.AreEqual(TownLayout.Ch1GreenMeadow.Climbs.Length, Object.FindObjectsByType<LadderZone2D>(FindObjectsInactive.Exclude).Length, "ladders / ropes");
-            foreach (string prop in new[] { "Prop_ch1_wood_fence", "Prop_ch1_flower_bush", "Prop_windmill" })
-                Assert.IsNotNull(GameObject.Find(prop), "3D module placed: " + prop);
+            // Map 2 now uses the pixel-art props (sprites named "<module>_pixel"); the 3D modules are the fallback when no sprite exists
+            foreach (string prop in new[] { "ch1_wood_fence", "ch1_flower_bush", "windmill" })
+                Assert.IsTrue(GameObject.Find("Prop_" + prop) || GameObject.Find(prop + "_pixel"), "prop placed (pixel sprite or 3D module): " + prop);
             until = Time.realtimeSinceStartup + 4f;
             while (!(AdventureAudioDirector.Instance.CurrentMusic && AdventureAudioDirector.Instance.CurrentMusic.name.Contains("GreenMeadow")) && Time.realtimeSinceStartup < until) yield return null;
             StringAssert.Contains("BGM_Ch1_GreenMeadow", AdventureAudioDirector.Instance.CurrentMusic.name, "Đồng Cỏ Xanh plays its own theme");

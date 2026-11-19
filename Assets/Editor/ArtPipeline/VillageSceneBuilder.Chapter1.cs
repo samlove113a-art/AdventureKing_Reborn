@@ -312,6 +312,7 @@ namespace AdventureKing.ArtPipeline
         /// ridges with tree clumps and a tiny distant windmill — replaces the town's rice-terrace painting on this map.</summary>
         private static void C1MeadowPanorama()
         {
+            if (TryPixelPanorama()) return;   // pixel-art panorama when it exists
             const string name = "c1_m02_meadow_panorama_v3";
             float Ridge(float u, float baseV, float a1, float f1, float a2, float f2, float ph) => baseV + a1 * Mathf.Sin(u * f1 + ph) + a2 * Mathf.Sin(u * f2 + ph * 1.7f);
             Color sky0 = new Color(0.86f, 0.95f, 0.98f), sky1 = new Color(0.45f, 0.72f, 0.98f);
@@ -417,6 +418,7 @@ namespace AdventureKing.ArtPipeline
         /// silhouettes and drifting spore light. Own texture + own material; nothing shared with Map 1 / Map 2 / the town.</summary>
         private static void C1GlowForestPanorama()
         {
+            if (TryPixelPanorama()) return;   // pixel-art panorama when it exists
             const string name = "c1_m03_glow_forest_panorama_v1";
             float Ridge(float u, float baseV, float a1, float f1, float a2, float f2, float ph) => baseV + a1 * Mathf.Sin(u * f1 + ph) + a2 * Mathf.Sin(u * f2 + ph * 1.7f);
             Color sky0 = new Color(0.34f, 0.52f, 0.62f), sky1 = new Color(0.1f, 0.12f, 0.3f);

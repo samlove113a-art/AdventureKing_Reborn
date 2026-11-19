@@ -27,7 +27,53 @@ namespace AdventureKing.ArtPipeline
             catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
-        private static bool UsePixelGround => SceneTag == "ch1_m01" && File.Exists($"{PixelGroundDir}/ground_top.png") && File.Exists($"{PixelGroundDir}/ground_earth.png");
+        /// <summary>All ten Chapter 1 maps with the pixel-art look (ground, decks, props, panorama).
+        ///   Unity -batchmode -quit -executeMethod AdventureKing.ArtPipeline.VillageSceneBuilder.BuildChapter1AllPixelFromCommandLine</summary>
+        public static void BuildChapter1AllPixelFromCommandLine()
+        {
+            try
+            {
+                EnsureLayer(OneWayLayer, "OneWayPlatform");
+                BuildCh1Village();
+                BuildCh1GreenMeadow();
+                BuildCh1GlowForest();
+                foreach (Ch1MapData.Ch1Map m in Ch1MapData.All) BuildCh1Generated(m);
+                RegisterBuildScenes();
+                EditorApplication.Exit(0);
+            }
+            catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
+        /// <summary>Only the generated maps with an index >= env AK_FROM_MAP (default 6): a long full rebuild can be resumed.</summary>
+        public static void BuildChapter1GeneratedFromMapFromCommandLine()
+        {
+            try
+            {
+                int from = int.TryParse(System.Environment.GetEnvironmentVariable("AK_FROM_MAP"), out int f) ? f : 6;
+                EnsureLayer(OneWayLayer, "OneWayPlatform");
+                foreach (Ch1MapData.Ch1Map m in Ch1MapData.All) if (m.Index >= from) BuildCh1Generated(m);
+                RegisterBuildScenes();
+                EditorApplication.Exit(0);
+            }
+            catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
+        /// <summary>"ch1_m07" -> "07"; null for the hub, the meadow and the halls.</summary>
+        private static string PixelMapNo => SceneTag != null && SceneTag.StartsWith("ch1_m") && SceneTag.Length == 7 ? SceneTag.Substring(5) : null;
+
+        private static bool UsePixelGround => PixelMapNo != null && File.Exists($"{PixelGroundDir}/ground_top_m{PixelMapNo}.png") && File.Exists($"{PixelGroundDir}/ground_earth_m{PixelMapNo}.png");
+
+        /// <summary>Uses the map's pixel-art panorama (Meshy, cleaned by Tools/world) instead of the procedural painting. True = applied.</summary>
+        private static bool TryPixelPanorama()
+        {
+            if (PixelMapNo == null) return false;
+            string path = $"{WorldDir}/Generated/c1_m{PixelMapNo}_pixel_panorama_v2.png";
+            if (!File.Exists(path)) return false;
+            var bd = GameObject.Find("Backdrop_Painting");
+            if (!bd) throw new System.InvalidOperationException("Backdrop_Painting not found after FinishWorld");
+            bd.GetComponent<MeshRenderer>().sharedMaterial = CutoutMat(path, 0f, fogAmount: 0f, cutoff: 0f);
+            return true;
+        }
 
         private static Sprite PixelSprite(string file)
         {
@@ -88,7 +134,8 @@ namespace AdventureKing.ArtPipeline
             string file = meshyName switch
             {
                 "ch1_mushroom_house" => "ch1_house", "ch1_giant_mushroom_tree" => "ch1_tree", "ch1_crystal_fountain" => "ch1_fountain",
-                "ch1_mushroom_stall" => "ch1_stall", "ch1_mushroom_lamp" => "ch1_lamp", "crates" => "ch1_crates", "planter" => "ch1_planter", _ => null,
+                "ch1_mushroom_stall" => "ch1_stall", "ch1_mushroom_lamp" => "ch1_lamp", "crates" => "ch1_crates", "planter" => "ch1_planter",
+                "ch1_flower_bush" => "ch1_flower_bush", "ch1_wood_fence" => "ch1_fence", "banyan_tree" => "ch1_banyan", "windmill" => "ch1_windmill", _ => null,
             };
             string path = $"{PixelPropDir}/{file}.png";
             if (file == null || !File.Exists(path)) return null;
@@ -102,6 +149,18 @@ namespace AdventureKing.ArtPipeline
             if (tint.HasValue) sr.color = tint.Value;
             sr.sortingOrder = -10 - Mathf.RoundToInt(z);                         // farther = further back; the ground lip (-5) overlaps the foot
             return g;
+        }
+
+        // heights (metres) the pixel prop sprites were made at; Prop() callers pass the wanted height, C1Prop() callers pass a multiplier
+        private static readonly System.Collections.Generic.Dictionary<string, float> PixelBaseHeight = new()
+        {
+            ["crates"] = 1.3f, ["planter"] = 1.0f, ["banyan_tree"] = 6f, ["windmill"] = 6f,
+        };
+
+        private static GameObject PixelPropByHeight(Transform parent, string name, float x, float z, float height, bool flip, float y)
+        {
+            if (!UsePixelGround || !PixelBaseHeight.TryGetValue(name, out float baseH)) return null;
+            return PixelProp(parent, name, x, z, height / baseH, flip, y, null);
         }
 
         /// <summary>Pixel-art deck: a tiled plank strip on the walking height + wooden posts down to the ground. The collider is the same as the 3D deck.</summary>
@@ -135,7 +194,7 @@ namespace AdventureKing.ArtPipeline
         /// <summary>Tiled grass lip on top of a tiled earth face; the grass line of the lip sits on y = 0 (the walking line).</summary>
         private static void PixelGround(Transform art, float minX, float maxX)
         {
-            Sprite top = PixelSprite("ground_top"), earthFace = PixelSprite("ground_earth");
+            Sprite top = PixelSprite("ground_top_m" + PixelMapNo), earthFace = PixelSprite("ground_earth_m" + PixelMapNo);
             Material mat = Chibi2DArt.PixelMaterial();
             float x0 = minX - 14f, x1 = maxX + 14f, w = x1 - x0;
             float grassLinePx = 18f;                                     // grass surface = 9 art cells below the top of the lip tile

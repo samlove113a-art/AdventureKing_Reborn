@@ -148,6 +148,8 @@ namespace AdventureKing.ArtPipeline
         /// <summary>One far landscape per map from a palette (sky gradient, three ridges, silhouettes of tall mushrooms, optional spore stars).</summary>
         private static void C1ThemePanorama(string name, C1Theme th)
         {
+            if (TryPixelPanorama()) return;   // pixel-art panorama when it exists
+
             float Ridge(float u, float baseV, float a1, float f1, float a2, float f2, float ph) => baseV + a1 * Mathf.Sin(u * f1 + ph) + a2 * Mathf.Sin(u * f2 + ph * 1.7f);
             var rng = new System.Random(th.Seed);
             var shrooms = new List<(float u, float baseV, float h, float w, int ridge, int tone)>();
