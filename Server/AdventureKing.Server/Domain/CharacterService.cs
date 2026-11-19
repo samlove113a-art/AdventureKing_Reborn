@@ -182,6 +182,10 @@ public sealed class CharacterService
     /// Nấm) cannot poison the new map's speed check for ~10 s.</summary>
     public Action<string, string, float, float>? Arrived { get; set; }
 
+    /// <summary>Portal gate hook (accountId, characterId, portalId) -> null when the portal is open, otherwise the refusal text.
+    /// Wired in Program.cs from config/portal_gates.json + the quest log: forward portals open only after the map's quest is claimed.</summary>
+    public Func<string, string, string, string?>? PortalGate { get; set; }
+
     public CharacterDto Travel(string accountId, string characterId, string? portalId, float x, float y)
     {
         CharacterDto moved = TravelCore(accountId, characterId, portalId, x, y);
@@ -196,6 +200,8 @@ public sealed class CharacterService
             throw new GameError("portal_unknown", "Cổng dịch chuyển không tồn tại.", 404);
         if (!float.IsFinite(x) || !float.IsFinite(y) || MathF.Abs(x - p.X) > PortalReach || MathF.Abs(y - p.Y) > PortalReach)
             throw new GameError("portal_too_far", "Bạn đứng quá xa cổng dịch chuyển.", 409);
+        string? locked = PortalGate?.Invoke(accountId, characterId, p.Id);
+        if (locked != null) throw new GameError("portal_locked", locked, 409);   // before the cooldown stamp: a refusal costs nothing
         return db.InTransaction((c, tx) =>
         {
             CharacterDto ch = Query(c, tx, "c.id=$id AND c.account_id=$a", ("$id", characterId), ("$a", accountId)).SingleOrDefault()

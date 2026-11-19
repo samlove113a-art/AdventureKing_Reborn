@@ -102,18 +102,18 @@ namespace AdventureKing.Tests
             until = Time.time + 3f;
             while (SkillVfxDirector.Played == 0 && Time.time < until) yield return null;
             yield return new WaitForSeconds(0.12f);
-            yield return new WaitForEndOfFrame();
+            if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();
             Shot($"{tag}_1_cast_start");
             until = Time.time + 3f;
             while (SkillVfxProbe.Launches == launches && Time.time < until) yield return null;
             Assert.Greater(SkillVfxProbe.Launches, launches, "fireball launched; " + farm.LastSkillError);
             Vector3 origin = SkillVfxProbe.Origin;
             yield return new WaitForSeconds(0.04f); // the layers fade in over their first frames
-            yield return new WaitForEndOfFrame();
+            if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();
             Shot($"{tag}_2_leaves_staff");
             until = Time.time + 3f;
             while (SkillVfxProbe.Impacts == impacts && Time.time < until) yield return null;
-            yield return new WaitForEndOfFrame();
+            if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();
             Shot($"{tag}_3_hits_monster");
             Vector3 monster = SkillVfxProbe.ImpactTarget; // the monster's body when the ball burst (it moves afterwards)
             float toTip = Vector3.Distance(Flat(origin), Flat(SkillVfxProbe.WeaponTip));
@@ -153,7 +153,7 @@ namespace AdventureKing.Tests
             Vector3 start = p.transform.position;
             Vector3 fwd = p.transform.forward;
             var col = motor.GetComponent<Collider2D>();
-            yield return new WaitForEndOfFrame();
+            if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();
             Shot($"{tag}_basic_attack");
             report.Add($"[{tag}] basic attack projectile start={start:F2} forward={fwd:F2} head={col.bounds.max.y:F2} bodyCenter={col.bounds.center:F2} " +
                        $"above head {start.y - col.bounds.max.y:F2} m, ahead {(start.x - col.bounds.center.x) * dir:F2} m, |fz|/|fx| {Mathf.Abs(fwd.z) / Mathf.Max(0.01f, Mathf.Abs(fwd.x)):F2}");

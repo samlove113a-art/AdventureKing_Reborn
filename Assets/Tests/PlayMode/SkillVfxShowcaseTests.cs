@@ -165,7 +165,7 @@ namespace AdventureKing.Tests
                 maxShake = Mathf.Max(maxShake, CameraFollow2D.ShakeNow);
                 if (next < moments.Length && Time.time - t0 >= moments[next] && (!mobile || next == 2))
                 {
-                    yield return new WaitForEndOfFrame();
+                    if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();
                     Shot($"{tag}_{MomentNames[next]}", mobile ? 1600 : 1920, mobile ? 740 : 1080);
                     next++;
                 }

@@ -88,7 +88,7 @@ namespace AdventureKing.Tests
 
         private static IEnumerator Shot(string name, int w = 1920, int h = 1080)
         {
-            yield return new WaitForEndOfFrame();
+            if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();
             var rt = new RenderTexture(w, h, 24) { antiAliasing = 4 };
             GameplayRecorder.Capture(Camera.main, rt);
             RenderTexture.active = rt;

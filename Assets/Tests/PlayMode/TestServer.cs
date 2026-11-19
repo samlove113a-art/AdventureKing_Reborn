@@ -22,12 +22,14 @@ namespace AdventureKing.Tests
 
         /// <param name="starterGold">Test fixture override of the server's starter Gold (null = the real config value).</param>
         /// <param name="devWelfare">Use config/welfare.dev.json (check-in enabled for tests; production keeps the draft off).</param>
-        public TestServer(int port, long? starterGold = null, bool devWelfare = false, string extraArgs = "")
+        /// <param name="portalGates">The real server locks forward portals behind quests (config/portal_gates.json). Most tests only need to travel,
+        /// so the gates are off unless a test asks for them (portalGates: true).</param>
+        public TestServer(int port, long? starterGold = null, bool devWelfare = false, string extraArgs = "", bool portalGates = false)
         {
             this.port = port;
             this.starterGold = starterGold;
             this.devWelfare = devWelfare;
-            this.extraArgs = extraArgs;
+            this.extraArgs = portalGates ? extraArgs : (extraArgs + " --AdventureKing:PortalGatesPath=off").Trim();
             dbDir = Path.Combine(Path.GetTempPath(), "ak_srv_" + System.Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dbDir);
         }

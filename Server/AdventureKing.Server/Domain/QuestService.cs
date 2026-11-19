@@ -121,6 +121,14 @@ public sealed class QuestService
         return (JsonSerializer.Deserialize<Dictionary<string, int>>(r.GetString(0)) ?? new(), !r.IsDBNull(1));
     }
 
+    /// <summary>True once the character has claimed (turned in) the quest. Unknown quest ids count as not claimed.</summary>
+    public bool IsClaimed(string accountId, string characterId, string questId) => db.InTransaction((c, tx) =>
+    {
+        Own(c, tx, accountId, characterId);
+        QuestDef? q = Config.quests.FirstOrDefault(x => x.id == questId);
+        return q != null && Row(c, tx, characterId, q).claimed;
+    });
+
     private static bool Done(QuestDef q, Dictionary<string, int> counts) => q.objectives.All(o => counts.GetValueOrDefault(o.@event) >= o.need);
 
     /// <summary>The main quest currently open (first one not yet claimed), or null when the chain is finished.</summary>

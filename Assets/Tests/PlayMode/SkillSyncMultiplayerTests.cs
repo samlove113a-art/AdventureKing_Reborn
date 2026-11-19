@@ -81,8 +81,8 @@ namespace AdventureKing.Tests
             {
                 maxShake = Mathf.Max(maxShake, CameraFollow2D.ShakeNow);
                 Assert.AreEqual(1f, Time.timeScale, "no hit-stop on the viewer's screen");
-                if (!shot1 && Time.time - t0 > 0.55f) { yield return new WaitForEndOfFrame(); Shot(tag + "_a"); shot1 = true; }
-                if (!shot2 && Time.time - t0 > 1.25f) { yield return new WaitForEndOfFrame(); Shot(tag + "_b"); shot2 = true; }
+                if (!shot1 && Time.time - t0 > 0.55f) { if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame(); Shot(tag + "_a"); shot1 = true; }
+                if (!shot2 && Time.time - t0 > 1.25f) { if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame(); Shot(tag + "_b"); shot2 = true; }
                 yield return null;
             }
             Assert.AreEqual(0f, maxShake, 0.0001f, "someone else's skill does not shake the viewer's camera");

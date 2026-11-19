@@ -99,6 +99,11 @@ app.Services.GetRequiredService<InventoryService>(); // wires equipment bonuses 
     app.Services.GetRequiredService<InventoryService>().QuestEvent = record;
     app.Services.GetRequiredService<ShopService>().QuestEvent = record;
     app.Services.GetRequiredService<CharacterService>().QuestEvent = record;
+    // Forward portals open only after the map's quest is claimed (config/portal_gates.json, DRAFT). "off" disables the gates.
+    string gatesFile = app.Configuration["AdventureKing:PortalGatesPath"] ?? "config/portal_gates.json";
+    string gatesPath = Path.Combine(contentRoot, gatesFile);
+    if (gatesFile != "off" && File.Exists(gatesPath))
+        app.Services.GetRequiredService<CharacterService>().PortalGate = PortalGates.Load(gatesPath, quests).Check;
     var pets = app.Services.GetRequiredService<PetService>();
     var farmSvc = app.Services.GetRequiredService<FarmService>();
     var chapters = app.Services.GetRequiredService<ChapterService>();

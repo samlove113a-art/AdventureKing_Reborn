@@ -179,7 +179,9 @@ namespace AdventureKing.Tests
                     float h = b.GetComponentsInChildren<SpriteRenderer>().Where(r => r.sprite && r.name != "SlamWarning").Max(r => r.bounds.size.y);
                     Assert.Greater(h, expect == "boss" ? 2.6f : expect == "mini" ? 1.8f : 1.5f, $"Map {index}: {expect} is clearly bigger than the normal monsters");
                     float normalH = views.First(v => v.Tier == "normal").GetComponentsInChildren<SpriteRenderer>().Max(r => r.bounds.size.y);
-                    Assert.Greater(h, normalH * 1.5f, "boss sprite taller than a normal monster");
+                    // bounds are the sprite CELL: the pixel-art elite shares the 192 px cell of normal monsters (its figure is taller inside it,
+                    // checked by PixelActorShowcaseTests); minis and bosses use 384 px cells
+                    Assert.GreaterOrEqual(h, normalH * (expect == "elite" ? 1.0f : 1.5f), "boss sprite taller than a normal monster");
                     Assert.Greater(b.BarHeight, h * 0.85f, "name + HP bar sit above the sprite, not on it");
                     // phase 2 + slam warning come from the server state: show them
                     var st = new FarmMonsterState { id = b.SpawnId, type = "x", name = "b", hp = 100, maxHp = 1000, alive = true, tier = expect, phase = 2, slamInMs = 900, slamReach = 3.4f };
