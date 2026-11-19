@@ -2455,7 +2455,7 @@ namespace AdventureKing.ArtPipeline
             ppso.FindProperty("bag").objectReferenceValue = invPanel;
             ppso.ApplyModifiedPropertiesWithoutUndo();
             abso.FindProperty("petPanel").objectReferenceValue = petPanel;
-            abso.FindProperty("petIcon").objectReferenceValue = PetArt.Portrait("pet_cloud_cat");
+            abso.FindProperty("petIcon").objectReferenceValue = SkillIconArt.Get("action_pet");
             abso.ApplyModifiedPropertiesWithoutUndo();
 
             popupGo.transform.SetAsLastSibling();

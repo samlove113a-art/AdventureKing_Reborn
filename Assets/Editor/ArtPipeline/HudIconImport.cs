@@ -27,6 +27,13 @@ namespace AdventureKing.ArtPipeline
                 ti.textureCompression = TextureImporterCompression.Uncompressed;
                 ti.SaveAndReimport();
             }
+            foreach (string file in Directory.GetFiles("Assets/Art/UI/Skills", "*.png"))      // skill / action button pictures: pixel art, Point, uncompressed
+            {
+                var si = (TextureImporter)AssetImporter.GetAtPath(file.Replace('\\', '/'));
+                if (si == null) continue;
+                si.textureType = TextureImporterType.Sprite; si.filterMode = FilterMode.Point; si.mipmapEnabled = false; si.alphaIsTransparency = true; si.textureCompression = TextureImporterCompression.Uncompressed;
+                si.SaveAndReimport();
+            }
             // bag / shop item slots: the Meshy slot frame, 9-sliced (the rim keeps its width, the centre stretches)
             var cell = (TextureImporter)AssetImporter.GetAtPath("Assets/Art/UI/Skin/item_cell.png");
             if (cell != null)
