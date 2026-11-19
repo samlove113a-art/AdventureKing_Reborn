@@ -127,16 +127,24 @@ MONSTERS = {
                                "a pale cream stalk body with two small angry eyes, a small leather strap across the body, stubby brown feet, sharp little "
                                "fangs, slightly menacing but cute dark-fantasy forest monster, side view. Palette: red cap, cream, brown, dark outline")),
 }
+MONSTERS["PollenSlime"] = dict(target=52, clips=["Idle"], attack="", death="",
+                               ref=("a cute but slightly sinister forest slime monster (Pollen Slime): a glossy translucent lime-green gelatinous dome-shaped "
+                                    "blob lying low on the ground with a wide flat base, bright glossy highlights, a small white daisy flower with a yellow centre "
+                                    "and a curly green sprout growing on top of its head, two small dark eyes with white sparkles and tiny pink cheeks, "
+                                    "dark-fantasy pixel style, side view. Palette: lime green, darker green shade, white flower, pink cheeks, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
 
 # frames to keep when the generator drew junk at the end of a sheet: (actor, clip) -> indexes
-KEEP = {("MonsterNamNon", "Death"): "0,1,2,3,3"}
+KEEP = {("MonsterNamNon", "Death"): "0,1,2,3,3", ("PollenSlime", "Idle"): "0,1,2,4,5,4"}
 
 
 def clips_for(cls):
-    return NPC_CLIPS if cls in NPCS else MONSTER_CLIPS if cls in MONSTERS else CLIPS
+    if cls in MONSTERS:
+        only = MONSTERS[cls].get("clips")
+        return [c for c in MONSTER_CLIPS if not only or c[0] in only]
+    return NPC_CLIPS if cls in NPCS else CLIPS
 
 
 # per-clip processor flags: drop ground lines the generator draws, keep only the hero (projectile is separate VFX), anchor on the body
@@ -247,6 +255,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
+
 
 
 
