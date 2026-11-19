@@ -180,6 +180,12 @@ MONSTERS["ToxicElite"] = dict(target=149, attack="rears up and slams down with i
                                    "sharp toxic-green spikes along its top and glowing lime spots, a pale lavender stalk body with two glowing yellow-green angry "
                                    "eyes, a fanged frown, thick arms, and heavy brown feet, menacing dark-fantasy pixel style, side view facing right. "
                                    "Palette: dark purple, toxic lime green spikes, pale lavender, brown, dark outline"))
+MONSTERS["StoneGuard"] = dict(target=127, attack="raises a heavy stone fist and slams it down in front of itself, then straightens up",
+                              death="its glowing green core flickers out, the stone body cracks, crumbles and collapses into a heap of rubble with a small sprout left on top",
+                              ref=("an ancient stone golem guardian (Stone Guard): a blocky humanoid golem built from rough gray-brown stone slabs with moss in the "
+                                   "cracks, a rectangular head with two glowing orange-red angry slit eyes under a heavy scowling brow, a jagged snarling mouth crack with stone fangs, jagged stone spikes on its shoulders and knuckles, deep cracks glowing faintly red, a glowing green gem in the center of its chest, thick heavy "
+                                   "arms and short legs, a tiny green sprout growing on top of its head, standing upright, side view facing right, "
+                                   "dark-fantasy pixel style. Palette: warm gray stone, moss green, glowing green gem, yellow eyes, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
@@ -308,6 +314,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 
