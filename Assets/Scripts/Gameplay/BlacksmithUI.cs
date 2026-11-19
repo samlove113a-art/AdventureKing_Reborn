@@ -16,7 +16,7 @@ namespace AdventureKing.Gameplay
         [SerializeField] private Sprite panelSprite, cellSprite, buttonSprite, coinSprite;
         [SerializeField] private Font font;
 
-        public static readonly (string slot, string label)[] Slots = { ("weapon", "Vũ khí"), ("armor", "Giáp"), ("accessory", "Phụ kiện") };
+        public static readonly (string slot, string label)[] Slots = { ("weapon", "Vũ khí"), ("armor", "Giáp"), ("accessory", "Phụ kiện"), ("ring", "Nhẫn"), ("necklace", "Dây chuyền") };
 
         public event Action Closed;
         public bool IsOpen => root && root.activeSelf;
@@ -33,7 +33,7 @@ namespace AdventureKing.Gameplay
         private Text goldLabel, greet, itemName, levelLine, statLine, stoneLine, goldLine, chanceLabel, failLine, msg, protectLabel;
         private Image bigIcon, flash, chanceFill, protectBox;
         private RectTransform fxLayer;
-        private readonly (Image bg, Image icon, Text name, Text lvl)[] rows = new (Image, Image, Text, Text)[3];
+        private readonly (Image bg, Image icon, Text name, Text lvl)[] rows = new (Image, Image, Text, Text)[5];
         private Button strikeButton, protectButton;
         private string pendingId, pendingSlot;
         private bool pendingProtect;
@@ -99,7 +99,7 @@ namespace AdventureKing.Gameplay
             for (int i = 0; i < Slots.Length; i++)
             {
                 int idx = i;
-                Image bg = Make<Image>(c, "Slot_" + Slots[i].slot, new Vector2(0f, 1f), new Vector2(350f, -250f - i * 122f), new Vector2(560f, 110f));
+                Image bg = Make<Image>(c, "Slot_" + Slots[i].slot, new Vector2(0f, 1f), new Vector2(350f, -222f - i * 102f), new Vector2(560f, 92f));
                 bg.sprite = cellSprite; bg.type = cellSprite ? Image.Type.Sliced : Image.Type.Simple; bg.color = new Color(0.55f, 0.6f, 0.78f, 0.9f);
                 bg.gameObject.AddComponent<Button>().onClick.AddListener(() => SelectSlot(Slots[idx].slot));
                 Image ic = Make<Image>(bg.transform, "Icon", new Vector2(0f, 0.5f), new Vector2(62f, 0f), new Vector2(80f, 80f));

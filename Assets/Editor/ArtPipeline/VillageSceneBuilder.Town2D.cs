@@ -145,6 +145,8 @@ namespace AdventureKing.ArtPipeline
             PlaceNpc2D(play, "NpcSmith", "Thợ Rèn", -46f, 0f);
             PlaceNpc2D(play, "NpcStorekeeper", "Chủ Tiệm Lụa", -30f, 0f);
             PlaceHealer2D(play, 20f);
+            PlaceKeeper2D(play, "NpcPetKeeper", "NpcMushroomElder", "Bác Chăn Thú", 26f, new Color(0.85f, 1f, 0.8f), "Chào {0}! Pet nào cũng cần ăn đủ bữa — mua thức ăn cho bé ở đây nhé.");
+            PlaceKeeper2D(play, "NpcJeweler", "NpcMusician", "Thợ Kim Hoàn", -37f, new Color(1f, 0.9f, 0.7f), "Chào {0}! Nhẫn và dây chuyền ta chế tác đều có thể đem ra Thợ Rèn để cường hóa.");
 
             // ---- map gimmicks
             Gimmicks2D(gimmicks, art);
@@ -242,6 +244,17 @@ namespace AdventureKing.ArtPipeline
             var bg = EntrySceneBuilder.Panel(canvasGo.transform, "Plate", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0.08f, 0.1f, 0.18f, 0.78f), EntrySceneBuilder.PanelSprite);
             EntrySceneBuilder.Label(bg.transform, "Name", displayName, 30, new Color(1f, 0.86f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(plateW - 10f, 50f), FontStyle.Bold);
             return npc;
+        }
+
+        /// <summary>A shop NPC of one goods group (the 2D sprite body of a spare actor, tinted) with its name plate and "E · Nói chuyện" prompt; the shop window is wired by SetupShopKeepers.</summary>
+        private static void PlaceKeeper2D(Transform play, string objectName, string actorBody, string displayName, float x, Color tint, string hello)
+        {
+            GameObject npc = PlaceNpc2D(play, actorBody, displayName, x, 0f);
+            npc.name = objectName;
+            var prompt = WorldLabel(npc.transform, "TalkPrompt", 2.85f, "E · Nói chuyện", 28, Color.white, new Color(0.26f, 0.56f, 0.62f, 0.92f), new Vector2(300f, 54f), 41);
+            prompt.transform.parent.parent.gameObject.SetActive(false);
+            var keeper = npc.AddComponent<ShopKeeperNpc>();
+            keeper.Bind(npc.GetComponent<NpcActor>(), null, prompt.transform.parent.parent.gameObject, hello, tint);
         }
 
         /// <summary>Dược Sư Mộc Linh as a 2D body (the Mage sprite) behind the potion stall prop.</summary>

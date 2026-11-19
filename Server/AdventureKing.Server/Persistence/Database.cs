@@ -237,6 +237,10 @@ internal static class Schema
         protected INTEGER NOT NULL,
         PRIMARY KEY (character_id, request_id)
     );
+    CREATE TABLE IF NOT EXISTS enhance_pity (
+        character_id TEXT NOT NULL PRIMARY KEY REFERENCES characters(id),
+        pity INTEGER NOT NULL
+    );
     """;
 
     // V13: chapter progress — the chapter boss kill the SERVER confirmed (one row per character and chapter; written only by ChapterService).

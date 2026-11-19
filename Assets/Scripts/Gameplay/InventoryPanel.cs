@@ -44,7 +44,7 @@ namespace AdventureKing.Gameplay
         private AdventureWorldSession world;
         private float nextRefreshTry;
 
-        private static readonly (string slot, string label)[] EquipSlots = { ("weapon", "Vũ khí"), ("armor", "Áo"), ("accessory", "Phụ kiện") };
+        private static readonly (string slot, string label)[] EquipSlots = { ("weapon", "Vũ khí"), ("armor", "Áo"), ("accessory", "Phụ kiện"), ("ring", "Nhẫn"), ("necklace", "Dây chuyền") };
         private const int Columns = 6, MaxCells = 99;
         private RectTransform content;
         private ScrollRect scroll;
@@ -397,7 +397,7 @@ namespace AdventureKing.Gameplay
                 new Vector2(0f, 18f), new Vector2(235f, 260f));
             characterPreview.preserveAspect = true; characterPreview.raycastTarget = false; characterPreview.enabled = false;
 
-            var realPositions = new [] { new Vector2(88f, -277f), new Vector2(464f, -277f), new Vector2(88f, -448f) };
+            var realPositions = new [] { new Vector2(88f, -277f), new Vector2(464f, -277f), new Vector2(88f, -448f), new Vector2(464f, -448f), new Vector2(88f, -574f) };
             for (int i = 0; i < EquipSlots.Length; i++)
             {
                 var (slot, label) = EquipSlots[i];
@@ -414,10 +414,9 @@ namespace AdventureKing.Gameplay
                 equipCells[slot] = (ic, labelText);
             }
 
-            string[] unavailable = { "Nón", "Giày", "Dây chuyền", "Pet", "Hóa thân" };
+            string[] unavailable = { "Nón", "Pet", "Hóa thân" };
             var lockedPositions = new [] {
-                new Vector2(464f, -448f), new Vector2(88f, -574f), new Vector2(464f, -574f),
-                new Vector2(190f, -614f), new Vector2(365f, -614f)
+                new Vector2(464f, -574f), new Vector2(190f, -614f), new Vector2(365f, -614f)
             };
             for (int i = 0; i < unavailable.Length; i++)
             {
@@ -521,7 +520,7 @@ namespace AdventureKing.Gameplay
                 var (ic, label) = equipCells[slot];
                 ic.enabled = e != null && IconOf(e.item.itemId, e.item.icon);
                 if (e != null) ic.sprite = IconOf(e.item.itemId, e.item.icon);
-                label.text = slot == "weapon" ? "Vũ khí" : slot == "armor" ? "Áo" : "Phụ kiện";
+                label.text = EquipSlots.First(s => s.slot == slot).label;
                 if (e != null && e.item.enhanceLevel > 0) label.text += " +" + e.item.enhanceLevel;
                 Image cell = ic.transform.parent.GetComponent<Image>();
                 if (cell) cell.color = e == null ? new Color(0.4f, 0.45f, 0.62f) :

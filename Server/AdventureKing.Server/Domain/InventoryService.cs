@@ -56,7 +56,7 @@ public sealed class ItemConfig
         foreach (ItemDef i in cfg.items)
         {
             if (i.rarity is not ("white" or "blue" or "purple" or "orange" or "red")) throw new InvalidDataException(i.id + ": bad rarity");
-            if (i.kind == "equipment" && i.equipSlot is not ("weapon" or "armor" or "accessory")) throw new InvalidDataException(i.id + ": bad equip slot");
+            if (i.kind == "equipment" && i.equipSlot is not ("weapon" or "armor" or "accessory" or "ring" or "necklace")) throw new InvalidDataException(i.id + ": bad equip slot");
             if (i.kind == "junk" && i.priceGold <= 0) throw new InvalidDataException(i.id + ": junk must have a sell value");
             // a ticket may only lead to a map the server really has (never to an unbuilt map)
             if (i.kind == "ticket" && !CharacterService.Maps.ContainsKey(i.destMap)) throw new InvalidDataException(i.id + ": ticket to unknown map " + i.destMap);
@@ -92,6 +92,13 @@ public sealed class BagSlotDto
     public long enhanceGold { get; set; }
     public bool usableByClass { get; set; } = true;
     public string destMap { get; set; } = "";
+    /// <summary>Quality tier of equipment for enhancing: Bạc / Vàng / Kim Cương / Đỏ (from the rarity).</summary>
+    public string tier { get; set; } = "";
+    /// <summary>What the next +1 gives (stats after the upgrade), the combat power it adds and the chance to lose a level when it fails.</summary>
+    public int nextAttack { get; set; }
+    public int nextDefense { get; set; }
+    public int powerGain { get; set; }
+    public int failDropPercent { get; set; }
     /// <summary>Name-plate frames (VIP / Boss Hunter / special) show up in the bag as kind "frame"; worn = the one currently shown above the name.</summary>
     public bool worn { get; set; }
 }
@@ -110,6 +117,8 @@ public sealed class InventoryDto
     public int attackBonus { get; set; }
     public int defenseBonus { get; set; }
     public int combatPower { get; set; }
+    /// <summary>"Chúc Phúc Rèn": 0..5 stacks, each adds +2 % success to the next attempt (earned by failing at +7 and above, lost on success).</summary>
+    public int blessing { get; set; }
 }
 
 /// <summary>force: drink even with a full bar (the player confirmed; nothing is restored above the maximum).</summary>
@@ -129,6 +138,8 @@ public sealed class EnhanceRequestDto
 {
     public string equipSlot { get; set; } = "";
     public bool protect { get; set; }
+    /// <summary>Spend one Đá May Mắn: +10 % success on this attempt.</summary>
+    public bool lucky { get; set; }
     public string requestId { get; set; } = "";
 }
 public sealed class EnhanceResultDto
@@ -139,6 +150,11 @@ public sealed class EnhanceResultDto
     public int afterLevel { get; set; }
     public int chancePercent { get; set; }
     public bool replayed { get; set; }
+    public bool lostLevel { get; set; }
+    public int blessing { get; set; }
+    public int combatPowerBefore { get; set; }
+    public int combatPowerAfter { get; set; }
+    public string tier { get; set; } = "";
     /// <summary>Gold charged for this attempt (success or failure) and the balance afterwards.</summary>
     public long goldSpent { get; set; }
     public long gold { get; set; }
@@ -160,12 +176,25 @@ public sealed class InventoryService
     private readonly Func<long> now;
     private readonly Func<int> enhanceRoll;
     // Draft success rates for +1 to +15; validated exclusively on the server.
-    private static readonly int[] EnhanceChances = { 100, 95, 90, 85, 80, 70, 65, 55, 45, 40, 35, 30, 25, 20, 15 };
-    public static int SuccessChance(int currentLevel) => EnhanceChances[Math.Clamp(currentLevel, 0, 14)];
+    // Tiers (from rarity): 0 Bạc (white, blue), 1 Vàng (purple), 2 Kim Cương (orange), 3 Đỏ (red). Bạc / Vàng are easy to push to +15; Kim Cương / Đỏ are hard but each +1 is worth far more stats.
+    private static readonly int[][] EnhanceChancesByTier =
+    {
+        new[] { 100, 100, 98, 95, 92, 88, 85, 80, 75, 70, 65, 60, 55, 50, 45 },
+        new[] { 100, 98, 95, 92, 88, 82, 76, 70, 64, 58, 52, 46, 40, 35, 30 },
+        new[] { 100, 95, 90, 82, 74, 65, 55, 45, 36, 28, 22, 17, 13, 10, 8 },
+        new[] { 100, 92, 85, 75, 65, 55, 45, 35, 27, 20, 15, 11, 8, 6, 4 },
+    };
+    private static readonly double[] GoldMultiplierByTier = { 0.6, 0.8, 1.5, 2.5 };
+    private static readonly int[] StatStepByTier = { 1, 1, 2, 3 };
+    public static readonly string[] TierNames = { "Bạc", "Vàng", "Kim Cương", "Đỏ" };
+    public static int TierOf(string rarity) => rarity switch { "red" => 3, "orange" => 2, "purple" => 1, _ => 0 };
+    public static int SuccessChance(int currentLevel, int tier = 0) => EnhanceChancesByTier[Math.Clamp(tier, 0, 3)][Math.Clamp(currentLevel, 0, 14)];
+    /// <summary>Failing at this level or above can cost one level (50 %); below it a failure only costs the materials. Never destroys the item.</summary>
+    public const int SafeUntil = 6, DropChancePercent = 50, LuckyBonus = 10, BlessingStep = 2, BlessingMax = 5;
     // Draft Gold fee per attempt from +0 -> +1 up to +14 -> +15 (charged on success AND failure, like the stone). Balance proposal: change here.
     private static readonly long[] EnhanceGold = { 50, 80, 120, 180, 260, 380, 550, 800, 1100, 1500, 2100, 2800, 3800, 5000, 7000 };
-    public static long GoldCost(int currentLevel) => EnhanceGold[Math.Clamp(currentLevel, 0, 14)];
-    private static int Boost(int baseStat, int level) => baseStat > 0 ? baseStat + level : 0;
+    public static long GoldCost(int currentLevel, int tier = 0) => (long)Math.Round(EnhanceGold[Math.Clamp(currentLevel, 0, 14)] * GoldMultiplierByTier[Math.Clamp(tier, 0, 3)]);
+    private static int Boost(int baseStat, int level, int tier = 0) => baseStat > 0 ? baseStat + level * StatStepByTier[Math.Clamp(tier, 0, 3)] : 0;
     private readonly Dictionary<string, long> potionReady = new();
     private readonly object gate = new();
     public ItemConfig Config { get; }
@@ -201,7 +230,7 @@ public sealed class InventoryService
         int atk = 0, def = 0;
         using var cmd = Database.Command(c, null, "SELECT item_id, enhance_level FROM equipped WHERE character_id=$c", ("$c", characterId));
         using var r = cmd.ExecuteReader();
-        while (r.Read()) { ItemDef? d = Config.Get(r.GetString(0)); if (d != null) { int lvl = r.GetInt32(1); atk += Boost(d.attack, lvl); def += Boost(d.defense, lvl); } }
+        while (r.Read()) { ItemDef? d = Config.Get(r.GetString(0)); if (d != null) { int lvl = r.GetInt32(1), tr = TierOf(d.rarity); atk += Boost(d.attack, lvl, tr); def += Boost(d.defense, lvl, tr); } }
         return (atk, def);
     }
 
@@ -309,7 +338,12 @@ public sealed class InventoryService
             return new BagSlotDto
             {
                 index = index, itemId = itemId, name = d.name, kind = d.kind, icon = d.icon, desc = d.desc, rarity = d.rarity, qty = qty,
-                equipSlot = d.equipSlot, attack = Boost(d.attack, enhanced), defense = Boost(d.defense, enhanced), enhanceLevel = enhanced, enhanceChance = d.kind == "equipment" && enhanced < 15 ? SuccessChance(enhanced) : 0, enhanceGold = d.kind == "equipment" && enhanced < 15 ? GoldCost(enhanced) : 0, destMap = d.destMap,
+                equipSlot = d.equipSlot, attack = Boost(d.attack, enhanced, TierOf(d.rarity)), defense = Boost(d.defense, enhanced, TierOf(d.rarity)), enhanceLevel = enhanced,
+                enhanceChance = d.kind == "equipment" && enhanced < 15 ? SuccessChance(enhanced, TierOf(d.rarity)) : 0, enhanceGold = d.kind == "equipment" && enhanced < 15 ? GoldCost(enhanced, TierOf(d.rarity)) : 0, destMap = d.destMap,
+                tier = d.kind == "equipment" ? TierNames[TierOf(d.rarity)] : "",
+                nextAttack = d.kind == "equipment" && enhanced < 15 ? Boost(d.attack, enhanced + 1, TierOf(d.rarity)) : 0,
+                nextDefense = d.kind == "equipment" && enhanced < 15 ? Boost(d.defense, enhanced + 1, TierOf(d.rarity)) : 0,
+                failDropPercent = d.kind == "equipment" && enhanced < 15 && enhanced > SafeUntil ? DropChancePercent : 0,
                 usableByClass = d.kind != "equipment" || d.classes.Length == 0 || d.classes.Contains(heroClass),
             };
         }
@@ -326,9 +360,13 @@ public sealed class InventoryService
             while (r.Read()) eq.Add(new EquippedDto { equipSlot = r.GetString(0), item = Dto(-1, r.GetString(1), 1, r.GetInt32(2)) });
         int level = (int)Database.Scalar<long>(c, tx, "SELECT level FROM characters WHERE id=$c", ("$c", characterId));
         int atk = eq.Sum(e => e.item.attack), def = eq.Sum(e => e.item.defense);
+        int power = FarmService.CombatPowerFromBonuses(heroClass, level, atk, def);
+        foreach (EquippedDto e in eq)                                                  // combat power the next +1 of each worn piece would add
+            e.item.powerGain = e.item.enhanceLevel >= 15 ? 0 : FarmService.CombatPowerFromBonuses(heroClass, level, atk - e.item.attack + e.item.nextAttack, def - e.item.defense + e.item.nextDefense) - power;
         return new InventoryDto
         {
-            combatPower = FarmService.CombatPowerFromBonuses(heroClass, level, atk, def),
+            blessing = (int)Database.Scalar<long>(c, tx, "SELECT COALESCE((SELECT pity FROM enhance_pity WHERE character_id=$c),0)", ("$c", characterId)),
+            combatPower = power,
             capacity = Capacity(c, tx, characterId), maxCapacity = Config.maxBagSlots, stackMax = Config.stackMax, slots = slots, equipped = eq.ToArray(),
             nextExpandGold = Capacity(c, tx, characterId) >= Config.maxBagSlots ? 0 : Config.expandBaseGold + Config.expandStepGold * (Capacity(c, tx, characterId) - Config.bagSlots),
             attackBonus = atk, defenseBonus = def,
@@ -436,7 +474,7 @@ public sealed class InventoryService
     /// a repeated requestId returns the receipt without charging or rolling twice.</summary>
     public EnhanceResultDto Enhance(string accountId, string characterId, EnhanceRequestDto? req) => db.InTransaction((c, tx) =>
     {
-        if (req == null || req.equipSlot is not ("weapon" or "armor" or "accessory")
+        if (req == null || req.equipSlot is not ("weapon" or "armor" or "accessory" or "ring" or "necklace")
             || string.IsNullOrEmpty(req.requestId) || req.requestId.Length < 12 || req.requestId.Length > 80
             || req.requestId.Any(ch => !char.IsAsciiLetterOrDigit(ch) && ch != '-' && ch != '_'))
             throw new GameError("bad_request", "Yêu cầu cường hóa không hợp lệ.", 400);
@@ -449,7 +487,8 @@ public sealed class InventoryService
                 return new EnhanceResultDto {
                     beforeLevel = reader.GetInt32(0), afterLevel = reader.GetInt32(1), chancePercent = reader.GetInt32(2),
                     success = reader.GetInt32(3) != 0, protectedLevel = reader.GetInt32(4) != 0, replayed = true,
-                    goldSpent = GoldCost(reader.GetInt32(0)), gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)),
+                    goldSpent = GoldCost(reader.GetInt32(0), TierOf(Config.Get(Database.Scalar<string>(c, tx, "SELECT item_id FROM equipped WHERE character_id=$c AND equip_slot=$e", ("$c", characterId), ("$e", req.equipSlot)) ?? "")?.rarity ?? "white")),
+                    gold = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId)),
                     inventory = Snapshot(c, tx, characterId, cls)
                 };
         string? itemId = null; int before = 0;
@@ -472,14 +511,29 @@ public sealed class InventoryService
                 .Select(kv => kv.Key).DefaultIfEmpty(-1).First();
             if (charmSlot < 0) throw new GameError("no_charm", "Thiếu Bùa Bảo Vệ.", 409);
         }
+        int luckySlot = -1;
+        if (req.lucky)
+        {
+            luckySlot = bag.Where(kv => kv.Value.item == "lucky_stone" && kv.Value.qty > 0).Select(kv => kv.Key).DefaultIfEmpty(-1).First();
+            if (luckySlot < 0) throw new GameError("no_lucky", "Thiếu Đá May Mắn.", 409);
+        }
         // Consume in one transaction. Any failure rolls back materials, Gold and the level.
-        long fee = GoldCost(before);
+        int tier = TierOf(Config.Get(itemId)?.rarity ?? "white");
+        long fee = GoldCost(before, tier);
         LedgerResult paid = Wallet.Gold(c, tx, accountId, characterId, -fee, "enhance:" + itemId, "enhance:" + characterId + ":" + req.requestId);
         RemoveFromSlot(c, tx, characterId, stoneSlot, "enhance_stone", 1);
         if (req.protect) RemoveFromSlot(c, tx, characterId, charmSlot, "protection_charm", 1);
-        int chance = SuccessChance(before);
+        if (req.lucky) RemoveFromSlot(c, tx, characterId, luckySlot, "lucky_stone", 1);
+        int blessingBefore = (int)Database.Scalar<long>(c, tx, "SELECT COALESCE((SELECT pity FROM enhance_pity WHERE character_id=$c),0)", ("$c", characterId));
+        int powerBefore = Snapshot(c, tx, characterId, cls).combatPower;
+        // success chance = tier table + Chúc Phúc Rèn (+2 % per stack) + Đá May Mắn (+10 %)
+        int chance = Math.Min(100, SuccessChance(before, tier) + blessingBefore * BlessingStep + (req.lucky ? LuckyBonus : 0));
         bool success = enhanceRoll() < chance;
-        int after = success ? before + 1 : (req.protect || before <= 5 ? before : before - 1);
+        // a failure is free of level loss up to +6; from +7 it may cost one level (never the item) unless a Bùa Bảo Vệ is spent
+        bool lost = !success && !req.protect && before > SafeUntil && enhanceRoll() < DropChancePercent;
+        int after = success ? before + 1 : lost ? before - 1 : before;
+        int blessing = success ? 0 : before >= SafeUntil ? Math.Min(BlessingMax, blessingBefore + 1) : blessingBefore;   // a fail at +7 and above stores a little luck for the next try
+        Database.Exec(c, tx, "INSERT INTO enhance_pity(character_id,pity) VALUES($c,$p) ON CONFLICT(character_id) DO UPDATE SET pity=excluded.pity", ("$c", characterId), ("$p", blessing));
         Database.Exec(c, tx,
             "UPDATE equipped SET enhance_level=$n WHERE character_id=$c AND equip_slot=$e",
             ("$n", after), ("$c", characterId), ("$e", req.equipSlot));
@@ -488,10 +542,12 @@ public sealed class InventoryService
             ("$c", characterId), ("$r", req.requestId), ("$e", req.equipSlot), ("$p", before), ("$n", after),
             ("$q", chance), ("$s", success ? 1 : 0), ("$g", req.protect ? 1 : 0));
         AccountService.Audit(c, tx, accountId, "gear_enhance", $"{characterId} {itemId} +{before}->{after} success={success} protected={req.protect}");
+        InventoryDto snap = Snapshot(c, tx, characterId, cls);
         return new EnhanceResultDto {
             success = success, protectedLevel = req.protect, beforeLevel = before, afterLevel = after, chancePercent = chance,
+            lostLevel = lost, blessing = blessing, combatPowerBefore = powerBefore, combatPowerAfter = snap.combatPower, tier = TierNames[tier],
             goldSpent = fee, gold = paid.Balance,
-            inventory = Snapshot(c, tx, characterId, cls)
+            inventory = snap
         };
     });
 }

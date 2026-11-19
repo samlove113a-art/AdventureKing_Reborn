@@ -260,6 +260,7 @@ namespace AdventureKing.ArtPipeline
             }
             SetupFashionShop(hud);
             SetupHealer(hud);
+            SetupShopKeepers(hud);
             SetupBlacksmith(hud);
             SetupQuestNpcs();
             var sfx = hud.AddComponent<AudioSource>();
@@ -1053,6 +1054,29 @@ namespace AdventureKing.ArtPipeline
             var hso = new SerializedObject(healer);
             hso.FindProperty("shop").objectReferenceValue = ui;
             hso.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>One shop window per ShopKeeperNpc (pet keeper, jeweler ...): the same window class as the healer, pointed at the keeper's own server shop.</summary>
+        private static void SetupShopKeepers(GameObject hud)
+        {
+            foreach (ShopKeeperNpc keeper in Object.FindObjectsByType<ShopKeeperNpc>(FindObjectsInactive.Include))
+            {
+                var go = new GameObject("ShopWindow_" + keeper.name, typeof(RectTransform)) { layer = 5 };
+                go.transform.SetParent(hud.transform, false);
+                var ui = go.AddComponent<HealerShopUI>();
+                var so = new SerializedObject(ui);
+                so.FindProperty("shopId").stringValue = keeper.name == "NpcPetKeeper" ? "pet_keeper" : "jeweler";
+                so.FindProperty("panelSprite").objectReferenceValue = FrameArt.Get("shop_window");
+                so.FindProperty("cellSprite").objectReferenceValue = FrameArt.Get("item_cell");
+                so.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
+                so.FindProperty("coinSprite").objectReferenceValue = HudArt.Get("coin");
+                so.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+                SetIcons(so);
+                so.ApplyModifiedPropertiesWithoutUndo();
+                var kso = new SerializedObject(keeper);
+                kso.FindProperty("shop").objectReferenceValue = ui;
+                kso.ApplyModifiedPropertiesWithoutUndo();
+            }
         }
 
         /// <summary>Blacksmith forge window (HUD canvas) wired to the Thợ Rèn NPC placed in the hub (+ enhance at the NPC, with Gold fee).</summary>
