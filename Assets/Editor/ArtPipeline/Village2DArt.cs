@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,7 +27,7 @@ namespace AdventureKing.ArtPipeline
                 ti.mipmapEnabled = false;
                 ti.alphaIsTransparency = true;
                 ti.textureCompression = TextureImporterCompression.Uncompressed;
-                var st = new TextureImporterSettings(); ti.ReadTextureSettings(st); st.spriteAlignment = (int)SpriteAlignment.Custom; ti.SetTextureSettings(st);
+                var st = new TextureImporterSettings(); ti.ReadTextureSettings(st); st.spriteAlignment = (int)SpriteAlignment.Custom; st.spriteMeshType = SpriteMeshType.FullRect; st.spriteExtrude = 0; ti.SetTextureSettings(st);
                 ti.spritePivot = new Vector2(0.5f, 0f);
                 ti.SaveAndReimport();
             }

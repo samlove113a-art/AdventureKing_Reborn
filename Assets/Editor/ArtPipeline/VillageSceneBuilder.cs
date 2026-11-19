@@ -49,7 +49,7 @@ namespace AdventureKing.ArtPipeline
         public static void Build()
         {
             EnsureLayer(OneWayLayer, "OneWayPlatform");
-            BuildTown();
+            BuildTown2D();   // the hub is pure 2D now (the old 3D BuildTown stays only until the whole 3D purge is finished)
             BuildMeadow();
             BuildGuildHall();
             BuildWeddingHall();
@@ -202,6 +202,19 @@ namespace AdventureKing.ArtPipeline
 
             var camGo = new GameObject("MainCamera") { tag = "MainCamera" };
             var cam = camGo.AddComponent<Camera>();
+            if (Pure2DWorld)
+            {
+                cam.orthographic = true;                                   // pure 2D: orthographic camera, no perspective, no pitch
+                cam.orthographicSize = OrthoSize;
+                cam.nearClipPlane = 0.1f;
+                cam.farClipPlane = 100f;
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = new Color(0.07f, 0.09f, 0.17f);
+                camGo.transform.position = new Vector3(spawn.x, spawn.y + CamOffsetY, -10f);
+                camGo.transform.rotation = Quaternion.identity;
+            }
+            else
+            {
             cam.fieldOfView = 34f;
             cam.nearClipPlane = 0.3f;
             cam.farClipPlane = 160f;
@@ -210,6 +223,7 @@ namespace AdventureKing.ArtPipeline
             // Closer framing (Docs/ART_DIRECTION_TOWN.md §5): ~7.3 m visible height → the 1.6 m hero fills ~22%.
             camGo.transform.position = new Vector3(spawn.x, spawn.y + CamOffsetY, CamZ);
             camGo.transform.rotation = Quaternion.Euler(CamPitch, 0f, 0f);
+            }
             camGo.AddComponent<AudioListener>();
             var camData = camGo.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
             camData.renderPostProcessing = true;
@@ -223,7 +237,7 @@ namespace AdventureKing.ArtPipeline
             fso.FindProperty("maxBounds").vector2Value = new Vector2(maxX - 7f, maxCamY);
             fso.ApplyModifiedPropertiesWithoutUndo();
             PostProcessing(world);
-            Backdrop(world, camGo.transform, (minX + maxX) * 0.5f);
+            if (Pure2DWorld) Backdrop2D(world, cam); else Backdrop(world, camGo.transform, (minX + maxX) * 0.5f);
 
             var audio = new GameObject("AudioDirector").AddComponent<AdventureAudioDirector>();
             AudioLibrary.AssignTo(audio);

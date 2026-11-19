@@ -58,10 +58,12 @@ namespace AdventureKing.Gameplay
             float k = Time.unscaledTime < punchUntil ? (punchUntil - Time.unscaledTime) / Mathf.Max(0.01f, punchLength) : 0f;
             if (cam && k > 0f)
             {
-                if (baseFov < 0f) baseFov = cam.fieldOfView;
-                cam.fieldOfView = baseFov * (1f - punch * Mathf.Sin(k * Mathf.PI * 0.5f));
+                // perspective camera: field of view; orthographic (2D maps): orthographic size
+                if (baseFov < 0f) baseFov = cam.orthographic ? cam.orthographicSize : cam.fieldOfView;
+                float v = baseFov * (1f - punch * Mathf.Sin(k * Mathf.PI * 0.5f));
+                if (cam.orthographic) cam.orthographicSize = v; else cam.fieldOfView = v;
             }
-            else if (cam && baseFov > 0f) { cam.fieldOfView = baseFov; baseFov = -1f; }
+            else if (cam && baseFov > 0f) { if (cam.orthographic) cam.orthographicSize = baseFov; else cam.fieldOfView = baseFov; baseFov = -1f; }
         }
     }
 }
