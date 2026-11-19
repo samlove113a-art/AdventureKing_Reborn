@@ -34,6 +34,24 @@ def key_background(cell):
             outside[y, x] = True
             stack += [(y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)]
     a[outside, 3] = 0
+    # enclosed bits of background (between a wing and the body, inside a loop of the tail): large regions of almost exactly the background colour
+    tight = (np.abs(a[..., :3] - bg).sum(axis=2) < 24) & ~outside
+    seen = np.zeros((h, w), bool)
+    for y0, x0 in zip(*np.nonzero(tight)):
+        if seen[y0, x0]:
+            continue
+        comp, st = [], [(y0, x0)]
+        seen[y0, x0] = True
+        while st:
+            y, x = st.pop()
+            comp.append((y, x))
+            for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
+                if 0 <= ny < h and 0 <= nx < w and tight[ny, nx] and not seen[ny, nx]:
+                    seen[ny, nx] = True
+                    st.append((ny, nx))
+        if len(comp) > 150:
+            for y, x in comp:
+                a[y, x, 3] = 0
     return Image.fromarray(a.astype("uint8"), "RGBA")
 
 
@@ -71,14 +89,19 @@ def area(im):
     return int((np.array(im)[..., 3] > 0).sum())
 
 
+INSET = 14             # cut away the cell borders / divider lines the model draws
+GRID = (3, 2)          # columns x rows; --grid 2x2 for the square sheets the API returns
+
+
 def run(pid):
     path = os.path.join(DONE, pid + ".png")
     if not os.path.exists(path):
         print("no sheet for", pid)
         return
     sheet = Image.open(path).convert("RGBA")
-    cw, ch = sheet.width // 3, sheet.height // 2
-    cells = [key_background(sheet.crop((c * cw, r * ch, (c + 1) * cw, (r + 1) * ch))) for r in range(2) for c in range(3)]
+    cols, rows = GRID
+    cw, ch = sheet.width // cols, sheet.height // rows
+    cells = [key_background(sheet.crop((c * cw + INSET, r * ch + INSET, (c + 1) * cw - INSET, (r + 1) * ch - INSET))) for r in range(rows) for c in range(cols)]
     boxes = [im.getbbox() for im in cells]
     if any(b is None for b in boxes):
         print(pid, "has an empty cell: regenerate this sheet")
@@ -87,7 +110,7 @@ def run(pid):
     s = (area(main) / max(1, area(cells[0].crop(boxes[0])))) ** 0.5            # sheet scale -> game scale, from frame 1
     big = pid in BIG
     base_bottom = boxes[0][3]
-    for i in range(1, 6):
+    for i in range(1, len(cells)):
         im = cells[i]
         # keep the position of the creature inside its cell (feet line) by cropping to the union height of frame 1 and this frame
         bb = boxes[i]
@@ -102,6 +125,10 @@ def run(pid):
 
 
 if __name__ == "__main__":
+    if "--grid" in sys.argv:
+        g = sys.argv[sys.argv.index("--grid") + 1]
+        GRID = tuple(int(v) for v in g.split("x"))
+        sys.argv = [a for a in sys.argv if a not in ("--grid", g)]
     ids = sys.argv[1:] or [f[:-4] for f in sorted(os.listdir(DONE)) if f.endswith(".png")]
     for p in ids:
         run(p)
