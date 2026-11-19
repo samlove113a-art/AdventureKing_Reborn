@@ -157,12 +157,17 @@ MONSTERS["CrystalBat"] = dict(target=71, attack="swoops forward with fangs bared
                               ref=("a hostile crystal cave bat monster (Crystal Bat): a plump indigo-purple bat body with a round head, two sharp pointed horns, big "
                                    "yellow glowing eyes, small fangs, and two wings made of pale cyan-blue crystal shards with glassy facets, hovering in the air, "
                                    "side view facing right, dark-fantasy pixel style. Palette: deep indigo purple, cyan crystal wings, yellow eyes, dark outline"))
+MONSTERS["JadeTurtle"] = dict(target=75, attack="snaps forward with an extended neck and bites, then pulls its head back",
+                              death="retreats into its shell, the jade glow dims, the shell tips over and lies still",
+                              ref=("a hostile jade turtle monster (Jade Turtle): a stout teal-green turtle with a domed jade-green shell studded with four pale-mint "
+                                   "jade gems, a round green head with a grumpy face and small pink cheeks, four stubby green feet, walking on the ground, "
+                                   "side view facing right, slightly menacing dark-fantasy pixel style. Palette: teal green, mint jade, dark green, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
 
 # frames to keep when the generator drew junk at the end of a sheet: (actor, clip) -> indexes
-KEEP = {("MonsterNamNon", "Death"): "0,1,2,3,3", ("PollenSlime", "Idle"): "0,1,2,4,5,4"}
+KEEP = {("MonsterNamNon", "Death"): "0,1,2,3,3", ("PollenSlime", "Idle"): "0,1,2,4,5,4", ("JadeTurtle", "Death"): "0,1,2,3,5"}
 
 
 # extra processor flags per (actor, clip), e.g. drop the ground line the generator drew under the creature
