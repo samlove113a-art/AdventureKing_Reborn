@@ -147,12 +147,21 @@ MONSTERS["GlowMoss"] = dict(target=85, attack="hops forward and bursts a small c
                             ref=("a small hostile glowing forest mushroom creature (Glow Moss): a round bioluminescent turquoise-cyan mushroom cap with lighter "
                                  "pale-cyan spots that glows softly, a short pale mint-white stalk body with two small dark eyes and a tiny frown, stubby "
                                  "brown feet, slightly eerie cave-forest dark-fantasy monster, side view. Palette: turquoise cyan glow, pale mint, brown, dark outline"))
+MONSTERS["FlowerBee"] = dict(target=82, attack="darts forward and jabs with its stinger, then buzzes back",
+                             death="loses lift, its wings stop, it spins down and lands upside-down on the ground motionless",
+                             ref=("a hostile giant forest bee monster (Flower Bee): a chubby round bee body with black and golden-yellow stripes, a pink flower-petal "
+                                  "wing pair (translucent pink-white), a round head with an angry face, curled antennae, a sharp stinger at the tail, tiny "
+                                  "legs, hovering in the air, side view facing right, dark-fantasy pixel style. Palette: golden yellow, black, pink wings, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
 
 # frames to keep when the generator drew junk at the end of a sheet: (actor, clip) -> indexes
 KEEP = {("MonsterNamNon", "Death"): "0,1,2,3,3", ("PollenSlime", "Idle"): "0,1,2,4,5,4"}
+
+
+# extra processor flags per (actor, clip), e.g. drop the ground line the generator drew under the creature
+ACTOR_FLAGS = {("FlowerBee", "Walk"): ["--deline"]}
 
 
 def clips_for(cls):
@@ -237,6 +246,7 @@ def cmd_process(cls):
         args = [py(), os.path.join(HERE, "process_pixel_strip.py"), src, od, cls, n, str(cnt)]
         if wh >= 0:
             args += ["--whiten", str(wh)]
+        args += ACTOR_FLAGS.get((cls, n), [])
         if (cls, n) in KEEP:
             args += ["--keep", KEEP[(cls, n)]]
         if cls in NPCS or cls in MONSTERS:
@@ -270,6 +280,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 

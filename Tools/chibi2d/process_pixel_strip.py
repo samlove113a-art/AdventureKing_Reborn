@@ -105,7 +105,7 @@ def key_magenta(rgb):
 
 
 def remove_ground_lines(c, fg):
-    dark = c.astype(int).sum(axis=2) < 90
+    dark = c.astype(int).sum(axis=2) < 230
     out = fg.copy()
     h, w = fg.shape
     for y in range(h):
@@ -280,6 +280,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
