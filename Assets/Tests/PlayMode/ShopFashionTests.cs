@@ -201,7 +201,7 @@ namespace AdventureKing.Tests
             yield return Shot("03_bought_set");
 
             // ---- 5. a hat and a mount: layers stack in the right order, the mount lifts the hero and adds speed
-            WardrobeItem hat = shop.Wardrobe.items.First(i => FashionCatalog2D.Has(i.id) && i.slot == "head" && i.price <= 4500);
+            WardrobeItem hat = shop.Wardrobe.items.First(i => FashionCatalog2D.Has(i.id) && i.slot == "wings" && !i.ForDiamonds && i.usableByCharacter);
             WardrobeItem mount = shop.Wardrobe.items.First(i => FashionCatalog2D.Has(i.id) && i.slot == "mount" && !i.ForDiamonds);
             foreach (WardrobeItem it in new[] { hat, mount })
             {
@@ -210,7 +210,7 @@ namespace AdventureKing.Tests
                 yield return WaitIdle(shop);
                 Assert.IsTrue(shop.Wardrobe.Owns(it.id), it.id + ": " + shop.Status);
             }
-            Assert.AreEqual(hat.id, doll.Equipped(PaperSlot.Hat));
+            Assert.AreEqual(hat.id, doll.Equipped(PaperSlot.Wings));
             Assert.AreEqual(FashionCatalog2D.PieceId(setItem.id, "top"), doll.Equipped(PaperSlot.Top), "adding a hat / mount left the top as it was");
             Assert.AreEqual(FashionCatalog2D.PieceId(setItem.id, "bottom"), doll.Equipped(PaperSlot.Bottom), "... and the bottom");
             Assert.AreEqual(mount.id, doll.Equipped(PaperSlot.Mount));
@@ -222,7 +222,7 @@ namespace AdventureKing.Tests
             var sr = new Dictionary<string, int>();
             foreach (SpriteRenderer r in doll.GetComponentsInChildren<SpriteRenderer>()) sr[r.name] = r.sortingOrder;
             Assert.Less(sr["Paper_Mount"], doll.Body.sortingOrder, "mount behind the hero");
-            Assert.Greater(sr["Paper_Hat"], doll.Body.sortingOrder, "hat in front of the hero");
+            Assert.Less(sr["Paper_Wings"], doll.Body.sortingOrder, "wings behind the hero");
             yield return new WaitForSeconds(0.4f);
             yield return Shot("04_set_hat_mount");
 
@@ -268,13 +268,19 @@ namespace AdventureKing.Tests
             shop.SetTab(FashionShopUI.Tab.Wardrobe);
             Assert.GreaterOrEqual(shop.Visible().Count(), 3, "wardrobe shows the owned items");
             shop.Select(hat.id, false);
+            if (world.Character.outfit.Get("wings") != hat.id)      // a later purchase may have put other wings on: wear these first
+            {
+                shop.ToggleWear();
+                yield return WaitIdle(shop);
+            }
+            Assert.AreEqual(hat.id, world.Character.outfit.Get("wings"), "wings worn");
             shop.ToggleWear();
             yield return WaitIdle(shop);
-            Assert.IsNull(world.Character.outfit.Get("head"), "hat taken off");
-            Assert.IsNull(doll.Equipped(PaperSlot.Hat));
+            Assert.IsNull(world.Character.outfit.Get("wings"), "wings taken off");
+            Assert.IsNull(doll.Equipped(PaperSlot.Wings));
             shop.ToggleWear();
             yield return WaitIdle(shop);
-            Assert.AreEqual(hat.id, world.Character.outfit.Get("head"), "hat on again");
+            Assert.AreEqual(hat.id, world.Character.outfit.Get("wings"), "wings on again");
             yield return Shot("06_wardrobe");
             yield return Shot("06b_wardrobe_phone", 2340, 1080);
             shop.Close();
@@ -311,7 +317,7 @@ namespace AdventureKing.Tests
             yield return Shot("07_after_restart_relog");
         }
 
-        private static PaperSlot Slot(string slot) => slot switch { "top" => PaperSlot.Top, "bottom" => PaperSlot.Bottom, "head" => PaperSlot.Hat, "mask" => PaperSlot.Mask, "wings" => PaperSlot.Wings, _ => PaperSlot.Mount };
+        private static PaperSlot Slot(string slot) => slot switch { "top" => PaperSlot.Top, "bottom" => PaperSlot.Bottom, "wings" => PaperSlot.Wings, _ => PaperSlot.Mount };
 
         // ---------------------------------------------------------------- data completeness (no art is drawn by code: sprites are the owner's to assign)
         private static readonly string[] Heroes = { "Swordsman", "Mage", "Assassin", "Archer" };
@@ -322,9 +328,9 @@ namespace AdventureKing.Tests
         {
             FashionCatalog2D.Reset();
             var items = FashionCatalog2D.All.ToList();
-            Assert.GreaterOrEqual(items.Count, 70, "2D catalogue items (40 sets + hats, masks, tops, bottoms, wings, mounts)");
+            Assert.GreaterOrEqual(items.Count, 60, "2D catalogue items (40 sets + tops, bottoms, wings, mounts)");
             Assert.IsNotNull(FashionCatalog2D.Database, "Resources/Fashion/FashionDatabase.asset exists");
-            foreach (string slot in new[] { "set", "head", "mask", "top", "bottom", "wings", "mount" }) Assert.IsTrue(items.Any(i => i.slot == slot), "slot " + slot);
+            foreach (string slot in new[] { "set", "top", "bottom", "wings", "mount" }) Assert.IsTrue(items.Any(i => i.slot == slot), "slot " + slot);
             foreach (string hero in Heroes)
                 Assert.AreEqual(10, items.Count(i => i.slot == "set" && i.id.StartsWith("set2d_" + hero.ToLowerInvariant() + "_")), hero + ": 10 sets");
             foreach (FashionItem2D it in items)
@@ -343,7 +349,7 @@ namespace AdventureKing.Tests
         }
 
         /// <summary>
-        /// Slots are independent layers: every class wears a set (pieces) + hat + mask + wings + mount, each with its own SpriteRenderer and sorting order;
+        /// Slots are independent layers: every class wears a set (pieces) + wings + mount, each with its own SpriteRenderer and sorting order;
         /// changing one slot leaves all the others untouched, and a mount lifts the hero. 2D only.
         /// </summary>
         [UnityTest]
@@ -356,19 +362,18 @@ namespace AdventureKing.Tests
                 Assert.AreEqual(0, go.GetComponentsInChildren<SkinnedMeshRenderer>(true).Length + go.GetComponentsInChildren<MeshRenderer>(true).Length, h + ": 2D only");
                 var doll = go.GetComponent<Paperdoll2D>();
                 string setId = FashionCatalog2D.All.First(i => i.slot == "set" && i.id.StartsWith("set2d_" + h.ToLowerInvariant() + "_")).id;
-                OutfitLoadout look = FashionCatalog2D.WithSet(new OutfitLoadout(), setId).With("head", "hat2d_f_gothic").With("mask", "mask2d_f_cat")
-                    .With("wings", "wings2d_f_seraph").With("mount", "mount2d_white_horse");
+                OutfitLoadout look = FashionCatalog2D.WithSet(new OutfitLoadout(), setId).With("wings", "wings2d_f_seraph").With("mount", "mount2d_white_horse");
                 doll.ApplyLoadout(look);
                 yield return null;
                 if (h == "Mage" || h == "Archer")
                 {
-                    // contact picture of the female look (Meshy hat + mask + wings) for the owner: QA/Shop/look_<class>.png
+                    // contact picture of the female look (Meshy wings) for the owner: QA/Shop/look_<class>.png
                     var camGo = new GameObject("Test_Camera");
                     var cam = camGo.AddComponent<Camera>();
                     cam.orthographic = true; cam.orthographicSize = 1.1f; cam.clearFlags = CameraClearFlags.SolidColor; cam.backgroundColor = new Color(0.45f, 0.5f, 0.62f);
                     camGo.transform.position = new Vector3(0f, 0.95f, -10f);
                     go.transform.position = Vector3.zero;
-                    doll.ApplyLoadout(new OutfitLoadout().With("head", "hat2d_f_gothic").With("mask", "mask2d_f_kitsune").With("wings", "wings2d_f_seraph"));
+                    doll.ApplyLoadout(new OutfitLoadout().With("wings", "wings2d_f_seraph"));
                     yield return null;
                     var rtp = new RenderTexture(512, 512, 24);
                     cam.targetTexture = rtp; cam.Render();
@@ -381,7 +386,7 @@ namespace AdventureKing.Tests
                     doll.ApplyLoadout(look);
                     yield return null;
                 }
-                var all = new[] { PaperSlot.Top, PaperSlot.Bottom, PaperSlot.Hat, PaperSlot.Mask, PaperSlot.Wings, PaperSlot.Mount };
+                var all = new[] { PaperSlot.Top, PaperSlot.Bottom, PaperSlot.Wings, PaperSlot.Mount };
                 foreach (PaperSlot s in all) Assert.IsNotNull(doll.Equipped(s), $"{h} {s} worn");
                 var renderers = all.Select(s => doll.RendererOf(s)).ToList();
                 Assert.AreEqual(all.Length, renderers.Distinct().Count(), "one SpriteRenderer per slot");
@@ -391,9 +396,7 @@ namespace AdventureKing.Tests
                 Assert.Less(doll.RendererOf(PaperSlot.Wings).sortingOrder, bodyOrder, "wings behind the body");
                 Assert.Less(bodyOrder, doll.RendererOf(PaperSlot.Bottom).sortingOrder);
                 Assert.Less(doll.RendererOf(PaperSlot.Bottom).sortingOrder, doll.RendererOf(PaperSlot.Top).sortingOrder);
-                Assert.Less(doll.RendererOf(PaperSlot.Top).sortingOrder, doll.RendererOf(PaperSlot.Mask).sortingOrder);
-                Assert.Less(doll.RendererOf(PaperSlot.Mask).sortingOrder, doll.RendererOf(PaperSlot.Hat).sortingOrder);
-                Assert.IsTrue(doll.Body.enabled, "no slot hides the body");
+               Assert.IsTrue(doll.Body.enabled, "no slot hides the body");
                 Assert.Greater(doll.Lift, 0.3f, h + " lifted by the mount");
                 // replace ONLY the top: every other slot is untouched
                 string before = string.Join("|", all.Where(s => s != PaperSlot.Top).Select(s => doll.Equipped(s)));
@@ -401,9 +404,9 @@ namespace AdventureKing.Tests
                 Assert.AreEqual("top2d_gold", doll.Equipped(PaperSlot.Top));
                 Assert.AreEqual(before, string.Join("|", all.Where(s => s != PaperSlot.Top).Select(s => doll.Equipped(s))), "other slots kept");
                 Assert.AreSame(renderers[0], doll.RendererOf(PaperSlot.Top), "the same renderer is reused");
-                // take the hat off: only the hat goes
-                doll.ApplyLoadout(look.With("top", "top2d_gold").With("head", null));
-                Assert.IsNull(doll.Equipped(PaperSlot.Hat));
+                // take the wings off: only the wings go
+                doll.ApplyLoadout(look.With("top", "top2d_gold").With("wings", null));
+                Assert.IsNull(doll.Equipped(PaperSlot.Wings));
                 Assert.IsNotNull(doll.Equipped(PaperSlot.Top)); Assert.IsNotNull(doll.Equipped(PaperSlot.Mount));
                 Object.Destroy(go);
                 yield return null;

@@ -44,8 +44,8 @@ public class CosmeticShopTests : IDisposable
         Assert.Contains(sets, s => s.currency == "gold");
         Assert.Contains(sets, s => s.currency == "diamonds");
         Assert.All(sets, s => { Assert.NotNull(s.skill); Assert.False(string.IsNullOrWhiteSpace(s.skill!.name)); Assert.True(s.skill.damagePct + s.skill.critPct + s.skill.reducePct + s.skill.moveSpeedPct > 0); });
-        // layered slots: hats, masks, tops, bottoms, wings and mounts exist (class-free) and mounts / some wings carry a speed bonus
-        foreach (string slot in new[] { "head", "mask", "top", "bottom", "wings", "mount" })
+        // layered slots: tops, bottoms, wings and mounts exist (hats and masks were removed from the game) (class-free) and mounts / some wings carry a speed bonus
+        foreach (string slot in new[] { "top", "bottom", "wings", "mount" })
             Assert.Contains(cat.items, i => i.art == "2d" && i.slot == slot && i.kind == ItemKinds.Cosmetic && i.listed);
         Assert.All(cat.items.Where(i => i.art == "2d" && i.slot == "mount"), m => Assert.True(m.skill!.moveSpeedPct >= 10));
         // A catalog that would sell something for free or with an absurd effect is refused at startup.

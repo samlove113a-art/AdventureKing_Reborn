@@ -91,13 +91,9 @@ def main():
     for cls in D.HERO.values():
         anchors_file[cls] = build_anchors(cls, {c: f for c in CLIPS if (f := load_strip(cls, c))})
         for (key, name, hue, sm, vm, hshape, mshape, rarity, cur, price, sname, sdesc, eff) in D.SETS[cls]:
-            pieces = ["top", "bottom"] + (["head"] if hshape else []) + (["mask"] if mshape else [])
+            pieces = ["top", "bottom"]                       # hats and masks were removed from the game: a set is top + bottom only
             add(f"set2d_{cls.lower()}_{key}", name, "set", "cosmetic_set", rarity, cur, price, [CLASS_ID[cls]],
                 f"Bộ trang phục 2D: {name} ({', '.join(pieces)}). {sdesc}", (sname, sdesc), eff, pieces)
-    for (key, name, shape, tint, rarity, cur, price) in D.HATS:
-        add("hat2d_" + key, name, "head", "cosmetic", rarity, cur, price, [1, 3], f"Mũ cho nhân vật nữ: {name}.")
-    for (key, name, shape, tint, rarity, cur, price) in D.MASKS:
-        add("mask2d_" + key, name, "mask", "cosmetic", rarity, cur, price, [1, 3], f"Mặt nạ cho nhân vật nữ: {name}.")
     for (key, name, shape, tint, rarity, cur, price, eff) in D.WINGS:
         sk = ("Cánh " + name.split("Cánh ")[-1], "Nội tại: " + ", ".join(
             k.replace("moveSpeedPct", "+%d%% tốc chạy").replace("critPct", "+%d%% chí mạng") % v for k, v in eff.items())) if eff else None

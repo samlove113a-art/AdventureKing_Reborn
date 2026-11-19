@@ -98,7 +98,7 @@ namespace AdventureKing.Gameplay
         // the 2D paper-doll slots (each is its own layer on the hero): full set, hat, mask, top, bottom, wings, mount
         public static readonly (string slot, string label)[] SlotChips =
         {
-            ("", "Tất cả"), ("set", "Bộ trang phục"), ("head", "Mũ"), ("mask", "Mặt nạ"), ("top", "Áo"), ("bottom", "Quần/Váy"), ("wings", "Cánh"), ("mount", "Thú cưỡi"),
+            ("", "Tất cả"), ("set", "Bộ trang phục"), ("top", "Áo"), ("bottom", "Quần/Váy"), ("wings", "Cánh"), ("mount", "Thú cưỡi"),
         };
 
         public static string SlotName(string slot) => slot switch
@@ -192,6 +192,7 @@ namespace AdventureKing.Gameplay
             if (Wardrobe == null) return Enumerable.Empty<WardrobeItem>();
             return Wardrobe.items.Where(i =>
             {
+                if (i.slot == "head" || i.slot == "mask") return false; // hats and masks were removed from the game
                 if (!FashionCatalog2D.Has(i.id)) return false; // never sell what the 2D client cannot show
                 switch (CurrentTab)
                 {

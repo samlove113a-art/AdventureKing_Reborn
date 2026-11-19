@@ -48,47 +48,7 @@ namespace AdventureKing.ArtPipeline
         /// </summary>
         private static void ImportHats(FashionDatabase db)
         {
-            ImportFolder(db, "Assets/Resources/Fashion/Hats", new Vector2(0.5f, 0.2f));     // pivot = bottom-centre: sits on the head-top anchor
-            ImportFolder(db, "Assets/Resources/Fashion/Masks", new Vector2(0.5f, 0.5f));    // pivot = centre: sits on the face anchor
             ImportFolder(db, "Assets/Resources/Fashion/Wings", new Vector2(0.9f, 0.3f));    // pivot = where the wings join (lower right): sits on the shoulder anchor
-        }
-
-        /// <summary>Imports the Meshy bare-head frames (Assets/Resources/Fashion/BaseBody/&lt;Class&gt;/&lt;Class&gt;_&lt;Clip&gt;_&lt;n&gt;.png, already aligned to the 192 px hero frame) with the hero strips' scale + pivot and assigns them to FashionDatabase.noHatBaseSprites.</summary>
-        private static void ImportBaseBody(FashionDatabase db)
-        {
-            const string root = "Assets/Resources/Fashion/BaseBody";
-            if (!Directory.Exists(root)) return;
-            int n = 0;
-            foreach (FashionClassArt art in db.noHatBaseSprites)
-                foreach (FashionClipFrames clip in art.clips)
-                {
-                    var list = new List<Sprite>();
-                    for (int i = 0; ; i++)
-                    {
-                        string path = $"{root}/{art.heroClass}/{art.heroClass}_{clip.clip}_{i}.png";
-                        if (!File.Exists(path)) break;
-                        var ti = (TextureImporter)AssetImporter.GetAtPath(path);
-                        if (ti == null) break;
-                        ti.textureType = TextureImporterType.Sprite;
-                        ti.spriteImportMode = SpriteImportMode.Single;
-                        ti.spritePixelsPerUnit = 101.052635f;
-                        ti.filterMode = FilterMode.Point;
-                        ti.mipmapEnabled = false;
-                        ti.alphaIsTransparency = true;
-                        ti.textureCompression = TextureImporterCompression.Uncompressed;
-                        var st = new TextureImporterSettings();
-                        ti.ReadTextureSettings(st);
-                        st.spriteAlignment = (int)SpriteAlignment.Custom;
-                        ti.SetTextureSettings(st);
-                        ti.spritePivot = new Vector2(0.5f, 0.052105263f);
-                        ti.SaveAndReimport();
-                        var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
-                        if (!sp) break;
-                        list.Add(sp);
-                    }
-                    if (list.Count > 0) { clip.frames = list.ToArray(); n += list.Count; }
-                }
-            Debug.Log("[VISUALS] BaseBody frames assigned: " + n);
         }
 
         private static void ImportFolder(FashionDatabase db, string dir, Vector2 pivot)
@@ -136,11 +96,7 @@ namespace AdventureKing.ArtPipeline
                 foreach (string piece in it.pieces)
                     if (have.Add(FashionCatalog2D.PieceId(it.id, piece))) { db.items.Add(NewVisual(FashionCatalog2D.PieceId(it.id, piece), piece, false)); added++; }
             }
-            foreach (HeroClass c in new[] { HeroClass.Swordsman, HeroClass.Mage, HeroClass.Assassin, HeroClass.Archer })     // empty BaseBody slots for the owner's bare-headed strips
-                if (!db.noHatBaseSprites.Any(a => a != null && a.heroClass == c))
-                    db.noHatBaseSprites.Add(new FashionClassArt { heroClass = c, clips = Paperdoll2D.Clips.Select(cl => new FashionClipFrames { clip = cl }).ToArray() });
             ImportHats(db);
-            ImportBaseBody(db);
             EditorUtility.SetDirty(db);
             Debug.Log($"[VISUALS] FashionDatabase: {db.items.Count} entries ({added} added), sprites left empty for the owner");
         }
