@@ -129,8 +129,10 @@ namespace AdventureKing.Gameplay
             Vector3 to = AimPoint(c);
             var orb = Fx("orb", from, 0.9f, 1f, Color.white);
             float travel = Mathf.Clamp(Mathf.Abs(to.x - from.x) / 12f, 0.12f, 0.5f);
+            SkillVfxProbe.Launched(c, from, orb ? orb.transform : null, new Vector3(to.x - from.x, to.y - from.y, 0f) / travel);   // QA record (the 3D Fireball path already reports; the sprite heroes did not)
             if (orb) yield return Fly(orb, from, () => AimPoint(c), travel, 90f);
             to = AimPoint(c);
+            SkillVfxProbe.Impacted(orb ? orb.transform.position : to, to);
             Fx("explosion", to, 0.9f, 1f, Color.white);
             Fx("hit_spark", to, 1.3f, 1f, PuCore);
             ReactNear(c, to, Mathf.Max(1.2f, c.Radius) + 0.4f, 0.8f, PuCore); Sfx("mg1_hit"); Shake(c, 0.1f, 0.2f); Stop(c, 0.04f);
