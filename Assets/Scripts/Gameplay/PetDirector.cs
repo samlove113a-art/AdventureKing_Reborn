@@ -164,6 +164,7 @@ namespace AdventureKing.Gameplay
             if (body2D)
             {
                 Pet.rotation = Quaternion.identity;
+                body2D.Moving = moving;
                 body2D.Set(hungry, facing);
                 if (Mood == "happy" || Mood == "potion") body2D.Renderer.flipX = Mathf.Sin(Time.time * 18f) > 0f ? facing < 0 : facing > 0;   // happy wiggle
             }

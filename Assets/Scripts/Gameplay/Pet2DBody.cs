@@ -72,7 +72,7 @@ namespace AdventureKing.Gameplay
         {
             if (!Renderer) return;
             Sprite s = hungry && Hungry ? Hungry : Normal;
-            if (!hungry && Frames != null && Frames.Length > 1) s = Frames[Mathf.FloorToInt(Time.time * Fps) % Frames.Length];
+            if (!hungry && Frames != null && Frames.Length > 1) s = Moving ? Frames[Mathf.FloorToInt(Time.time * 7f) % Frames.Length] : Frames[0];   // frame B only while the pet walks / flies
             if (Renderer.sprite != s) Renderer.sprite = s;
             Renderer.flipX = facing < 0;
         }
@@ -86,6 +86,7 @@ namespace AdventureKing.Gameplay
             _ => MoveStyle.Walk,
         };
         public MoveStyle Style;
+        public bool Moving;          // set by the director before Set(): walk / flap frames only play while moving
         public float HoverHeight = 0.9f;
 
         /// <summary>Procedural movement of the (single) picture: returns the extra height above the ground. Walk = step rocking, Fly = hovering with wing-beat pulses, Glide = S-wave.</summary>

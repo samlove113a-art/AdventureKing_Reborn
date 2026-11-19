@@ -57,7 +57,7 @@ namespace AdventureKing.ArtPipeline
             const string dir = "Assets/Resources/Pets";
             if (!Directory.Exists(dir)) return;
             int n = 0;
-            foreach (string file in Directory.GetFiles(dir, "pet_*.png"))
+            foreach (string file in Directory.GetFiles(dir, "pet_*.png").OrderBy(f => f.EndsWith("_b.png") ? 1 : 0).ThenBy(f => f))
             {
                 string path = file.Replace('\\', '/');
                 var ti = (TextureImporter)AssetImporter.GetAtPath(path);
@@ -69,10 +69,11 @@ namespace AdventureKing.ArtPipeline
                 ti.spritePivot = new Vector2(0.5f, 0.04f);
                 ti.SaveAndReimport();
                 var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
-                string stem = Path.GetFileNameWithoutExtension(path); bool hungryPic = stem.EndsWith("_hungry");
-                PetVisual v = db.pets.FirstOrDefault(p => p != null && p.petId == (hungryPic ? stem.Substring(0, stem.Length - 7) : stem));
+                string stem = Path.GetFileNameWithoutExtension(path); bool hungryPic = stem.EndsWith("_hungry"), walkB = stem.EndsWith("_b");
+                PetVisual v = db.pets.FirstOrDefault(p => p != null && p.petId == (hungryPic ? stem.Substring(0, stem.Length - 7) : walkB ? stem.Substring(0, stem.Length - 2) : stem));
                 if (v == null || !sp) { Debug.LogWarning("[VISUALS] no pet entry for " + path); continue; }
                 if (hungryPic) { if (!v.hungry) v.hungry = sp; n++; continue; }
+                if (walkB) { if (v.idleFrames != null && v.idleFrames.Length == 1) v.idleFrames = new[] { v.idleFrames[0], sp }; n++; continue; }   // second frame of the walk / flap cycle
                 if (!v.portrait) v.portrait = sp;
                 if (v.idleFrames == null || v.idleFrames.Length == 0) v.idleFrames = new[] { sp };
                 n++;
