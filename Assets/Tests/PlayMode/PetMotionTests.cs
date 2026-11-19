@@ -27,7 +27,7 @@ namespace AdventureKing.Tests.PlayMode
         public IEnumerator Pets_Walk_Fly_Or_Glide_And_Keep_Their_Relative_Sizes()
         {
             string[] ids = { "pet_chick", "pet_jade_dragon", "pet_fire_dragon", "pet_ember_tiger", "pet_night_horse", "pet_phoenix", "pet_war_dragon", "pet_ink_dragon" };
-            var pets = ids.Select((id, i) => Make(id, 2.5f + i * 1.6f)).ToDictionary(b => b.gameObject.name.Replace("_Visual2D", ""), b => b);
+            var pets = ids.Select((id, i) => Make(id, 2.5f + i * 1.6f + (i >= 6 ? 0.9f : 0f) + (i == 7 ? 1.0f : 0f))).ToDictionary(b => b.gameObject.name.Replace("_Visual2D", ""), b => b);
             foreach (Pet2DBody b in pets.Values) Assert.IsNotNull(b.Renderer.sprite, b.name + " has its picture");
 
             Assert.AreEqual(Pet2DBody.MoveStyle.Walk, pets["pet_jade_dragon"].Style, "baby dragons walk");
@@ -46,6 +46,11 @@ namespace AdventureKing.Tests.PlayMode
                 glideMin = Mathf.Min(glideMin, g); glideMax = Mathf.Max(glideMax, g);
                 yield return null;
             }
+            var wave = pets["pet_ink_dragon"].transform.Find("Wave");
+            Assert.IsNotNull(wave, "the Eastern dragon is cut into slices for the slither");
+            Assert.AreEqual(16, wave.childCount);
+            float y0 = wave.GetChild(15).localPosition.y; yield return new WaitForSeconds(0.25f); pets["pet_ink_dragon"].Animate(false, true, 0f, 0f, 1);
+            Assert.Greater(Mathf.Abs(y0 - wave.GetChild(15).localPosition.y), 0.0005f, "the wave travels along the body");
             Assert.AreEqual(0f, walkMax, 0.001f, "a walker stays on the ground");
             Assert.Greater(flyMin, 0.6f, "the flyer hovers well above the ground");
             Assert.Greater(glideMax - glideMin, 0.15f, "the Eastern dragon glides up and down in S waves");
@@ -63,8 +68,8 @@ namespace AdventureKing.Tests.PlayMode
             Directory.CreateDirectory("QA/Pets");
             var camGo = new GameObject("PetCam");
             var cam = camGo.AddComponent<Camera>();
-            cam.orthographic = true; cam.orthographicSize = 2.5f; cam.clearFlags = CameraClearFlags.SolidColor; cam.backgroundColor = new Color(0.28f, 0.3f, 0.42f);
-            camGo.transform.position = new Vector3(7.7f, 1.6f, -10f);
+            cam.orthographic = true; cam.orthographicSize = 3.1f; cam.clearFlags = CameraClearFlags.SolidColor; cam.backgroundColor = new Color(0.28f, 0.3f, 0.42f);
+            camGo.transform.position = new Vector3(9.4f, 2.0f, -10f);
             GameObject heroGo = Object.Instantiate(Resources.Load<GameObject>("Chibi2D/Mage_Visual2D"));
             heroGo.transform.position = new Vector3(1.1f, 0f, 0f);
             foreach (Pet2DBody b in pets.Values) b.transform.position += new Vector3(1.0f, 0f, 0f);

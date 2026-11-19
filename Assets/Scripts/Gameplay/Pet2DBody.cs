@@ -108,8 +108,8 @@ namespace AdventureKing.Gameplay
                 {
                     float wave = Mathf.Sin(t * (moving ? 3.2f : 1.6f) + worldX * 1.6f);
                     lift = hungry ? 0.15f : HoverHeight + wave * (moving ? 0.24f : 0.1f);
-                    rot = hungry ? 0f : Mathf.Cos(t * (moving ? 3.2f : 1.6f) + worldX * 1.6f) * (moving ? 15f : 6f) * facing;
-                    sx = 1f + wave * 0.035f; sy = 1f - wave * 0.03f;
+                    rot = 0f; sx = 1f; sy = 1f;
+                    UpdateWave(hungry, moving, facing, t, worldX);          // the body slithers slice by slice
                     break;
                 }
                 default:
@@ -123,6 +123,42 @@ namespace AdventureKing.Gameplay
             Renderer.transform.localRotation = Quaternion.Euler(0f, 0f, rot);
             Renderer.transform.localScale = new Vector3(sx, sy, 1f);
             return lift;
+        }
+
+        // ---- Eastern dragon: the picture is cut into vertical slices (a runtime cut of the owner's sprite, nothing drawn) and a sine wave travels along the body: a full slither cycle
+        private const int WaveSlices = 16;
+        private Transform waveRoot;
+        private SpriteRenderer[] waveParts = new SpriteRenderer[0];
+        private Sprite waveSource;
+
+        private void UpdateWave(bool hungry, bool moving, int facing, float t, float worldX)
+        {
+            Sprite src = hungry && Hungry ? Hungry : Normal;
+            if (!src || !src.texture) { Renderer.enabled = true; return; }
+            if (waveSource != src)
+            {
+                if (waveRoot) Destroy(waveRoot.gameObject);
+                waveRoot = new GameObject("Wave").transform;
+                waveRoot.SetParent(Renderer.transform.parent, false);
+                Rect r = src.textureRect; float w = r.width / WaveSlices;
+                waveParts = new SpriteRenderer[WaveSlices];
+                for (int i = 0; i < WaveSlices; i++)
+                {
+                    var sp = Sprite.Create(src.texture, new Rect(r.x + i * w, r.y, w, r.height), new Vector2(0.5f, src.pivot.y / r.height), src.pixelsPerUnit, 0, SpriteMeshType.FullRect);
+                    var go = new GameObject("S" + i);
+                    go.transform.SetParent(waveRoot, false);
+                    go.transform.localPosition = new Vector3(((i + 0.5f) * w - src.pivot.x) / src.pixelsPerUnit, 0f, 0f);
+                    var sr = go.AddComponent<SpriteRenderer>();
+                    sr.sprite = sp; sr.sharedMaterial = Renderer.sharedMaterial; sr.sortingLayerID = Renderer.sortingLayerID; sr.sortingOrder = Renderer.sortingOrder;
+                    waveParts[i] = sr;
+                }
+                waveSource = src;
+            }
+            Renderer.enabled = false;
+            waveRoot.localScale = new Vector3(facing, 1f, 1f);
+            float amp = hungry ? 0.012f : moving ? 0.075f : 0.035f, speed = moving ? 5.5f : 2.4f;
+            for (int i = 0; i < waveParts.Length; i++)
+                waveParts[i].transform.localPosition = new Vector3(waveParts[i].transform.localPosition.x, Mathf.Sin(t * speed - i * 0.55f) * amp * (0.3f + 0.7f * i / (WaveSlices - 1f)), 0f);   // the tail swings more than the head
         }
     }
 }
