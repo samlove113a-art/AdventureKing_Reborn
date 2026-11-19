@@ -162,6 +162,12 @@ MONSTERS["JadeTurtle"] = dict(target=75, attack="snaps forward with an extended 
                               ref=("a hostile jade turtle monster (Jade Turtle): a stout teal-green turtle with a domed jade-green shell studded with four pale-mint "
                                    "jade gems, a round green head with a grumpy face and small pink cheeks, four stubby green feet, walking on the ground, "
                                    "side view facing right, slightly menacing dark-fantasy pixel style. Palette: teal green, mint jade, dark green, dark outline"))
+MONSTERS["ShadowLeaf"] = dict(target=60, attack="darts forward and slashes with its sharp leaf-blade tip, trailing a dark shadow smear, then glides back",
+                              death="its leaf body curls and withers, the shadow dissolves into dark wisps, and it falls to the ground as a dry crumpled leaf",
+                              ref=("a hostile shadow leaf creature (Shadow Leaf): a sleek elongated dark-purple leaf-shaped body like a floating blade, with a glowing "
+                                   "narrow pale slit eye, a sharp pointed leaf-tip snout pointing right, a clearly visible face with a large glowing pale-yellow angry eye and a row of tiny sharp teeth, a pale vein line along its body, small dripping shadow "
+                                   "droplets underneath, gliding just above the ground, side view facing right, eerie dark-fantasy pixel style. "
+                                   "Palette: deep violet purple, lilac highlights, pale eye, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
@@ -290,6 +296,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 
