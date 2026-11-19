@@ -117,7 +117,7 @@ namespace AdventureKing.Tests
         {
             const string account = "fashion.tester@test.vn", password = "fashion-pass-2026", heroName = "Kiếm Khách Lụa";
             yield return server.OpenGame();
-            yield return TestServer.RegisterCreateAndEnter(account, password, HeroClass.Swordsman, heroName);
+            yield return TestServer.RegisterCreateAndEnter(account, password, HeroClass.Mage, heroName);
             Bind();
             AdventureWorldSession world = AdventureWorldSession.Current;
             Assert.AreEqual(200000, world.Character.gold, "starter Gold granted by the server");
@@ -152,11 +152,11 @@ namespace AdventureKing.Tests
             Assert.IsNotNull(shop.PreviewDoll, "fitting-room paper doll");
             Assert.AreEqual(0, shop.PreviewModel.GetComponentsInChildren<SkinnedMeshRenderer>(true).Length + shop.PreviewModel.GetComponentsInChildren<MeshRenderer>(true).Length, "no 3D in the fitting room");
 
-            // ---- 2. class filter: only this class's sets (Kiếm Sĩ = 0) are shown, in Gold; the other classes' sets are hidden
+            // ---- 2. class filter: only this class's sets (Pháp Sư = 1) are shown, in Gold; the other classes' sets are hidden
             var sets = shop.Visible().Where(i => i.IsSet).ToList();
             Assert.GreaterOrEqual(sets.Count, 5, "several Gold sets for the Swordsman");
-            Assert.IsTrue(sets.All(i => i.classes.Length == 1 && i.classes[0] == 0 && !i.ForDiamonds), "only Swordsman Gold sets");
-            Assert.IsEmpty(shop.Visible().Where(i => i.id.StartsWith("set2d_assassin") || i.id.StartsWith("set2d_mage") || i.id.StartsWith("set2d_archer")), "other classes' sets hidden");
+            Assert.IsTrue(sets.All(i => i.classes.Length == 1 && i.classes[0] == 1 && !i.ForDiamonds), "only Mage Gold sets");
+            Assert.IsEmpty(shop.Visible().Where(i => i.id.StartsWith("set2d_assassin") || i.id.StartsWith("set2d_swordsman") || i.id.StartsWith("set2d_archer")), "other classes' sets hidden");
             shop.SetSlotFilter("mount");
             Assert.IsTrue(shop.Visible().Count() >= 1 && shop.Visible().All(i => i.slot == "mount"), "slot filter: mounts");
             shop.SetSlotFilter("wings");
@@ -201,7 +201,7 @@ namespace AdventureKing.Tests
             yield return Shot("03_bought_set");
 
             // ---- 5. a hat and a mount: layers stack in the right order, the mount lifts the hero and adds speed
-            WardrobeItem hat = shop.Wardrobe.items.First(i => FashionCatalog2D.Has(i.id) && i.slot == "head" && i.price <= 3500);
+            WardrobeItem hat = shop.Wardrobe.items.First(i => FashionCatalog2D.Has(i.id) && i.slot == "head" && i.price <= 4500);
             WardrobeItem mount = shop.Wardrobe.items.First(i => FashionCatalog2D.Has(i.id) && i.slot == "mount" && !i.ForDiamonds);
             foreach (WardrobeItem it in new[] { hat, mount })
             {
@@ -356,7 +356,7 @@ namespace AdventureKing.Tests
                 Assert.AreEqual(0, go.GetComponentsInChildren<SkinnedMeshRenderer>(true).Length + go.GetComponentsInChildren<MeshRenderer>(true).Length, h + ": 2D only");
                 var doll = go.GetComponent<Paperdoll2D>();
                 string setId = FashionCatalog2D.All.First(i => i.slot == "set" && i.id.StartsWith("set2d_" + h.ToLowerInvariant() + "_")).id;
-                OutfitLoadout look = FashionCatalog2D.WithSet(new OutfitLoadout(), setId).With("head", "hat2d_crown").With("mask", "mask2d_half_white")
+                OutfitLoadout look = FashionCatalog2D.WithSet(new OutfitLoadout(), setId).With("head", "hat2d_f_gothic").With("mask", "mask2d_half_white")
                     .With("wings", "wings2d_angel").With("mount", "mount2d_white_horse");
                 doll.ApplyLoadout(look);
                 yield return null;

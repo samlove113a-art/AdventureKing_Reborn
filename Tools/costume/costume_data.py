@@ -73,16 +73,15 @@ SETS = {
 }
 
 # Layer items (any class): key, name, shape, tint (hex), rarity, currency, price, extra effect
-HATS = [
-    ("wizard", "Mũ Phù Thủy Sao", "wizard", "#5a3aa0", "common", "gold", 3500),
-    ("crown", "Vương Miện Nhỏ", "circlet", "#e8b83a", "rare", "gold", 9000),
-    ("halo", "Vầng Hào Quang", "halo", "#fff0a0", "epic", "gold", 22000),
-    ("horns", "Sừng Quỷ Nhỏ", "horns", "#8a1f2a", "rare", "gold", 8000),
-    ("catears", "Bờm Tai Mèo", "cat_ears", "#f08a3a", "common", "gold", 3000),
-    ("bunny", "Bờm Tai Thỏ Hồng", "bunny", "#f3ead8", "common", "gold", 3200),
-    ("ribbon", "Nơ Lụa Đỏ", "ribbon", "#d24b4b", "common", "gold", 2600),
-    ("feather", "Chiếc Mũ Lông Vũ", "feather", "#3f9a5a", "rare", "gold", 7500),
-]
+HATS = [   # female heroes only (Pháp Sư, Cung Thủ): cute / cool / anime headwear, art from Meshy
+    ("f_bunny", "Băng Đô Tai Thỏ", "bunny", "#f6a8c8", "common", "gold", 3200),
+    ("f_gothic", "Mũ Chóp Gothic", "gothic", "#1b1424", "rare", "gold", 9500),
+    ("f_valkyrie", "Vương Miện Valkyrie", "valkyrie", "#cfd8e6", "epic", "gold", 24000),
+    ("f_kunoichi", "Băng Đô Kunoichi", "kunoichi", "#2f8a8a", "common", "gold", 4200),
+    ("f_magical", "Cài Tóc Ma Pháp Thiếu Nữ", "magical", "#f06ca8", "rare", "gold", 10500),
+    ("f_kitsune", "Cài Tóc Cáo Kitsune", "kitsune", "#f08a2a", "epic", "gold", 22000),
+    ("f_angel", "Băng Đô Thiên Thần", "angel", "#fff0a0", "rare", "gold", 11000),
+    ("f_darkqueen", "Vương Miện Nữ Hoàng Bóng Tối", "darkqueen", "#8a1f2a", "epic", "diamonds", 160),]
 MASKS = [
     ("half_white", "Mặt Nạ Nửa Mặt Trắng", "half_white", "#f2f2f2", "common", "gold", 4500),
     ("oni", "Mặt Nạ Quỷ Oni", "oni", "#b82a2a", "rare", "gold", 12000),

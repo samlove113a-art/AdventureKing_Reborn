@@ -42,10 +42,48 @@ namespace AdventureKing.ArtPipeline
             return a;
         }
 
+        /// <summary>
+        /// Imports the owner-approved 2D PNGs (Meshy output, resized only) from Assets/Resources/Fashion/Hats/{itemId}.png: Sprite (2D and UI), Point, uncompressed, no mips,
+        /// pivot at the bottom-centre of the hat (sits on the head-top anchor), then assigns icon + frames of the matching FashionDatabase entry. Never overwrites other entries.
+        /// </summary>
+        private static void ImportHats(FashionDatabase db)
+        {
+            const string dir = "Assets/Resources/Fashion/Hats";
+            if (!Directory.Exists(dir)) return;
+            foreach (string file in Directory.GetFiles(dir, "*.png"))
+            {
+                string path = file.Replace('\\', '/');
+                var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+                if (ti == null) continue;
+                ti.textureType = TextureImporterType.Sprite;
+                ti.spriteImportMode = SpriteImportMode.Single;
+                ti.spritePixelsPerUnit = 192f / 1.9f;               // same scale as the hero bodies
+                ti.filterMode = FilterMode.Point;
+                ti.mipmapEnabled = false;
+                ti.alphaIsTransparency = true;
+                ti.textureCompression = TextureImporterCompression.Uncompressed;
+                var st = new TextureImporterSettings();
+                ti.ReadTextureSettings(st);
+                st.spriteAlignment = (int)SpriteAlignment.Custom;
+                ti.SetTextureSettings(st);
+                ti.spritePivot = new Vector2(0.5f, 0.2f);
+                ti.SaveAndReimport();
+                var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                FashionVisual v = db.Get(Path.GetFileNameWithoutExtension(path));
+                if (v == null || !sp) { Debug.LogWarning("[VISUALS] no database entry for " + path); continue; }
+                v.icon = sp;
+                v.frames = new[] { sp };
+                Debug.Log("[VISUALS] hat assigned: " + v.id);
+            }
+        }
+
         private static void BuildFashion()
         {
             var db = Load<FashionDatabase>(FashionPath);
             var cat = JsonUtility.FromJson<FashionCatalogFile>(File.ReadAllText("Assets/Resources/Fashion/catalog.json"));
+            // entries of items that left the catalogue (and have no pictures) are pruned
+            var live = new HashSet<string>(cat.items.Select(i => i.id).Concat(cat.items.SelectMany(i => i.pieces.Select(p => FashionCatalog2D.PieceId(i.id, p)))));
+            db.items.RemoveAll(i => i == null || (!live.Contains(i.id) && !i.icon && (i.frames == null || i.frames.Length == 0)));
             var have = new HashSet<string>(db.items.Where(i => i != null).Select(i => i.id));
             int added = 0;
             foreach (FashionItem2D it in cat.items)
@@ -54,6 +92,7 @@ namespace AdventureKing.ArtPipeline
                 foreach (string piece in it.pieces)
                     if (have.Add(FashionCatalog2D.PieceId(it.id, piece))) { db.items.Add(NewVisual(FashionCatalog2D.PieceId(it.id, piece), piece, false)); added++; }
             }
+            ImportHats(db);
             EditorUtility.SetDirty(db);
             Debug.Log($"[VISUALS] FashionDatabase: {db.items.Count} entries ({added} added), sprites left empty for the owner");
         }

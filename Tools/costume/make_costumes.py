@@ -95,7 +95,7 @@ def main():
             add(f"set2d_{cls.lower()}_{key}", name, "set", "cosmetic_set", rarity, cur, price, [CLASS_ID[cls]],
                 f"Bộ trang phục 2D: {name} ({', '.join(pieces)}). {sdesc}", (sname, sdesc), eff, pieces)
     for (key, name, shape, tint, rarity, cur, price) in D.HATS:
-        add("hat2d_" + key, name, "head", "cosmetic", rarity, cur, price, [0, 1, 2, 3], f"Mũ: {name}.")
+        add("hat2d_" + key, name, "head", "cosmetic", rarity, cur, price, [1, 3], f"Mũ cho nhân vật nữ: {name}.")
     for (key, name, shape, tint, rarity, cur, price) in D.MASKS:
         add("mask2d_" + key, name, "mask", "cosmetic", rarity, cur, price, [0, 1, 2, 3], f"Mặt nạ: {name}.")
     for (key, name, shape, tint, rarity, cur, price, eff) in D.WINGS:
