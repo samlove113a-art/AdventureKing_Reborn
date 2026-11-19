@@ -223,6 +223,8 @@ def main():
         def place(it):
             h, w = it["tile"].shape[:2]
             a = it["cx"] if '--anchor-body' in argv else anchor
+            if '--lock-feet' in argv:   # locomotion / idle: every frame's lowest pixel on the same ground row (the posture test allows 1 px)
+                return CELL // 2 + (it["bx0"] - it["cx"]), (CELL - GROUND_PX) - h, w, h      # also centre each frame on its own centroid
             return CELL // 2 - 20 * ('--anchor-body' in argv) + (it["bx0"] - a), (CELL - GROUND_PX) - (base - it["top"]), w, h
     
         # uniform shift so every frame fits inside the cell
@@ -230,20 +232,22 @@ def main():
         maxx = max(place(it)[0] + place(it)[2] for it in real)
         miny = min(place(it)[1] for it in real)
         maxy = max(place(it)[1] + place(it)[3] for it in real)
+        mg = 7 if '--margin' in argv else 0          # --margin: keep 7 px free to every cell edge (the posture test fails sprites that touch it)
         sx = 0.0
-        if minx < 0:
-            sx = -minx
-        elif maxx > CELL:
-            sx = CELL - maxx
+        if minx < mg:
+            sx = mg - minx
+        elif maxx > CELL - mg:
+            sx = CELL - mg - maxx
         sy = 0.0
-        if miny < 0:
-            sy = -miny
+        if miny < mg:
+            sy = mg - miny
         elif maxy > CELL:
             sy = CELL - maxy
         print("fit", round(minx, 1), round(maxx, 1), round(miny, 1), round(maxy, 1), "shift", round(sx, 1), round(sy, 1))
         span_x, span_y = maxx - minx, maxy - miny
-        if max(span_x, span_y) > CELL - 2 and "--ref-scale" not in argv:
-            scale *= (CELL - 2) / max(span_x, span_y)
+        room = CELL - (14 if '--margin' in argv else 2)       # --margin keeps 7 px free on every side (no sprite touching the frame edge)
+        if max(span_x, span_y) > room and "--ref-scale" not in argv:
+            scale *= room / max(span_x, span_y)
             print("too wide, rescale", round(scale, 4))
             continue
         break

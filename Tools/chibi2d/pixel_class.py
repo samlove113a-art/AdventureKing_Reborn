@@ -239,6 +239,7 @@ MONSTERS["MushroomKing"] = dict(target=370, cell=384, gen_extra="Keep the same s
                                      "surrounding its whole body, cracked glowing ground under its giant feet, an immense overwhelming power stance that "
                                      "fills the whole canvas, dark-fantasy pixel style, side view facing right. "
                                      "Palette: blood crimson, cream, royal gold, black cape, glowing violet, dark outline"))
+CLASSES["Swordsman"] = dict(ref="", attack="", skill="", stash="sword on the back")   # generated earlier under the name "knight": only process/install are used
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
@@ -259,7 +260,7 @@ def clips_for(cls):
 
 
 # per-clip processor flags: drop ground lines the generator draws, keep only the hero (projectile is separate VFX), anchor on the body
-EXTRA = {"Jump": ["--deline"], "Attack": ["--hero-only", "--anchor-body"], "Skill": ["--anchor-body", "--copy", "6:5"]}
+EXTRA = {"Idle": ["--lock-feet", "--margin"], "Run": ["--lock-feet", "--margin"], "Jump": ["--deline"], "Attack": ["--hero-only", "--anchor-body"], "Skill": ["--anchor-body", "--copy", "6:5"]}
 
 
 def py():
@@ -328,8 +329,18 @@ def cmd_process(cls):
     os.makedirs(od, exist_ok=True)
     cellpx = int((MONSTERS.get(cls) or {}).get("cell", 192))   # bosses: 384 (same 101 px per metre)
     meta = {"cell": cellpx, "pixel": True, "frame_m": round(cellpx / 101.05, 3), "ground_from_bottom_m": round(0.099 * cellpx / 192, 4), "clips": {}}
+    prev = os.path.join(FINAL, cls, f"{cls}_frames.json")
+    if os.environ.get("AK_ONLY_CLIPS") and os.path.exists(prev):          # re-cut only some clips: keep the rest of the installed meta
+        meta = json.load(open(prev, encoding="utf-8-sig"))
+        for n2, *_ in clips_for(cls):                                      # and the other strips, so install copies a full set
+            if n2 not in os.environ["AK_ONLY_CLIPS"].split(",") and os.path.exists(os.path.join(FINAL, cls, f"{cls}_{n2}.png")):
+                shutil.copy(os.path.join(FINAL, cls, f"{cls}_{n2}.png"), os.path.join(od, f"{cls}_{n2}.png"))
     for n, f, lay, ar, fps, loop, tpl, wh in clips_for(cls):
-        src = os.path.join(RAW, f"pixel_{cls.lower()}_{n.lower()}", "image_0.png")
+        only = os.environ.get("AK_ONLY_CLIPS")
+        if only and n not in only.split(","):
+            continue
+        rawname = {"Swordsman": "knight"}.get(cls, cls.lower())     # the first hero was generated under the name "knight"
+        src = os.path.join(RAW, f"pixel_{rawname}_{n.lower()}", "image_0.png")
         cnt = f if f else 7
         args = [py(), os.path.join(HERE, "process_pixel_strip.py"), src, od, cls, n, str(cnt)]
         if wh >= 0:
@@ -370,6 +381,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 
