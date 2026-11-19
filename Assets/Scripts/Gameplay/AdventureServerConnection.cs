@@ -134,6 +134,12 @@ namespace AdventureKing.Gameplay
             });
         }
 
+        public void GetStoreCatalog(Action<bool, StoreCatalogState, string> completed) =>
+            Send("GET", "/store/catalog", null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<StoreCatalogState>(json) : null, err));
+        public void CreateTopUp(string packageId, Action<bool, TopUpOrderState, string> completed) =>
+            Send("POST", "/store/topup/" + UnityWebRequest.EscapeURL(packageId), "{}", true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<TopUpOrderState>(json) : null, err));
+        public void GetTopUp(string orderId, Action<bool, TopUpOrderState, string> completed) =>
+            Send("GET", "/store/topup/order/" + UnityWebRequest.EscapeURL(orderId), null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<TopUpOrderState>(json) : null, err));
         [Serializable] private sealed class FirebaseBody { public string idToken; }
 
         /// <summary>Google / Facebook / Guest: Firebase signs the player in on the device, the game server verifies the ID token and returns the normal session.</summary>

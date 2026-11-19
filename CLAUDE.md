@@ -24,7 +24,7 @@ MMORPG online, fantasy, **100% Pure 2D** (chủ dự án đổi hướng 2026-11
 - KHÔNG tự merge nhánh/PR cũ hoặc thử nghiệm khi chưa kiểm tra.
 - KHÔNG báo hoàn thành giả: phân biệt "có code" / "đã test" / "chủ dự án đã duyệt". Test pass ≠ đẹp. Không đếm scene rỗng là map.
 - KHÔNG placeholder làm thành phẩm, KHÔNG copy tài sản MapleStory/game khác, không Missing Script, không nền đen/scene trống.
-- Kinh tế: giá/tỉ lệ rơi/EXP/Gold mới = **DRAFT**. KHÔNG bật VietQR/thanh toán thật, KHÔNG phát Kim Cương.
+- Kinh tế: giá/tỉ lệ rơi/EXP/Gold mới = **DRAFT**. Thanh toán VietQR do chủ dự án bật thật (2026-11-20, xem `Docs/FIREBASE_IOS_GUIDE.md`): chỉ bật khi đã điền tài khoản ngân hàng + secret webhook; client không bao giờ ghi số dư; KHÔNG tự phát Kim Cương ngoài luồng đã duyệt.
 - Meshy: KHÔNG tiêu credit khi chưa kiểm tra số dư + dự toán; trần Chương 1 = **2.000** (tính cả phần đã tiêu, xem nhật ký trong `CHAPTER01_PLAN.md` §6). Làm 1 mẫu → kiểm tra → mới làm loạt. Key bị limit thì không gọi lặp. Nạp key từ biến môi trường **User**. Ưu tiên Unity/Blender/tái dùng + recolor.
 - KHÔNG in/commit API key, token, mật khẩu. KHÔNG mua/gia hạn dịch vụ.
 - Tiết kiệm: không chạy full regression sau mỗi sửa nhỏ (chạy test mục tiêu; full suite cuối nhóm việc), không lặp vô hạn một lỗi — phân tích nguyên nhân (đo bằng số) trước khi sửa.

@@ -115,6 +115,7 @@ namespace AdventureKing.Gameplay
         {
             if (splashLogo && officialAdventureKingLogo)
                 splashLogo.sprite = officialAdventureKingLogo;
+            if (!HotUpdateBanner.FindAnyObjectByType<HotUpdateBanner>()) HotUpdateBanner.Create(null, null);   // checks for new maps / events / skins on the login screen
             if (characterNameInput) characterNameInput.characterLimit = 12;   // the typing box stops at 12: longer names would not fit inside the name-plate frames
             SetRegisterMode(false);
             if (ReturningFromWorld)

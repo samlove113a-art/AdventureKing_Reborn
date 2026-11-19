@@ -186,6 +186,9 @@ namespace AdventureKing.Gameplay
         public EquippedState[] equipped = new EquippedState[0];
     }
     [Serializable] public sealed class EnhanceResult { public bool success, protectedLevel, replayed, lostLevel; public int beforeLevel, afterLevel, chancePercent, blessing, combatPowerBefore, combatPowerAfter; public string tier; public long goldSpent, gold; public InventoryState inventory; }
+    [Serializable] public sealed class StorePackageState { public string id, name, kind, rewardSummary, unavailableReason; public long priceVnd; public int diamonds; public bool purchasable; public string[] tags = new string[0]; }
+    [Serializable] public sealed class StoreCatalogState { public bool paymentsEnabled; public StorePackageState[] packages = new StorePackageState[0]; }
+    [Serializable] public sealed class TopUpOrderState { public string orderId, code, packageId, status, qrUrl, bankId, accountNo, accountName; public long amountVnd, expiresMs; public int diamondsGranted; }
     [Serializable] public sealed class ExpandResult { public long priceGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class SellJunkResult { public int stacksSold, itemsSold; public long totalGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class UseItemResult { public string itemId; public int restoredHp, restoredMp; public HeroCombatState hero; public InventoryState inventory; }

@@ -2510,7 +2510,18 @@ namespace AdventureKing.ArtPipeline
             wso.ApplyModifiedPropertiesWithoutUndo();
             if (buttons.TryGetValue("icon_event", out Button ev)) UnityEventTools.AddStringPersistentListener(ev.onClick, welfare.OpenTab, "event");
             if (buttons.TryGetValue("icon_welfare", out Button wf)) UnityEventTools.AddStringPersistentListener(wf.onClick, welfare.OpenTab, "online");
-            if (buttons.TryGetValue("icon_firsttopup", out Button ft)) UnityEventTools.AddStringPersistentListener(ft.onClick, welfare.OpenTab, "firsttopup");
+            if (buttons.TryGetValue("icon_firsttopup", out Button ft))
+            {
+                var topUpGo = new GameObject("TopUpWindow", typeof(RectTransform)) { layer = 5 };
+                topUpGo.transform.SetParent(canvas, false);
+                var topUp = topUpGo.AddComponent<TopUpPanel>();                    // "Nạp" opens the VietQR top-up window (the server decides whether top-up is enabled)
+                var tso = new SerializedObject(topUp);
+                tso.FindProperty("panelSprite").objectReferenceValue = FrameArt.Get("shop_window");
+                tso.FindProperty("buttonSprite").objectReferenceValue = FrameArt.Get("btn_slate");
+                tso.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+                tso.ApplyModifiedPropertiesWithoutUndo();
+                UnityEventTools.AddPersistentListener(ft.onClick, topUp.Open);
+            }
 
             var mail = Window<MailPanel>("MailWindow");
             if (buttons.TryGetValue("icon_mail", out Button mb))
