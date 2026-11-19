@@ -97,7 +97,7 @@ def main():
     for (key, name, shape, tint, rarity, cur, price) in D.HATS:
         add("hat2d_" + key, name, "head", "cosmetic", rarity, cur, price, [1, 3], f"Mũ cho nhân vật nữ: {name}.")
     for (key, name, shape, tint, rarity, cur, price) in D.MASKS:
-        add("mask2d_" + key, name, "mask", "cosmetic", rarity, cur, price, [0, 1, 2, 3], f"Mặt nạ: {name}.")
+        add("mask2d_" + key, name, "mask", "cosmetic", rarity, cur, price, [1, 3], f"Mặt nạ cho nhân vật nữ: {name}.")
     for (key, name, shape, tint, rarity, cur, price, eff) in D.WINGS:
         sk = ("Cánh " + name.split("Cánh ")[-1], "Nội tại: " + ", ".join(
             k.replace("moveSpeedPct", "+%d%% tốc chạy").replace("critPct", "+%d%% chí mạng") % v for k, v in eff.items())) if eff else None

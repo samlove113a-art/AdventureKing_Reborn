@@ -356,7 +356,7 @@ namespace AdventureKing.Tests
                 Assert.AreEqual(0, go.GetComponentsInChildren<SkinnedMeshRenderer>(true).Length + go.GetComponentsInChildren<MeshRenderer>(true).Length, h + ": 2D only");
                 var doll = go.GetComponent<Paperdoll2D>();
                 string setId = FashionCatalog2D.All.First(i => i.slot == "set" && i.id.StartsWith("set2d_" + h.ToLowerInvariant() + "_")).id;
-                OutfitLoadout look = FashionCatalog2D.WithSet(new OutfitLoadout(), setId).With("head", "hat2d_f_gothic").With("mask", "mask2d_half_white")
+                OutfitLoadout look = FashionCatalog2D.WithSet(new OutfitLoadout(), setId).With("head", "hat2d_f_gothic").With("mask", "mask2d_f_cat")
                     .With("wings", "wings2d_angel").With("mount", "mount2d_white_horse");
                 doll.ApplyLoadout(look);
                 yield return null;

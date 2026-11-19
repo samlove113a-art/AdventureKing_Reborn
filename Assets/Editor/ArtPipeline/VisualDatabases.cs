@@ -48,7 +48,12 @@ namespace AdventureKing.ArtPipeline
         /// </summary>
         private static void ImportHats(FashionDatabase db)
         {
-            const string dir = "Assets/Resources/Fashion/Hats";
+            ImportFolder(db, "Assets/Resources/Fashion/Hats", new Vector2(0.5f, 0.2f));     // pivot = bottom-centre: sits on the head-top anchor
+            ImportFolder(db, "Assets/Resources/Fashion/Masks", new Vector2(0.5f, 0.5f));    // pivot = centre: sits on the face anchor
+        }
+
+        private static void ImportFolder(FashionDatabase db, string dir, Vector2 pivot)
+        {
             if (!Directory.Exists(dir)) return;
             foreach (string file in Directory.GetFiles(dir, "*.png"))
             {
@@ -66,14 +71,14 @@ namespace AdventureKing.ArtPipeline
                 ti.ReadTextureSettings(st);
                 st.spriteAlignment = (int)SpriteAlignment.Custom;
                 ti.SetTextureSettings(st);
-                ti.spritePivot = new Vector2(0.5f, 0.2f);
+                ti.spritePivot = pivot;
                 ti.SaveAndReimport();
                 var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
                 FashionVisual v = db.Get(Path.GetFileNameWithoutExtension(path));
                 if (v == null || !sp) { Debug.LogWarning("[VISUALS] no database entry for " + path); continue; }
                 v.icon = sp;
                 v.frames = new[] { sp };
-                Debug.Log("[VISUALS] hat assigned: " + v.id);
+                Debug.Log("[VISUALS] sprite assigned: " + v.id);
             }
         }
 

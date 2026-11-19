@@ -82,14 +82,13 @@ HATS = [   # female heroes only (Pháp Sư, Cung Thủ): cute / cool / anime hea
     ("f_kitsune", "Cài Tóc Cáo Kitsune", "kitsune", "#f08a2a", "epic", "gold", 22000),
     ("f_angel", "Băng Đô Thiên Thần", "angel", "#fff0a0", "rare", "gold", 11000),
     ("f_darkqueen", "Vương Miện Nữ Hoàng Bóng Tối", "darkqueen", "#8a1f2a", "epic", "diamonds", 160),]
-MASKS = [
-    ("half_white", "Mặt Nạ Nửa Mặt Trắng", "half_white", "#f2f2f2", "common", "gold", 4500),
-    ("oni", "Mặt Nạ Quỷ Oni", "oni", "#b82a2a", "rare", "gold", 12000),
-    ("kitsune", "Mặt Nạ Hồ Ly", "kitsune", "#f4ecd8", "epic", "gold", 24000),
-    ("visor", "Kính Chắn Thép", "visor", "#7a8aa0", "common", "gold", 4000),
-    ("eyepatch", "Bịt Mắt Hải Tặc", "eyepatch", "#2a2030", "common", "gold", 2800),
-    ("snake", "Mặt Nạ Xà Tím", "snake", "#7a3aa8", "rare", "gold", 9500),
-]
+MASKS = [   # female heroes only (Pháp Sư, Cung Thủ): art from Meshy
+    ("f_cat", "Mặt Nạ Mèo Con", "cat", "#f4ecd8", "common", "gold", 4500),
+    ("f_masquerade", "Mặt Nạ Dạ Hội Ren Vàng", "masquerade", "#2a2030", "rare", "gold", 12000),
+    ("f_kitsune", "Mặt Nạ Hồ Ly Kitsune", "kitsune", "#f4ecd8", "epic", "gold", 24000),
+    ("f_oni", "Mặt Nạ Quỷ Oni", "oni", "#b82a2a", "rare", "gold", 13000),
+    ("f_ninja", "Khăn Che Mặt Kunoichi", "ninja", "#2f8a8a", "common", "gold", 5000),
+    ("f_goggles", "Kính Gió Hồng Steampunk", "goggles", "#c9922a", "rare", "gold", 9500),]
 WINGS = [
     ("angel", "Cánh Thiên Thần", "angel", "#fff6dc", "epic", "gold", 36000, dict()),
     ("bat", "Cánh Dơi Đêm", "bat", "#4a2a6a", "rare", "gold", 18000, dict()),
