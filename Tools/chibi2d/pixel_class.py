@@ -120,6 +120,8 @@ MONSTER_CLIPS = [
     ("Hit", 3, "one horizontal row of 3 equal cells", "16:9", 10, False, "HIT REACTION: flinching backward in pain (the middle frame is replaced by a white flash in code)", 1),
     ("Death", 6, "a grid of 3 columns and 2 rows, equal cells", "16:9", 8, False, "DEATH: {death}", -1),
     ("Skill", 8, "a grid of 4 columns and 2 rows, equal cells", "16:9", 12, False, "BOSS SPECIAL SKILL: {skill}", -1),
+    ("Skill2", 8, "a grid of 4 columns and 2 rows, equal cells", "16:9", 12, False, "BOSS SPECIAL SKILL 2: {skill2}", -1),
+    ("Skill3", 8, "a grid of 4 columns and 2 rows, equal cells", "16:9", 12, False, "BOSS SPECIAL SKILL 3: {skill3}", -1),
 ]
 MONSTERS = {
     "MonsterNamNon": dict(target=82, attack="lunges forward and head-butts with its mushroom cap, then recovers",
@@ -223,6 +225,20 @@ MONSTERS["JadeGuardian"] = dict(target=340, cell=384, gen_extra="Keep the same g
                                      "ground under its giant feet, an immense menacing power stance that fills the whole canvas, "
                                      "overwhelming dark-fantasy pixel style, side view facing right. "
                                      "Palette: teal-blue jade, glowing emerald green, dark stone, yellow-green eyes, dark outline"))
+MONSTERS["MushroomKing"] = dict(target=370, cell=384, gen_extra="Keep the same swirling dark crimson and violet royal aura, floating embers and spores around the body in EVERY frame of EVERY animation, including the idle.",
+                                attack="rears up and sweeps its huge scepter in a wide crushing arc, a crimson shockwave trailing the blow, then recovers",
+                                death="the golden crown cracks and falls, the great cap sags, the scepter drops, it topples to its knees then crashes face-down as the aura fades into drifting spores",
+                                skill="ROYAL DECREE: it raises its glowing violet-orb scepter high, a huge dark crimson crown-shaped sigil blazes above it, then it slams the scepter down and a hard-edged pixel ring of crimson shockwave and jagged violet energy thorns erupts across the whole ground",
+                                skill2="SUMMON MUSHROOM SWARM: it raises its scepter and stamps the ground, the ground cracks open with crimson light and a horde of many small angry red-capped baby mushroom minions with tiny fangs burst out of the ground and the crown around it, spreading out and charging forward to attack, the minions clearly visible running at the camera's right side",
+                                skill3="CRIMSON SPORE STORM: it spreads both arms wide and the crown blazes, a violent storm of crimson and violet toxic spores and glowing embers whirls out from its cap in a huge spiral, raining down glowing spore bombs across the ground in front of it",
+                                ref=("the supreme, colossal, monstrous mushroom KING final boss (Mushroom King): an immense towering hulking tyrant, the biggest and most "
+                                     "terrifying of all, a gigantic blood-crimson mushroom cap with cream spots, a massive jagged golden crown with a glowing "
+                                     "ruby set on the cap, a heavy black royal cape with gold trim, a thick bulging-muscled body covered in scars and dark armor "
+                                     "plates with gold edges, giant clawed fists, blazing glowing eyes and a snarling fanged mouth, wielding a huge scepter "
+                                     "topped by a glowing violet orb, a swirling aura of dark crimson and violet energy with floating embers and spores "
+                                     "surrounding its whole body, cracked glowing ground under its giant feet, an immense overwhelming power stance that "
+                                     "fills the whole canvas, dark-fantasy pixel style, side view facing right. "
+                                     "Palette: blood crimson, cream, royal gold, black cape, glowing violet, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
@@ -238,7 +254,7 @@ ACTOR_FLAGS = {("FlowerBee", "Walk"): ["--deline"]}
 def clips_for(cls):
     if cls in MONSTERS:
         only = MONSTERS[cls].get("clips")
-        return [c for c in MONSTER_CLIPS if (c[0] in only if only else (c[0] != "Skill" or MONSTERS[cls].get("skill")))]
+        return [c for c in MONSTER_CLIPS if (c[0] in only if only else (not c[0].startswith("Skill") or MONSTERS[cls].get(c[0].lower())))]
     return NPC_CLIPS if cls in NPCS else CLIPS
 
 
@@ -300,7 +316,7 @@ def cmd_gen(cls):
     b64 = base64.b64encode(open(ref, "rb").read()).decode()
     c = CLASSES[cls]
     for n, f, lay, ar, fps, loop, tpl, wh in todo:
-        desc = tpl.format(**{"attack": "", "skill": "", "stash": "", "death": "", **c})
+        desc = tpl.format(**{"attack": "", "skill": "", "stash": "", "death": "", "skill2": "", "skill3": "", **c})
         fr = f"{f} frames" if f else "6 or 7 frames"
         body = dict(prompt=f"{SAME} Create a flat 2D sprite sheet image that fills the ENTIRE canvas edge to edge (not a tilted screen, no perspective, no mockup, no grey surround) of {fr} arranged in {lay}, {desc}. Feet on the same baseline in every cell. {(MONSTERS.get(cls) or {}).get('gen_extra', '')}",
                     ai_model="nano-banana-2", reference_image_urls=["data:image/png;base64," + b64], aspect_ratio=ar)
