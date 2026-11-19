@@ -474,6 +474,7 @@ namespace AdventureKing.ArtPipeline
             Solid(solids, "Ground", minX - 2f, maxX + 2f, 0f, 4f, false);
             Solid(solids, "WallWest", minX - 3f, minX - 1f, 40f, 48f, false);
             Solid(solids, "WallEast", maxX + 1f, maxX + 3f, 40f, 48f, false);
+            if (UsePixelGround) { PixelGround(art, minX, maxX); return; }   // pilot: pixel-art ground (no 3D ground, tufts or flowers)
 
             // Sculpted ground (WorldKit): grass top with a worn flagstone path along the walking line, a grass lip that
             // droops over the front, an earth face with rocks bulging toward the camera — real geometry with vertex
