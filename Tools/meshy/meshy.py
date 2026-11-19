@@ -107,7 +107,12 @@ def wait(kind, task_id, quiet=False):
         time.sleep(8)
 
 
+ALLOWED_KINDS = ("text-to-image", "image-to-image")   # HARD RULE (owner, 2026-11-19): the game is 100 % pure 2D pixel art. Only 2D PNG images; never any 3D model endpoint.
+
+
 def run(kind, name, body):
+    if kind not in ALLOWED_KINDS:
+        raise SystemExit(f"BLOCKED: '{kind}' would create 3D data. This project is pure 2D: only {', '.join(ALLOWED_KINDS)} are allowed.")
     created = call("POST", ENDPOINT[kind], body)
     task_id = created["result"]
     print(f"created {kind} {name} -> {task_id}", flush=True)

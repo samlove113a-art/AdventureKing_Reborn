@@ -30,5 +30,7 @@ MMORPG online, fantasy, **100% Pure 2D** (chủ dự án đổi hướng 2026-11
 - Tiết kiệm: không chạy full regression sau mỗi sửa nhỏ (chạy test mục tiêu; full suite cuối nhóm việc), không lặp vô hạn một lỗi — phân tích nguyên nhân (đo bằng số) trước khi sửa.
 - Trước khi kết thúc nhóm việc / khi context gần đầy: cập nhật `Docs/SESSION_HANDOFF.md` (mục đầu) + commit theo nhóm đã test.
 
+- **QUY TẮC CỨNG: 100% 2D pixel art (chủ dự án, 2026-11-19).** Tuyệt đối không có gì liên quan 3D trong game: không model/mesh/material 3D mới, không Light/Camera 3D, không Collider/Rigidbody 3D. Meshy CHỈ được dùng 	ext-to-image / image-to-image ra PNG 2D (Tools/meshy/meshy.py chặn mọi endpoint 3D). Ảnh nhập vào Unity: Filter Mode Point, Compression None. Mỗi lần gọi Meshy tốn credit phải hỏi chủ dự án trước. Cấm tự vẽ sprite bằng code.
+
 ## Mẫu dựng map Chương 1 (Map 1 là chuẩn)
 Client: `Assets/Scripts/Gameplay/TownLayout.cs` (`Ch1Village`: decks/climbs/portals/safe zone) + `MapInfo` registry; `Assets/Editor/ArtPipeline/VillageSceneBuilder.Chapter1.cs` (dựng scene bằng code; `ChapterScenePaths`); `AdventureWorldSession.cs` (map→scene). Server: `CharacterService.cs` (Maps/Portals), `FarmService.cs` (SafeZones/RespawnPoints), `config/monsters.json`, `config/quests.json`. Test: `Server/.../Chapter1Tests.cs`, PlayMode `Chapter1Tests`.
