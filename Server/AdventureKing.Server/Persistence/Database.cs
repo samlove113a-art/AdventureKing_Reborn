@@ -180,6 +180,13 @@ public sealed class Database
             Exec(c, tx, "PRAGMA user_version=14;");
             tx.Commit();
         }
+        if (version < 15)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V15);
+            Exec(c, tx, "PRAGMA user_version=15;");
+            tx.Commit();
+        }
     }
 
     private static bool HasColumn(SqliteConnection c, SqliteTransaction tx, string table, string column)
@@ -221,7 +228,7 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 14;
+    public const int Current = 15;
 
     // V14: per-instance equipment +0..+15; upgrade receipts provide idempotency across network retries.
     // All resources, failure rolls, gear level and receipts change atomically in one transaction.
@@ -237,9 +244,33 @@ internal static class Schema
         protected INTEGER NOT NULL,
         PRIMARY KEY (character_id, request_id)
     );
+    """;
+
+    // V15: Chúc Phúc Rèn (enhance pity) + VietQR top-up orders (pending until the bank webhook confirms them).
+    public const string V15 = """
     CREATE TABLE IF NOT EXISTS enhance_pity (
         character_id TEXT NOT NULL PRIMARY KEY REFERENCES characters(id),
         pity INTEGER NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS firebase_links (
+        firebase_uid TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL UNIQUE REFERENCES accounts(id),
+        provider TEXT NOT NULL,
+        email TEXT,
+        created_ms INTEGER NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS topup_orders (
+        id TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL REFERENCES accounts(id),
+        package_id TEXT NOT NULL,
+        code TEXT NOT NULL UNIQUE,
+        amount_vnd INTEGER NOT NULL,
+        status TEXT NOT NULL,
+        created_ms INTEGER NOT NULL,
+        expires_ms INTEGER NOT NULL,
+        diamonds INTEGER NOT NULL DEFAULT 0,
+        txn TEXT,
+        completed_ms INTEGER
     );
     """;
 

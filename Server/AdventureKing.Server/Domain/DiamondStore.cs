@@ -91,7 +91,7 @@ public sealed class DiamondStore
         this.clock = clock ?? (() => DateTimeOffset.UtcNow);
     }
 
-    public static bool PaymentsEnabled => false; // flip only after the owner approves a real, compliant integration
+    public static bool PaymentsEnabled { get; set; } // false by default; Program sets it from VietQr:Enabled only when the owner has configured the bank account
 
     public static StorePackage Get(string id) =>
         Catalog.FirstOrDefault(p => p.Id == id) ?? throw new GameError("package_unknown", "Gói không tồn tại.", 404);

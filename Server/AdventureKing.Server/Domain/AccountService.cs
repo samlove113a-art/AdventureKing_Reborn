@@ -105,6 +105,13 @@ public sealed class AccountService
     private static GameError Invalid() => new("credentials_invalid", "Sai tên đăng nhập hoặc mật khẩu.", 401);
 
     /// <summary>Resolves a bearer token to its account, or throws 401.</summary>
+    /// <summary>A fresh session for an account whose identity was proven elsewhere (Firebase). Refuses disabled accounts.</summary>
+    public SessionInfo IssueSession(string accountId) => db.InTransaction((c, tx) =>
+    {
+        if (Database.Scalar<long>(c, tx, "SELECT disabled FROM accounts WHERE id=$a", ("$a", accountId)) != 0) throw new GameError("account_disabled", "Tài khoản đã bị khóa.", 403);
+        return NewSession(c, tx, accountId);
+    });
+
     public string Authenticate(string? bearer)
     {
         if (string.IsNullOrWhiteSpace(bearer)) throw new GameError("unauthenticated", "Phiên đăng nhập không hợp lệ.", 401);

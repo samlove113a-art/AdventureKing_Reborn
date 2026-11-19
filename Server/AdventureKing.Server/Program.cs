@@ -46,6 +46,13 @@ string cosmeticsPath = Path.Combine(contentRoot, cfg["CosmeticCatalogPath"] ?? "
 builder.Services.AddSingleton(sp => new CharacterService(sp.GetRequiredService<Database>(), sp.GetRequiredService<NameRules>(), starterGold));
 builder.Services.AddSingleton(sp => new CosmeticShop(sp.GetRequiredService<Database>(), CosmeticCatalog.Load(cosmeticsPath)));
 builder.Services.AddSingleton(sp => new DiamondStore(sp.GetRequiredService<Database>(), vip));
+var vietQr = cfg.GetSection("VietQr").Get<VietQrOptions>() ?? new VietQrOptions();
+DiamondStore.PaymentsEnabled = vietQr.Ready;           // stays false until the owner fills the bank account + webhook secret and sets VietQr:Enabled
+builder.Services.AddSingleton(vietQr);
+string firebaseProject = cfg["Firebase:ProjectId"] ?? "";   // empty = Firebase sign-in not configured (fails closed)
+builder.Services.AddSingleton(_ => new FirebaseTokenVerifier(firebaseProject, FirebaseTokenVerifier.GoogleKeys(new HttpClient { Timeout = TimeSpan.FromSeconds(8) })));
+builder.Services.AddSingleton(sp => new FirebaseAccounts(sp.GetRequiredService<Database>(), sp.GetRequiredService<AccountService>()));
+builder.Services.AddSingleton(sp => new VietQrTopUp(sp.GetRequiredService<Database>(), sp.GetRequiredService<DiamondStore>(), sp.GetRequiredService<VietQrOptions>()));
 string monstersPath = Path.Combine(contentRoot, cfg["MonsterConfigPath"] ?? "config/monsters.json");
 string skillsPath = Path.Combine(contentRoot, cfg["SkillConfigPath"] ?? "config/skills.json");
 builder.Services.AddSingleton(sp => new FarmService(sp.GetRequiredService<Database>(), FarmConfig.Load(monstersPath), skills: SkillConfig.Load(skillsPath)));
@@ -173,6 +180,12 @@ api.MapPost("/auth/logout", (HttpContext ctx, AccountService accounts) =>
 });
 // Real Google/Facebook sign-in needs the owner's OAuth client IDs and server-side ID-token verification.
 // Until then these endpoints FAIL CLOSED — they never create or return a session.
+// Google, Facebook and Guest all sign in through Firebase Auth on the device; the game server only checks the Firebase ID token.
+api.MapPost("/auth/firebase", (FirebaseIdTokenDto body, FirebaseTokenVerifier verifier, FirebaseAccounts fb) =>
+{
+    SessionInfo s = fb.SignIn(verifier.Verify(body?.idToken));
+    return Results.Json(new { token = s.Token, accountId = s.AccountId, expiresMs = s.ExpiresMs }, new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = null });
+});
 api.MapPost("/auth/google", () => Results.Json(new ErrorDto { code = "social_not_configured", message = "Đăng nhập Google chưa được cấu hình trên máy chủ." }, statusCode: 501));
 api.MapPost("/auth/facebook", () => Results.Json(new ErrorDto { code = "social_not_configured", message = "Đăng nhập Facebook chưa được cấu hình trên máy chủ." }, statusCode: 501));
 
@@ -327,6 +340,13 @@ api.MapPost("/store/purchase/{packageId}", (string packageId, HttpContext ctx, A
     store.RequestPurchase(accounts.Authenticate(Bearer(ctx)), packageId); // always throws payments_disabled
     return Results.StatusCode(500);
 });
+// VietQR top-up: the client only asks for an order and polls it; Diamonds are credited by the bank webhook alone.
+api.MapPost("/store/topup/{packageId}", (string packageId, HttpContext ctx, AccountService accounts, VietQrTopUp topup) =>
+    topup.Create(accounts.Authenticate(Bearer(ctx)), packageId));
+api.MapGet("/store/topup/order/{orderId}", (string orderId, HttpContext ctx, AccountService accounts, VietQrTopUp topup) =>
+    topup.Status(accounts.Authenticate(Bearer(ctx)), orderId));
+api.MapPost("/store/topup/webhook", (BankWebhookDto body, HttpContext ctx, VietQrTopUp topup) =>
+    new { matched = topup.Confirm(ctx.Request.Headers.Authorization.ToString(), body) });
 api.MapGet("/store/history", (HttpContext ctx, AccountService accounts, DiamondStore store) => store.History(accounts.Authenticate(Bearer(ctx))));
 api.MapGet("/store/month-card", (HttpContext ctx, AccountService accounts, DiamondStore store) => store.MonthCardStatus(accounts.Authenticate(Bearer(ctx))));
 api.MapPost("/store/month-card/claim", (HttpContext ctx, AccountService accounts, DiamondStore store) =>
