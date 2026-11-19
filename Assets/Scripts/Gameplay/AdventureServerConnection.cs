@@ -118,12 +118,9 @@ namespace AdventureKing.Gameplay
             lastProfile = null;
             switch (method)
             {
-                case SignInMethod.Google:
-                    Send("POST", "/auth/google", "{}", false, (ok, _, err) => completed(false, err ?? "Đăng nhập Google chưa khả dụng."));
-                    return;
-                case SignInMethod.Facebook:
-                    Send("POST", "/auth/facebook", "{}", false, (ok, _, err) => completed(false, err ?? "Đăng nhập Facebook chưa khả dụng."));
-                    return;
+                case SignInMethod.Google: FirebaseSignIn(FirebaseProviderKind.Google, completed); return;
+                case SignInMethod.Facebook: FirebaseSignIn(FirebaseProviderKind.Facebook, completed); return;
+                case SignInMethod.Guest: FirebaseSignIn(FirebaseProviderKind.Guest, completed); return;
             }
             string path = method == SignInMethod.PasswordRegister ? "/auth/register" : "/auth/login";
             string body = JsonUtility.ToJson(new CredentialsBody { account = account, password = password });
@@ -134,6 +131,28 @@ namespace AdventureKing.Gameplay
                 if (s == null || string.IsNullOrEmpty(s.token)) { completed(false, "Máy chủ trả về phiên không hợp lệ."); return; }
                 sessionToken = s.token;
                 completed(true, "");
+            });
+        }
+
+        [Serializable] private sealed class FirebaseBody { public string idToken; }
+
+        /// <summary>Google / Facebook / Guest: Firebase signs the player in on the device, the game server verifies the ID token and returns the normal session.</summary>
+        public void FirebaseSignIn(FirebaseProviderKind kind, Action<bool, string> completed)
+        {
+            sessionToken = null; lastProfile = null;
+            IFirebaseSignIn fb = FirebaseSignInBridge.Provider;
+            if (fb == null) { completed(false, "Đăng nhập " + kind + " cần gắn Firebase SDK (xem Docs/FIREBASE_IOS_GUIDE.md)."); return; }
+            fb.GetIdToken(kind, (ok, idToken, err) =>
+            {
+                if (!ok) { completed(false, err ?? "Đăng nhập thất bại."); return; }
+                Send("POST", "/auth/firebase", JsonUtility.ToJson(new FirebaseBody { idToken = idToken }), false, (ok2, json, err2) =>
+                {
+                    if (!ok2) { completed(false, err2); return; }
+                    SessionBody s = JsonUtility.FromJson<SessionBody>(json);
+                    if (s == null || string.IsNullOrEmpty(s.token)) { completed(false, "Máy chủ trả về phiên không hợp lệ."); return; }
+                    sessionToken = s.token;
+                    completed(true, "");
+                });
             });
         }
 

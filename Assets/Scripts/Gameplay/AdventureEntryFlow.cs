@@ -9,7 +9,7 @@ namespace AdventureKing.Gameplay
     /// <summary>Splash = the logo intro. Order of the player's journey: Splash -> Loading -> Title -> Authentication -> CharacterSelection.</summary>
     public enum EntryScreen { Splash, Authentication, CharacterSelection, Loading, Title }
 
-    public enum SignInMethod { PasswordLogin, PasswordRegister, Google, Facebook }
+    public enum SignInMethod { PasswordLogin, PasswordRegister, Google, Facebook, Guest }
 
     /// <summary>
     /// External service contract only. A real secure backend and OAuth SDK are REQUIRED.
@@ -207,6 +207,7 @@ namespace AdventureKing.Gameplay
         public void RegisterPassword() => PasswordAuth(SignInMethod.PasswordRegister);
         public void ContinueWithGoogle() => SubmitAuth(SignInMethod.Google, "", "");
         public void ContinueWithFacebook() => SubmitAuth(SignInMethod.Facebook, "", "");
+        public void ContinueAsGuest() => SubmitAuth(SignInMethod.Guest, "", "");
 
         private void PasswordAuth(SignInMethod method)
         {

@@ -79,9 +79,8 @@ namespace AdventureKing.Tests
             Assert.AreEqual(EntryScreen.Authentication, flow.CurrentScreen, "Facebook login must not be faked");
             Assert.IsFalse(Find<AdventureServerConnection>().HasSession);
             // the screen itself says so and the buttons are greyed out
-            Assert.IsFalse(Find<Button>("GoogleButton").interactable, "Google greyed out until real OAuth exists");
-            Assert.IsFalse(Find<Button>("FacebookButton").interactable, "Facebook greyed out until real OAuth exists");
-            StringAssert.Contains("chưa khả dụng", Find<Text>("Or").text);
+            Assert.IsTrue(Find<Button>("GoogleButton").interactable && Find<Button>("FacebookButton").interactable && Find<Button>("GuestButton").interactable, "Google / Facebook / Guest are offered (Firebase)");
+            StringAssert.Contains("đăng nhập nhanh", Find<Text>("Or").text);
             // title logo beside the card (wide screens) and the login theme playing
             Assert.IsTrue(Find<Image>("TitleLogo").sprite, "game title logo on the login screen");
             var audio = AdventureAudioDirector.Instance;
