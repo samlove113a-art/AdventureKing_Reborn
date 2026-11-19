@@ -186,6 +186,12 @@ MONSTERS["StoneGuard"] = dict(target=127, attack="raises a heavy stone fist and 
                                    "cracks, a rectangular head with two glowing orange-red angry slit eyes under a heavy scowling brow, a jagged snarling mouth crack with stone fangs, jagged stone spikes on its shoulders and knuckles, deep cracks glowing faintly red, a glowing green gem in the center of its chest, thick heavy "
                                    "arms and short legs, a tiny green sprout growing on top of its head, standing upright, side view facing right, "
                                    "dark-fantasy pixel style. Palette: warm gray stone, moss green, glowing green gem, yellow eyes, dark outline"))
+MONSTERS["RoyalGuard"] = dict(target=92, attack="thrusts its long spear forward in a sharp stab, then pulls it back",
+                              death="drops its spear, the shield-cap cracks, it falls to its knees and collapses face-down, the spear clattering beside it",
+                              ref=("a majestic, dignified elite royal guard mushroom knight (Royal Guard), standing tall and upright with a proud commanding stance: a mushroom warrior whose cap is a round crimson-red shield with gold trim and a "
+                                   "silver-gray center boss and a sharp red spike on top, a grim armored face with two small angry eyes under the rim, a pale "
+                                   "gray ornate plate-armored body with engraved gold-trimmed steel pauldrons and a short crimson tabard, tall greaves and boots, a plumed crimson crest, and a long gold-ornamented steel-tipped spear held upright-forward in its right hand, "
+                                   "side view facing right, menacing dark-fantasy pixel style. Palette: crimson red, steel gray, dark gray, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
@@ -314,6 +320,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[2] not in CLASSES:
         sys.exit(__doc__)
     {"plan": cmd_plan, "ref": cmd_ref, "gen": cmd_gen, "process": cmd_process, "install": cmd_install}[sys.argv[1]](sys.argv[2])
+
 
 
 
