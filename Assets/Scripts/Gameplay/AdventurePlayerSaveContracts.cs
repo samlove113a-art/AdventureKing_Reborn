@@ -172,18 +172,20 @@ namespace AdventureKing.Gameplay
         public long enhanceGold;   // Blacksmith fee for the next +1 (server-owned)
         public string itemId, name, kind, icon, desc, equipSlot, rarity;
         public bool usableByClass = true;
+        public string tier;                                   // equipment: Bạc / Vàng / Kim Cương / Đỏ
+        public int nextAttack, nextDefense, powerGain, failDropPercent;   // what the next +1 gives and the chance to lose a level on failure
         public bool worn;          // kind "frame": the name-plate frame currently shown above the name
     }
     [Serializable] public sealed class EquippedState { public string equipSlot; public BagSlotState item; }
     [Serializable]
     public sealed class InventoryState
     {
-        public int capacity, maxCapacity, stackMax, attackBonus, defenseBonus, combatPower;
+        public int capacity, maxCapacity, stackMax, attackBonus, defenseBonus, combatPower, blessing;
         public long nextExpandGold; // 0 = bag fully expanded
         public BagSlotState[] slots = new BagSlotState[0];
         public EquippedState[] equipped = new EquippedState[0];
     }
-    [Serializable] public sealed class EnhanceResult { public bool success, protectedLevel, replayed; public int beforeLevel, afterLevel, chancePercent; public long goldSpent, gold; public InventoryState inventory; }
+    [Serializable] public sealed class EnhanceResult { public bool success, protectedLevel, replayed, lostLevel; public int beforeLevel, afterLevel, chancePercent, blessing, combatPowerBefore, combatPowerAfter; public string tier; public long goldSpent, gold; public InventoryState inventory; }
     [Serializable] public sealed class ExpandResult { public long priceGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class SellJunkResult { public int stacksSold, itemsSold; public long totalGold, gold; public InventoryState inventory; }
     [Serializable] public sealed class UseItemResult { public string itemId; public int restoredHp, restoredMp; public HeroCombatState hero; public InventoryState inventory; }

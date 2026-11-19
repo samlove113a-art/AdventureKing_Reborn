@@ -88,7 +88,7 @@ namespace AdventureKing.Gameplay
             card.color = panelSprite ? Color.white : new Color(0.1f, 0.12f, 0.2f, 0.97f);
             Transform c = card.transform;
             Color gold = new Color(1f, 0.85f, 0.45f), cream = new Color(1f, 0.96f, 0.88f);
-            Txt(c, "Title", "Dược Sư Mộc Linh", 38, gold, new Vector2(0.5f, 1f), new Vector2(0f, -86f), new Vector2(700f, 54f), TextAnchor.MiddleCenter, true);
+            titleLabel = Txt(c, "Title", "Dược Sư Mộc Linh", 38, gold, new Vector2(0.5f, 1f), new Vector2(0f, -86f), new Vector2(700f, 54f), TextAnchor.MiddleCenter, true);
             greet = Txt(c, "Greeting", "", 22, cream, new Vector2(0.5f, 1f), new Vector2(0f, -132f), new Vector2(1000f, 34f), TextAnchor.MiddleCenter);
             Btn(c, "Close", "Đóng", new Vector2(1f, 1f), new Vector2(-130f, -64f), new Vector2(150f, 62f), new Color(0.55f, 0.3f, 0.3f), Close);
             Btn(c, "SellJunk", "Bán Nhanh Đồ Rác", new Vector2(1f, 1f), new Vector2(-400f, -64f), new Vector2(270f, 62f), new Color(0.26f, 0.56f, 0.62f), SellJunk);
@@ -145,6 +145,8 @@ namespace AdventureKing.Gameplay
             root.SetActive(false);
         }
 
+        private Text titleLabel;
+
         public void Open(string greeting)
         {
             Build();
@@ -161,6 +163,7 @@ namespace AdventureKing.Gameplay
                     Busy = false;
                     if (!ok || s == null) { Message(err); return; }
                     Shop = s;
+                if (titleLabel && s != null && !string.IsNullOrEmpty(s.npc)) titleLabel.text = s.npc;
                     SetTab(0);
                 });
             }

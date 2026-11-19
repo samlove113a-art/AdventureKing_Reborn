@@ -148,8 +148,32 @@ namespace AdventureKing.ArtPipeline
             return v;
         }
 
-        private static void BuildItems()
+        /// <summary>Imports the Meshy item icons (Assets/Resources/ItemArt/&lt;itemId&gt;.png, cut from icon sheets): Sprite, Point, uncompressed; fills icon + worldSprite of the matching ItemVisual (never overwrites a picture the owner already set).</summary>
+        private static void ImportItemArt(ItemVisualDatabase db)
         {
+            const string dir = "Assets/Resources/ItemArt";
+            if (!Directory.Exists(dir)) return;
+            int n = 0;
+            foreach (string file in Directory.GetFiles(dir, "*.png"))
+            {
+                string path = file.Replace('\\', '/');
+                var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+                if (ti == null) continue;
+                ti.textureType = TextureImporterType.Sprite; ti.spriteImportMode = SpriteImportMode.Single;
+                ti.spritePixelsPerUnit = 96f; ti.filterMode = FilterMode.Point; ti.mipmapEnabled = false; ti.alphaIsTransparency = true;
+                ti.textureCompression = TextureImporterCompression.Uncompressed;
+                ti.SaveAndReimport();
+                var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                ItemVisual v = db.items.FirstOrDefault(i => i != null && i.itemId == Path.GetFileNameWithoutExtension(path));
+                if (v == null || !sp) { Debug.LogWarning("[VISUALS] no item entry for " + path); continue; }
+                if (!v.icon) v.icon = sp;
+                if (!v.worldSprite) v.worldSprite = sp;
+                n++;
+            }
+            Debug.Log("[VISUALS] item icons assigned: " + n);
+        }
+
+        private static void BuildItems()        {
             var db = Load<ItemVisualDatabase>(ItemsPath);
             string json = File.ReadAllText("Server/AdventureKing.Server/config/items.json");
             int added = 0;
@@ -167,6 +191,7 @@ namespace AdventureKing.ArtPipeline
                 if (db.pets.All(p => p == null || p.petId != id)) { db.pets.Add(new PetVisual { petId = id }); added++; }
             }
             ImportPets(db);
+            ImportItemArt(db);
             EditorUtility.SetDirty(db);
             Debug.Log($"[VISUALS] ItemVisuals: {db.items.Count} items, {db.pets.Count} pets ({added} added), sprites left empty for the owner");
         }

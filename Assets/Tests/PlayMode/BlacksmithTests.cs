@@ -122,7 +122,7 @@ namespace AdventureKing.Tests
             Assert.AreEqual("gear_novice_blade", blade0.itemId);
             Assert.AreEqual(0, blade0.enhanceLevel);
             Assert.AreEqual(InventoryChance(0), blade0.enhanceChance);
-            Assert.AreEqual(50, blade0.enhanceGold, "Gold fee of +0 -> +1 (server config)");
+            Assert.AreEqual(30, blade0.enhanceGold, "Gold fee of +0 -> +1 (server config, Bạc tier x0.6)");
             Assert.AreEqual(10, forge.StoneCount);
             Assert.AreEqual(2, forge.CharmCount);
             Assert.IsTrue(forge.CanStrike);
@@ -138,7 +138,7 @@ namespace AdventureKing.Tests
             Assert.AreEqual(1, forge.Strikes, "hammering the button sends one request");
             Assert.IsTrue(forge.LastSuccess, "+0 -> +1 always succeeds");
             Assert.AreEqual(1, forge.Current.enhanceLevel);
-            Assert.AreEqual(gold0 - 50, world.Character.gold, "Gold fee charged once");
+            Assert.AreEqual(gold0 - 30, world.Character.gold, "Gold fee charged once");
             Assert.AreEqual(9, forge.StoneCount, "one stone used");
             StringAssert.Contains("Thành công", forge.LastMessage);
             yield return new WaitForSeconds(0.25f);
@@ -177,6 +177,6 @@ namespace AdventureKing.Tests
             Assert.IsTrue(input.enabled, "control returns after the forge");
         }
 
-        private static int InventoryChance(int level) => new[] { 100, 95, 90, 85, 80, 70, 65, 55, 45, 40, 35, 30, 25, 20, 15 }[level];
+        private static int InventoryChance(int level) => new[] { 100, 100, 98, 95, 92, 88, 85, 80, 75, 70, 65, 60, 55, 50, 45 }[level];   // Bạc tier
     }
 }

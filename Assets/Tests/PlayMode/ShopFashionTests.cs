@@ -115,7 +115,7 @@ namespace AdventureKing.Tests
         [UnityTest]
         public IEnumerator Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart()
         {
-            const string account = "fashion.tester@test.vn", password = "fashion-pass-2026", heroName = "Kiếm Khách Lụa";
+            const string account = "fashion.tester@test.vn", password = "fashion-pass-2026", heroName = "Kiếm Lụa";
             yield return server.OpenGame();
             yield return TestServer.RegisterCreateAndEnter(account, password, HeroClass.Mage, heroName);
             Bind();

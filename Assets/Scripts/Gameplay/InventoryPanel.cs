@@ -147,11 +147,24 @@ namespace AdventureKing.Gameplay
             bool isReady = inv != null && inv.slots.Any(x => x.itemId == "enhance_stone") &&
                 inv.equipped != null && inv.equipped.Length > 0;
             State = inv;
+            UpdateAura(inv);
             if (isReady && !wasReady) QuickGoalToast.Show("Đủ nguyên liệu cường hóa! Mở túi đồ để nâng cấp.");
             targetPower = inv != null ? inv.combatPower : 0;
             if (changed) powerPulseUntil = Time.unscaledTime + 0.85f;
             else if (displayedPower == 0) displayedPower = targetPower;
             Redraw();
+        }
+
+        /// <summary>The glow around the hero follows the best enhanced piece worn (+7 / +10 / +12 / +15), in that piece's tier colour.</summary>
+        private void UpdateAura(InventoryState inv)
+        {
+            if (!world) world = AdventureWorldSession.Current;
+            if (!world || !world.Player) return;
+            EquippedState best = inv?.equipped?.OrderByDescending(e => e.item.enhanceLevel).FirstOrDefault();
+            var aura = world.Player.GetComponent<GearAura2D>() ?? world.Player.gameObject.AddComponent<GearAura2D>();
+            int lvl = best != null ? best.item.enhanceLevel : 0;
+            string tier = best != null ? best.item.tier : "";
+            aura.Set(lvl, tier == "Đỏ" ? new Color(1f, 0.3f, 0.22f) : tier == "Kim Cương" ? new Color(0.45f, 0.9f, 1f) : tier == "Vàng" ? new Color(1f, 0.85f, 0.3f) : new Color(0.9f, 0.92f, 1f));
         }
 
         public int PotionCount(bool hp) => State == null ? 0 : State.slots.Where(s => s.kind == "consumable" && s.icon == (hp ? "item_potion_hp" : "item_potion_mp")).Sum(s => s.qty);
@@ -523,6 +536,15 @@ namespace AdventureKing.Gameplay
                 label.text = EquipSlots.First(s => s.slot == slot).label;
                 if (e != null && e.item.enhanceLevel > 0) label.text += " +" + e.item.enhanceLevel;
                 Image cell = ic.transform.parent.GetComponent<Image>();
+                Outline edge = cell ? cell.GetComponent<Outline>() : null;                      // fire-bright rim that pulses from +7
+                int ms = e != null ? GearAura2D.MilestoneOf(e.item.enhanceLevel) : 0;
+                if (edge && ms > 0)
+                {
+                    Color rimColor = e.item.tier == "Đỏ" ? new Color(1f, 0.3f, 0.2f) : e.item.tier == "Kim Cương" ? new Color(0.45f, 0.9f, 1f) : new Color(1f, 0.8f, 0.25f);
+                    edge.effectDistance = Vector2.one * (ms >= 15 ? 6f : ms >= 12 ? 5f : ms >= 10 ? 4f : 3f) * new Vector2(1f, -1f);
+                    rareItemEdges.Add((edge, rimColor));
+                }
+                else if (edge) { edge.effectColor = new Color(1f, 0.85f, 0.45f); edge.effectDistance = new Vector2(2f, -2f); }
                 if (cell) cell.color = e == null ? new Color(0.4f, 0.45f, 0.62f) :
                     Color.Lerp(new Color(0.21f, 0.22f, 0.32f), TierColor(e.item.rarity), 0.55f);
             }
