@@ -171,6 +171,10 @@ namespace AdventureKing.Gameplay
             if (headMark) headMark.localPosition = new Vector3(headMark.localPosition.x, headBaseY + lift, headMark.localPosition.z);
         }
 
+        /// <summary>Sprite pixels the added hat / mask sits lower than the measured head top (the Mage's tall hat and the Archer's feather count as head top).</summary>
+        private static float HatDrop(string hero) => hero == "Mage" ? 20f : hero == "Archer" ? 11f : 0f;
+        private static float MaskDrop(string hero) => hero == "Mage" ? 6f : hero == "Archer" ? 9f : 0f;
+
         private static int Index(string spriteName) => int.TryParse(spriteName.Substring(spriteName.LastIndexOf('_') + 1), out int i) ? i : 0;
 
         private void LateUpdate() => Sync();
@@ -221,6 +225,7 @@ namespace AdventureKing.Gameplay
                     {
                         if (v.frames == null || v.frames.Length == 0 || !FashionCatalog2D.TryAnchor(hero, clip, frame, out BodyAnchor a)) { l.Renderer.sprite = null; break; }
                         Vector2 p = kv.Key == PaperSlot.Mask ? a.Face : kv.Key == PaperSlot.Wings ? a.Shoulder : a.Head;
+                        p.y -= kv.Key == PaperSlot.Hat ? HatDrop(hero) : kv.Key == PaperSlot.Mask ? MaskDrop(hero) : 0f;   // the measured head top includes the hero's own hat / feather
                         t.localPosition = new Vector3((p.x - pivot.x) / ppu, (p.y - pivot.y) / ppu + liftLocal, 0f);
                         float fps = kv.Key == PaperSlot.Wings ? (clip == "Run" ? v.fps * 1.5f : v.fps) : 1f;
                         l.Renderer.sprite = v.frames[v.frames.Length > 1 ? Mathf.FloorToInt(Time.time * fps) % v.frames.Length : 0];

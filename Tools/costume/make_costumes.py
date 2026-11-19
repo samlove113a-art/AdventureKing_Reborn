@@ -101,7 +101,7 @@ def main():
     for (key, name, shape, tint, rarity, cur, price, eff) in D.WINGS:
         sk = ("Cánh " + name.split("Cánh ")[-1], "Nội tại: " + ", ".join(
             k.replace("moveSpeedPct", "+%d%% tốc chạy").replace("critPct", "+%d%% chí mạng") % v for k, v in eff.items())) if eff else None
-        add("wings2d_" + key, name, "wings", "cosmetic", rarity, cur, price, [0, 1, 2, 3], f"Cánh: {name}.", sk, eff or None)
+        add("wings2d_" + key, name, "wings", "cosmetic", rarity, cur, price, [1, 3], f"Cánh cho nhân vật nữ: {name}.", sk, eff or None)
     for (key, name, shape, tint, rarity, cur, price, eff) in D.MOUNTS:
         add("mount2d_" + key, name, "mount", "cosmetic", rarity, cur, price, [0, 1, 2, 3], f"Thú cưỡi: {name}, chạy nhanh hơn {eff['moveSpeedPct']}%.",
             ("Tăng tốc", f"Nội tại: +{eff['moveSpeedPct']}% tốc chạy khi cưỡi."), eff)

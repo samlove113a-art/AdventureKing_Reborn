@@ -89,15 +89,15 @@ MASKS = [   # female heroes only (Pháp Sư, Cung Thủ): art from Meshy
     ("f_oni", "Mặt Nạ Quỷ Oni", "oni", "#b82a2a", "rare", "gold", 13000),
     ("f_ninja", "Khăn Che Mặt Kunoichi", "ninja", "#2f8a8a", "common", "gold", 5000),
     ("f_goggles", "Kính Gió Hồng Steampunk", "goggles", "#c9922a", "rare", "gold", 9500),]
-WINGS = [
-    ("angel", "Cánh Thiên Thần", "angel", "#fff6dc", "epic", "gold", 36000, dict()),
-    ("bat", "Cánh Dơi Đêm", "bat", "#4a2a6a", "rare", "gold", 18000, dict()),
-    ("dragonfly", "Cánh Chuồn Chuồn", "dragonfly", "#9ad8ee", "common", "gold", 9000, dict()),
-    ("fire", "Cánh Lửa Phượng", "fire", "#f08a2a", "epic", "gold", 40000, dict(moveSpeedPct=3)),
-    ("crystal", "Cánh Pha Lê", "crystal", "#7ad8f6", "legendary", "diamonds", 260, dict(moveSpeedPct=4)),
-    ("leaf", "Cánh Lá Xanh", "leaf", "#5aa84a", "rare", "gold", 15000, dict()),
-    ("butterfly", "Cánh Bướm Hoa", "butterfly", "#e888c8", "epic", "gold", 32000, dict()),
-    ("shadow", "Cánh Bóng Đêm", "shadow", "#241838", "legendary", "diamonds", 300, dict(critPct=3)),
+WINGS = [   # art from Meshy (pixel, glowing); a few carry a small speed / crit passive
+    ("f_phoenix", "Cánh Phượng Hoàng Lửa", "phoenix", "#f08a2a", "legendary", "diamonds", 280, dict(moveSpeedPct=4)),
+    ("f_fairy", "Cánh Bướm Tiên Pastel", "fairy", "#c8a8f0", "common", "gold", 9000, dict()),
+    ("f_seraph", "Cánh Thiên Thần Seraph", "seraph", "#fff6dc", "epic", "gold", 40000, dict()),
+    ("f_demon", "Cánh Dơi Quỷ Đỏ Thẫm", "demon", "#8a1f2a", "epic", "gold", 34000, dict(critPct=3)),
+    ("f_ice", "Cánh Pha Lê Băng", "ice", "#7ad8f6", "epic", "gold", 36000, dict()),
+    ("f_galaxy", "Cánh Ngân Hà Trăng Sao", "galaxy", "#5a3aa0", "legendary", "diamonds", 300, dict(critPct=3)),
+    ("f_cherry", "Cánh Hoa Anh Đào", "cherry", "#f6a8c8", "rare", "gold", 15000, dict()),
+    ("f_thunder", "Cánh Sấm Sét", "thunder", "#f6e84a", "epic", "diamonds", 240, dict(moveSpeedPct=5)),
 ]
 MOUNTS = [
     ("white_horse", "Bạch Mã Gió", "horse", "#f1ede2", "rare", "gold", 60000, dict(moveSpeedPct=15)),

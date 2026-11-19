@@ -50,6 +50,7 @@ namespace AdventureKing.ArtPipeline
         {
             ImportFolder(db, "Assets/Resources/Fashion/Hats", new Vector2(0.5f, 0.2f));     // pivot = bottom-centre: sits on the head-top anchor
             ImportFolder(db, "Assets/Resources/Fashion/Masks", new Vector2(0.5f, 0.5f));    // pivot = centre: sits on the face anchor
+            ImportFolder(db, "Assets/Resources/Fashion/Wings", new Vector2(0.9f, 0.3f));    // pivot = where the wings join (lower right): sits on the shoulder anchor
         }
 
         private static void ImportFolder(FashionDatabase db, string dir, Vector2 pivot)
@@ -71,7 +72,7 @@ namespace AdventureKing.ArtPipeline
                 ti.ReadTextureSettings(st);
                 st.spriteAlignment = (int)SpriteAlignment.Custom;
                 ti.SetTextureSettings(st);
-                ti.spritePivot = pivot;
+                ti.spritePivot = Path.GetFileNameWithoutExtension(path) == "wings2d_f_fairy" ? new Vector2(0.97f, 0.45f) : pivot;
                 ti.SaveAndReimport();
                 var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
                 FashionVisual v = db.Get(Path.GetFileNameWithoutExtension(path));

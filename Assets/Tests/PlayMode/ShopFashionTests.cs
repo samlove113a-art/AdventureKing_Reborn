@@ -357,9 +357,30 @@ namespace AdventureKing.Tests
                 var doll = go.GetComponent<Paperdoll2D>();
                 string setId = FashionCatalog2D.All.First(i => i.slot == "set" && i.id.StartsWith("set2d_" + h.ToLowerInvariant() + "_")).id;
                 OutfitLoadout look = FashionCatalog2D.WithSet(new OutfitLoadout(), setId).With("head", "hat2d_f_gothic").With("mask", "mask2d_f_cat")
-                    .With("wings", "wings2d_angel").With("mount", "mount2d_white_horse");
+                    .With("wings", "wings2d_f_seraph").With("mount", "mount2d_white_horse");
                 doll.ApplyLoadout(look);
                 yield return null;
+                if (h == "Mage" || h == "Archer")
+                {
+                    // contact picture of the female look (Meshy hat + mask + wings) for the owner: QA/Shop/look_<class>.png
+                    var camGo = new GameObject("Test_Camera");
+                    var cam = camGo.AddComponent<Camera>();
+                    cam.orthographic = true; cam.orthographicSize = 1.1f; cam.clearFlags = CameraClearFlags.SolidColor; cam.backgroundColor = new Color(0.45f, 0.5f, 0.62f);
+                    camGo.transform.position = new Vector3(0f, 0.95f, -10f);
+                    go.transform.position = Vector3.zero;
+                    doll.ApplyLoadout(new OutfitLoadout().With("head", "hat2d_f_gothic").With("mask", "mask2d_f_kitsune").With("wings", "wings2d_f_seraph"));
+                    yield return null;
+                    var rtp = new RenderTexture(512, 512, 24);
+                    cam.targetTexture = rtp; cam.Render();
+                    RenderTexture.active = rtp;
+                    var tp = new Texture2D(512, 512, TextureFormat.RGB24, false); tp.ReadPixels(new Rect(0, 0, 512, 512), 0, 0); tp.Apply();
+                    RenderTexture.active = null; cam.targetTexture = null; rtp.Release();
+                    Directory.CreateDirectory(Dir);
+                    File.WriteAllBytes($"{Dir}/look_{h}.png", tp.EncodeToPNG());
+                    Object.Destroy(tp); Object.Destroy(camGo);
+                    doll.ApplyLoadout(look);
+                    yield return null;
+                }
                 var all = new[] { PaperSlot.Top, PaperSlot.Bottom, PaperSlot.Hat, PaperSlot.Mask, PaperSlot.Wings, PaperSlot.Mount };
                 foreach (PaperSlot s in all) Assert.IsNotNull(doll.Equipped(s), $"{h} {s} worn");
                 var renderers = all.Select(s => doll.RendererOf(s)).ToList();
