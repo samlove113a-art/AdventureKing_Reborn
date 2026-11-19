@@ -132,6 +132,16 @@ MONSTERS["PollenSlime"] = dict(target=52, clips=["Idle"], attack="", death="",
                                     "blob lying low on the ground with a wide flat base, bright glossy highlights, a small white daisy flower with a yellow centre "
                                     "and a curly green sprout growing on top of its head, two small dark eyes with white sparkles and tiny pink cheeks, "
                                     "dark-fantasy pixel style, side view. Palette: lime green, darker green shade, white flower, pink cheeks, dark outline"))
+MONSTERS["PuffSlime"] = dict(target=43, clips=["Idle"], attack="", death="",
+                             ref=("a cute but slightly sinister forest slime monster (Puff Slime): a glossy translucent periwinkle-blue gelatinous dome-shaped "
+                                  "blob lying low on the ground with a wide flat base, bright glossy highlights, a small pale-blue puff flower with a white centre "
+                                  "and a curly sprout growing on top of its head, two small dark eyes with white sparkles and tiny orange-pink cheeks, "
+                                  "dark-fantasy pixel style, side view. Palette: periwinkle blue, darker blue shade, pale blue flower, orange cheeks, dark outline"))
+MONSTERS["MossSlime"] = dict(target=52, clips=["Idle"], attack="", death="",
+                             ref=("a cute but slightly sinister forest slime monster (Moss Slime): a glossy translucent deep-green gelatinous dome-shaped "
+                                  "blob lying low on the ground with a wide flat base covered in a little moss, bright glossy highlights, a small flower with a "
+                                  "green centre and a curly sprout growing on top of its head, two small dark eyes with white sparkles and tiny orange cheeks, "
+                                  "dark-fantasy pixel style, side view. Palette: deep forest green, moss green, white flower, orange cheeks, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
