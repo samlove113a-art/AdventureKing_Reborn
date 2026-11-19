@@ -75,6 +75,11 @@ namespace AdventureKing.Gameplay
             if (!hungry && Frames != null && Frames.Length > 1) s = Frames[Mathf.FloorToInt(Time.time * Fps) % Frames.Length];
             if (Renderer.sprite != s) Renderer.sprite = s;
             Renderer.flipX = facing < 0;
+            // pets with a single picture still breathe: a gentle squash and stretch from the feet (slower and smaller when hungry). Movement only, no drawing.
+            bool single = Frames == null || Frames.Length <= 1;
+            float t = Time.time * (hungry ? 1.2f : 3f);
+            float k = single ? (hungry ? 0.012f : 0.035f) * Mathf.Sin(t) : 0f;
+            Renderer.transform.localScale = new Vector3(1f - k * 0.5f, 1f + k, 1f);
         }
     }
 }

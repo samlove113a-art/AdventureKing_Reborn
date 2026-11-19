@@ -145,6 +145,11 @@ namespace AdventureKing.Tests
             Assert.AreEqual(24, dir.State.catalog.Length, "9 Gold pets + 15 VIP pets (8 dragons among them)");
             Assert.AreEqual(5, panel.PageCount, "9 Gold pets = 5 pages of 2");
             yield return Shot("01_pet_shop");
+            // the VIP pages with the big dragons: pictures must fit their cards
+            panel.SetVip(true);
+            foreach (int page in new[] { 3, 6, 7 }) { panel.SetPage(page); yield return new WaitForSeconds(0.3f); yield return Shot("01b_pet_vip_page" + page); }
+            panel.SetVip(false);
+            panel.SetPage(0);
             long gold0 = world.Character.gold;
             panel.SetVip(false);
             int chick = dir.State.catalog.Where(p => p.tier == "normal").ToList().FindIndex(p => p.id == "pet_chick");

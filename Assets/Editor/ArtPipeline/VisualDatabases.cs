@@ -69,8 +69,10 @@ namespace AdventureKing.ArtPipeline
                 ti.spritePivot = new Vector2(0.5f, 0.04f);
                 ti.SaveAndReimport();
                 var sp = AssetDatabase.LoadAssetAtPath<Sprite>(path);
-                PetVisual v = db.pets.FirstOrDefault(p => p != null && p.petId == Path.GetFileNameWithoutExtension(path));
+                string stem = Path.GetFileNameWithoutExtension(path); bool hungryPic = stem.EndsWith("_hungry");
+                PetVisual v = db.pets.FirstOrDefault(p => p != null && p.petId == (hungryPic ? stem.Substring(0, stem.Length - 7) : stem));
                 if (v == null || !sp) { Debug.LogWarning("[VISUALS] no pet entry for " + path); continue; }
+                if (hungryPic) { if (!v.hungry) v.hungry = sp; n++; continue; }
                 if (!v.portrait) v.portrait = sp;
                 if (v.idleFrames == null || v.idleFrames.Length == 0) v.idleFrames = new[] { sp };
                 n++;
