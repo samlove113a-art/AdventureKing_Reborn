@@ -79,6 +79,18 @@ public sealed class TitleService
         .Concat(new[] { "Special_Starter", "Special_Event", "Special_Festival", "Special_Achievement", "Special_Couple", "Special_GuildMaster", "Special_TopServer", "Special_Special" })
         .ToArray();
 
+    /// <summary>Display order in the bag: VIP 1..15, Boss Hunter 1..10, then special frames.</summary>
+    public static int Order(string id) { int i = Array.IndexOf(Catalog, id); return i < 0 ? 999 : i; }
+    public static string FrameName(string id) => "Khung " + Describe(id, "").name;
+    /// <summary>The higher the level, the rarer the colour of the cell (white, blue, purple, orange, red).</summary>
+    public static string FrameRarity(string id)
+    {
+        TitleDto d = Describe(id, "");
+        if (d.category == "Special") return "orange";
+        double k = d.level / (d.category == "VIP" ? 15.0 : 10.0);
+        return k >= 0.87 ? "red" : k >= 0.6 ? "orange" : k >= 0.35 ? "purple" : k >= 0.15 ? "blue" : "white";
+    }
+
     private static TitleDto Describe(string id, string source)
     {
         string[] p = id.Split('_');

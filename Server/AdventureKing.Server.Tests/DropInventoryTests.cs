@@ -32,6 +32,32 @@ public sealed class DropInventoryTests : IDisposable
         return (acc, chars.Create(acc, "Rơi Đồ " + login[^2..], 0, 0).characterId);
     }
 
+    [Fact]
+    public void Owned_Name_Frames_Appear_In_The_Bag_And_Can_Be_Worn_Or_Removed_Without_Taking_A_Cell()
+    {
+        var (acc, id) = Hero("frame01");
+        var titles = new TitleService(t.Db, () => clock);
+        InventoryDto before = inv.Get(acc, id);
+        Assert.DoesNotContain(before.slots, s => s.kind == "frame");
+        titles.Grant(id, "VIP_15", "test");
+        titles.Grant(id, "VIP_01", "test");
+        titles.Grant(id, "BossHunter_10", "test");
+        InventoryDto d = inv.Get(acc, id);
+        BagSlotDto[] frames = d.slots.Where(s => s.kind == "frame").ToArray();
+        Assert.Equal(new[] { "VIP_01", "VIP_15", "BossHunter_10" }, frames.Select(f => f.itemId));          // VIP 1..15 first, then Boss Hunter
+        Assert.Equal("Khung VIP 15", frames[1].name);
+        Assert.All(frames, f => Assert.True(f.index >= d.capacity, "frames never use a real cell"));
+        Assert.Equal("white", frames[0].rarity); Assert.Equal("red", frames[1].rarity);                      // the higher the level, the rarer the colour
+        Assert.All(frames, f => Assert.False(f.worn));
+        Assert.Equal(before.slots.Length, d.slots.Length - 3);                                              // the real bag is untouched
+        titles.Equip(acc, id, new TitleIdDto { titleId = "VIP_15" });
+        Assert.True(inv.Get(acc, id).slots.Single(s => s.itemId == "VIP_15").worn);
+        Assert.Single(inv.Get(acc, id).slots, s => s.worn);
+        titles.Equip(acc, id, new TitleIdDto { titleId = null });                                           // take it off: back in the bag, not worn
+        Assert.DoesNotContain(inv.Get(acc, id).slots, s => s.worn);
+        Assert.Contains(inv.Get(acc, id).slots, s => s.itemId == "VIP_15");
+    }
+
     private long Gold(string id) { using var c = t.Db.Open(); return Database.Scalar<long>(c, null, "SELECT gold FROM characters WHERE id=$c", ("$c", id)); }
     private void SetGold(string id, long g) { using var c = t.Db.Open(); Database.Exec(c, null, "UPDATE characters SET gold=$g WHERE id=$c", ("$g", g), ("$c", id)); }
     private int Count(InventoryDto d, string item) => d.slots.Where(s => s.itemId == item).Sum(s => s.qty);

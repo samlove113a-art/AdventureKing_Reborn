@@ -172,6 +172,7 @@ namespace AdventureKing.Gameplay
         public long enhanceGold;   // Blacksmith fee for the next +1 (server-owned)
         public string itemId, name, kind, icon, desc, equipSlot, rarity;
         public bool usableByClass = true;
+        public bool worn;          // kind "frame": the name-plate frame currently shown above the name
     }
     [Serializable] public sealed class EquippedState { public string equipSlot; public BagSlotState item; }
     [Serializable]

@@ -73,7 +73,14 @@ namespace AdventureKing.Gameplay
         }
         /// <summary>Item icon by its server icon key (shared with the reward windows).</summary>
         public Sprite IconSprite(string name, string itemId = null) => IconOf(itemId, name);
-        private Sprite IconOf(string itemId, string key) { Sprite s = ItemIconBook.Load(itemId); return s ? s : Icon(key); }
+        private Sprite IconOf(string itemId, string key)
+        {
+            if (IsFrameId(itemId)) { var plate = FindAnyObjectByType<PlayerNameplate>(); Sprite fs = plate ? plate.FrameSprite(itemId) : null; if (fs) return fs; }
+            Sprite s = ItemIconBook.Load(itemId); return s ? s : Icon(key);
+        }
+        private static bool IsFrameId(string id) => !string.IsNullOrEmpty(id) && (id.StartsWith("VIP_") || id.StartsWith("BossHunter_") || id.StartsWith("Special_"));
+        private int FrameCount => State?.slots == null ? 0 : State.slots.Count(s => s.kind == "frame");
+        private Text equipLabel;
 
         private void Start() => Build();
 
@@ -222,6 +229,8 @@ namespace AdventureKing.Gameplay
         public void EquipSelected()
         {
             if (Busy || State == null || SelectedIndex < 0) return;
+            BagSlotState picked = State.slots.FirstOrDefault(x => x.index == SelectedIndex);
+            if (picked != null && picked.kind == "frame") { WearFrame(picked); return; }
             Busy = true;
             AdventureServerConnection.Instance.EquipItem(world.Character.characterId, SelectedIndex, (ok, inv, err) =>
             {
@@ -230,6 +239,23 @@ namespace AdventureKing.Gameplay
                 Apply(inv);
                 SelectedIndex = -1;
                 Message("Đã trang bị.");
+            });
+        }
+
+        /// <summary>Wears the selected frame, or takes it off when it is already worn. The frame stays in the bag either way.</summary>
+        private void WearFrame(BagSlotState frame)
+        {
+            if (!world || world.Character == null || !AdventureServerConnection.Instance) return;
+            Busy = true;
+            string id = frame.worn ? "" : frame.itemId;
+            AdventureServerConnection.Instance.EquipTitle(world.Character.characterId, id, (ok, t, err) =>
+            {
+                Busy = false;
+                if (!ok) { Message(err); return; }
+                var plate = FindAnyObjectByType<PlayerNameplate>();
+                if (plate) plate.ShowTitle(string.IsNullOrEmpty(id) ? null : id);
+                Message(string.IsNullOrEmpty(id) ? "Đã tháo khung tên." : "Đã đeo " + frame.name + ".");
+                Refresh();
             });
         }
 
@@ -447,6 +473,7 @@ namespace AdventureKing.Gameplay
             useButton = Btn(c, "Use", "Dùng", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.25f, 0.6f, 0.4f), UseSelected);
             equipButton = Btn(c, "Equip", "Trang bị", new Vector2(1f, 0f), new Vector2(-270f, 110f), new Vector2(180f, 64f), new Color(0.3f, 0.45f, 0.75f), EquipSelected);
             useLabel = useButton.GetComponentInChildren<Text>();
+            equipLabel = equipButton.GetComponentInChildren<Text>();
             unequipButton = Btn(c, "Unequip", "Tháo", new Vector2(1f, 0f), new Vector2(-470f, 110f), new Vector2(180f, 64f), new Color(0.6f, 0.4f, 0.25f), () => { if (selectedEquip != null) Unequip(selectedEquip); });
             enhanceButton = Btn(c, "Enhance", "Cường hóa", new Vector2(1f, 0f), new Vector2(-270f, 39f),
                 new Vector2(180f, 58f), new Color(0.75f, 0.44f, 0.12f), EnhanceSelected);
@@ -466,13 +493,14 @@ namespace AdventureKing.Gameplay
             for (int i = 0; i < cells.Count; i++)
             {
                 var (bg, icon, qty) = cells[i];
-                bool used = State != null && i < State.capacity;
+                bool used = State != null && i < State.capacity + FrameCount;
                 bg.gameObject.SetActive(State == null ? i < 40 : used);
                 if (bySlot.TryGetValue(i, out BagSlotState s))
                 {
                     icon.sprite = IconOf(s.itemId, s.icon); icon.enabled = icon.sprite;
+                    icon.preserveAspect = true;
                     icon.color = s.usableByClass ? Color.white : new Color(1f, 1f, 1f, 0.45f);
-                    qty.text = s.qty > 1 ? s.qty.ToString() : "";
+                    qty.text = s.kind == "frame" ? (s.worn ? "ĐANG ĐEO" : "") : s.qty > 1 ? s.qty.ToString() : "";
                 }
                 else { icon.enabled = false; qty.text = ""; }
                 Color rarity = bySlot.TryGetValue(i, out BagSlotState held)
@@ -500,7 +528,7 @@ namespace AdventureKing.Gameplay
                     Color.Lerp(new Color(0.21f, 0.22f, 0.32f), TierColor(e.item.rarity), 0.55f);
             }
             if (statsLabel) statsLabel.text = State == null ? "" : $"Tấn công +{State.attackBonus}\nPhòng thủ +{State.defenseBonus}";
-            if (content) content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Ceil((State == null ? 40 : State.capacity) / (float)Columns) * 83f);
+            if (content) content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Ceil((State == null ? 40 : State.capacity + FrameCount) / (float)Columns) * 83f);
             if (expandButton)
             {
                 bool canBuy = State != null && State.nextExpandGold > 0;
@@ -518,9 +546,10 @@ namespace AdventureKing.Gameplay
                 descLabel.text = sel.desc + (sel.usableByClass ? "" : "  (Nghề của bạn không dùng được.)");
             }
             else if (selEq != null) { nameLabel.text = selEq.item.name + (selEq.item.enhanceLevel > 0 ? $" +{selEq.item.enhanceLevel}" : "") + " (đang mặc)"; nameLabel.color = TierColor(selEq.item.rarity); descLabel.text = selEq.item.desc; }
-            else { nameLabel.color = new Color(1f, 0.85f, 0.45f); nameLabel.text = State == null ? "Đang tải túi đồ..." : "Chọn một vật phẩm"; descLabel.text = State == null ? "" : $"{State.slots.Length}/{State.capacity} ô đã dùng · tối đa {State.stackMax}/ô"; }
+            else { nameLabel.color = new Color(1f, 0.85f, 0.45f); nameLabel.text = State == null ? "Đang tải túi đồ..." : "Chọn một vật phẩm"; descLabel.text = State == null ? "" : $"{State.slots.Count(s => s.kind != "frame")}/{State.capacity} ô đã dùng · tối đa {State.stackMax}/ô"; }
             useButton.gameObject.SetActive(sel != null && (sel.kind == "consumable" || sel.kind == "ticket"));
-            equipButton.gameObject.SetActive(sel != null && sel.kind == "equipment" && sel.usableByClass);
+            equipButton.gameObject.SetActive(sel != null && ((sel.kind == "equipment" && sel.usableByClass) || sel.kind == "frame"));
+            if (equipLabel && sel != null) equipLabel.text = sel.kind == "frame" ? (sel.worn ? "Tháo khung" : "Đeo khung") : "Trang bị";
             unequipButton.gameObject.SetActive(selEq != null);
             int stones = State == null ? 0 : State.slots.Where(x => x.itemId == "enhance_stone").Sum(x => x.qty);
             int charms = State == null ? 0 : State.slots.Where(x => x.itemId == "protection_charm").Sum(x => x.qty);

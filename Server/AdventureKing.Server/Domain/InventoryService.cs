@@ -92,6 +92,8 @@ public sealed class BagSlotDto
     public long enhanceGold { get; set; }
     public bool usableByClass { get; set; } = true;
     public string destMap { get; set; } = "";
+    /// <summary>Name-plate frames (VIP / Boss Hunter / special) show up in the bag as kind "frame"; worn = the one currently shown above the name.</summary>
+    public bool worn { get; set; }
 }
 
 public sealed class EquippedDto { public string equipSlot { get; set; } = ""; public BagSlotDto item { get; set; } = new(); }
@@ -279,6 +281,26 @@ public sealed class InventoryService
         AccountService.Audit(c, tx, accountId, "starter_kit", characterId);
     }
 
+    /// <summary>Owned name-plate frames as bag entries after the real cells (index = capacity + n). They live in titles_owned, not in bag_slots: they take no cell and cannot be sold or dropped; the player wears or removes them.</summary>
+    private static IEnumerable<BagSlotDto> FrameSlots(SqliteConnection c, SqliteTransaction tx, string characterId, int capacity)
+    {
+        string? worn = Database.Scalar<string>(c, tx, "SELECT title_id FROM title_equipped WHERE character_id=$c", ("$c", characterId));
+        var owned = new List<string>();
+        using (var cmd = Database.Command(c, tx, "SELECT title_id FROM titles_owned WHERE character_id=$c", ("$c", characterId)))
+        using (var r = cmd.ExecuteReader())
+            while (r.Read()) owned.Add(r.GetString(0));
+        var list = owned.OrderBy(id => TitleService.Order(id)).ToList();
+        for (int i = 0; i < list.Count; i++)
+        {
+            string id = list[i];
+            yield return new BagSlotDto
+            {
+                index = capacity + i, itemId = id, name = TitleService.FrameName(id), kind = "frame", icon = id, qty = 1, worn = id == worn,
+                rarity = TitleService.FrameRarity(id), desc = "Khung tên đeo phía trên tên nhân vật. Chỉ để trang trí, không cộng sức mạnh. Chọn để đeo hoặc tháo.",
+            };
+        }
+    }
+
     private InventoryDto Snapshot(SqliteConnection c, SqliteTransaction tx, string characterId, int heroClass)
     {
         BagSlotDto Dto(int index, string itemId, int qty, int enhanced = 0)
@@ -297,6 +319,7 @@ public sealed class InventoryService
             while (rdr.Read()) levels[rdr.GetInt32(0)] = rdr.GetInt32(1);
         var slots = Bag(c, tx, characterId).OrderBy(kv => kv.Key)
             .Select(kv => Dto(kv.Key, kv.Value.item, kv.Value.qty, levels.TryGetValue(kv.Key, out int lvl) ? lvl : 0)).ToArray();
+        slots = slots.Concat(FrameSlots(c, tx, characterId, Capacity(c, tx, characterId))).ToArray();
         var eq = new List<EquippedDto>();
         using (var cmd = Database.Command(c, tx, "SELECT equip_slot, item_id, enhance_level FROM equipped WHERE character_id=$c ORDER BY equip_slot", ("$c", characterId)))
         using (var r = cmd.ExecuteReader())

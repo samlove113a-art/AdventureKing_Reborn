@@ -356,6 +356,10 @@ namespace AdventureKing.Gameplay
             Send("GET", Ch(characterId) + "/rankings/" + UnityWebRequest.EscapeURL(board), null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<RankBoardState>(json) : null, err));
         public void GetTitles(string characterId, Action<bool, TitlesState, string> completed) =>
             Send("GET", Ch(characterId) + "/titles", null, true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<TitlesState>(json) : null, err));
+        [Serializable] private sealed class TitleBody { public string titleId; }
+        /// <summary>Wear a frame the character owns (empty id = take it off). The server answers with the titles state.</summary>
+        public void EquipTitle(string characterId, string titleId, Action<bool, TitlesState, string> completed) =>
+            Send("POST", Ch(characterId) + "/titles/equip", JsonUtility.ToJson(new TitleBody { titleId = titleId }), true, (ok, json, err) => completed(ok, ok ? JsonUtility.FromJson<TitlesState>(json) : null, err));
         // ------------------------------------------------------------------ multiplayer heartbeat + social (Phase D)
         [Serializable] public sealed class SyncBody { public float x, y; public int facing = 1, emoteSeq; public string anim = "idle", emote = ""; public long chatAfter; public int practiceSlot, practiceSeq; }
         [Serializable] private sealed class NameBody { public string name; }

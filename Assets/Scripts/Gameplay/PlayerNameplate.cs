@@ -26,6 +26,7 @@ namespace AdventureKing.Gameplay
         public bool TitlesLoaded { get; private set; }
         public bool FrameShown => frame && frame.gameObject.activeSelf;
         public int FrameCount => frames.Length;
+        public Sprite FrameSprite(string id) { foreach (Sprite f in frames) if (f && f.name == id) return f; return null; }
 
         /// <summary>Show the frame for a server-reported equipped title id (null/empty or unknown sprite = none).</summary>
         public void ShowTitle(string titleId)
