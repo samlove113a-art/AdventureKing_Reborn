@@ -142,6 +142,11 @@ MONSTERS["MossSlime"] = dict(target=52, clips=["Idle"], attack="", death="",
                                   "blob lying low on the ground with a wide flat base covered in a little moss, bright glossy highlights, a small flower with a "
                                   "green centre and a curly sprout growing on top of its head, two small dark eyes with white sparkles and tiny orange cheeks, "
                                   "dark-fantasy pixel style, side view. Palette: deep forest green, moss green, white flower, orange cheeks, dark outline"))
+MONSTERS["GlowMoss"] = dict(target=85, attack="hops forward and bursts a small cloud of glowing cyan spores from its cap, then recovers",
+                            death="stumbles, its glow flickers out, it sinks down and topples over, the cap dimming to dull gray-green",
+                            ref=("a small hostile glowing forest mushroom creature (Glow Moss): a round bioluminescent turquoise-cyan mushroom cap with lighter "
+                                 "pale-cyan spots that glows softly, a short pale mint-white stalk body with two small dark eyes and a tiny frown, stubby "
+                                 "brown feet, slightly eerie cave-forest dark-fantasy monster, side view. Palette: turquoise cyan glow, pale mint, brown, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
