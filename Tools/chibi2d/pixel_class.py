@@ -168,12 +168,18 @@ MONSTERS["ShadowLeaf"] = dict(target=60, attack="darts forward and slashes with 
                                    "narrow pale slit eye, a sharp pointed leaf-tip snout pointing right, a clearly visible face with a large glowing pale-yellow angry eye and a row of tiny sharp teeth, a pale vein line along its body, small dripping shadow "
                                    "droplets underneath, gliding just above the ground, side view facing right, eerie dark-fantasy pixel style. "
                                    "Palette: deep violet purple, lilac highlights, pale eye, dark outline"))
+MONSTERS["ToxicSlime"] = dict(target=72, attack="lunges forward and spits a glob of toxic green goo, then wobbles back",
+                              death="bubbles and melts into a flat puddle of toxic goo with the little purple mushroom cap left floating on top",
+                              ref=("a hostile toxic slime monster (Toxic Slime): a wide low blob of glossy poison-green gelatinous goo with a few bubbles and "
+                                   "darker green spots inside, a small purple spotted mushroom growing on top of its head, two small dark eyes with a mean "
+                                   "frown and a tiny dark mouth, dripping toxic green goo at the edges, sitting on the ground, side view facing right, "
+                                   "dark-fantasy pixel style. Palette: toxic lime green, darker green, purple mushroom cap with cream spots, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
 
 # frames to keep when the generator drew junk at the end of a sheet: (actor, clip) -> indexes
-KEEP = {("MonsterNamNon", "Death"): "0,1,2,3,3", ("PollenSlime", "Idle"): "0,1,2,4,5,4", ("JadeTurtle", "Death"): "0,1,2,3,5"}
+KEEP = {("MonsterNamNon", "Death"): "0,1,2,3,3", ("PollenSlime", "Idle"): "0,1,2,4,5,4", ("JadeTurtle", "Death"): "0,1,2,3,5", ("ToxicSlime", "Hit"): "0,1,2"}
 
 
 # extra processor flags per (actor, clip), e.g. drop the ground line the generator drew under the creature
