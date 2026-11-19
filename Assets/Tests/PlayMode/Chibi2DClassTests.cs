@@ -37,7 +37,8 @@ namespace AdventureKing.Tests
 
         private static IEnumerator Shot(string name, int w = 1280, int h = 720)
         {
-            yield return new WaitForEndOfFrame();
+            // -batchmode never reaches the end-of-frame callback (no game-view render loop): the camera is rendered by hand below anyway
+            if (Application.isBatchMode) yield return null; else yield return new WaitForEndOfFrame();
             var rt = new RenderTexture(w, h, 24) { antiAliasing = 4 };
             GameplayRecorder.Capture(Camera.main, rt);
             RenderTexture.active = rt;
@@ -66,7 +67,7 @@ namespace AdventureKing.Tests
             var sr = pd.Body;
             Assert.AreEqual("AdventureKing/PixelSprite", sr.sharedMaterial.shader.name);
             Assert.AreEqual(FilterMode.Point, sr.sprite.texture.filterMode);
-            Assert.AreEqual(128, sr.sprite.texture.height);
+            Assert.AreEqual(192, sr.sprite.texture.height);   // pixel-art set: 192 px cells (was 128 for the Meshy bake)
             StringAssert.StartsWith(n + "_", sr.sprite.name, "sprite named per class");
             var col = motor.GetComponent<Collider2D>();
             Assert.IsTrue(col && col.enabled);
