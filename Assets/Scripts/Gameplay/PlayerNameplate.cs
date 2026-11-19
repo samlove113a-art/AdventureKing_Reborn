@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,17 @@ namespace AdventureKing.Gameplay
         private RectTransform plate;
         private Image frame, plainPlate;
 
+        [Serializable] private sealed class SlotRect { public string id; public float x0, x1, y0, y1; }
+        [Serializable] private sealed class SlotFile { public SlotRect[] slots; }
+        private static SlotFile slotFile;
+        /// <summary>Where the dark name slot sits inside each frame picture (fractions of the picture, y from the top), measured from the artwork itself.</summary>
+        private static SlotRect SlotOf(string id)
+        {
+            if (slotFile == null) { var ta = Resources.Load<TextAsset>("NameplateSlots"); slotFile = ta ? JsonUtility.FromJson<SlotFile>(ta.text) : new SlotFile { slots = new SlotRect[0] }; }
+            foreach (SlotRect r in slotFile.slots) if (r.id == id) return r;
+            return new SlotRect { x0 = 0.2f, x1 = 0.8f, y0 = 0.55f, y1 = 0.85f };
+        }
+
         public string Shown => label ? label.text : "";
         public string EquippedTitle { get; private set; }
         public bool TitlesLoaded { get; private set; }
@@ -43,11 +55,12 @@ namespace AdventureKing.Gameplay
             {
                 float w = 330f;
                 frame.rectTransform.anchorMin = frame.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-                frame.rectTransform.pivot = new Vector2(0.5f, 0.3f);    // the dark name slot of the artwork is at ~30 % of its height: put it on the plate centre
+                SlotRect slot = SlotOf(EquippedTitle);
+                frame.rectTransform.pivot = new Vector2((slot.x0 + slot.x1) * 0.5f, 1f - (slot.y0 + slot.y1) * 0.5f);   // the centre of this frame's name slot sits exactly on the plate centre
                 frame.rectTransform.anchoredPosition = Vector2.zero;
                 frame.rectTransform.sizeDelta = new Vector2(w, w * s.rect.height / s.rect.width);
                 label.transform.SetParent(frame.transform, false);
-                label.rectTransform.anchorMin = new Vector2(0.2f, 0.12f); label.rectTransform.anchorMax = new Vector2(0.8f, 0.42f);
+                label.rectTransform.anchorMin = new Vector2(slot.x0 + 0.015f, 1f - slot.y1 + 0.01f); label.rectTransform.anchorMax = new Vector2(slot.x1 - 0.015f, 1f - slot.y0 - 0.01f);
                 label.rectTransform.offsetMin = label.rectTransform.offsetMax = Vector2.zero;
             }
             else
