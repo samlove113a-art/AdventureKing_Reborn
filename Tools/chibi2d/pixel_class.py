@@ -211,6 +211,18 @@ MONSTERS["MushroomChief"] = dict(target=340, cell=384, attack="swings its heavy 
                                       "tusked mouth, wielding a huge gnarled wooden staff topped by a glowing purple orb, a wide commanding power stance, "
                                       "overwhelming dark-fantasy pixel style, side view facing right. "
                                       "Palette: rust brown, cream, leaf green, dark green cape, glowing purple, dark outline"))
+MONSTERS["JadeGuardian"] = dict(target=340, cell=384, gen_extra="Keep the same glowing green jade aura, floating jade shards and energy sparks around the body in EVERY frame of EVERY animation, including the idle.",
+                                attack="rears back both massive jade fists then smashes them down in a devastating double hammer blow, green shockwave sparks at the impact",
+                                death="its glowing core flickers and dies, the jade body cracks along glowing fault lines, shatters into huge chunks and collapses into a heap of broken jade rubble",
+                                skill="JADE QUAKE: it raises both enormous fists overhead as the glowing jade core in its chest blazes, then slams the ground and a hard-edged pixel ring of green shockwave and jagged jade crystal spikes erupts outward across the ground",
+                                ref=("a COLOSSAL, towering, monstrous ancient jade golem boss guardian (Jade Guardian): a gigantic hulking blocky stone-and-jade titan, "
+                                     "extremely broad and heavy, built from massive carved teal-blue jade slabs with glowing green runes and cracks, a huge "
+                                     "glowing green gem core blazing in its chest, jagged jade crystal spikes on its shoulders, back and knuckles, enormous "
+                                     "fists like boulders, a blocky scowling head with two blazing yellow-green eyes and a jagged fanged mouth slit, a "
+                                     "swirling aura of green energy, floating jade shards and glowing sparks surrounding its whole body, cracked glowing "
+                                     "ground under its giant feet, an immense menacing power stance that fills the whole canvas, "
+                                     "overwhelming dark-fantasy pixel style, side view facing right. "
+                                     "Palette: teal-blue jade, glowing emerald green, dark stone, yellow-green eyes, dark outline"))
 for _n, _d in MONSTERS.items():
     CLASSES[_n] = _d
 
@@ -290,7 +302,7 @@ def cmd_gen(cls):
     for n, f, lay, ar, fps, loop, tpl, wh in todo:
         desc = tpl.format(**{"attack": "", "skill": "", "stash": "", "death": "", **c})
         fr = f"{f} frames" if f else "6 or 7 frames"
-        body = dict(prompt=f"{SAME} Create a flat 2D sprite sheet image that fills the ENTIRE canvas edge to edge (not a tilted screen, no perspective, no mockup, no grey surround) of {fr} arranged in {lay}, {desc}. Feet on the same baseline in every cell.",
+        body = dict(prompt=f"{SAME} Create a flat 2D sprite sheet image that fills the ENTIRE canvas edge to edge (not a tilted screen, no perspective, no mockup, no grey surround) of {fr} arranged in {lay}, {desc}. Feet on the same baseline in every cell. {(MONSTERS.get(cls) or {}).get('gen_extra', '')}",
                     ai_model="nano-banana-2", reference_image_urls=["data:image/png;base64," + b64], aspect_ratio=ar)
         print(meshy_run("image-to-image", f"pixel_{cls.lower()}_{n.lower()}", body))
 
