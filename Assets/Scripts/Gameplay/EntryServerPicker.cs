@@ -102,7 +102,7 @@ namespace AdventureKing.Gameplay
         private string CurrentApi()
         {
             if (Selected != null && !string.IsNullOrWhiteSpace(Selected.apiUrl)) return Selected.apiUrl.Trim().TrimEnd('/');
-            return AdventureServerConnection.Instance ? AdventureServerConnection.Instance.BaseUrl : "http://127.0.0.1:5080/api/v1";
+            return AdventureServerConnection.Instance ? AdventureServerConnection.Instance.BaseUrl : "https://held-dip-recently-assessed.trycloudflare.com/api/v1";
         }
 
         /// <summary>GET {api}/health with a timeout; reports reachability. Used by the loading screen too.</summary>

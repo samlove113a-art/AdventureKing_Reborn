@@ -26,7 +26,7 @@ jobs:
         env:
           SERVER_URL: ${{ secrets.SERVER_URL }}
         run: |
-          URL="${SERVER_URL:-http://100.91.134.127:5080/api/v1}"
+          URL="${SERVER_URL:-https://held-dip-recently-assessed.trycloudflare.com/api/v1}"
           printf '%s' "$URL" > Assets/Resources/ServerEndpoint.txt
 
       # The project is on 6000.6.7f1, which has no game-ci Docker image; 6000.6.10f1 is the nearest published patch of the same 6000.6 stream.

@@ -46,7 +46,7 @@ namespace AdventureKing.Gameplay
 
             status = "Kết nối máy chủ...";
             bool pingDone = false;
-            string api = AdventureServerConnection.Instance ? AdventureServerConnection.Instance.BaseUrl : "http://127.0.0.1:5080/api/v1";
+            string api = AdventureServerConnection.Instance ? AdventureServerConnection.Instance.BaseUrl : "https://held-dip-recently-assessed.trycloudflare.com/api/v1";
             StartCoroutine(EntryServerPicker.Ping(api, _ => pingDone = true, 3f));
             for (int i = 0; i < Steps; i++)
             {

@@ -21,7 +21,7 @@ namespace AdventureKing.Gameplay
     public sealed class AdventureServerConnection : MonoBehaviour, IAdventureAccountService, IAdventureProfileService
     {
         [Tooltip("Local test server. Change only to a server the owner operates (HTTPS required off-PC).")]
-        [SerializeField] private string baseUrl = "http://127.0.0.1:5080/api/v1";
+        [SerializeField] private string baseUrl = "https://held-dip-recently-assessed.trycloudflare.com/api/v1";
         [SerializeField, Min(1)] private int timeoutSeconds = 8;
         [SerializeField] private AdventureEntryFlow entryFlow;
 
