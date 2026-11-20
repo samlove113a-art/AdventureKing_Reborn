@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="9" result="Failed(Child)" total="9" passed="8" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 18:15:03Z" end-time="2026-11-19 18:18:26Z" duration="202.4696796">
+  <test-suite type="TestSuite" id="1146" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-19 18:15:03Z" end-time="2026-11-19 18:18:26Z" duration="202.469680" total="9" passed="8" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1133" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 18:15:03Z" end-time="2026-11-19 18:18:26Z" duration="202.455697" total="9" passed="8" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1756" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1134" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 18:15:03Z" end-time="2026-11-19 18:18:26Z" duration="202.454457" total="9" passed="8" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 18:15:03Z" end-time="2026-11-19 18:18:26Z" duration="202.453083" total="9" passed="8" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1001" name="BlacksmithTests" fullname="AdventureKing.Tests.BlacksmithTests" classname="AdventureKing.Tests.BlacksmithTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 18:15:03Z" end-time="2026-11-19 18:15:36Z" duration="33.103019" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1002" name="Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" fullname="AdventureKing.Tests.BlacksmithTests.Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" methodname="Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" classname="AdventureKing.Tests.BlacksmithTests" runstate="Runnable" seed="693404154" result="Passed" start-time="2026-11-19 18:15:03Z" end-time="2026-11-19 18:15:36Z" duration="33.087336" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1041" name="DropInventoryUiTests" fullname="AdventureKing.Tests.DropInventoryUiTests" classname="AdventureKing.Tests.DropInventoryUiTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-19 18:15:36Z" end-time="2026-11-19 18:16:41Z" duration="65.058961" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1042" name="Every_Canvas_Uses_The_Standard_Scaler_Frames_Are_9_Sliced_And_HUD_Clusters_Hug_The_Screen_Edges" fullname="AdventureKing.Tests.DropInventoryUiTests.Every_Canvas_Uses_The_Standard_Scaler_Frames_Are_9_Sliced_And_HUD_Clusters_Hug_The_Screen_Edges" methodname="Every_Canvas_Uses_The_Standard_Scaler_Frames_Are_9_Sliced_And_HUD_Clusters_Hug_The_Screen_Edges" classname="AdventureKing.Tests.DropInventoryUiTests" runstate="Runnable" seed="172831309" result="Passed" start-time="2026-11-19 18:15:36Z" end-time="2026-11-19 18:15:41Z" duration="4.524046" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Animator is not playing an AnimatorController
+]]></output>
+            </test-case>
+            <test-case id="1043" name="Meadow_Kill_Drops_Junk_Pickup_15s_Life_Bag_Expansion_And_Quick_Sell" fullname="AdventureKing.Tests.DropInventoryUiTests.Meadow_Kill_Drops_Junk_Pickup_15s_Life_Bag_Expansion_And_Quick_Sell" methodname="Meadow_Kill_Drops_Junk_Pickup_15s_Life_Bag_Expansion_And_Quick_Sell" classname="AdventureKing.Tests.DropInventoryUiTests" runstate="Runnable" seed="530655526" result="Passed" start-time="2026-11-19 18:15:41Z" end-time="2026-11-19 18:16:41Z" duration="60.531944" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Animator is not playing an AnimatorController
+[DROPS] item pile: Thạch Slime
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Animator is not playing an AnimatorController
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1051" name="FrameBagTests" fullname="AdventureKing.Tests.FrameBagTests" classname="AdventureKing.Tests.FrameBagTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 18:16:41Z" end-time="2026-11-19 18:17:03Z" duration="21.418132" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1052" name="Frames_Sit_In_The_Bag_And_Can_Be_Worn_Or_Taken_Off" fullname="AdventureKing.Tests.FrameBagTests.Frames_Sit_In_The_Bag_And_Can_Be_Worn_Or_Taken_Off" methodname="Frames_Sit_In_The_Bag_And_Can_Be_Worn_Or_Taken_Off" classname="AdventureKing.Tests.FrameBagTests" runstate="Runnable" seed="1584330699" result="Passed" start-time="2026-11-19 18:16:41Z" end-time="2026-11-19 18:17:03Z" duration="21.416173" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1063" name="JewelryTests" fullname="AdventureKing.Tests.JewelryTests" classname="AdventureKing.Tests.JewelryTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 18:17:03Z" end-time="2026-11-19 18:17:28Z" duration="24.715116" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1064" name="Three_Shop_Groups_Rings_And_Necklaces_And_Forge_Work" fullname="AdventureKing.Tests.JewelryTests.Three_Shop_Groups_Rings_And_Necklaces_And_Forge_Work" methodname="Three_Shop_Groups_Rings_And_Necklaces_And_Forge_Work" classname="AdventureKing.Tests.JewelryTests" runstate="Runnable" seed="316038371" result="Passed" start-time="2026-11-19 18:17:03Z" end-time="2026-11-19 18:17:28Z" duration="24.712685" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1100" name="ShopFashionTests" fullname="AdventureKing.Tests.ShopFashionTests" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-19 18:17:28Z" end-time="2026-11-19 18:17:54Z" duration="26.467555" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1102" name="Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" fullname="AdventureKing.Tests.ShopFashionTests.Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" methodname="Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="1003897968" result="Passed" start-time="2026-11-19 18:17:28Z" end-time="2026-11-19 18:17:29Z" duration="1.609353" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1101" name="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" fullname="AdventureKing.Tests.ShopFashionTests.Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" methodname="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="265168481" result="Failed" start-time="2026-11-19 18:17:29Z" end-time="2026-11-19 18:17:52Z" duration="23.197315" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  greets the character by name
+  Expected: String containing "Kiếm Khách Lụa"
+  But was:  "Chào <b>Kiếm Khách L</b>! Ghé Tiệm Thời Trang Chuông Gió xem đồ mới nhé.
+Con cứ mặc thử thoải mái, ưng món nào ta gói ngay — trả bằng Vàng."
+]]></message>
+                <stack-trace><![CDATA[at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual, System.String message, System.Object[] args) [0x00008] in <8b63e8ac0a4746599ed207982825ae6c>:0
+at AdventureKing.Tests.ShopFashionTests+<Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart>d__14.MoveNext () [0x003c4] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\ShopFashionTests.cs:145
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+]]></output>
+            </test-case>
+            <test-case id="1103" name="Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" fullname="AdventureKing.Tests.ShopFashionTests.Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" methodname="Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="139797481" result="Passed" start-time="2026-11-19 18:17:52Z" end-time="2026-11-19 18:17:54Z" duration="1.657899" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1124" name="Village2DTests" fullname="AdventureKing.Tests.Village2DTests" classname="AdventureKing.Tests.Village2DTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 18:17:54Z" end-time="2026-11-19 18:18:26Z" duration="31.649453" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1125" name="Hub_Is_Pure_2D_And_Its_Platforms_Gimmicks_And_Pictures_Work" fullname="AdventureKing.Tests.Village2DTests.Hub_Is_Pure_2D_And_Its_Platforms_Gimmicks_And_Pictures_Work" methodname="Hub_Is_Pure_2D_And_Its_Platforms_Gimmicks_And_Pictures_Work" classname="AdventureKing.Tests.Village2DTests" runstate="Runnable" seed="1894658349" result="Passed" start-time="2026-11-19 18:17:54Z" end-time="2026-11-19 18:18:26Z" duration="31.645432" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

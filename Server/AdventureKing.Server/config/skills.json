@@ -1,0 +1,25 @@
+{
+  "_note": "Basic skill set (3 per class). Cooldowns 5/15/20 s and base MP 10/25/45 follow the owner's directive; damage multipliers, areas, max MP and regen are a BALANCE PROPOSAL pending owner approval. MP cost and max MP scale with level (see mpCostPerLevel / maxMpPerLevel). The server decides cooldown, MP and damage; the client only asks.",
+  "version": 1,
+  "globalCooldownSeconds": 0.45,
+  "mpCostPerLevel": 0.03,
+  "maxMpPerLevel": 0.05,
+  "classes": [
+    { "heroClass": 0, "name": "Kiếm Sĩ", "maxMp": 80, "mpRegenPerSecond": 2.0, "skills": [
+      { "slot": 1, "id": "sword_wind_slash", "name": "Chém Gió", "cooldownSeconds": 5, "mpCost": 10, "damageMultiplier": 1.8, "shape": "line", "range": 2.6, "radius": 0, "maxTargets": 2 },
+      { "slot": 2, "id": "sword_whirl", "name": "Kiếm Khí Xoáy", "cooldownSeconds": 15, "mpCost": 25, "damageMultiplier": 2.4, "shape": "self", "range": 0, "radius": 2.6, "maxTargets": 5 },
+      { "slot": 3, "id": "sword_heaven_blade", "name": "Thiên Kiếm", "cooldownSeconds": 20, "mpCost": 45, "damageMultiplier": 4.0, "shape": "target", "range": 4.0, "radius": 2.2, "maxTargets": 6 } ] },
+    { "heroClass": 1, "name": "Pháp Sư", "maxMp": 140, "mpRegenPerSecond": 3.0, "skills": [
+      { "slot": 1, "id": "mage_fireball", "name": "Cầu Lửa", "cooldownSeconds": 5, "mpCost": 10, "damageMultiplier": 1.6, "shape": "target", "range": 7.0, "radius": 1.0, "maxTargets": 2 },
+      { "slot": 2, "id": "mage_ice_storm", "name": "Bão Băng", "cooldownSeconds": 15, "mpCost": 25, "damageMultiplier": 2.0, "shape": "target", "range": 6.5, "radius": 2.6, "maxTargets": 5 },
+      { "slot": 3, "id": "mage_meteor", "name": "Thiên Thạch", "cooldownSeconds": 20, "mpCost": 45, "damageMultiplier": 3.6, "shape": "target", "range": 7.0, "radius": 3.0, "maxTargets": 8 } ] },
+    { "heroClass": 2, "name": "Sát Thủ", "maxMp": 90, "mpRegenPerSecond": 2.2, "skills": [
+      { "slot": 1, "id": "assassin_dagger_throw", "name": "Phi Dao", "cooldownSeconds": 5, "mpCost": 10, "damageMultiplier": 1.6, "shape": "line", "range": 6.0, "radius": 0, "maxTargets": 1 },
+      { "slot": 2, "id": "assassin_shadow_clone", "name": "Ảnh Phân Thân", "cooldownSeconds": 15, "mpCost": 25, "damageMultiplier": 2.2, "shape": "self", "range": 0, "radius": 2.2, "maxTargets": 4 },
+      { "slot": 3, "id": "assassin_shadow_combo", "name": "Ám Ảnh Liên Trảm", "cooldownSeconds": 20, "mpCost": 45, "damageMultiplier": 4.2, "shape": "target", "range": 3.2, "radius": 2.0, "maxTargets": 4 } ] },
+    { "heroClass": 3, "name": "Cung Thủ", "maxMp": 100, "mpRegenPerSecond": 2.4, "skills": [
+      { "slot": 1, "id": "archer_piercing_arrow", "name": "Tên Xuyên", "cooldownSeconds": 5, "mpCost": 10, "damageMultiplier": 1.7, "shape": "line", "range": 8.0, "radius": 0, "maxTargets": 3 },
+      { "slot": 2, "id": "archer_arrow_rain", "name": "Mưa Tên", "cooldownSeconds": 15, "mpCost": 25, "damageMultiplier": 2.0, "shape": "target", "range": 7.0, "radius": 2.6, "maxTargets": 5 },
+      { "slot": 3, "id": "archer_phoenix_arrow", "name": "Phượng Hoàng Tiễn", "cooldownSeconds": 20, "mpCost": 45, "damageMultiplier": 3.8, "shape": "line", "range": 9.0, "radius": 0, "maxTargets": 6 } ] }
+  ]
+}

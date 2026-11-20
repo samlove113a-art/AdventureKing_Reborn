@@ -1,0 +1,97 @@
+﻿name: Build iOS IPA (unsigned)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unity-xcode:
+    name: Unity -> Xcode project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-iOS-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-iOS-
+
+      # Server address baked into the build. Secret SERVER_URL wins; empty = the current test server.
+      - name: Write server endpoint
+        env:
+          SERVER_URL: ${{ secrets.SERVER_URL }}
+        run: |
+          URL="${SERVER_URL:-http://100.91.134.127:5080/api/v1}"
+          printf '%s' "$URL" > Assets/Resources/ServerEndpoint.txt
+
+      # The project is on 6000.6.7f1, which has no game-ci Docker image; 6000.6.10f1 is the nearest published patch of the same 6000.6 stream.
+      # "-development" lets the game accept the plain-http / Tailscale server address (release builds only accept https).
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: 6000.6.10f1
+          targetPlatform: iOS
+          buildName: AdventureKingReborn
+          allowDirtyBuild: true
+          customParameters: -development
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-xcode-project
+          path: build/iOS
+          retention-days: 3
+
+  ipa:
+    name: Xcode -> unsigned IPA -> GitHub Release
+    needs: unity-xcode
+    runs-on: macos-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ios-xcode-project
+          path: xcode
+
+      - name: Archive without code signing
+        run: |
+          PROJ=$(find xcode -name "Unity-iPhone.xcodeproj" -maxdepth 4 | head -n 1)
+          test -n "$PROJ"
+          xcodebuild -project "$PROJ" -scheme Unity-iPhone -configuration Release -sdk iphoneos \
+            -archivePath "$PWD/app.xcarchive" archive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM=""
+
+      - name: Pack AdventureKingReborn.ipa
+        run: |
+          mkdir -p Payload
+          cp -R app.xcarchive/Products/Applications/*.app Payload/
+          zip -qry AdventureKingReborn.ipa Payload
+          ls -lh AdventureKingReborn.ipa
+
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+
+      # Same tag every run: the release is recreated so the tag points at this commit and the .ipa is replaced.
+      - name: Reset release v1.0-ios
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd repo
+          gh release delete v1.0-ios --cleanup-tag --yes || true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0-ios
+          target_commitish: ${{ github.sha }}
+          name: Adventure King Reborn iOS (unsigned .ipa)
+          body: Unsigned build. Install with Sideloadly / AltStore. Built from ${{ github.sha }}.
+          files: AdventureKingReborn.ipa
+          overwrite_files: true
+          fail_on_unmatched_files: true

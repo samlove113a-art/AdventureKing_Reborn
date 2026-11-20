@@ -1,0 +1,51 @@
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+/[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.unitypackage
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p12
+*.pfx
+# Commit Unity .meta files: GUIDs must remain stable.
+
+# Meshy raw downloads (large; backed up outside the repo) and render scratch
+ArtSource/Meshy/raw/
+ArtSource/_render_tmp/
+
+# QA scratch (frame dumps live in %TEMP%; only the encoded MP4 is kept)
+QA/HubTest/video_frames.txt
+
+# Python bytecode and Unity Test Runner temp scenes
+__pycache__/
+*.pyc
+Assets/InitTestScene*.unity
+Assets/InitTestScene*.unity.meta
+
+# Local game server: keep project files, never build output or live databases
+!Server/**/*.csproj
+!Server/*.sln
+Server/**/bin/
+Server/**/obj/
+Server/**/data/
+*.db
+*.db-shm
+*.db-wal
+
+# machine-only secrets
+Server/AdventureKing.Server/appsettings.Local.json

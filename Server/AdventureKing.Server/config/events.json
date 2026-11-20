@@ -1,0 +1,25 @@
+{
+  "_note": "Events + welfare (Phúc Lợi). STATUS: DRAFT — rewards are disabled in production until the owner approves amounts (claims answer 'chờ duyệt'). Rewards may only be Gold and common items (never Diamonds or premium items). events.dev.json enables them for automated tests only.",
+  "status": "DRAFT",
+  "enabled": false,
+  "events": [
+    { "id": "mushroom_festival", "title": "Săn Nấm Lễ Hội", "banner": "banner_mushroom",
+      "desc": "Lễ hội mùa nấm ở Đồng Cỏ Gió! Săn quái và gom Vàng để nhận quà lễ hội.",
+      "startVn": "2026-11-01", "endVn": "2026-12-31",
+      "tasks": [
+        { "event": "kill:any", "need": 30, "text": "Hạ 30 quái", "rewardGold": 100, "rewardItems": [ { "itemId": "potion_hp_m", "qty": 3 } ] },
+        { "event": "pickup:gold", "need": 20, "text": "Nhặt Vàng 20 lần", "rewardGold": 80, "rewardItems": [ { "itemId": "petfood_basic", "qty": 5 } ] },
+        { "event": "skill:any", "need": 25, "text": "Dùng kỹ năng 25 lần", "rewardGold": 60, "rewardItems": [ { "itemId": "potion_mp_m", "qty": 3 } ] }
+      ] }
+  ],
+  "online": [
+    { "minutes": 10, "rewardGold": 20, "rewardItems": [] },
+    { "minutes": 30, "rewardGold": 40, "rewardItems": [ { "itemId": "potion_hp_s", "qty": 3 } ] },
+    { "minutes": 60, "rewardGold": 60, "rewardItems": [ { "itemId": "potion_mp_s", "qty": 3 } ] }
+  ],
+  "levelGifts": [
+    { "level": 2, "rewardGold": 50, "rewardItems": [ { "itemId": "potion_hp_s", "qty": 5 } ] },
+    { "level": 5, "rewardGold": 150, "rewardItems": [ { "itemId": "potion_hp_m", "qty": 5 }, { "itemId": "potion_mp_m", "qty": 5 } ] },
+    { "level": 10, "rewardGold": 400, "rewardItems": [ { "itemId": "petfood_feast", "qty": 2 } ] }
+  ]
+}

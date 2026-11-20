@@ -1,0 +1,686 @@
+using Microsoft.Data.Sqlite;
+
+namespace AdventureKing.Server.Data;
+
+/// <summary>
+/// SQLite store for the local test server. Every write that touches currency, items or
+/// rewards goes through <see cref="InTransaction{T}"/> so it is atomic. The schema is
+/// versioned (PRAGMA user_version) so the same database can later be migrated to a VPS.
+/// </summary>
+public sealed class Database
+{
+    public string ConnectionString { get; }
+    public string FilePath { get; }
+
+    public Database(string filePath)
+    {
+        FilePath = Path.GetFullPath(filePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
+        ConnectionString = new SqliteConnectionStringBuilder
+        {
+            DataSource = FilePath,
+            Mode = SqliteOpenMode.ReadWriteCreate,
+            Cache = SqliteCacheMode.Private,
+            Pooling = false,
+        }.ToString();
+        Migrate();
+    }
+
+    public SqliteConnection Open()
+    {
+        var c = new SqliteConnection(ConnectionString);
+        c.Open();
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = "PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;";
+        cmd.ExecuteNonQuery();
+        return c;
+    }
+
+    /// <summary>Runs <paramref name="work"/> inside one IMMEDIATE transaction (single writer, no lost updates).</summary>
+    public T InTransaction<T>(Func<SqliteConnection, SqliteTransaction, T> work)
+    {
+        using var c = Open();
+        using var tx = c.BeginTransaction(deferred: false);
+        try
+        {
+            T result = work(c, tx);
+            tx.Commit();
+            return result;
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
+    }
+
+    private void Migrate()
+    {
+        using var c = Open();
+        using (var wal = c.CreateCommand())
+        {
+            wal.CommandText = "PRAGMA journal_mode=WAL;";
+            wal.ExecuteNonQuery();
+        }
+        long version = Scalar<long>(c, null, "PRAGMA user_version;");
+        if (version < 1)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V1);
+            Exec(c, tx, "PRAGMA user_version=1;");
+            tx.Commit();
+            version = 1;
+        }
+        if (version < 2)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V2);
+            Exec(c, tx, "PRAGMA user_version=2;");
+            tx.Commit();
+            version = 2;
+        }
+        if (version < 3)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V3);
+            Exec(c, tx, "PRAGMA user_version=3;");
+            tx.Commit();
+            version = 3;
+        }
+        if (version < 4)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V4);
+            Exec(c, tx, "PRAGMA user_version=4;");
+            tx.Commit();
+            version = 4;
+        }
+        if (version < 5)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V5);
+            Exec(c, tx, "PRAGMA user_version=5;");
+            tx.Commit();
+            version = 5;
+        }
+        if (version < 6)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V6);
+            Exec(c, tx, "PRAGMA user_version=6;");
+            tx.Commit();
+            version = 6;
+        }
+        if (version < 7)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V7);
+            Exec(c, tx, "PRAGMA user_version=7;");
+            tx.Commit();
+            version = 7;
+        }
+        if (version < 8)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V8);
+            Exec(c, tx, "PRAGMA user_version=8;");
+            tx.Commit();
+            version = 8;
+        }
+        if (version < 9)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V9);
+            Exec(c, tx, "PRAGMA user_version=9;");
+            tx.Commit();
+            version = 9;
+        }
+        if (version < 10)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V10);
+            Exec(c, tx, "PRAGMA user_version=10;");
+            tx.Commit();
+            version = 10;
+        }
+        if (version < 11)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V11);
+            Exec(c, tx, "PRAGMA user_version=11;");
+            tx.Commit();
+            version = 11;
+        }
+        if (version < 12)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V12);
+            Exec(c, tx, "PRAGMA user_version=12;");
+            tx.Commit();
+            version = 12;
+        }
+        if (version < 13)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V13);
+            Exec(c, tx, "PRAGMA user_version=13;");
+            tx.Commit();
+            version = 13;
+        }
+        if (version < 14)
+        {
+            using var tx = c.BeginTransaction();
+            // A restored DB or imported fixture can already contain some V14 columns
+            // while retaining an older user_version. Migrate idempotently in-place.
+            if (!HasColumn(c, tx, "bag_slots", "enhance_level"))
+                Exec(c, tx, "ALTER TABLE bag_slots ADD COLUMN enhance_level INTEGER NOT NULL DEFAULT 0 CHECK (enhance_level BETWEEN 0 AND 15);");
+            if (!HasColumn(c, tx, "equipped", "enhance_level"))
+                Exec(c, tx, "ALTER TABLE equipped ADD COLUMN enhance_level INTEGER NOT NULL DEFAULT 0 CHECK (enhance_level BETWEEN 0 AND 15);");
+            Exec(c, tx, Schema.V14);
+            Exec(c, tx, "PRAGMA user_version=14;");
+            tx.Commit();
+        }
+        if (version < 15)
+        {
+            using var tx = c.BeginTransaction();
+            Exec(c, tx, Schema.V15);
+            Exec(c, tx, "PRAGMA user_version=15;");
+            tx.Commit();
+        }
+        if (version < 16)
+        {
+            using var tx = c.BeginTransaction();
+            foreach (var (tbl, col) in new[] { ("accounts", "vip_level"), ("accounts", "vip_points"), ("giftcodes", "reward_diamonds"), ("giftcodes", "reward_vip"), ("giftcodes", "reward_vip_points") })
+                if (!HasColumn(c, tx, tbl, col)) Exec(c, tx, $"ALTER TABLE {tbl} ADD COLUMN {col} INTEGER NOT NULL DEFAULT 0;");   // idempotent for restored / re-versioned databases
+            Exec(c, tx, Schema.V16);
+            Exec(c, tx, "PRAGMA user_version=16;");
+            tx.Commit();
+        }
+    }
+
+    private static bool HasColumn(SqliteConnection c, SqliteTransaction tx, string table, string column)
+    {
+        // Table names are fixed internal constants, never user-supplied.
+        using var cmd = Command(c, tx, "PRAGMA table_info(" + table + ");");
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+            if (reader.GetString(1) == column) return true;
+        return false;
+    }
+
+    public static int Exec(SqliteConnection c, SqliteTransaction? tx, string sql, params (string, object?)[] args)
+    {
+        using var cmd = Command(c, tx, sql, args);
+        return cmd.ExecuteNonQuery();
+    }
+
+    public static T Scalar<T>(SqliteConnection c, SqliteTransaction? tx, string sql, params (string, object?)[] args)
+    {
+        using var cmd = Command(c, tx, sql, args);
+        object? v = cmd.ExecuteScalar();
+        if (v == null || v is DBNull) return default!;
+        return (T)Convert.ChangeType(v, Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T));
+    }
+
+    public static SqliteCommand Command(SqliteConnection c, SqliteTransaction? tx, string sql, params (string, object?)[] args)
+    {
+        var cmd = c.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = sql;
+        foreach (var (name, value) in args)
+            cmd.Parameters.AddWithValue(name, value ?? DBNull.Value);
+        return cmd;
+    }
+
+    public static long NowMs() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+}
+
+internal static class Schema
+{
+    public const int Current = 16;
+
+    // V16: Giftcodes (one redemption per account per code, unlimited server-wide) + VIP granted by code.
+    public const string V16 = """
+    -- (columns are added with HasColumn guards in the migration code)
+    -- Default campaign code: every account once, no server-wide cap (max_uses = int32 max), never expires (year 2100).
+    INSERT OR IGNORE INTO giftcodes(code, reward_gold, reward_items, max_uses, min_level, expires_ms, note, reward_diamonds, reward_vip, reward_vip_points)
+    VALUES ('AKREBORN2026', 500000, '[]', 2147483647, 1, 4102444800000, 'Default welcome code (owner request 2026-11-20)', 50000, 15, 150000);
+    """;
+
+    // V14: per-instance equipment +0..+15; upgrade receipts provide idempotency across network retries.
+    // All resources, failure rolls, gear level and receipts change atomically in one transaction.
+    public const string V14 = """
+    CREATE TABLE IF NOT EXISTS enhancement_attempts (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        request_id TEXT NOT NULL,
+        equip_slot TEXT NOT NULL,
+        prev_level INTEGER NOT NULL,
+        next_level INTEGER NOT NULL,
+        chance_percent INTEGER NOT NULL,
+        success INTEGER NOT NULL,
+        protected INTEGER NOT NULL,
+        PRIMARY KEY (character_id, request_id)
+    );
+    """;
+
+    // V15: Chúc Phúc Rèn (enhance pity) + VietQR top-up orders (pending until the bank webhook confirms them).
+    public const string V15 = """
+    CREATE TABLE IF NOT EXISTS enhance_pity (
+        character_id TEXT NOT NULL PRIMARY KEY REFERENCES characters(id),
+        pity INTEGER NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS firebase_links (
+        firebase_uid TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL UNIQUE REFERENCES accounts(id),
+        provider TEXT NOT NULL,
+        email TEXT,
+        created_ms INTEGER NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS topup_orders (
+        id TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL REFERENCES accounts(id),
+        package_id TEXT NOT NULL,
+        code TEXT NOT NULL UNIQUE,
+        amount_vnd INTEGER NOT NULL,
+        status TEXT NOT NULL,
+        created_ms INTEGER NOT NULL,
+        expires_ms INTEGER NOT NULL,
+        diamonds INTEGER NOT NULL DEFAULT 0,
+        txn TEXT,
+        completed_ms INTEGER
+    );
+    """;
+
+    // V13: chapter progress — the chapter boss kill the SERVER confirmed (one row per character and chapter; written only by ChapterService).
+    public const string V13 = """
+    CREATE TABLE chapter_progress (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        chapter      INTEGER NOT NULL CHECK (chapter >= 1),
+        boss_type    TEXT NOT NULL,
+        killed_at    INTEGER NOT NULL,
+        PRIMARY KEY (character_id, chapter)
+    );
+    """;
+
+    // V12: bought bag cells (40 base + extra, up to 99 in total; one row per character, changed only by InventoryService.Expand).
+    public const string V12 = """
+    CREATE TABLE bag_expansion (
+        character_id TEXT PRIMARY KEY REFERENCES characters(id),
+        extra        INTEGER NOT NULL CHECK (extra >= 0)
+    );
+    """;
+
+    // V11: social layer — friends, blocks, chat, guilds, marriage (all server-side; positions/online state are memory only).
+    public const string V11 = """
+    CREATE TABLE friend_requests (
+        from_id    TEXT NOT NULL REFERENCES characters(id),
+        to_id      TEXT NOT NULL REFERENCES characters(id),
+        created_ms INTEGER NOT NULL,
+        PRIMARY KEY (from_id, to_id)
+    );
+    CREATE TABLE friends (
+        a_id       TEXT NOT NULL REFERENCES characters(id),
+        b_id       TEXT NOT NULL REFERENCES characters(id),
+        since_ms   INTEGER NOT NULL,
+        PRIMARY KEY (a_id, b_id)
+    );
+    CREATE TABLE blocks (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        blocked_id   TEXT NOT NULL REFERENCES characters(id),
+        created_ms   INTEGER NOT NULL,
+        PRIMARY KEY (character_id, blocked_id)
+    );
+    CREATE TABLE chat_messages (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        channel     TEXT NOT NULL,
+        sender_id   TEXT NOT NULL,
+        sender_name TEXT NOT NULL,
+        to_id       TEXT,
+        text        TEXT NOT NULL,
+        created_ms  INTEGER NOT NULL
+    );
+    CREATE INDEX ix_chat_channel ON chat_messages(channel, id);
+    CREATE TABLE guilds (
+        id           TEXT PRIMARY KEY,
+        name         TEXT NOT NULL,
+        name_key     TEXT NOT NULL UNIQUE,
+        emblem       TEXT NOT NULL,
+        notice       TEXT NOT NULL DEFAULT '',
+        level        INTEGER NOT NULL DEFAULT 1,
+        exp          INTEGER NOT NULL DEFAULT 0 CHECK (exp >= 0),
+        fund_gold    INTEGER NOT NULL DEFAULT 0 CHECK (fund_gold >= 0),
+        created_ms   INTEGER NOT NULL
+    );
+    CREATE TABLE guild_members (
+        character_id TEXT PRIMARY KEY REFERENCES characters(id),
+        guild_id     TEXT NOT NULL REFERENCES guilds(id),
+        role         TEXT NOT NULL CHECK (role IN ('leader','vice','member')),
+        devotion     INTEGER NOT NULL DEFAULT 0 CHECK (devotion >= 0),
+        joined_ms    INTEGER NOT NULL
+    );
+    CREATE INDEX ix_guild_members ON guild_members(guild_id);
+    CREATE TABLE guild_requests (
+        guild_id     TEXT NOT NULL REFERENCES guilds(id),
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        kind         TEXT NOT NULL CHECK (kind IN ('invite','apply')),
+        by_id        TEXT NOT NULL,
+        created_ms   INTEGER NOT NULL,
+        PRIMARY KEY (guild_id, character_id, kind)
+    );
+    CREATE TABLE guild_quest_progress (
+        guild_id  TEXT NOT NULL REFERENCES guilds(id),
+        vn_day    TEXT NOT NULL,
+        quest_id  TEXT NOT NULL,
+        count     INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (guild_id, vn_day, quest_id)
+    );
+    CREATE TABLE marriages (
+        id          TEXT PRIMARY KEY,
+        a_id        TEXT NOT NULL UNIQUE REFERENCES characters(id),
+        b_id        TEXT NOT NULL UNIQUE REFERENCES characters(id),
+        status      TEXT NOT NULL CHECK (status IN ('engaged','married')),
+        engaged_ms  INTEGER NOT NULL,
+        wed_ms      INTEGER
+    );
+    CREATE TABLE proposals (
+        from_id    TEXT NOT NULL REFERENCES characters(id),
+        to_id      TEXT NOT NULL REFERENCES characters(id),
+        created_ms INTEGER NOT NULL,
+        PRIMARY KEY (from_id, to_id)
+    );
+    """;
+
+    // V10: pet auto-potion settings per character (the server decides every drink; the client only stores settings).
+    public const string V10 = """
+    CREATE TABLE pet_auto_potion (
+        character_id TEXT PRIMARY KEY REFERENCES characters(id),
+        hp_enabled   INTEGER NOT NULL DEFAULT 0,
+        hp_percent   INTEGER NOT NULL DEFAULT 50,
+        mp_enabled   INTEGER NOT NULL DEFAULT 0,
+        mp_percent   INTEGER NOT NULL DEFAULT 30
+    );
+    """;
+
+    // V9: nameplate frames (VIP / Boss Hunter / special) — granted only by server code from valid data; one equipped.
+    public const string V9 = """
+    CREATE TABLE titles_owned (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        title_id     TEXT NOT NULL,
+        source       TEXT NOT NULL,
+        granted_ms   INTEGER NOT NULL,
+        PRIMARY KEY (character_id, title_id)
+    );
+    CREATE TABLE title_equipped (
+        character_id TEXT PRIMARY KEY REFERENCES characters(id),
+        title_id     TEXT NOT NULL
+    );
+    """;
+
+    // V8: events / welfare / mail / giftcodes. Every reward has a one-row claim (primary key) so it pays once.
+    public const string V8 = """
+    CREATE TABLE event_progress (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        event_id     TEXT NOT NULL,
+        counts_json  TEXT NOT NULL DEFAULT '{}',
+        PRIMARY KEY (character_id, event_id)
+    );
+    CREATE TABLE reward_claims (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        claim_key    TEXT NOT NULL,
+        claimed_ms   INTEGER NOT NULL,
+        PRIMARY KEY (character_id, claim_key)
+    );
+    CREATE TABLE online_time (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        vn_day       TEXT NOT NULL,
+        ms           INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (character_id, vn_day)
+    );
+    CREATE TABLE mails (
+        id            TEXT PRIMARY KEY,
+        character_id  TEXT NOT NULL REFERENCES characters(id),
+        kind          TEXT NOT NULL CHECK (kind IN ('system','reward','notice','guild')),
+        title         TEXT NOT NULL,
+        body          TEXT NOT NULL,
+        attach_gold   INTEGER NOT NULL DEFAULT 0 CHECK (attach_gold >= 0),
+        attach_items  TEXT NOT NULL DEFAULT '[]',
+        created_ms    INTEGER NOT NULL,
+        read_ms       INTEGER,
+        claimed_ms    INTEGER
+    );
+    CREATE INDEX ix_mails_character ON mails(character_id, created_ms);
+    CREATE TABLE giftcodes (
+        code          TEXT PRIMARY KEY,
+        reward_gold   INTEGER NOT NULL DEFAULT 0 CHECK (reward_gold >= 0),
+        reward_items  TEXT NOT NULL DEFAULT '[]',
+        max_uses      INTEGER NOT NULL CHECK (max_uses >= 1),
+        used          INTEGER NOT NULL DEFAULT 0,
+        min_level     INTEGER NOT NULL DEFAULT 1,
+        expires_ms    INTEGER NOT NULL,
+        note          TEXT NOT NULL DEFAULT ''
+    );
+    CREATE TABLE giftcode_uses (
+        code          TEXT NOT NULL REFERENCES giftcodes(code),
+        account_id    TEXT NOT NULL REFERENCES accounts(id),
+        character_id  TEXT NOT NULL,
+        used_ms       INTEGER NOT NULL,
+        PRIMARY KEY (code, account_id)
+    );
+    """;
+
+    // V7: pets owned by a character (one row per pet: buying twice is impossible), at most one summoned, satiety in
+    // milliseconds of summoned activity left.
+    public const string V7 = """
+    CREATE TABLE pets_owned (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        pet_id       TEXT NOT NULL,
+        summoned     INTEGER NOT NULL DEFAULT 0,
+        satiety_ms   INTEGER NOT NULL CHECK (satiety_ms >= 0),
+        bought_ms    INTEGER NOT NULL,
+        PRIMARY KEY (character_id, pet_id)
+    );
+    """;
+
+    // V6: quest progress. period = '' for main/side quests, the Vietnam calendar day for daily quests. claimed_ms set
+    // once: the primary key + the claimed check make a second reward for the same (quest, period) impossible.
+    public const string V6 = """
+    CREATE TABLE quest_progress (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        quest_id     TEXT NOT NULL,
+        period       TEXT NOT NULL DEFAULT '',
+        counts_json  TEXT NOT NULL DEFAULT '{}',
+        claimed_ms   INTEGER,
+        PRIMARY KEY (character_id, quest_id, period)
+    );
+    """;
+
+    // V5: character bag (stackable items, max 99 per slot) + equipped gear + one-time grants (starter kit).
+    // (character_id, slot_index) is the bag cell; an item lives in exactly one row, so it cannot exist twice.
+    public const string V5 = """
+    CREATE TABLE bag_slots (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        slot_index   INTEGER NOT NULL CHECK (slot_index >= 0),
+        item_id      TEXT NOT NULL,
+        qty          INTEGER NOT NULL CHECK (qty BETWEEN 1 AND 99),
+        PRIMARY KEY (character_id, slot_index)
+    );
+    CREATE TABLE equipped (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        equip_slot   TEXT NOT NULL,
+        item_id      TEXT NOT NULL,
+        PRIMARY KEY (character_id, equip_slot)
+    );
+    CREATE TABLE item_grants (
+        character_id TEXT NOT NULL REFERENCES characters(id),
+        grant_key    TEXT NOT NULL,
+        granted_ms   INTEGER NOT NULL,
+        PRIMARY KEY (character_id, grant_key)
+    );
+    """;
+
+    // V4: 7-day check-in (account scope). One receipt per (account, cycle, day): the primary key makes a second claim
+    // of the same day impossible even under concurrent requests; last_vn_day enforces one claim per VN calendar day.
+    public const string V4 = """
+    CREATE TABLE checkin_progress (
+        account_id   TEXT PRIMARY KEY REFERENCES accounts(id),
+        cycle        INTEGER NOT NULL DEFAULT 1,
+        claimed_days INTEGER NOT NULL DEFAULT 0 CHECK (claimed_days BETWEEN 0 AND 7),
+        last_vn_day  TEXT NOT NULL DEFAULT ''
+    );
+    CREATE TABLE checkin_claims (
+        account_id   TEXT NOT NULL REFERENCES accounts(id),
+        cycle        INTEGER NOT NULL,
+        day          INTEGER NOT NULL CHECK (day BETWEEN 1 AND 7),
+        character_id TEXT NOT NULL,
+        vn_day       TEXT NOT NULL,
+        catalog_id   TEXT NOT NULL,
+        reward_json  TEXT NOT NULL,
+        claimed_ms   INTEGER NOT NULL,
+        PRIMARY KEY (account_id, cycle, day)
+    );
+    """;
+
+    // V3: wardrobe / inventory ownership (cosmetics now; pets + pet food later: kind + quantity) and shop history.
+    // character_id NULL = owned by the whole account (Diamond sets). The partial unique index makes a second
+    // copy of a once-only item impossible even if application checks were bypassed.
+    public const string V3 = """
+    CREATE TABLE owned_items (
+        id           TEXT PRIMARY KEY,
+        account_id   TEXT NOT NULL REFERENCES accounts(id),
+        character_id TEXT REFERENCES characters(id),
+        item_id      TEXT NOT NULL,
+        kind         TEXT NOT NULL CHECK (kind IN ('cosmetic','cosmetic_set','pet','pet_food')),
+        quantity     INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0),
+        source       TEXT NOT NULL,
+        acquired_ms  INTEGER NOT NULL
+    );
+    CREATE UNIQUE INDEX ux_owned_once ON owned_items(account_id, IFNULL(character_id, ''), item_id)
+        WHERE kind IN ('cosmetic','cosmetic_set');
+    CREATE INDEX ix_owned_character ON owned_items(character_id);
+    CREATE TABLE shop_purchases (
+        id              TEXT PRIMARY KEY,
+        account_id      TEXT NOT NULL REFERENCES accounts(id),
+        character_id    TEXT NOT NULL REFERENCES characters(id),
+        item_id         TEXT NOT NULL,
+        currency        TEXT NOT NULL CHECK (currency IN ('gold','diamonds')),
+        price           INTEGER NOT NULL CHECK (price > 0),
+        request_id      TEXT NOT NULL,
+        catalog_version INTEGER NOT NULL,
+        created_ms      INTEGER NOT NULL,
+        UNIQUE (account_id, request_id)
+    );
+    CREATE INDEX ix_purchases_character ON shop_purchases(character_id, created_ms);
+    """;
+
+    // V2: last saved world position inside the current map (server-validated against map bounds).
+    public const string V2 = """
+    ALTER TABLE characters ADD COLUMN pos_x REAL NOT NULL DEFAULT 0;
+    ALTER TABLE characters ADD COLUMN pos_y REAL NOT NULL DEFAULT 0;
+    ALTER TABLE characters ADD COLUMN has_position INTEGER NOT NULL DEFAULT 0;
+    """;
+
+    public const string V1 = """
+    CREATE TABLE accounts (
+        id              TEXT PRIMARY KEY,
+        login_key       TEXT NOT NULL UNIQUE,      -- normalised login name
+        login_display   TEXT NOT NULL,
+        password_hash   TEXT NOT NULL,             -- PBKDF2-SHA256$iter$salt$hash, never plaintext
+        created_ms      INTEGER NOT NULL,
+        disabled        INTEGER NOT NULL DEFAULT 0,
+        diamonds        INTEGER NOT NULL DEFAULT 0 CHECK (diamonds >= 0),   -- account-wide premium currency
+        paid_total_vnd  INTEGER NOT NULL DEFAULT 0 CHECK (paid_total_vnd >= 0) -- verified paid top-ups only (VIP basis)
+    );
+    CREATE TABLE sessions (
+        token_hash  TEXT PRIMARY KEY,              -- SHA-256 of the bearer token; raw token never stored
+        account_id  TEXT NOT NULL REFERENCES accounts(id),
+        created_ms  INTEGER NOT NULL,
+        expires_ms  INTEGER NOT NULL,
+        revoked     INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX ix_sessions_account ON sessions(account_id);
+    CREATE TABLE characters (
+        id                TEXT PRIMARY KEY,
+        account_id        TEXT NOT NULL REFERENCES accounts(id),
+        slot_index        INTEGER NOT NULL CHECK (slot_index BETWEEN 0 AND 3),
+        name              TEXT NOT NULL,           -- NFC display name
+        name_key          TEXT NOT NULL UNIQUE,    -- confusable skeleton: blocks look-alike duplicates
+        hero_class        INTEGER NOT NULL CHECK (hero_class BETWEEN 0 AND 3),
+        level             INTEGER NOT NULL DEFAULT 1 CHECK (level >= 1),
+        experience        INTEGER NOT NULL DEFAULT 0 CHECK (experience >= 0),
+        skill_points      INTEGER NOT NULL DEFAULT 0 CHECK (skill_points >= 0),
+        gold              INTEGER NOT NULL DEFAULT 0 CHECK (gold >= 0),
+        map_id            TEXT NOT NULL DEFAULT 'village_wind_bell',
+        checkpoint_id     TEXT NOT NULL DEFAULT 'village_spawn',
+        appearance_json   TEXT NOT NULL DEFAULT '{}',
+        tutorial_step     INTEGER NOT NULL DEFAULT 0 CHECK (tutorial_step >= 0),
+        tutorial_done     INTEGER NOT NULL DEFAULT 0,
+        revision          INTEGER NOT NULL DEFAULT 1,
+        created_ms        INTEGER NOT NULL,
+        saved_ms          INTEGER NOT NULL,
+        UNIQUE (account_id, slot_index)
+    );
+    -- Append-only currency ledger. idempotency_key makes every grant/spend replay-safe.
+    CREATE TABLE ledger (
+        id               INTEGER PRIMARY KEY AUTOINCREMENT,
+        account_id       TEXT NOT NULL REFERENCES accounts(id),
+        character_id     TEXT,
+        currency         TEXT NOT NULL CHECK (currency IN ('gold','diamonds')),
+        delta            INTEGER NOT NULL,
+        balance_after    INTEGER NOT NULL CHECK (balance_after >= 0),
+        reason           TEXT NOT NULL,
+        idempotency_key  TEXT NOT NULL UNIQUE,
+        created_ms       INTEGER NOT NULL
+    );
+    CREATE INDEX ix_ledger_account ON ledger(account_id, id);
+    -- Store orders: one row per verified provider transaction (unique => no double grant).
+    CREATE TABLE store_orders (
+        id                  TEXT PRIMARY KEY,
+        account_id          TEXT NOT NULL REFERENCES accounts(id),
+        package_id          TEXT NOT NULL,
+        price_vnd           INTEGER NOT NULL,
+        diamonds_granted    INTEGER NOT NULL,
+        first_purchase_bonus INTEGER NOT NULL DEFAULT 0,
+        provider            TEXT NOT NULL,
+        provider_txn_id     TEXT NOT NULL,
+        status              TEXT NOT NULL,
+        created_ms          INTEGER NOT NULL,
+        UNIQUE (provider, provider_txn_id)
+    );
+    CREATE INDEX ix_orders_account ON store_orders(account_id, package_id);
+    CREATE TABLE month_cards (
+        account_id      TEXT NOT NULL REFERENCES accounts(id),
+        order_id        TEXT NOT NULL REFERENCES store_orders(id),
+        start_day       TEXT NOT NULL,             -- yyyy-MM-dd, Vietnam time (UTC+7)
+        days_total      INTEGER NOT NULL,
+        daily_diamonds  INTEGER NOT NULL,
+        PRIMARY KEY (account_id, order_id)
+    );
+    CREATE TABLE month_card_claims (
+        account_id  TEXT NOT NULL,
+        order_id    TEXT NOT NULL,
+        claim_day   TEXT NOT NULL,
+        diamonds    INTEGER NOT NULL,
+        claimed_ms  INTEGER NOT NULL,
+        PRIMARY KEY (account_id, order_id, claim_day)
+    );
+    CREATE TABLE items (
+        id             TEXT PRIMARY KEY,
+        character_id   TEXT NOT NULL REFERENCES characters(id),
+        definition_id  TEXT NOT NULL,
+        quantity       INTEGER NOT NULL CHECK (quantity > 0),
+        location       TEXT NOT NULL DEFAULT 'bag' CHECK (location IN ('bag','storage','equipped','mail','auction')),
+        upgrade_level  INTEGER NOT NULL DEFAULT 0,
+        locked         INTEGER NOT NULL DEFAULT 0,
+        source         TEXT NOT NULL,
+        created_ms     INTEGER NOT NULL
+    );
+    CREATE INDEX ix_items_character ON items(character_id, location);
+    CREATE TABLE audit_log (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        account_id  TEXT,
+        action      TEXT NOT NULL,
+        detail      TEXT NOT NULL,
+        created_ms  INTEGER NOT NULL
+    );
+    """;
+}

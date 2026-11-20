@@ -1,0 +1,123 @@
+# Chương 1 — Làng Khởi Đầu · Vương Quốc Nấm — Kế hoạch triển khai
+
+> Tài liệu sống: phiên Claude mới đọc file này + `Docs/SESSION_HANDOFF.md` rồi làm tiếp, KHÔNG cần lịch sử hội thoại.
+> Nhánh: `feat/chapter1-mushroom-kingdom` (tách từ `670f6f9`). Sao lưu: nhánh `backup/pre-chapter1-20261110` (local, cần publish bằng GitHub Desktop) + `C:\AdventureKing_ArtBackup\git\AdventureKing_Reborn_pre-chapter1_2026-11-10.bundle` + `C:\AdventureKing_ArtBackup\2026-11-10_pre-chapter1\` (database, concept, SkillButtons).
+
+## 0. Trạng thái
+| Hạng mục | Trạng thái |
+|---|---|
+| Sao lưu + nhánh Chương 1 | ✅ (push nhánh backup: chủ dự án bấm Publish trong GitHub Desktop — shell không có quyền GitHub) |
+| Đọc concept Chapter01 | ✅ (master board, 10 map, 9 creature crop, brief 14 quái) |
+| Số dư Meshy key đang cấu hình | ✅ 3.242 (3.232 monthly + 10 permanent), trần giai đoạn này **2.000** |
+| Map 1 chuẩn | ✅ nhóm 1 (2026-11-10): server map/cổng/quái/vùng an toàn/3 nhiệm vụ, Nấm Non (Meshy, rig + 5 clip), Trưởng Làng Nấm, 5 đạo cụ Meshy, nhạc gốc, minimap. Test: server 161/161, PlayMode `Chapter1Tests` PASS (cửa sổ), ảnh `QA/Chapter1/*.png` |
+| Map 2 Đồng Cỏ Xanh | ✅ nhóm 2 (2026-11-11): cổng Map 1 ⇄ Map 2 qua server, 4 bệ + 4 thang/dây, Slime Phấn Hoa (Meshy) + Nấm Non, 3 nhiệm vụ `ch1_04–06`, nền xa riêng, hoa dại, nhạc riêng. Test: server 167/167, PlayMode `Chapter1Tests` 2/2, ảnh `QA/Chapter1/m02_*`. **Mỹ thuật chờ chủ dự án duyệt.** |
+| Map 3–10, Mini Boss, Boss, unlock Ch2 | ⏳ (Map 3 tiếp theo) |
+| Server đóng gói + client Windows + Tailscale | ⏳ |
+| Lễ cưới 180 s | ⏸ WIP (`670f6f9`), tạm dừng theo lệnh chủ dự án — không sửa tiếp |
+
+## 1. Quyết định đã chốt (đừng hỏi lại)
+1. **Không thay nội dung đã duyệt**: Thị trấn Chuông Gió (`village_wind_bell`, AK_Village) giữ nguyên làm **hub chính** (Trưởng Làng chào người mới, cửa hàng, Sảnh Bang Hội, Sảnh Kết Hôn). Đồng Cỏ Gió (`meadow_breeze`, AK_Meadow, slime) giữ nguyên làm **bãi luyện trước chương**.
+2. **Chuỗi bản đồ**: Hub ⇄ Đồng Cỏ Gió ⇄ **Map 1 Làng Nấm** ⇄ Map 2 ⇄ … ⇄ Map 10. Map 1 nối từ đầu đông của Đồng Cỏ Gió (cổng mới). Map 1 có NPC riêng **Trưởng Làng Nấm** giao chuỗi nhiệm vụ chương (Trưởng Làng ở hub giới thiệu sang).
+3. **Mini Boss ở Map 3, 6, 9** (theo lệnh chủ dự án; concept ghi 3/6/8 → lệnh thắng). Nấm Hắc Ám (concept map 8) chuyển thành Mini Boss **Map 9** (Khu Di Tích Cổ); Map 8 giữ quái độc thường.
+4. **Boss chương chỉ ở Map 10** (Vua Nấm Quỷ). Server ghi `chapter_progress` khi xác nhận hạ Boss → mới mở Chương 2. Client không thể tự mở.
+5. Góc nhìn/điều khiển giữ nguyên: gameplay 2.5D cuộn ngang (Rigidbody2D + model 3D chibi), CameraFollow2D, joystick cảm ứng.
+6. Không dùng ảnh concept 2D làm nền phẳng thay môi trường 3D. Nền xa (parallax) được phép như AK_Village, nhưng mặt đất, bệ, cầu, đạo cụ gần là 3D.
+7. Mọi giá/tỉ lệ rơi/EXP/Gold mới = **DRAFT** trong config, không mở thanh toán, không phát Kim Cương.
+8. Không tiêu credit Meshy cho việc làm được bằng Unity/Blender (IK, collider, terrain, LOD, recolor).
+
+## 2. Hệ thống có sẵn sẽ tận dụng (đã xác minh)
+- **Chiến đấu server**: `Server/.../Domain/FarmService.cs` + `config/monsters.json` (types: maxHp, gold, respawn, attack, reach, leash; spawns theo `mapId`) — server quyết định HP, sát thương, rơi Gold, hồi sinh, quái đánh trả, HP anh hùng. Client: `FarmField.cs`, `FarmMonsterView.cs`, `EnemyChase2D.cs`, `HeroCombatPresentation.cs`.
+- **Kỹ năng/MP**: `config/skills.json`; nhiệm vụ: `QuestService.cs` + `config/quests.json` + `QuestPanel/QuestUi/NpcQuestMarker`; túi đồ/thuốc: `InventoryService` + `items.json`; Pet nhặt Gold/tự dùng thuốc: `PetService` + `pets.json`.
+- **Bản đồ/cổng**: `CharacterService.cs` (bảng WorldMap + Portal, server kiểm tra cổng), client `TownLayout` + `VillageSceneBuilder*.cs` (dựng scene bằng code: sàn, bệ, thang, dây, cổng, đạo cụ Meshy, ánh sáng, parallax).
+- **Pipeline art**: `Tools/meshy/meshy.py` (balance/library/run, ghi `ArtSource/Meshy/manifest.jsonl`), `Tools/blender/export_character.py`, `HeroArtPipeline`/`NpcArtPipeline` (import, rig, clip, Animator).
+- Cần thêm: **EXP theo quái** (kiểm tra `monsters.json` chưa có trường exp), **trạng thái độc/bẫy**, **Boss phase/kỹ năng/telegraph**, **chapter_progress** (DB migration mới).
+
+## 3. Bảng thiết kế 10 map
+| # | map_id (server) | Scene | Tên | Môi trường (concept) | Quái thường | Đặc biệt |
+|---|---|---|---|---|---|---|
+| 1 | `ch1_mushroom_village` | AK_C1_M01 | Làng Nấm | nhà nấm, quảng trường, đài phun pha lê; ấm đỏ-cam-ngọc | Nấm Non (ngoài làng) | vùng an toàn trong làng, NPC Trưởng Làng Nấm, hướng dẫn |
+| 2 | `ch1_green_meadow` | AK_C1_M02 | Đồng Cỏ Xanh | bệ cỏ nhiều tầng, cối xay gió, rào gỗ, hoa | Slime Phấn Hoa (+Nấm Non) | farm cấp thấp |
+| 3 | `ch1_glow_forest` | AK_C1_M03 | Rừng Nấm Sáng | nấm phát quang, gỗ mục, suối; chàm-cyan-tím | Nấm Rêu Lung Linh | **Mini Boss Nấm Thủ Lĩnh** |
+| 4 | `ch1_flower_hill` | AK_C1_M04 | Đồi Hoa | cầu gỗ, anh đào, bậc đá, thác nhỏ | Ong Cánh Hoa | nhảy/leo nhiều tầng |
+| 5 | `ch1_mushroom_cave` | AK_C1_M05 | Hang Nấm | hầm đá, xe mỏ, mạch pha lê | Dơi Pha Lê | hang tối, đèn |
+| 6 | `ch1_jade_falls` | AK_C1_M06 | Thác Ngọc | thác rộng, rễ cây, hồ | Rùa Suối Ngọc | **Mini Boss Hộ Vệ Lam Thạch** |
+| 7 | `ch1_dark_forest` | AK_C1_M07 | Rừng U Tối | cây xoắn, đèn treo, sương tím | Bóng Lá Tím | bẫy (gai/rễ), sương |
+| 8 | `ch1_poison_marsh` | AK_C1_M08 | Đầm Lầy Nấm Độc | bùn độc, nấm phát sáng | Slime Nấm Độc (+Nấm Độc) | vùng độc (trạng thái) |
+| 9 | `ch1_ancient_ruins` | AK_C1_M09 | Khu Di Tích Cổ | cổng pha lê, đá rêu, trụ đổ | Vệ Binh Đá Mầm | **Mini Boss Nấm Hắc Ám** |
+| 10 | `ch1_king_temple` | AK_C1_M10 | Đền Vua Nấm | đấu trường, cột, ngai, đỏ-tím | Nấm Cận Vệ (triệu hồi) | **Boss Vua Nấm Quỷ**, mở Chương 2 |
+
+Mỗi map: sàn + ≥2 tầng bệ có collider thật, thang/dây, cổng vào/ra (server), điểm hồi sinh quái, vùng an toàn quanh cổng/NPC, nhạc nền + âm thanh môi trường nguyên bản (Tools/audio), tên khu vực + minimap, ánh sáng/palette theo concept, không Missing Script, tối ưu mobile.
+
+## 4. Quái & ngân sách Meshy (dự toán, trần 2.000)
+Giá tham chiếu từ manifest: concept text-to-image 6 · image-to-3D 30 · rig 5 · animation ~3/clip.
+| Nhóm | Số | Cách làm | Dự toán |
+|---|---|---|---|
+| Quái hai chân (Nấm Non, Nấm Rêu, Bóng Lá, Vệ Binh Đá Mầm, Nấm Cận Vệ) | 5 | concept → model → rig → Idle/Walk/Attack/Hit/Death | ~62 × 5 = 310 |
+| Quái không hai chân (Slime Phấn Hoa, Ong, Dơi, Rùa, Slime Độc) | 5 | concept → model; animation thủ tục trong Unity (nhún, bay, vỗ cánh, bò) | ~36 × 5 = 180 |
+| Mini Boss (Nấm Thủ Lĩnh, Hộ Vệ Lam Thạch, Nấm Hắc Ám) | 3 | concept 2 góc → model → rig → 7–8 clip | ~85 × 3 = 255 |
+| Boss Vua Nấm Quỷ | 1 | concept 2 góc → model → rig → 9–10 clip (+1 lần làm lại) | ~140 |
+| Đạo cụ mốc theo map (nhà nấm, cối xay, nấm phát sáng, xe mỏ, cổng pha lê, ngai…) | ~25 | concept → model; tái dùng nhiều lần, recolor bằng material | ~900 |
+| **Tổng** | | | **~1.785–1.885** |
+Quy tắc: làm **1 mẫu, kiểm tra, rồi mới làm loạt**; ghi credit từng tác vụ vào `ArtSource/Meshy/manifest.jsonl` và bảng §6. Luôn đặt key từ biến môi trường **User** trước khi gọi (`[Environment]::GetEnvironmentVariable('MESHY_API_KEY','User')`) — tiến trình shell cũ có thể giữ key tài khoản cũ.
+
+## 5. Thứ tự thực hiện (nhóm có kiểm thử rõ)
+1. **Map 1 chuẩn**: kiến trúc map dữ liệu (`ChapterMaps` layout + builder), server map/portal/spawn, Nấm Non (model+anim), NPC Trưởng Làng Nấm + quest đầu, nhạc/âm thanh, ảnh Game View. Kiểm thử PlayMode: đi từ hub → Đồng Cỏ Gió → Map 1, đánh quái, nhận quest, lưu tiến trình.
+2. Map 2–9 lần lượt (mỗi map một commit + ảnh), Mini Boss 3/6/9 (telegraph, thanh máu, thưởng server).
+3. Map 10 + Boss (intro camera, phase, triệu hồi) + `chapter_progress` + khóa Chương 2 (server test chống nhân đôi).
+4. Đóng gói server (self-contained, start/stop, autostart tùy chọn, backup/restore, log, số online) + client Windows (.exe, shortcut, server offline, `server.json` cấu hình) + hướng dẫn Tailscale.
+5. Kiểm thử 2 → 3–5 → 10 client, tối ưu, regression cuối giai đoạn.
+
+## 6. Nhật ký credit Meshy (key đang cấu hình)
+| Ngày | Tác vụ | Credit | Số dư sau |
+|---|---|---|---|
+| 2026-11-10 | (kiểm tra số dư) | 0 | 3.242 |
+| 2026-11-10 | Concept Nấm Non + Trưởng Làng Nấm (text-to-image 2×6) | 12 | 3.230 |
+| 2026-11-10 | Nấm Non: model 30 + rig 5 + 5 clip (Idle/Walk/Right Jab/Hit Reaction/Dead) 15 | 50 | 3.180 |
+| 2026-11-10 | Trưởng Làng Nấm: model 30 + rig 5 + 5 clip (Idle/Wave/Talk/Bow/Walk) 15 | 50 | 3.130 |
+| 2026-11-10 | 5 concept đạo cụ Map 1 (nhà nấm, đài phun pha lê, đèn nấm, sạp chợ, cây nấm khổng lồ) | 30 | 3.100 |
+| 2026-11-10 | 5 model đạo cụ Map 1 (image-to-3D 5×30) | 150 | **2.950** (xác nhận qua API) |
+| 2026-11-11 | Map 2 (phiên trước, chưa ghi sổ — bổ sung theo `manifest.jsonl`): concept + model Slime Phấn Hoa, rào gỗ, bụi hoa (3×6 + 3×30) | 108 | **2.842** (tính theo manifest; CHƯA xác nhận qua API — lần này không gọi Meshy) |
+| | **Tổng giai đoạn này: 400 / trần 2.000** | | |
+
+## 7. Nhật ký quyết định / lỗi
+- 2026-11-10: Mini Boss 3/6/9 (lệnh chủ dự án) thay vì 3/6/8 (concept).
+- 2026-11-10: hub + Đồng Cỏ Gió giữ nguyên; Chương 1 nối từ đông Đồng Cỏ Gió.
+- 2026-11-10: tiến trình shell giữ MESHY_API_KEY cũ (khác key User) → luôn nạp key từ biến môi trường User.
+- 2026-11-10 **Nhóm 1 — Map 1 Làng Nấm** (kiến trúc dùng lại cho Map 2–10):
+  - Server: map `ch1_mushroom_village` (−50…100), cổng `meadow_east_ch1` (Đồng Cỏ Gió x 78) ⇄ `ch1_village_west_meadow` (x −40); `FarmService.SafeZones` (x −46…30) — config bị từ chối khi tầm đuổi + tầm đánh của quái chạm vùng an toàn; `RespawnPoints`; quái `young_mushroom` "Nấm Non" (DRAFT: HP 110, Gold 8–14, hồi 45 s, đánh 15) ×6; nhiệm vụ chính `ch1_01` (tới Làng Nấm) → `ch1_02` (`talk:mushroom_elder`) → `ch1_03` (hạ 5 Nấm Non; DRAFT 150 EXP, 60 Vàng, 2 thuốc HP vừa). Test `Chapter1Tests` (server, 3).
+  - Client: `TownLayout.Ch1Village` (bệ/thang/cổng/vùng an toàn/chỗ NPC), `MapInfo.SafeZone/AreaTitle`; `FarmField.typedTemplates` (mẫu quái theo loại); `FarmMonsterView` hỗ trợ quái rig (Animator Idle/Walk/Attack/Hit/Death, đi bộ, quay 3/4); `NpcArtPipeline.Chapter1` (+ chế độ Monster); `VillageSceneBuilder.Chapter1.cs` (`BuildChapter1FromCommandLine`: dựng lại Đồng Cỏ Gió + Làng Nấm); nhạc `BGM_Ch1_MushroomVillage_DRAFT` (MusicComposer, nguyên bản; `ComposeMissing` không ghi đè nhạc cũ); director nhạc nhận thêm stage mới từ scene sau; minimap tô vùng an toàn; tiêu đề tải "Làng Nấm · Chương 1 · Vương Quốc Nấm".
+  - Lỗi thật sửa nhờ ảnh: cổng đông Đồng Cỏ Gió nằm ở biên camera → dòng "▲ / W · Đến Làng Nấm" bị nút cài đặt che → nới `Meadow.MaxX` 84→88.
+  - Kiểm thử PlayMode `Chapter1Tests` (cửa sổ, server thật): hub → Đồng Cỏ Gió → Làng Nấm, nhận/nộp 2 nhiệm vụ, nói chuyện NPC (dấu "!"), hạ 2 Nấm Non (thấy Attack/Hit/Death), tiến trình nhiệm vụ đọc lại từ server = 2/5, nhạc riêng, bệ có collider, không Missing Script. Fixture: bỏ chuỗi tân thủ main_01–10 khỏi config nhiệm vụ của test (thứ tự chuỗi do test server kiểm).
+  - Regression mục tiêu: FarmTests/TownHubTests/QuestHealerTests/HallTravelTests 5/6 — `FarmTests.Monster_Knocks_Out_Hero...` fail khi chạy chung, **PASS khi chạy riêng** (phụ thuộc thứ tự, chưa sửa; theo dõi ở regression cuối giai đoạn).
+  - 2026-11-11 **Bộ VFX 12 kỹ năng — bản nháp 1, chờ chủ dự án duyệt** (yêu cầu bổ sung tiêu chuẩn mỹ thuật skill, chặn việc nhân rộng map). Gồm:
+    - shader `AdventureKing/VFXFlow`, texture tự sinh `SkillVfxArt`;
+    - `SkillVfxKit`/`SkillVfxDirector`: 12 biên đạo 4 pha, rung camera, hit-stop, zoom, camera tránh HUD;
+    - quái phản ứng, 29 âm thanh gốc, bộ hiệu ứng nhẹ cho điện thoại.
+
+    Không dùng Meshy. Video và ảnh ở `QA/SkillVfx/`; tự đánh giá và danh sách chưa đạt ở `Docs/SKILL_VFX_REVIEW.md`.
+    - Lỗi thật đã sửa nhờ xem ảnh: shader làm mọi gradient thành khối đục (đĩa trắng, cột vuông); lõi HDR cháy trắng; hiệu ứng nằm dưới cụm HUD.
+    - Test: `SkillVfxShowcaseTests` 4/4. SkillCombatTests đã sửa vì quái giờ chết đúng nhịp va chạm, không chết ngay khi server trả lời. SkillCombat + Pet: 2/2; Chapter1Tests chạy riêng: PASS.
+    - Lỗi phụ thuộc thứ tự, chưa sửa: `FarmTests` knockout; `Chapter1Tests` khi chạy sau FarmTests (không tải được Đồng Cỏ Gió).
+- 2026-11-11 **Nhóm 2 — Map 2 Đồng Cỏ Xanh** (xây tiếp phần dở dang chưa commit của phiên trước + ý tưởng từ PR #6 AK Map Forge):
+  - Server: map `ch1_green_meadow` (−50…110), cổng `ch1_village_east_m02` (Làng Nấm x 92) ⇄ `ch1_m02_west_village` (x −40 → về x 89), Làng Nấm mở rộng biên đông (106); `SafeZones` (−46…−20), `RespawnPoints`; `pollen_slime` "Slime Phấn Hoa" (DRAFT HP 120, đánh 14/1,7 s, Gold 9–16, hồi 60 s) + Nấm Non; nhiệm vụ chính `ch1_04` (tới Map 2) → `ch1_05` (hạ 8 Slime Phấn Hoa) → `ch1_06` (báo Trưởng Làng Nấm), thưởng DRAFT.
+  - **Lỗi thật sửa (đo bằng log server):** qua cổng, FarmField của scene cũ còn gửi 1 heartbeat với toạ độ cũ (x 78) — server ghi nó vào map MỚI → mọi thao tác ở map mới bị từ chối "moved_too_fast" ~10 s. Sửa: `CharacterService/ShopService.Arrived` → `FarmService.Arrived` gieo vị trí farm tại điểm đến (heartbeat cũ bị loại); client ngừng heartbeat/poll farm khi đang chuyển map. Test server `A_late_heartbeat_from_the_old_scene_cannot_block_actions_on_the_new_map`.
+  - Cân bằng DRAFT: Slime Phấn Hoa ban đầu (140 HP, 18 sát thương) hạ Pháp Sư cấp 1 (75 HP) trước khi chết → giảm còn 120/14 (vai "farm cấp thấp").
+  - Client: `TownLayout.Ch1GreenMeadow` (4 bệ có collider thật: 4,5 / 8 / 5 / 6,5 m; 2 thang + 2 dây), `BuildCh1GreenMeadow` (rào gỗ + bụi hoa Meshy tô màu lại, cối xay, cây đa, cây nấm, lồng đèn, biển báo), `BuildChapter1Map2FromCommandLine`; từ PR #6: **hoa dại gộp 1 mesh** theo seed (1 draw call) + **tranh nền riêng** (3 lớp đồi, tán cây tròn, cối xay xa, mây) thay tranh ruộng bậc thang của thị trấn; Slime Phấn Hoa = mesh Meshy + nhún thủ tục; nhạc `BGM_Ch1_GreenMeadow_DRAFT`.
+  - Lỗi bố cục sửa nhờ ảnh: cối xay trên đồi đặt quá gần (z 14) che nửa màn hình → z 24, nhỏ hơn; nền v2 có sọc vuông (hàm sin) → tán cây tròn.
+  - PR #6 (`origin/feat/ak-map-forge-m02`, chưa từng biên dịch): **không merge** — trùng gần hết với bản local (cùng id cổng/quái), builder riêng `BuildCh1GreenMeadow(seed, detail)` sẽ xung đột; Slime Phấn Hoa của PR là slime thủ tục tô màu (bản local có model Meshy). Đã kiểm API mà PR gọi (WorldKit/GeneratedTexture/Backdrop_Painting) và đưa 2 ý dùng được vào bản local. Đề xuất đóng PR #6 sau khi chủ dự án xem.
+  - Còn lại: Map 2 chưa có cổng sang Map 3 (biển "sắp mở"); nền xa Map 1 vẫn là tranh thị trấn; chưa đo FPS trên điện thoại.
+  - Còn thiếu / chưa đạt Map 1 (ghi thật): nền xa (parallax) vẫn là tranh ruộng bậc thang của thị trấn, chưa có nền riêng tông đỏ-cam; Trưởng Làng ở hub chưa có câu thoại giới thiệu Làng Nấm (hub giữ nguyên — chỉ chỉ đường qua bảng Nhiệm vụ); chưa có EXP theo quái (chỉ EXP nhiệm vụ); chưa có âm thanh môi trường riêng; thanh máu Nấm Non bị bảng tên anh hùng che khi đứng sát (giống slime cũ); Map 1 chưa có cổng sang Map 2 (biển "sắp mở").
+
+### Nhóm 2 · bổ sung 2026-11-16 — cổng Map 2 → Map 3, tranh nền riêng Map 1, Quest UI trên điện thoại
+- **Tên file trong yêu cầu không tồn tại**: không có `PortalController` / `ParallaxBackground` / `UIManager`. Bản thật: `PortalGate2D` (+ server `CharacterService.Travel`), `ParallaxLayer`, `QuestPanel` (+ `SafeAreaFitter`, `TouchControlsVisibility`). Không tạo hệ thống trùng.
+- **Map 3 "Rừng Nấm Sáng" mới chỉ là KHUNG** (`AK_C1_M03`, map `ch1_glow_forest`): vùng nghỉ phía tây, 2 bậc rễ, nấm phát sáng, cổng về Map 2. **Chưa có quái, chưa có Mini Boss Nấm Thủ Lĩnh** (biển báo ghi "sắp mở"). Cổng: `ch1_m02_east_m03` (Map 2 x 102 → Map 3 −36) ⇄ `ch1_m03_west_m02` (Map 3 −40 → Map 2 x 99). Dùng chung `Arrived` của lần sửa trước để không bị `moved_too_fast`.
+- **Tranh nền**: Map 1 có tranh riêng `c1_m01_mushroom_panorama_v1` (đồi tím, nấm khổng lồ, mây) + material riêng; Map 2 giữ `c1_m02_meadow_panorama_v3`; Thị trấn giữ `backdrop_far`. Map 3 tạm dùng lại texture Map 1 (instance ParallaxLayer riêng). Đây là bản nháp, mỹ thuật chờ duyệt (thân nấm còn thô).
+- **Quest UI**: điện thoại (hoặc `QuestPanel.ForceMobile`) mặc định THU GỌN lúc vào game; mở/đóng tay được nhớ riêng (`ak_quest_folded_mobile`), PC giữ khóa cũ và mặc định mở. Thẻ mở co theo chiều cao canvas (`FitScale`) để kết thúc phía trên joystick. Không có `UIManager`: bố cục an toàn nhờ `SafeAreaFitter` sẵn có.
+- **Test**: server 168/168; PlayMode `Chapter1Tests` 4/4 (có test cổng Map 2→3→2, giữ gold/level/inventory, tranh nền từng map, Quest UI không chồng joystick/Jump/Interact/skill bar ở 6 độ phân giải tính toán); QuestHealer/SkillSync/Town/Hall/Farm/SkillCombat 8/8. Meshy: 0 credit.
+- **Lưu ý**: đăng nhập lại luôn về Thị trấn (thiết kế sẵn của `CharacterService.Enter`), nên "reconnect" trả hero về hub, không về Map 3. Chưa đo trên thiết bị thật; "điện thoại" được giả lập bằng `ForceMobile`.
+
+- **Meshy 2026-11-17:** +287 credit cho 4 model nhân vật từ ảnh tham chiếu (ref_swordsman/mage/archer/assassin: model + rig + animation). Tổng Chương 1 ≈ 687/2.000; số dư API 2.555.
+
+- **Meshy 2026-11-20 (Skin 2D):** 120 lượt image-to-image (3 clip Idle/Run/Attack × 40 skin, 6 credit/lượt) = **720 credit**, số dư 2.710 → 1.990. Công cụ: Tools/costume/skin_sheet.py (gen/fit); ảnh vào Assets/Resources/Fashion/Skins/<Class>/<key>/; Paperdoll2D.EquipSkin nạp khi bộ set2d_* được trang bị; Jump/Fall/Climb/Hit/Death giữ dáng Idle, Skill dùng khung Attack.
+- **Meshy 2026-11-20 (Skin huyền thoại):** 14 lượt (4 class × 3 clip + 2 làm lại) = **84 credit**, số dư 1.990 → 1.906. Tổng skin 2D hôm nay: 804 credit.
+- **Meshy 2026-11-20 (Skin Thần Thoại, bản chờ duyệt):** 12 lượt = **72 credit**, số dư 1.906 → 1.834. Ảnh ứng viên ở \ArtSource/SkinPreview/<Class>/mythic/\ (CHƯA vào game, chờ chủ dự án duyệt). Tổng skin hôm nay: 876 credit.

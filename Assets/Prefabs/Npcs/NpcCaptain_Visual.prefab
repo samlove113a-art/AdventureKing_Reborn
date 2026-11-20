@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &473336044538881656
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6514302581754496806}
+  m_Layer: 0
+  m_Name: Visual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6514302581754496806
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473336044538881656}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5249893796566352913}
+  m_Father: {fileID: 2485104217182731198}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1892706380161581014
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2485104217182731198}
+  - component: {fileID: 6092419685389763044}
+  m_Layer: 0
+  m_Name: NpcCaptain_Visual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2485104217182731198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892706380161581014}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6514302581754496806}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6092419685389763044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892706380161581014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad05d0c09c3605148a8473dd1c79987a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.NpcActor
+  animator: {fileID: 2178460477953187435}
+  visual: {fileID: 6514302581754496806}
+  walkSpeed: 1.3
+  sideYaw: 110
+  frontYaw: 180
+--- !u!1001 &5715604397445096442
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6514302581754496806}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.0000002482183
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2835761460279215569, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a49ea52395477c14dbd16c3a05810858, type: 2}
+    - target: {fileID: 919132149155446097, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_Name
+      value: Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 6094cf881716db74bba00b143391d122, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6114715555769047433}
+  m_SourcePrefab: {fileID: 100100000, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+--- !u!137 &1726213547315190229 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -2835761460279215569, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+  m_PrefabInstance: {fileID: 5715604397445096442}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2178460477953187435 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+  m_PrefabInstance: {fileID: 5715604397445096442}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4868547582825930411 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+  m_PrefabInstance: {fileID: 5715604397445096442}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6114715555769047433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4868547582825930411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d2143d44a68304087a4ad34d3452e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AdventureKing.Gameplay::AdventureKing.Gameplay.HeroFace
+  body: {fileID: 1726213547315190229}
+  headBone: {fileID: 8695918784841975666}
+  faceForwardLocal: {x: -0.030317757, y: 0.16402051, z: 0.98599094}
+  faceUpLocal: {x: 0.023269705, y: 0.98629284, z: -0.16335523}
+  neutralSmile: 0.35
+  blinkInterval: {x: 2.2, y: 5.8}
+  doubleBlinkChance: 0.14
+--- !u!4 &5249893796566352913 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+  m_PrefabInstance: {fileID: 5715604397445096442}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8695918784841975666 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5188151282924837752, guid: 8399fe07359594644aad18921f651ac7, type: 3}
+  m_PrefabInstance: {fileID: 5715604397445096442}
+  m_PrefabAsset: {fileID: 0}

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 17:48:27Z" end-time="2026-11-19 17:49:52Z" duration="84.7546773">
+  <test-suite type="TestSuite" id="1144" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="93" result="Passed" start-time="2026-11-19 17:48:27Z" end-time="2026-11-19 17:49:52Z" duration="84.754677" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1131" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="89" result="Passed" start-time="2026-11-19 17:48:27Z" end-time="2026-11-19 17:49:52Z" duration="84.739717" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17872" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1132" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="89" result="Passed" start-time="2026-11-19 17:48:27Z" end-time="2026-11-19 17:49:52Z" duration="84.738039" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="89" result="Passed" start-time="2026-11-19 17:48:27Z" end-time="2026-11-19 17:49:52Z" duration="84.736075" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="BlacksmithTests" fullname="AdventureKing.Tests.BlacksmithTests" classname="AdventureKing.Tests.BlacksmithTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 17:48:27Z" end-time="2026-11-19 17:48:58Z" duration="31.498825" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1002" name="Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" fullname="AdventureKing.Tests.BlacksmithTests.Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" methodname="Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" classname="AdventureKing.Tests.BlacksmithTests" runstate="Runnable" seed="970564357" result="Passed" start-time="2026-11-19 17:48:27Z" end-time="2026-11-19 17:48:58Z" duration="31.482115" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1044" name="EntryLobbyTests" fullname="AdventureKing.Tests.EntryLobbyTests" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-19 17:48:58Z" end-time="2026-11-19 17:49:31Z" duration="32.167011" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1047" name="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" fullname="AdventureKing.Tests.EntryLobbyTests.Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" methodname="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="1468318326" result="Passed" start-time="2026-11-19 17:48:58Z" end-time="2026-11-19 17:49:19Z" duration="20.129449" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+            </test-case>
+            <test-case id="1045" name="Login_Fails_Closed_Without_Backend" fullname="AdventureKing.Tests.EntryLobbyTests.Login_Fails_Closed_Without_Backend" methodname="Login_Fails_Closed_Without_Backend" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="639716342" result="Passed" start-time="2026-11-19 17:49:19Z" end-time="2026-11-19 17:49:25Z" duration="6.241699" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+            </test-case>
+            <test-case id="1046" name="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" fullname="AdventureKing.Tests.EntryLobbyTests.Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" methodname="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="1823964988" result="Passed" start-time="2026-11-19 17:49:25Z" end-time="2026-11-19 17:49:31Z" duration="5.793509" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1051" name="FrameBagTests" fullname="AdventureKing.Tests.FrameBagTests" classname="AdventureKing.Tests.FrameBagTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 17:49:31Z" end-time="2026-11-19 17:49:52Z" duration="21.040780" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1052" name="Frames_Sit_In_The_Bag_And_Can_Be_Worn_Or_Taken_Off" fullname="AdventureKing.Tests.FrameBagTests.Frames_Sit_In_The_Bag_And_Can_Be_Worn_Or_Taken_Off" methodname="Frames_Sit_In_The_Bag_And_Can_Be_Worn_Or_Taken_Off" classname="AdventureKing.Tests.FrameBagTests" runstate="Runnable" seed="175253152" result="Passed" start-time="2026-11-19 17:49:31Z" end-time="2026-11-19 17:49:52Z" duration="21.039444" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

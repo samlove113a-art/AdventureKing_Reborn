@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "ak_welfare_v1",
+  "status": "DRAFT_DEV_TEST_ONLY",
+  "timeZone": "Asia/Ho_Chi_Minh",
+  "dailyCheckin": {
+    "id": "checkin_7day_cycle_v1",
+    "enabled": true,
+    "scope": "account",
+    "cycleMode": "seven_distinct_calendar_days",
+    "missedDayPolicy": "pause_not_reset",
+    "nextCycleEarliest": "next_vn_calendar_day_after_day7",
+    "days": [
+      {
+        "day": 1,
+        "icon": "reward_gold",
+        "rewards": [
+          {
+            "type": "gold",
+            "amount": 200
+          }
+        ]
+      },
+      {
+        "day": 2,
+        "icon": "reward_gold",
+        "rewards": [
+          {
+            "type": "gold",
+            "amount": 300
+          }
+        ]
+      },
+      {
+        "day": 3,
+        "icon": "reward_bronze_chest",
+        "rewards": [
+          {
+            "type": "bundle",
+            "bundleId": "starter_chest_v1"
+          }
+        ]
+      },
+      {
+        "day": 4,
+        "icon": "reward_diamond",
+        "rewards": [
+          {
+            "type": "diamonds",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "day": 5,
+        "icon": "reward_gold",
+        "rewards": [
+          {
+            "type": "gold",
+            "amount": 600
+          }
+        ]
+      },
+      {
+        "day": 6,
+        "icon": "reward_diamond",
+        "rewards": [
+          {
+            "type": "diamonds",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "day": 7,
+        "icon": "reward_skin_choice",
+        "milestone": true,
+        "rewards": [
+          {
+            "type": "cosmetic_choice",
+            "eligibleItemIds": [
+              "head_lotus_crown",
+              "head_bell_circlet",
+              "shoes_cloud_boots"
+            ]
+          }
+        ]
+      }
+    ],
+    "bundles": [
+      {
+        "bundleId": "starter_chest_v1",
+        "contents": [
+          {
+            "type": "gold",
+            "amount": 500
+          }
+        ]
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "mushroom_festival_v1",
+      "category": "new",
+      "enabled": false,
+      "title": "Săn Nấm Lễ Hội",
+      "startUtc": null,
+      "endUtc": null,
+      "tasks": [
+        {
+          "taskId": "defeat_mushroom_30",
+          "serverMetric": "verified_monster_kill",
+          "targetId": "mushroom",
+          "target": 30,
+          "rewards": [
+            {
+              "type": "gold",
+              "amount": 400
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online_welfare_v1",
+      "category": "online",
+      "enabled": false,
+      "title": "Phúc Lợi Online",
+      "milestones": [
+        {
+          "minutes": 15,
+          "rewards": [
+            {
+              "type": "gold",
+              "amount": 100
+            }
+          ]
+        },
+        {
+          "minutes": 30,
+          "rewards": [
+            {
+              "type": "gold",
+              "amount": 150
+            }
+          ]
+        },
+        {
+          "minutes": 60,
+          "rewards": [
+            {
+              "type": "gold",
+              "amount": 250
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "firstTopup": {
+    "enabled": false,
+    "requires": "verified_paid_transaction",
+    "oneTimePerAccount": true,
+    "rewards": []
+  },
+  "notificationRules": {
+    "redDotOnlyWhenClaimable": true,
+    "noFakeProgress": true
+  },
+  "_notes": [
+    "ALL AMOUNTS ARE DRAFT EXAMPLES ONLY; not approved for live activation.",
+    "Client must not modify the signed/server-owned reward catalog.",
+    "Premium currency, item choices, event launch dates, and first top-up require explicit owner approval."
+  ]
+}

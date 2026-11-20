@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Failed(Child)" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 19:14:50Z" end-time="2026-11-19 19:15:19Z" duration="29.3099475">
+  <test-suite type="TestSuite" id="1146" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-19 19:14:50Z" end-time="2026-11-19 19:15:19Z" duration="29.309948" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1133" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 19:14:50Z" end-time="2026-11-19 19:15:19Z" duration="29.294316" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="16524" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1134" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 19:14:50Z" end-time="2026-11-19 19:15:19Z" duration="29.292593" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 19:14:50Z" end-time="2026-11-19 19:15:19Z" duration="29.282995" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1044" name="EntryLobbyTests" fullname="AdventureKing.Tests.EntryLobbyTests" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-19 19:14:50Z" end-time="2026-11-19 19:15:19Z" duration="29.263453" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1047" name="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" fullname="AdventureKing.Tests.EntryLobbyTests.Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" methodname="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="103042504" result="Passed" start-time="2026-11-19 19:14:50Z" end-time="2026-11-19 19:15:11Z" duration="21.171713" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1045" name="Login_Fails_Closed_Without_Backend" fullname="AdventureKing.Tests.EntryLobbyTests.Login_Fails_Closed_Without_Backend" methodname="Login_Fails_Closed_Without_Backend" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="137302890" result="Failed" start-time="2026-11-19 19:15:11Z" end-time="2026-11-19 19:15:13Z" duration="2.135457" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  Expected: String containing "chưa khả dụng"
+  But was:  "Hoặc đăng nhập nhanh"
+]]></message>
+                <stack-trace><![CDATA[at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual, System.String message, System.Object[] args) [0x00008] in <8b63e8ac0a4746599ed207982825ae6c>:0
+at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+at AdventureKing.Tests.EntryLobbyTests+<Login_Fails_Closed_Without_Backend>d__6.MoveNext () [0x00238] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\EntryLobbyTests.cs:83
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+            </test-case>
+            <test-case id="1046" name="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" fullname="AdventureKing.Tests.EntryLobbyTests.Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" methodname="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="1595850935" result="Passed" start-time="2026-11-19 19:15:13Z" end-time="2026-11-19 19:15:19Z" duration="5.939651" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

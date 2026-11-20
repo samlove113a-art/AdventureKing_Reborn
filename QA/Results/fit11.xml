@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 14:22:14Z" end-time="2026-11-19 14:22:43Z" duration="28.919931">
+  <test-suite type="TestSuite" id="1137" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 14:22:14Z" end-time="2026-11-19 14:22:43Z" duration="28.919931" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1125" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 14:22:14Z" end-time="2026-11-19 14:22:43Z" duration="28.899483" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="16732" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1126" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 14:22:14Z" end-time="2026-11-19 14:22:43Z" duration="28.896668" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 14:22:14Z" end-time="2026-11-19 14:22:43Z" duration="28.893536" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1096" name="ShopFashionTests" fullname="AdventureKing.Tests.ShopFashionTests" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-19 14:22:14Z" end-time="2026-11-19 14:22:43Z" duration="28.884099" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1097" name="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" fullname="AdventureKing.Tests.ShopFashionTests.Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" methodname="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="143594685" result="Failed" start-time="2026-11-19 14:22:14Z" end-time="2026-11-19 14:22:43Z" duration="28.867816" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  wings taken off; status: Đã mặc Cánh Bướm Tiên Pastel.; selected wings2d_f_fairy vs wings2d_f_fairy
+  Expected: null
+  But was:  "wings2d_f_fairy"
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.ShopFashionTests+<Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart>d__14.MoveNext () [0x01337] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\ShopFashionTests.cs:273
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

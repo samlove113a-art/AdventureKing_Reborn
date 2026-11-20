@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Failed(Child)" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 09:59:34Z" end-time="2026-11-19 09:59:46Z" duration="11.96299">
+  <test-suite type="TestSuite" id="1135" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="89" result="Failed" site="Child" start-time="2026-11-19 09:59:34Z" end-time="2026-11-19 09:59:46Z" duration="11.962990" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1123" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="85" result="Failed" site="Child" start-time="2026-11-19 09:59:34Z" end-time="2026-11-19 09:59:46Z" duration="11.945376" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="8200" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1124" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="85" result="Failed" site="Child" start-time="2026-11-19 09:59:34Z" end-time="2026-11-19 09:59:46Z" duration="11.932910" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1038" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="85" result="Failed" site="Child" start-time="2026-11-19 09:59:34Z" end-time="2026-11-19 09:59:46Z" duration="11.925560" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1042" name="EntryLobbyTests" fullname="AdventureKing.Tests.EntryLobbyTests" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-19 09:59:34Z" end-time="2026-11-19 09:59:46Z" duration="11.906224" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1045" name="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" fullname="AdventureKing.Tests.EntryLobbyTests.Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" methodname="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="432091547" result="Failed" start-time="2026-11-19 09:59:34Z" end-time="2026-11-19 09:59:37Z" duration="2.664478" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[Unhandled log message: '[Error] RenderTexture.Create failed'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                <stack-trace><![CDATA[UnityEngine.Camera:Render ()
+AdventureKing.Tests.EntryLobbyTests/LobbyCapture/<Save>d__4:MoveNext () (at Assets/Tests/PlayMode/EntryLobbyTests.cs:218)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[RenderTexture.Create failed
+RenderTexture.Create failed
+Failed to set the active render target, ensure that it is a valid render target.
+]]></output>
+            </test-case>
+            <test-case id="1043" name="Login_Fails_Closed_Without_Backend" fullname="AdventureKing.Tests.EntryLobbyTests.Login_Fails_Closed_Without_Backend" methodname="Login_Fails_Closed_Without_Backend" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="496505927" result="Passed" start-time="2026-11-19 09:59:37Z" end-time="2026-11-19 09:59:43Z" duration="6.262141" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1044" name="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" fullname="AdventureKing.Tests.EntryLobbyTests.Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" methodname="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="943434283" result="Passed" start-time="2026-11-19 09:59:43Z" end-time="2026-11-19 09:59:46Z" duration="2.957278" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

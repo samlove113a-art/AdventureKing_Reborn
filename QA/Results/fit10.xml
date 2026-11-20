@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Failed(Child)" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 14:21:00Z" end-time="2026-11-19 14:21:32Z" duration="31.9499794">
+  <test-suite type="TestSuite" id="1137" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 14:21:00Z" end-time="2026-11-19 14:21:32Z" duration="31.949979" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1125" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 14:21:00Z" end-time="2026-11-19 14:21:32Z" duration="31.927533" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="3660" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1126" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 14:21:00Z" end-time="2026-11-19 14:21:32Z" duration="31.920653" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 14:21:00Z" end-time="2026-11-19 14:21:32Z" duration="31.917838" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1096" name="ShopFashionTests" fullname="AdventureKing.Tests.ShopFashionTests" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-19 14:21:00Z" end-time="2026-11-19 14:21:32Z" duration="31.907785" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1098" name="Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" fullname="AdventureKing.Tests.ShopFashionTests.Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" methodname="Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="733284480" result="Failed" start-time="2026-11-19 14:21:00Z" end-time="2026-11-19 14:21:02Z" duration="1.667149" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  2D catalogue items (40 sets + tops, bottoms, wings, mounts)
+  Expected: greater than or equal to 70
+  But was:  60
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.ShopFashionTests+<Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites>d__17.MoveNext () [0x0002a] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\ShopFashionTests.cs:325
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+            </test-case>
+            <test-case id="1097" name="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" fullname="AdventureKing.Tests.ShopFashionTests.Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" methodname="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="336528370" result="Failed" start-time="2026-11-19 14:21:02Z" end-time="2026-11-19 14:21:30Z" duration="28.631721" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  wings taken off
+  Expected: null
+  But was:  "wings2d_f_fairy"
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.ShopFashionTests+<Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart>d__14.MoveNext () [0x01337] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\ShopFashionTests.cs:273
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+]]></output>
+            </test-case>
+            <test-case id="1099" name="Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" fullname="AdventureKing.Tests.ShopFashionTests.Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" methodname="Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="275709664" result="Passed" start-time="2026-11-19 14:21:30Z" end-time="2026-11-19 14:21:32Z" duration="1.585150" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

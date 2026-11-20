@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 10:02:54Z" end-time="2026-11-19 10:03:41Z" duration="47.2302223">
+  <test-suite type="TestSuite" id="1135" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="89" result="Passed" start-time="2026-11-19 10:02:54Z" end-time="2026-11-19 10:03:41Z" duration="47.230222" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1123" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="85" result="Passed" start-time="2026-11-19 10:02:54Z" end-time="2026-11-19 10:03:41Z" duration="47.215575" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="428" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1124" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="85" result="Passed" start-time="2026-11-19 10:02:54Z" end-time="2026-11-19 10:03:41Z" duration="47.213437" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="SetUpFixture" id="1038" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="85" result="Passed" start-time="2026-11-19 10:02:54Z" end-time="2026-11-19 10:03:41Z" duration="47.211763" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1042" name="EntryLobbyTests" fullname="AdventureKing.Tests.EntryLobbyTests" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-19 10:02:54Z" end-time="2026-11-19 10:03:28Z" duration="33.769450" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1045" name="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" fullname="AdventureKing.Tests.EntryLobbyTests.Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" methodname="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="1019554724" result="Passed" start-time="2026-11-19 10:02:54Z" end-time="2026-11-19 10:03:15Z" duration="20.978555" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1043" name="Login_Fails_Closed_Without_Backend" fullname="AdventureKing.Tests.EntryLobbyTests.Login_Fails_Closed_Without_Backend" methodname="Login_Fails_Closed_Without_Backend" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="1229886792" result="Passed" start-time="2026-11-19 10:03:15Z" end-time="2026-11-19 10:03:21Z" duration="6.262088" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1044" name="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" fullname="AdventureKing.Tests.EntryLobbyTests.Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" methodname="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="31719406" result="Passed" start-time="2026-11-19 10:03:21Z" end-time="2026-11-19 10:03:28Z" duration="6.513077" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1091" name="ServerEndToEndTests" fullname="AdventureKing.Tests.ServerEndToEndTests" classname="AdventureKing.Tests.ServerEndToEndTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-19 10:03:28Z" end-time="2026-11-19 10:03:41Z" duration="13.416560" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1092" name="Login_Select_Enter_Map_Exit_Relogin_Keeps_Progress" fullname="AdventureKing.Tests.ServerEndToEndTests.Login_Select_Enter_Map_Exit_Relogin_Keeps_Progress" methodname="Login_Select_Enter_Map_Exit_Relogin_Keeps_Progress" classname="AdventureKing.Tests.ServerEndToEndTests" runstate="Runnable" seed="778399577" result="Passed" start-time="2026-11-19 10:03:28Z" end-time="2026-11-19 10:03:38Z" duration="10.517711" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1093" name="Opening_The_Map_Without_Login_Never_Invents_A_Character" fullname="AdventureKing.Tests.ServerEndToEndTests.Opening_The_Map_Without_Login_Never_Invents_A_Character" methodname="Opening_The_Map_Without_Login_Never_Invents_A_Character" classname="AdventureKing.Tests.ServerEndToEndTests" runstate="Runnable" seed="840919041" result="Passed" start-time="2026-11-19 10:03:38Z" end-time="2026-11-19 10:03:41Z" duration="2.896553" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

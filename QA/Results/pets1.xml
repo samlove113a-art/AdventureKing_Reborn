@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 14:42:10Z" end-time="2026-11-19 14:43:39Z" duration="89.1365815">
+  <test-suite type="TestSuite" id="1137" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="90" result="Passed" start-time="2026-11-19 14:42:10Z" end-time="2026-11-19 14:43:39Z" duration="89.136582" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1125" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="86" result="Passed" start-time="2026-11-19 14:42:10Z" end-time="2026-11-19 14:43:39Z" duration="89.087901" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="13732" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1126" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="86" result="Passed" start-time="2026-11-19 14:42:10Z" end-time="2026-11-19 14:43:39Z" duration="89.081250" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="86" result="Passed" start-time="2026-11-19 14:42:10Z" end-time="2026-11-19 14:43:39Z" duration="89.077320" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1075" name="PetTests" fullname="AdventureKing.Tests.PetTests" classname="AdventureKing.Tests.PetTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-19 14:42:10Z" end-time="2026-11-19 14:43:07Z" duration="56.604892" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1077" name="Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" fullname="AdventureKing.Tests.PetTests.Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" methodname="Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" classname="AdventureKing.Tests.PetTests" runstate="Runnable" seed="1674806905" result="Passed" start-time="2026-11-19 14:42:10Z" end-time="2026-11-19 14:42:47Z" duration="37.123788" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+[05_pet_auto_potion_settings pc_1920x1080] OK (29 texts, 14 buttons)
+[05_pet_auto_potion_settings pc_1366x768] OK (29 texts, 14 buttons)
+[05_pet_auto_potion_settings phone_19.5x9] OK (29 texts, 14 buttons)
+[05_pet_auto_potion_settings phone_16x9] OK (29 texts, 14 buttons)
+[05_pet_auto_potion_settings tablet_4x3] OK (29 texts, 14 buttons)
+]]></output>
+            </test-case>
+            <test-case id="1076" name="Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" fullname="AdventureKing.Tests.PetTests.Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" methodname="Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" classname="AdventureKing.Tests.PetTests" runstate="Runnable" seed="1788862168" result="Passed" start-time="2026-11-19 14:42:47Z" end-time="2026-11-19 14:43:07Z" duration="19.450147" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1096" name="ShopFashionTests" fullname="AdventureKing.Tests.ShopFashionTests" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-19 14:43:07Z" end-time="2026-11-19 14:43:39Z" duration="32.447686" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1098" name="Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" fullname="AdventureKing.Tests.ShopFashionTests.Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" methodname="Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="1537019921" result="Passed" start-time="2026-11-19 14:43:07Z" end-time="2026-11-19 14:43:08Z" duration="1.504735" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1097" name="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" fullname="AdventureKing.Tests.ShopFashionTests.Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" methodname="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="1866130527" result="Passed" start-time="2026-11-19 14:43:08Z" end-time="2026-11-19 14:43:38Z" duration="29.864497" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+]]></output>
+            </test-case>
+            <test-case id="1099" name="Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" fullname="AdventureKing.Tests.ShopFashionTests.Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" methodname="Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="1533469794" result="Passed" start-time="2026-11-19 14:43:38Z" end-time="2026-11-19 14:43:39Z" duration="1.075419" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

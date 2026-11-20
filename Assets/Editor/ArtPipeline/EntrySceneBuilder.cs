@@ -1,0 +1,797 @@
+using System.IO;
+using AdventureKing.Gameplay;
+using UnityEditor;
+using UnityEditor.Events;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+namespace AdventureKing.ArtPipeline
+{
+    /// <summary>
+    /// Builds Assets/Scenes/AK_Entry.unity: Splash -> Login/Register -> Hero Selection hall.
+    /// The hall is a real 3D stage (layer 29 "HeroPreview") rendered full-screen behind the UI, with
+    /// the four animated class prefabs, drag-to-rotate, Try Attack / Try Skill / Reset View.
+    /// Authentication stays fail-closed: no backend is wired, so login cannot fake success.
+    /// </summary>
+    public static partial class EntrySceneBuilder
+    {
+        public const string ScenePath = "Assets/Scenes/AK_Entry.unity";
+        private const string UiDir = "Assets/Art/UI";
+        private static Font font;
+        private static Sprite panelSprite, pillSprite;
+
+        // Palette (original): night-teal hall with warm gold accents.
+        private static readonly Color Ink = new Color(0.07f, 0.09f, 0.14f, 0.82f);
+        private static readonly Color InkSoft = new Color(0.1f, 0.13f, 0.2f, 0.7f);
+        private static readonly Color Gold = new Color(1f, 0.82f, 0.45f);
+        private static readonly Color Cream = new Color(1f, 0.97f, 0.9f);
+        private static readonly Color Muted = new Color(0.72f, 0.78f, 0.86f);
+
+        [MenuItem("AdventureKing/Scenes/Rebuild Entry Scene")]
+        public static void BuildMenu() => Build();
+
+        public static void BuildFromCommandLine()
+        {
+            try { Build(); EditorApplication.Exit(0); }
+            catch (System.Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+
+        internal static Sprite PanelSprite => panelSprite;
+
+        private static Font boldFont;
+
+        internal static void InitUi()
+        {
+            // Be Vietnam Pro (SIL OFL 1.1, Assets/Art/Fonts): crisp Vietnamese diacritics; real Bold file for bold text.
+            font = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf");
+            boldFont = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BeVietnamPro/BeVietnamPro-Bold.ttf");
+            if (!font) font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if (!boldFont) boldFont = font;
+            panelSprite = RoundedSprite("ui_panel", 64, 18);
+            pillSprite = RoundedSprite("ui_pill", 64, 30);
+            enamelSprite = GeneratedUiSprite("ui_enamel", 128, 30, Enamel);
+            rimSprite = GeneratedUiSprite("ui_gilded_rim", 128, 30, GildedRim);
+            framePanel = FantasySprite("Assets/Art/UI/Fantasy/frame_panel.png", new Vector4(112, 112, 112, 136));
+            frameBar = FantasySprite("Assets/Art/UI/Fantasy/frame_bar.png", new Vector4(150, 52, 150, 52));
+        }
+
+        // ------------------------------------------------------------ fantasy UI kit
+        private static Sprite enamelSprite, rimSprite, framePanel, frameBar;
+        internal static Sprite FramePanelSprite => framePanel;
+
+        /// <summary>Glossy enamel body: vertical light gradient so a tint reads as polished lacquer.</summary>
+        private static Color Enamel(float d, float v, int radius)
+        {
+            float a = Mathf.Clamp01(radius - d + 0.5f);
+            float shade = Mathf.Lerp(0.72f, 1f, Mathf.SmoothStep(0f, 1f, v));
+            float gloss = v > 0.58f ? Mathf.Lerp(0f, 0.18f, Mathf.InverseLerp(0.58f, 0.95f, v)) : 0f;
+            float c = Mathf.Min(1f, shade + gloss);
+            return new Color(c, c, c, a);
+        }
+
+        /// <summary>Gilded rim: dark outer line, bright bevelled gold band, light inner line; transparent inside.</summary>
+        private static Color GildedRim(float d, float v, int radius)
+        {
+            // d = distance outside the inner rounded rect (0 inside the corner circle centre); radius = corner radius
+            float edge = radius - d;                 // distance from the outer edge inward (px)
+            if (edge < -0.5f) return Color.clear;
+            const float band = 7f;
+            if (edge > band + 1.5f) return Color.clear;
+            float aa = Mathf.Clamp01(edge + 0.5f) * Mathf.Clamp01(band + 1.5f - edge);
+            Color dark = new Color(0.32f, 0.2f, 0.07f), mid = new Color(0.86f, 0.64f, 0.26f), light = new Color(1f, 0.92f, 0.62f);
+            float t = Mathf.Clamp01(edge / band);
+            Color c = t < 0.15f ? Color.Lerp(dark, mid, t / 0.15f) : t < 0.55f ? Color.Lerp(mid, light, (t - 0.15f) / 0.4f) : Color.Lerp(light, mid, (t - 0.55f) / 0.45f);
+            c = Color.Lerp(c * 0.8f, c, v); // top catches more light
+            c.a = aa;
+            return c;
+        }
+
+        private static Sprite GeneratedUiSprite(string name, int size, int radius, System.Func<float, float, int, Color> shader)
+        {
+            Directory.CreateDirectory(UiDir);
+            string path = $"{UiDir}/{name}.png";
+            var t = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = Mathf.Max(0, Mathf.Max(radius - x - 0.5f, x + 0.5f - (size - radius)));
+                    float dy = Mathf.Max(0, Mathf.Max(radius - y - 0.5f, y + 0.5f - (size - radius)));
+                    // distance from the rounded-rect outline measured as "radius - inward depth"
+                    float inward = Mathf.Min(Mathf.Min(x + 0.5f, size - x - 0.5f), Mathf.Min(y + 0.5f, size - y - 0.5f));
+                    float d = dx > 0 && dy > 0 ? Mathf.Sqrt(dx * dx + dy * dy) : radius - inward;
+                    t.SetPixel(x, y, shader(d, y / (float)(size - 1), radius));
+                }
+            t.Apply();
+            File.WriteAllBytes(path, t.EncodeToPNG());
+            Object.DestroyImmediate(t);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+            ti.textureType = TextureImporterType.Sprite;
+            ti.spriteBorder = new Vector4(radius + 4, radius + 4, radius + 4, radius + 4);
+            ti.alphaIsTransparency = true;
+            ti.mipmapEnabled = false;
+            ti.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
+
+        private static Sprite FantasySprite(string path, Vector4 border)
+        {
+            if (!File.Exists(path)) return null;
+            var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+            // Single mode: in Multiple mode the sub-sprite (frame_panel_0) has NO border, so the frame was drawn as one
+            // stretched picture (ornament scaling with the panel, text landing on the crest). 9-slice needs Single.
+            if (ti.textureType != TextureImporterType.Sprite || ti.spriteBorder != border || ti.spriteImportMode != SpriteImportMode.Single)
+            {
+                ti.textureType = TextureImporterType.Sprite;
+                ti.spriteImportMode = SpriteImportMode.Single;
+                ti.spriteBorder = border;
+                ti.alphaIsTransparency = true;
+                ti.mipmapEnabled = false;
+                ti.maxTextureSize = 2048;
+                ti.textureCompression = TextureImporterCompression.CompressedHQ;
+                ti.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
+
+        /// <summary>Turns a plain panel into the gold-filigree fantasy frame (Meshy art, 9-sliced).</summary>
+        internal static void Frame(GameObject panel, float thickness = 3f)
+        {
+            if (!framePanel) return;
+            var img = panel.GetComponent<Image>();
+            img.sprite = framePanel;
+            img.type = Image.Type.Sliced;
+            img.color = Color.white;
+            img.pixelsPerUnitMultiplier = thickness; // higher = thinner frame band
+        }
+
+        /// <summary>Applies one of the purpose-made 9-slice skins (FrameArt) to a panel/button image. Returns false if the skin is missing.</summary>
+        internal static bool Skin(GameObject go, string skin, float scale = 1f)
+        {
+            Sprite s = FrameArt.Get(skin);
+            if (!s) return false;
+            var img = go.GetComponent<Image>();
+            img.sprite = s;
+            img.type = Image.Type.Sliced;
+            img.color = Color.white;
+            img.pixelsPerUnitMultiplier = 1f / scale; // scale > 1 = thicker frame band
+            var rim = go.transform.Find("GildedRim");
+            if (rim) Object.DestroyImmediate(rim.gameObject);
+            return true;
+        }
+
+        /// <summary>Re-skins a button made by <see cref="Btn"/> and sets its label colour.</summary>
+        internal static Button Style(Button b, string skin, Color fg, float scale = 1f)
+        {
+            Skin(b.gameObject, skin, scale);
+            foreach (Text t in b.GetComponentsInChildren<Text>(true))
+            {
+                t.color = fg;
+                var sh = t.GetComponent<Shadow>();
+                // dark text on light gems reads best without a drop shadow
+                if (sh) sh.effectColor = fg.grayscale < 0.4f ? new Color(1f, 1f, 1f, 0.25f) : new Color(0f, 0f, 0f, 0.55f);
+            }
+            return b;
+        }
+
+        /// <summary>Gilded rim overlay on top of an element (buttons, fields, small panels).</summary>
+        internal static void Rim(Transform parent, float alpha = 1f)
+        {
+            if (!rimSprite) return;
+            var go = new GameObject("GildedRim", typeof(RectTransform));
+            go.layer = 5;
+            go.transform.SetParent(parent, false);
+            Stretch((RectTransform)go.transform);
+            var img = go.AddComponent<Image>();
+            img.sprite = rimSprite;
+            img.type = Image.Type.Sliced;
+            img.color = new Color(1f, 1f, 1f, alpha);
+            img.raycastTarget = false;
+        }
+
+        public const string LogoPath = "Assets/Art/Branding/SAM_Logo.png";
+
+        /// <summary>The owner-provided studio logo (SAM), imported as a crisp UI sprite.</summary>
+        internal static Sprite OwnerLogo()
+        {
+            if (!File.Exists(LogoPath)) return null;
+            var ti = (TextureImporter)AssetImporter.GetAtPath(LogoPath);
+            if (ti.textureType != TextureImporterType.Sprite || ti.mipmapEnabled || ti.maxTextureSize != 1024)
+            {
+                ti.textureType = TextureImporterType.Sprite;
+                ti.alphaIsTransparency = true;
+                ti.mipmapEnabled = false;
+                ti.maxTextureSize = 1024;
+                ti.textureCompression = TextureImporterCompression.CompressedHQ;
+                ti.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Sprite>(LogoPath);
+        }
+
+        public static void Build()
+        {
+            InitUi();
+            if (!File.Exists(LogoArt.OutPath) && File.Exists(LogoArt.OwnerSource)) LogoArt.Build(); // owner's title logo, cut out
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+            // ---------------------------------------------------------------- audio + input
+            new GameObject("AudioDirector").AddComponent<AdventureAudioDirector>();
+            AudioLibrary.AssignTo(Object.FindAnyObjectByType<AdventureAudioDirector>());
+            // Main camera only clears the screen and hosts the AudioListener (the whole flow is Screen Space Overlay UI).
+            var mainCam = new GameObject("MainCamera") { tag = "MainCamera" };
+            var mc = mainCam.AddComponent<Camera>();
+            mc.clearFlags = CameraClearFlags.SolidColor;
+            mc.backgroundColor = Color.black;
+            mc.cullingMask = 0;
+            mainCam.AddComponent<AudioListener>();
+            var es = new GameObject("EventSystem");
+            es.AddComponent<EventSystem>();
+            es.AddComponent<InputSystemUIInputModule>();
+
+            // ---------------------------------------------------------------- UI
+            var canvasGo = new GameObject("EntryCanvas", typeof(RectTransform));
+            canvasGo.layer = 5;
+            var canvas = canvasGo.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = canvasGo.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.matchWidthOrHeight = UiStandard.Match;
+            canvasGo.AddComponent<GraphicRaycaster>();
+            var flow = canvasGo.AddComponent<AdventureEntryFlow>();
+
+            // 100% 2D: one pixel backdrop under every screen (login, hall), then the five screens on top.
+            BuildPixelBackdrop(canvasGo.transform);
+
+            Sprite gameLogo = LogoArt.Sprite(); // official game logo (Assets/Art/Branding/AK_TitleLogo.png), never redrawn
+            GameObject splash = BuildIntro(canvasGo.transform, gameLogo, out LogoAssemblyIntro intro);
+            GameObject loadingRoot = BuildLoading(canvasGo.transform, out LoadingScreen2D loading);
+            GameObject titleRoot = BuildTitle(canvasGo.transform, flow, out EntryServerPicker picker);
+
+            GameObject auth = BuildAuth(canvasGo.transform, out InputField acc, out InputField pwd, out InputField confirm, out Text authStatus, out GameObject registerFields, flow);
+            GameObject selection = BuildSelection(canvasGo.transform, flow, out HeroSelectionPreview2D preview,
+                out Text heroName, out Text heroDesc, out Text heroStats, out InputField charName, out Text[] slots, out Text existing, out Text selStatus);
+
+            // status text is shared: auth status for auth screen; selection uses its own footer
+            var so = new SerializedObject(flow);
+            void R(string p, Object o) => so.FindProperty(p).objectReferenceValue = o;
+            R("splashRoot", splash); R("authRoot", auth); R("selectionRoot", selection);
+            R("loadingRoot", loadingRoot); R("titleRoot", titleRoot);
+            R("intro", intro); R("loading", loading); R("serverPicker", picker);
+            R("officialAdventureKingLogo", gameLogo);
+            so.FindProperty("gameplaySceneName").stringValue = VillageSceneBuilder.SceneName;
+            R("accountInput", acc); R("passwordInput", pwd); R("confirmPasswordInput", confirm);
+            R("statusText", authStatus); R("selectionStatusText", selStatus); R("registerFields", registerFields);
+            R("heroName", heroName); R("heroDescription", heroDesc); R("heroStats", heroStats);
+            R("characterNameInput", charName); R("existingCharacterDetails", existing); R("heroPreview", preview);
+            var sl = so.FindProperty("slotLabels");
+            sl.arraySize = 4;
+            for (int i = 0; i < 4; i++) sl.GetArrayElementAtIndex(i).objectReferenceValue = slots[i];
+            so.FindProperty("splashDurationSeconds").floatValue = 4.5f;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            // Composition root: the real local server (Server/AdventureKing.Server). If it is not running,
+            // every auth/profile call fails with a clear message — nothing is simulated.
+            // Own root object: it is DontDestroyOnLoad so the session follows the player into the world.
+            var connection = new GameObject("ServerConnection").AddComponent<AdventureServerConnection>();
+            var cso = new SerializedObject(connection);
+            cso.FindProperty("entryFlow").objectReferenceValue = flow;
+            cso.ApplyModifiedPropertiesWithoutUndo();
+
+            Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
+            EditorSceneManager.SaveScene(scene, ScenePath);
+            AssetDatabase.SaveAssets();
+            VillageSceneBuilder.RegisterBuildScenes();
+            Debug.Log("[ENTRY] Scene built: " + ScenePath);
+        }
+
+        // ================================================================== auth screen
+        private static GameObject BuildAuth(Transform canvas, out InputField acc, out InputField pwd, out InputField confirm,
+            out Text status, out GameObject registerFields, AdventureEntryFlow flow)
+        {
+            // Transparent root: the shared fantasy backdrop (LoginBackdrop, behind every entry screen) shows through.
+            GameObject root = Panel(canvas, "AuthRoot", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, new Color(0f, 0f, 0f, 0f), null);
+            root.GetComponent<Image>().raycastTarget = false;
+            // Game title logo on the left half (wide screens); a 4:3 tablet centres the card, so the logo steps aside.
+            Sprite titleLogo = LogoArt.Sprite();
+            if (titleLogo)
+            {
+                Image logoImg = Img(root.transform, "TitleLogo", new Vector2(0.27f, 0.6f), new Vector2(880f, 495f), Color.white, titleLogo);
+                logoImg.type = Image.Type.Simple;
+                logoImg.preserveAspect = true;
+                logoImg.raycastTarget = false;
+                var la = logoImg.gameObject.AddComponent<ResponsiveAnchor>();
+                var lso = new SerializedObject(la);
+                lso.FindProperty("wideX").floatValue = 0.27f;
+                lso.FindProperty("narrowX").floatValue = 0.27f;
+                lso.FindProperty("wideAspect").floatValue = 1.55f;
+                lso.FindProperty("hideWhenNarrow").boolValue = true;
+                lso.ApplyModifiedPropertiesWithoutUndo();
+            }
+            // Card on the right third on wide screens (the scene stays visible), centred on narrow ones.
+            GameObject card = Panel(root.transform, "AuthCard", new Vector2(0.71f, 0.5f), new Vector2(0.71f, 0.5f), Vector2.zero, new Vector2(720, 880), Ink, panelSprite);
+            var anchor = card.AddComponent<ResponsiveAnchor>();
+            var aso = new SerializedObject(anchor);
+            aso.FindProperty("wideX").floatValue = 0.71f;
+            aso.FindProperty("narrowX").floatValue = 0.5f;
+            aso.FindProperty("wideAspect").floatValue = 1.55f;
+            aso.ApplyModifiedPropertiesWithoutUndo();
+            if (!Skin(card, "auth_card")) Frame(card, 2.6f);
+            RectTransform content = FramedContent(card, 6f, topBand: 52f);
+            VStack(content, 12f, TextAnchor.MiddleCenter);
+
+            // tabs: Đăng nhập | Đăng ký on the same frame
+            RectTransform tabRow = HRow(content, "Tabs", 64f, 10f);
+            Button tabLogin = Btn(tabRow, "TabLogin", "Đăng nhập", Vector2.zero, new Vector2(270, 64), new Color(0.2f, 0.26f, 0.38f), Cream);
+            Size(tabLogin, 64f, 270f, 1f);
+            Button tabRegister = Btn(tabRow, "TabRegister", "Đăng ký", Vector2.zero, new Vector2(270, 64), new Color(0.2f, 0.26f, 0.38f), Cream);
+            Size(tabRegister, 64f, 270f, 1f);
+            Image tabLoginImg = tabLogin.GetComponent<Image>(), tabRegImg = tabRegister.GetComponent<Image>();
+            Sprite chip = FrameArt.Get("chip"), chipOn = FrameArt.Get("chip_on");
+            if (chip) { tabLoginImg.sprite = chipOn ? chipOn : chip; tabRegImg.sprite = chip; tabLoginImg.type = tabRegImg.type = Image.Type.Sliced; tabLoginImg.color = tabRegImg.color = Color.white; }
+            UnityEventTools.AddPersistentListener(tabLogin.onClick, flow.ShowLoginTab);
+            UnityEventTools.AddPersistentListener(tabRegister.onClick, flow.ShowRegisterTab);
+            {
+                var tso = new SerializedObject(flow);
+                tso.FindProperty("loginTab").objectReferenceValue = tabLoginImg;
+                tso.FindProperty("registerTab").objectReferenceValue = tabRegImg;
+                tso.FindProperty("tabSprite").objectReferenceValue = chip;
+                tso.FindProperty("tabOnSprite").objectReferenceValue = chipOn;
+                tso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            Text title = BlockLabel(content, "Title", "Đăng nhập", 44, Gold, 58f, FontStyle.Bold);
+            var tOutline = title.gameObject.AddComponent<Outline>();
+            tOutline.effectColor = new Color(0.25f, 0.13f, 0.04f, 0.85f);
+            tOutline.effectDistance = new Vector2(1.5f, -1.5f);
+            BlockLabel(content, "Subtitle", "Chào mừng đến Adventure King", 22, Muted, 30f);
+            acc = Field(content, "AccountInput", "Tên tài khoản hoặc email", Vector2.zero, false, new Vector2(560, 76));
+            Size(acc, 76f);
+            pwd = Field(content, "PasswordInput", "Mật khẩu (tối thiểu 8 ký tự)", Vector2.zero, true, new Vector2(560, 76));
+            Size(pwd, 76f);
+            registerFields = new GameObject("RegisterFields", typeof(RectTransform));
+            registerFields.layer = 5;
+            registerFields.transform.SetParent(content, false);
+            Size(registerFields.transform, 76f);
+            confirm = Field(registerFields.transform, "ConfirmPasswordInput", "Nhập lại mật khẩu", Vector2.zero, true, new Vector2(560, 76));
+            Stretch((RectTransform)confirm.transform);
+            registerFields.SetActive(false);
+
+            RectTransform row1 = HRow(content, "PrimaryRow", 72f, 16f);
+            Button login = Btn(row1, "LoginButton", "Đăng nhập", Vector2.zero, new Vector2(270, 72), Gold, new Color(0.15f, 0.1f, 0.05f));
+            Size(login, 72f, 270f, 1f);
+            Button register = Btn(row1, "RegisterButton", "Đăng ký", Vector2.zero, new Vector2(270, 72), new Color(0.3f, 0.4f, 0.6f), Cream);
+            Style(register, "btn_jade", Cream);
+            Size(register, 72f, 270f, 1f);
+            // Google / Facebook / Guest sign in through Firebase Auth on the device; without the Firebase SDK the button answers honestly (see Docs/FIREBASE_IOS_GUIDE.md)
+            BlockLabel(content, "Or", "Hoặc đăng nhập nhanh", 20, Muted, 26f);
+            RectTransform row2 = HRow(content, "SocialRow", 64f, 16f);
+            Button google = Btn(row2, "GoogleButton", "Google", Vector2.zero, new Vector2(270, 64), new Color(0.95f, 0.96f, 0.98f), new Color(0.15f, 0.17f, 0.2f));
+            Size(google, 64f, 270f, 1f);
+            Button facebook = Btn(row2, "FacebookButton", "Facebook", Vector2.zero, new Vector2(270, 64), new Color(0.23f, 0.38f, 0.7f), Color.white);
+            Size(facebook, 64f, 270f, 1f);
+            RectTransform row3 = HRow(content, "GuestRow", 64f, 16f);
+            Button guest = Btn(row3, "GuestButton", "Chơi nhanh (Guest)", Vector2.zero, new Vector2(556, 64), new Color(0.26f, 0.56f, 0.62f), Color.white);
+            Size(guest, 64f, 556f, 1f);
+            var toggleRow = Btn(content, "ToggleRegister", "Chưa có tài khoản? Tạo mới", Vector2.zero, new Vector2(560, 62), new Color(0, 0, 0, 0), new Color(0.85f, 0.9f, 1f));
+            Size(toggleRow, 62f); // ghost button: still a full-size touch target (>= 40 px on a 720p phone)
+            Text toggleLabel = toggleRow.GetComponentInChildren<Text>();
+            toggleLabel.fontStyle = FontStyle.Normal;
+            status = BlockLabel(content, "AuthStatus", "", 22, new Color(1f, 0.66f, 0.58f), 56f);
+
+            UnityEventTools.AddPersistentListener(login.onClick, flow.LoginPassword);
+            UnityEventTools.AddPersistentListener(register.onClick, flow.RegisterPassword);
+            UnityEventTools.AddPersistentListener(google.onClick, flow.ContinueWithGoogle);
+            UnityEventTools.AddPersistentListener(facebook.onClick, flow.ContinueWithFacebook);
+            UnityEventTools.AddPersistentListener(guest.onClick, flow.ContinueAsGuest);
+            UnityEventTools.AddPersistentListener(toggleRow.onClick, flow.ToggleRegisterMode);
+            var fso = new SerializedObject(flow);
+            fso.FindProperty("authTitle").objectReferenceValue = title;
+            fso.FindProperty("registerToggleLabel").objectReferenceValue = toggleLabel;
+            fso.FindProperty("loginButton").objectReferenceValue = login;
+            fso.FindProperty("registerButton").objectReferenceValue = register;
+            fso.ApplyModifiedPropertiesWithoutUndo();
+            return root;
+        }
+
+        // ================================================================== selection hall
+        private static Sprite[] ClassFrames(HeroClass c, string clip)
+        {
+            string path = $"Assets/Art/Chibi2D/{c}/{c}_{clip}.png";
+            var list = new System.Collections.Generic.List<Sprite>();
+            foreach (Object o in AssetDatabase.LoadAllAssetsAtPath(path))
+                if (o is Sprite s) list.Add(s);
+            list.Sort((a, b) => string.CompareOrdinal(a.name.PadLeft(40, '0'), b.name.PadLeft(40, '0')));
+            // natural order by trailing index (Swordsman_Idle_2 before _10)
+            list.Sort((a, b) => FrameIndex(a.name).CompareTo(FrameIndex(b.name)));
+            return list.ToArray();
+        }
+
+        private static int FrameIndex(string n)
+        {
+            int u = n.LastIndexOf('_');
+            return u >= 0 && int.TryParse(n.Substring(u + 1), out int i) ? i : 0;
+        }
+
+        private static GameObject BuildSelection(Transform canvas, AdventureEntryFlow flow,
+            out HeroSelectionPreview2D preview, out Text heroName, out Text heroDesc, out Text heroStats, out InputField charName,
+            out Text[] slots, out Text existing, out Text status)
+        {
+            GameObject root = new GameObject("SelectionRoot", typeof(RectTransform));
+            root.transform.SetParent(canvas, false);
+            Stretch((RectTransform)root.transform);
+
+            // 2D hero: the class's pixel idle strip as a UI Image, centred between the panels (tap = turn around)
+            var heroImg = new GameObject("HeroPreviewImage", typeof(RectTransform), typeof(Image)).GetComponent<Image>();
+            heroImg.gameObject.layer = 5;
+            heroImg.transform.SetParent(root.transform, false);
+            var hrt = heroImg.rectTransform;
+            hrt.anchorMin = hrt.anchorMax = new Vector2(0.5f, 0.5f);
+            hrt.sizeDelta = new Vector2(576f, 576f);
+            hrt.anchoredPosition = new Vector2(0f, 70f);
+            heroImg.preserveAspect = true;
+            heroImg.raycastTarget = true;
+            var heroFit = heroImg.gameObject.AddComponent<ResponsiveLogoFit>(); // shrinks on narrow screens
+            preview = heroImg.gameObject.AddComponent<HeroSelectionPreview2D>();
+
+            Text hallTitle = Label(root.transform, "HallTitle", "Chọn Anh Hùng", 52, Gold, new Vector2(0.5f, 1f), new Vector2(0, -64), new Vector2(760, 70), FontStyle.Bold);
+            hallTitle.raycastTarget = false;
+            var outline = hallTitle.gameObject.AddComponent<Outline>();
+            outline.effectColor = new Color(0.25f, 0.13f, 0.04f, 0.9f);
+            outline.effectDistance = new Vector2(2f, -2f);
+
+            // Every panel keeps >= 100 units from the screen edges (phone notches / rounded corners) and is laid out
+            // with measured frame content areas + layout groups (no hand-placed text inside ornaments).
+            const float Edge = 100f;
+
+            // ---- class cards (left)
+            GameObject cards = Panel(root.transform, "ClassCards", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(Edge + 175, 95), new Vector2(350, 600), InkSoft, panelSprite);
+            if (!Skin(cards, "hall_panel")) Frame(cards, 3.2f);
+            RectTransform cardList = FramedContent(cards, 0f, topBand: 40f);
+            VStack(cardList, 10f, TextAnchor.MiddleCenter);
+            (string name, string role, HeroClass c, Color tint)[] classes =
+            {
+                ("Kiếm Sĩ", "Cận chiến • Bền bỉ", HeroClass.Swordsman, new Color(1f, 0.55f, 0.35f)),
+                ("Pháp Sư", "Phép thuật • Tầm xa", HeroClass.Mage, new Color(0.7f, 0.5f, 1f)),
+                ("Sát Thủ", "Song đao • Tốc độ", HeroClass.Assassin, new Color(1f, 0.32f, 0.42f)),
+                ("Cung Thủ", "Cung tên • Cơ động", HeroClass.Archer, new Color(0.45f, 0.9f, 0.5f)),
+            };
+            var cardImgs = new Image[4];
+            var slotImgs = new Image[4];
+            for (int i = 0; i < classes.Length; i++)
+            {
+                var (n, role, c, tint) = classes[i];
+                Button b = Btn(cardList, "Card_" + c, "", Vector2.zero, new Vector2(270, 112), new Color(0.13f, 0.17f, 0.26f, 0.95f), Cream);
+                Skin(b.gameObject, "hall_card");
+                cardImgs[(int)c] = b.GetComponent<Image>();
+                Size(b, 112f);
+                var bar = Img(b.transform, "Accent", new Vector2(0f, 0.5f), new Vector2(10, 84), tint, pillSprite);
+                bar.rectTransform.anchoredPosition = new Vector2(26, 0);
+                var nameBox = new GameObject("NameBox", typeof(RectTransform));
+                nameBox.layer = 5;
+                nameBox.transform.SetParent(b.transform, false);
+                var nb = (RectTransform)nameBox.transform;
+                nb.anchorMin = Vector2.zero; nb.anchorMax = Vector2.one;
+                nb.offsetMin = new Vector2(46, 14); nb.offsetMax = new Vector2(-22, -12);
+                VStack(nb, 2f, TextAnchor.MiddleLeft);
+                BlockLabel(nb, "Name", n, 32, Cream, 44f, FontStyle.Bold, TextAnchor.MiddleLeft);
+                BlockLabel(nb, "Role", role, 19, tint, 26f, FontStyle.Normal, TextAnchor.MiddleLeft);
+                switch (c)
+                {
+                    case HeroClass.Swordsman: UnityEventTools.AddPersistentListener(b.onClick, flow.SelectSwordsman); break;
+                    case HeroClass.Mage: UnityEventTools.AddPersistentListener(b.onClick, flow.SelectMage); break;
+                    case HeroClass.Assassin: UnityEventTools.AddPersistentListener(b.onClick, flow.SelectAssassin); break;
+                    default: UnityEventTools.AddPersistentListener(b.onClick, flow.SelectArcher); break;
+                }
+            }
+
+            // ---- class details + preview actions (right)
+            GameObject info = Panel(root.transform, "ClassInfo", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-(Edge + 225), 95), new Vector2(450, 600), InkSoft, panelSprite);
+            if (!Skin(info, "hall_panel")) Frame(info, 3.0f);
+            RectTransform infoC = FramedContent(info, 0f, topBand: 40f);
+            VStack(infoC, 6f, TextAnchor.UpperCenter);
+            heroName = BlockLabel(infoC, "HeroName", "", 40, Gold, 52f, FontStyle.Bold);
+            heroDesc = BlockLabel(infoC, "HeroDescription", "", 22, Cream, 96f, FontStyle.Normal, TextAnchor.UpperCenter);
+            heroStats = BlockLabel(infoC, "HeroStats", "", 19, Muted, 28f);
+            var bars = info.AddComponent<HeroStatBars>();
+            var bso = new SerializedObject(bars);
+            var fills = bso.FindProperty("fills");
+            string[] statNames = { "Máu", "Sát thương/giây", "Phòng thủ", "Tầm đánh" };
+            fills.arraySize = statNames.Length;
+            for (int i = 0; i < statNames.Length; i++)
+            {
+                RectTransform row = HRow(infoC, "StatRow" + i, 34f, 10f, TextAnchor.MiddleLeft);
+                Text sl = BlockLabel(row, "StatLabel" + i, statNames[i], 19, Muted, 34f, FontStyle.Normal, TextAnchor.MiddleLeft);
+                Size(sl, 34f, 150f, 0f, 150f);
+                var track = new GameObject("StatTrack" + i, typeof(RectTransform));
+                track.layer = 5;
+                track.transform.SetParent(row, false);
+                Size(track.transform, 34f, 200f, 1f, 160f);
+                if (FrameArt.Get("bar_track"))
+                {
+                    var fr = Img(track.transform, "StatFrame" + i, new Vector2(0.5f, 0.5f), Vector2.zero, Color.white, FrameArt.Get("bar_track"));
+                    fr.rectTransform.anchorMin = new Vector2(0f, 0.5f); fr.rectTransform.anchorMax = new Vector2(1f, 0.5f);
+                    fr.rectTransform.offsetMin = new Vector2(10f, -11f); fr.rectTransform.offsetMax = new Vector2(-10f, 11f);
+                }
+                else if (frameBar)
+                {
+                    // gilded bar frame (Meshy art) around the groove; the fill grows inside it
+                    var fr = Img(track.transform, "StatFrame" + i, new Vector2(0.5f, 0.5f), Vector2.zero, Color.white, frameBar);
+                    fr.rectTransform.anchorMin = Vector2.zero; fr.rectTransform.anchorMax = Vector2.one;
+                    fr.rectTransform.offsetMin = fr.rectTransform.offsetMax = Vector2.zero;
+                    fr.pixelsPerUnitMultiplier = 4.5f;
+                }
+                var groove = Img(track.transform, "StatBack" + i, new Vector2(0.5f, 0.5f), Vector2.zero, new Color(1, 1, 1, 0.06f), pillSprite);
+                groove.rectTransform.anchorMin = new Vector2(0f, 0.5f); groove.rectTransform.anchorMax = new Vector2(1f, 0.5f);
+                groove.rectTransform.offsetMin = new Vector2(18f, -6f); groove.rectTransform.offsetMax = new Vector2(-18f, 6f);
+                var fill = Img(groove.transform, "StatFill" + i, new Vector2(0f, 0.5f), new Vector2(150, 12), Gold, pillSprite);
+                fill.rectTransform.pivot = new Vector2(0f, 0.5f);
+                fill.rectTransform.anchoredPosition = Vector2.zero;
+                fills.GetArrayElementAtIndex(i).objectReferenceValue = fill.rectTransform;
+            }
+            bso.FindProperty("preview").objectReferenceValue = preview;
+            bso.ApplyModifiedPropertiesWithoutUndo();
+            BlockLabel(infoC, "DragHint", "Chạm nhân vật để quay mặt", 18, Muted, 26f).raycastTarget = false;
+            RectTransform actions = HRow(infoC, "PreviewActions", 62f, 8f);
+            Button atk = Btn(actions, "TryAttack", "Đòn đánh", Vector2.zero, new Vector2(120, 62), new Color(0.2f, 0.26f, 0.38f, 0.95f), Cream);
+            Size(atk, 62f, 120f, 1f);
+            Button skl = Btn(actions, "TrySkill", "Kỹ năng", Vector2.zero, new Vector2(120, 62), new Color(0.48f, 0.3f, 0.7f, 0.95f), Cream);
+            Size(skl, 62f, 120f, 1f);
+            Button rst = Btn(actions, "ResetView", "Quay lại", Vector2.zero, new Vector2(120, 62), new Color(0.2f, 0.26f, 0.38f, 0.95f), Muted);
+            Size(rst, 62f, 120f, 1f);
+            UnityEventTools.AddPersistentListener(atk.onClick, preview.PlayAttackPreview);
+            UnityEventTools.AddPersistentListener(skl.onClick, preview.PlaySkillPreview);
+            UnityEventTools.AddPersistentListener(rst.onClick, preview.ResetFacing);
+
+            // ---- slots + naming (bottom bar, stretched between the safe margins)
+            GameObject bottom = Panel(root.transform, "SlotBar", new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, Vector2.zero, Ink, panelSprite);
+            var br = (RectTransform)bottom.transform;
+            br.pivot = new Vector2(0.5f, 0f);
+            br.offsetMin = new Vector2(Edge, 24f);
+            br.offsetMax = new Vector2(-Edge, 24f + 232f);
+            if (!Skin(bottom, "hall_panel")) Frame(bottom, 3.4f);
+            RectTransform barC = FramedContent(bottom, 0f, topBand: 40f);
+            VStack(barC, 8f, TextAnchor.MiddleCenter);
+            existing = BlockLabel(barC, "ExistingDetails", "", 20, Muted, 28f);
+            RectTransform slotRow = HRow(barC, "SlotRow", 84f, 12f);
+            slots = new Text[4];
+            for (int i = 0; i < 4; i++)
+            {
+                Button s = Btn(slotRow, "Slot" + i, "", Vector2.zero, new Vector2(190, 84), new Color(0.13f, 0.17f, 0.26f, 1f), Cream);
+                Skin(s.gameObject, "hall_card");
+                slotImgs[i] = s.GetComponent<Image>();
+                Size(s, 84f, 180f, 1f, 120f);
+                slots[i] = FillLabel(s.transform, "Label", "Ô " + (i + 1), 20, Cream, FontStyle.Normal, 16f, 6f, 14);
+                switch (i)
+                {
+                    case 0: UnityEventTools.AddPersistentListener(s.onClick, flow.SelectSlot0); break;
+                    case 1: UnityEventTools.AddPersistentListener(s.onClick, flow.SelectSlot1); break;
+                    case 2: UnityEventTools.AddPersistentListener(s.onClick, flow.SelectSlot2); break;
+                    default: UnityEventTools.AddPersistentListener(s.onClick, flow.SelectSlot3); break;
+                }
+            }
+            charName = Field(slotRow, "CharacterNameInput", "Tên nhân vật (3–12 ký tự)", Vector2.zero, false, new Vector2(340, 72), new Vector2(0.5f, 0.5f));
+            Size(charName, 72f, 400f, 1.6f, 320f);
+            Button create = Btn(slotRow, "CreateAndEnter", "Tạo & vào game", Vector2.zero, new Vector2(220, 72), Gold, new Color(0.15f, 0.1f, 0.05f));
+            Size(create, 72f, 220f, 0.4f, 170f);
+            Button enter = Btn(slotRow, "EnterGame", "Vào game", Vector2.zero, new Vector2(170, 72), new Color(0.3f, 0.6f, 0.4f), Color.white);
+            Size(enter, 72f, 170f, 0.3f, 130f);
+            status = Label(root.transform, "SelectionStatus", "", 22, new Color(1f, 0.66f, 0.58f), new Vector2(0.5f, 0f), new Vector2(0, 24f + 232f + 26f), new Vector2(1100, 40));
+            status.resizeTextForBestFit = true; status.resizeTextMinSize = 16; status.resizeTextMaxSize = 22;
+            status.verticalOverflow = VerticalWrapMode.Truncate;
+            UnityEventTools.AddPersistentListener(create.onClick, flow.CreateCharacterAndEnter);
+            UnityEventTools.AddPersistentListener(enter.onClick, flow.EnterSelectedCharacter);
+            Button back = Btn(root.transform, "BackToLogin", "Đăng xuất", new Vector2(-(Edge + 100), -70), new Vector2(200, 64), new Color(0.2f, 0.26f, 0.38f, 0.9f), Muted, new Vector2(1f, 1f));
+            UnityEventTools.AddPersistentListener(back.onClick, flow.BackToAuthentication);
+
+            // Selection highlight (gold-rimmed "on" card for the chosen class and slot).
+            var hso = new SerializedObject(flow);
+            void Arr(string prop, Image[] imgs)
+            {
+                var a = hso.FindProperty(prop);
+                a.arraySize = imgs.Length;
+                for (int i = 0; i < imgs.Length; i++) a.GetArrayElementAtIndex(i).objectReferenceValue = imgs[i];
+            }
+            Arr("classCards", cardImgs);
+            Arr("slotCards", slotImgs);
+            hso.FindProperty("cardSprite").objectReferenceValue = FrameArt.Get("hall_card");
+            hso.FindProperty("cardOnSprite").objectReferenceValue = FrameArt.Get("hall_card_on");
+            hso.ApplyModifiedPropertiesWithoutUndo();
+
+            // Wire the preview component.
+            var pso = new SerializedObject(preview);
+            pso.FindProperty("target").objectReferenceValue = heroImg;
+            pso.FindProperty("previewMessage").objectReferenceValue = status;
+            var entries = pso.FindProperty("classes");
+            entries.arraySize = 4;
+            int k = 0;
+            foreach (HeroClass c in System.Enum.GetValues(typeof(HeroClass)))
+            {
+                var e = entries.GetArrayElementAtIndex(k++);
+                e.FindPropertyRelative("heroClass").enumValueIndex = (int)c;
+                void Frames(string prop, string clip)
+                {
+                    Sprite[] fr = ClassFrames(c, clip);
+                    var arr = e.FindPropertyRelative(prop);
+                    arr.arraySize = fr.Length;
+                    for (int i = 0; i < fr.Length; i++) arr.GetArrayElementAtIndex(i).objectReferenceValue = fr[i];
+                }
+                Frames("idle", "Idle"); Frames("attack", "Attack"); Frames("skill", "Skill");
+            }
+            pso.ApplyModifiedPropertiesWithoutUndo();
+            return root;
+        }
+
+        // ================================================================== UI helpers
+        internal static Sprite RoundedSprite(string name, int size, int radius)
+        {
+            Directory.CreateDirectory(UiDir);
+            string path = $"{UiDir}/{name}.png";
+            var t = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = Mathf.Max(0, Mathf.Max(radius - x - 0.5f, x + 0.5f - (size - radius)));
+                    float dy = Mathf.Max(0, Mathf.Max(radius - y - 0.5f, y + 0.5f - (size - radius)));
+                    float d = Mathf.Sqrt(dx * dx + dy * dy);
+                    float a = Mathf.Clamp01(radius - d + 0.5f);
+                    if (name == "ui_glow") a = Mathf.Clamp01(1f - d / radius) * Mathf.Clamp01(1f - d / radius);
+                    t.SetPixel(x, y, new Color(1, 1, 1, a));
+                }
+            t.Apply();
+            File.WriteAllBytes(path, t.EncodeToPNG());
+            Object.DestroyImmediate(t);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            var ti = (TextureImporter)AssetImporter.GetAtPath(path);
+            ti.textureType = TextureImporterType.Sprite;
+            ti.spriteBorder = new Vector4(radius, radius, radius, radius);
+            ti.alphaIsTransparency = true;
+            ti.mipmapEnabled = false;
+            ti.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
+
+        private static void Stretch(RectTransform r)
+        {
+            r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one; r.offsetMin = r.offsetMax = Vector2.zero;
+        }
+
+        internal static GameObject Panel(Transform parent, string name, Vector2 aMin, Vector2 aMax, Vector2 pos, Vector2 size, Color c, Sprite s)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.layer = 5;
+            go.transform.SetParent(parent, false);
+            var r = (RectTransform)go.transform;
+            r.anchorMin = aMin; r.anchorMax = aMax;
+            if (aMin == Vector2.zero && aMax == Vector2.one) Stretch(r);
+            else { r.anchoredPosition = pos; r.sizeDelta = size; }
+            var img = go.AddComponent<Image>();
+            img.color = c;
+            img.sprite = s;
+            img.type = s ? Image.Type.Sliced : Image.Type.Simple;
+            return go;
+        }
+
+        internal static Image Img(Transform parent, string name, Vector2 anchor, Vector2 size, Color c, Sprite s)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.layer = 5;
+            go.transform.SetParent(parent, false);
+            var r = (RectTransform)go.transform;
+            r.anchorMin = r.anchorMax = anchor;
+            r.sizeDelta = size;
+            var img = go.AddComponent<Image>();
+            img.color = c;
+            img.sprite = s;
+            img.type = s ? Image.Type.Sliced : Image.Type.Simple;
+            img.raycastTarget = false;
+            return img;
+        }
+
+        internal static Text Label(Transform parent, string name, string text, int size, Color c, Vector2 anchor, Vector2 pos, Vector2 box, FontStyle style = FontStyle.Normal)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.layer = 5;
+            go.transform.SetParent(parent, false);
+            var r = (RectTransform)go.transform;
+            r.anchorMin = r.anchorMax = anchor;
+            r.anchoredPosition = pos;
+            r.sizeDelta = box;
+            var t = go.AddComponent<Text>();
+            bool bold = style == FontStyle.Bold && boldFont && boldFont != font;
+            t.font = bold ? boldFont : font; t.text = text; t.fontSize = size; t.color = c;
+            t.fontStyle = bold ? FontStyle.Normal : style;
+            t.alignment = TextAnchor.MiddleCenter;
+            t.horizontalOverflow = HorizontalWrapMode.Wrap;
+            t.verticalOverflow = VerticalWrapMode.Overflow;
+            var sh = go.AddComponent<Shadow>();
+            sh.effectColor = new Color(0, 0, 0, 0.55f);
+            sh.effectDistance = new Vector2(1.5f, -1.5f);
+            return t;
+        }
+
+        internal static Button Btn(Transform parent, string name, string label, Vector2 pos, Vector2 size, Color bg, Color fg, Vector2? anchor = null)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.layer = 5;
+            go.transform.SetParent(parent, false);
+            var r = (RectTransform)go.transform;
+            Vector2 a = anchor ?? new Vector2(0.5f, 0.5f);
+            if (parent.GetComponent<Image>() && anchor == null)
+            {
+                // children of a panel are laid out from its top centre (cards, forms)
+                a = new Vector2(0.5f, parent.name == "AuthCard" ? 1f : 0.5f);
+            }
+            r.anchorMin = r.anchorMax = a;
+            r.anchoredPosition = pos;
+            r.sizeDelta = size;
+            var img = go.AddComponent<Image>();
+            img.sprite = enamelSprite ? enamelSprite : pillSprite;
+            img.type = Image.Type.Sliced;
+            img.color = bg;
+            var b = go.AddComponent<Button>();
+            var cb = b.colors;
+            cb.highlightedColor = new Color(1.15f, 1.15f, 1.15f, 1f);
+            cb.pressedColor = new Color(0.78f, 0.78f, 0.78f, 1f);
+            cb.selectedColor = new Color(1.08f, 1.08f, 1.08f, 1f);
+            cb.fadeDuration = 0.08f;
+            b.colors = cb;
+            // purpose-made gem skin chosen from the role colour the caller passes (no shared gold rim on everything)
+            if (!Skin(go, SkinFor(bg)) && bg.a > 0.05f) Rim(go.transform);
+            if (!string.IsNullOrEmpty(label))
+            {
+                // inset from the gilded rim; shrinks to fit (Vietnamese diacritics included) instead of spilling
+                int max = size.y > 60 ? 26 : 22;
+                Text t = FillLabel(go.transform, "Text", label, max, fg, FontStyle.Bold, Mathf.Clamp(size.y * 0.24f, 10f, 20f), 4f, 15);
+                t.raycastTarget = false;
+                t.gameObject.AddComponent<FitOneLine>().Configure(max, 14); // one line, shrinks to fit
+                var tsh = t.GetComponent<Shadow>();
+                if (tsh && fg.grayscale < 0.4f) { tsh.effectColor = new Color(1f, 0.97f, 0.85f, 0.35f); tsh.effectDistance = new Vector2(0f, -1.2f); } // embossed dark text on light gems
+            }
+            return b;
+        }
+
+        /// <summary>Gem skin for a role colour: gold = primary, green = confirm, red = danger, white/blue = Google/Facebook...</summary>
+        internal static string SkinFor(Color bg) => UiKit.SkinFor(bg);
+
+        private static InputField Field(Transform parent, string name, string placeholder, Vector2 pos, bool password,
+            Vector2? size = null, Vector2? anchor = null)
+        {
+            Vector2 sz = size ?? new Vector2(540, 64);
+            var go = new GameObject(name, typeof(RectTransform));
+            go.layer = 5;
+            go.transform.SetParent(parent, false);
+            var r = (RectTransform)go.transform;
+            r.anchorMin = r.anchorMax = anchor ?? new Vector2(0.5f, 1f);
+            r.anchoredPosition = pos;
+            r.sizeDelta = sz;
+            var img = go.AddComponent<Image>();
+            img.sprite = enamelSprite ? enamelSprite : pillSprite; img.type = Image.Type.Sliced; img.color = new Color(0.05f, 0.06f, 0.11f, 0.82f);
+            if (!Skin(go, "field")) Rim(go.transform, 0.85f);
+            // text sits clear of the rounded gilded rim (inset ~ half the height), large and upright for readability
+            float inset = Mathf.Clamp(sz.y * 0.6f, 30f, 48f);
+            int fontSize = Mathf.RoundToInt(Mathf.Clamp(sz.y * 0.38f, 22f, 30f));
+            var text = FillLabel(go.transform, "Text", "", fontSize, Cream, FontStyle.Normal, inset, 6f, 18);
+            text.alignment = TextAnchor.MiddleLeft;
+            text.supportRichText = false;
+            text.resizeTextForBestFit = false;
+            text.horizontalOverflow = HorizontalWrapMode.Overflow; // InputField scrolls long input itself
+            text.verticalOverflow = VerticalWrapMode.Overflow;
+            Object.DestroyImmediate(text.GetComponent<Shadow>());
+            var ph = FillLabel(go.transform, "Placeholder", placeholder, fontSize - 2, new Color(0.78f, 0.82f, 0.9f, 0.72f), FontStyle.Normal, inset, 6f, 16);
+            ph.alignment = TextAnchor.MiddleLeft;
+            Object.DestroyImmediate(ph.GetComponent<Shadow>());
+            var f = go.AddComponent<InputField>();
+            f.textComponent = text;
+            f.placeholder = ph;
+            f.characterLimit = password ? 64 : 48;
+            if (password) { f.contentType = InputField.ContentType.Password; f.asteriskChar = '•'; }
+            return f;
+        }
+    }
+}

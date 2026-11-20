@@ -1,0 +1,1933 @@
+{
+  "_note": "Server-owned cosmetic catalog. Prices are PROPOSALS pending owner approval (DRAFT); change them here, never in code. Entries with art '2d' (sets per class, hats, masks, tops, bottoms, wings, mounts) come from Tools/costume/costume_data.py via make_costumes.py; their images are assigned by the owner in the Fashion Database asset. A set is worn as separate pieces (id '<setId>.<slot>'). Old 3D entries stay (owned items keep working). Classes: 0 Kiếm Sĩ, 1 Pháp Sư, 2 Sát Thủ, 3 Cung Thủ. skill = passive effect numbers the farm combat reads.",
+  "version": 4,
+  "items": [
+    {
+      "id": "wed_pearl_crown",
+      "rarity": "epic",
+      "name": "Vương Miện Ngọc Trai Cưới",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": false,
+      "description": "Quà cưới: vòng hoa ngọc trai và vàng, chỉ trao cho đôi uyên ương sau lễ cưới. Không bán."
+    },
+    {
+      "id": "wed_satin_gloves",
+      "rarity": "epic",
+      "name": "Găng Lụa Cưới",
+      "slot": "gloves",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": false,
+      "description": "Quà cưới: găng lụa trắng viền vàng. Không bán."
+    },
+    {
+      "id": "wed_white_cape",
+      "rarity": "epic",
+      "name": "Áo Choàng Lễ Cưới",
+      "slot": "back",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": false,
+      "description": "Quà cưới: áo choàng trắng ngọc thêu chỉ vàng. Không bán."
+    },
+    {
+      "id": "head_lotus_crown",
+      "rarity": "rare",
+      "name": "Vòng Hoa Sen",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1200,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Vòng hoa sen hồng kết lá non, đội vừa vặn quanh đầu (hoặc vành mũ)."
+    },
+    {
+      "id": "head_bell_circlet",
+      "rarity": "rare",
+      "name": "Vòng Đầu Chuông Gió",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1800,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Vòng đồng chạm hoa văn mây, treo chiếc chuông gió nhỏ bên thái dương."
+    },
+    {
+      "id": "top_brocade_vest",
+      "rarity": "rare",
+      "name": "Áo Gấm Hoa Văn Mây",
+      "slot": "top",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1500,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Lớp áo gấm thêu mây cuộn, viền cổ và gấu áo dát chỉ vàng."
+    },
+    {
+      "id": "bottom_pleat_skirt",
+      "rarity": "common",
+      "name": "Váy Gió Xếp Ly",
+      "slot": "bottom",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1300,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Váy xếp ly hai lớp, gấu thêu sóng, tung bay theo bước chạy."
+    },
+    {
+      "id": "gloves_jade_silk",
+      "rarity": "common",
+      "name": "Găng Lụa Ngọc",
+      "slot": "gloves",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 700,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Găng lụa xanh ngọc, cổ găng loe viền bạc."
+    },
+    {
+      "id": "shoes_cloud_boots",
+      "rarity": "common",
+      "name": "Giày Mây Trắng",
+      "slot": "shoes",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 900,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Ủng vải trắng mềm, cổ ủng bẻ gập viền xanh trời."
+    },
+    {
+      "id": "shoes_ember_boots",
+      "rarity": "common",
+      "name": "Ủng Than Hồng",
+      "slot": "shoes",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1100,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Ủng da đỏ than, mũi và cổ ủng bọc đồng."
+    },
+    {
+      "id": "acc_silver_bell",
+      "rarity": "common",
+      "name": "Chuông Bạc Đeo Hông",
+      "slot": "accessory",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 600,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Chuông bạc nhỏ kèm tua đỏ, đung đưa bên hông khi di chuyển."
+    },
+    {
+      "id": "back_wind_cape",
+      "rarity": "epic",
+      "name": "Áo Choàng Gió",
+      "slot": "back",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 2000,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Áo choàng ngắn lót đỏ, bay theo quán tính khi chạy và nhảy."
+    },
+    {
+      "id": "back_dragonfly_wings",
+      "rarity": "epic",
+      "name": "Cánh Chuồn Chuồn",
+      "slot": "back",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 2500,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Đôi cánh mỏng óng ánh, khẽ đập khi đứng và vỗ nhanh khi nhảy."
+    },
+    {
+      "id": "set_crystal_zephyr",
+      "rarity": "legendary",
+      "name": "Thiên Phong Pha Lê",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 300,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Skin nguyên bộ: cánh pha lê phát sáng, vương miện gió, áo choàng sao và hào quang lấp lánh. Chỉ thay đổi ngoại hình, không tăng chỉ số.",
+      "pieces": [
+        "set_crystal_zephyr.wings",
+        "set_crystal_zephyr.crown",
+        "set_crystal_zephyr.mantle",
+        "set_crystal_zephyr.aura"
+      ]
+    },
+    {
+      "id": "head_duck_buddy",
+      "rarity": "rare",
+      "name": "Vịt Con Đội Đầu",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1600,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Chú vịt con vàng ươm ngồi chễm chệ trên đỉnh đầu (kể cả trên chóp mũ)."
+    },
+    {
+      "id": "head_frog_eyes",
+      "rarity": "rare",
+      "name": "Bờm Ếch Mắt Lồi",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1400,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Bờm xanh lá với hai con mắt ếch to tròn ngó nghiêng."
+    },
+    {
+      "id": "head_bunny_ears",
+      "rarity": "common",
+      "name": "Bờm Tai Thỏ",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1200,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Hai tai thỏ trắng lòng hồng, nhún nhảy theo từng bước chạy."
+    },
+    {
+      "id": "head_cat_ears",
+      "rarity": "common",
+      "name": "Bờm Tai Mèo Cam",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1000,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Tai mèo cam lông xù kèm chiếc chuông vàng nhỏ trước trán."
+    },
+    {
+      "id": "head_panda_ears",
+      "rarity": "common",
+      "name": "Bờm Tai Gấu Trúc",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1200,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Tai gấu trúc tròn đen, giắt thêm nhánh trúc non bên thái dương."
+    },
+    {
+      "id": "head_mushroom_cap",
+      "rarity": "rare",
+      "name": "Nấm Đỏ Chấm Bi",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1500,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Cây nấm đỏ chấm bi trắng mọc ngay trên đầu — đi đâu cũng có bóng râm."
+    },
+    {
+      "id": "head_chef_toque",
+      "rarity": "common",
+      "name": "Mũ Đầu Bếp",
+      "slot": "head",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 1300,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Mũ đầu bếp trắng phồng xếp nếp, chuẩn bị cho bữa tiệc lễ hội."
+    },
+    {
+      "id": "set_little_dino",
+      "rarity": "legendary",
+      "name": "Khủng Long Con",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 240,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Skin nguyên bộ: gai cam trên đầu, áo vảy xanh bụng vàng và chiếc đuôi gai biết vẫy. Chỉ thay đổi ngoại hình, không tăng chỉ số.",
+      "pieces": [
+        "set_little_dino.crest",
+        "set_little_dino.top",
+        "set_little_dino.tail"
+      ]
+    },
+    {
+      "id": "set_baby_shark",
+      "rarity": "legendary",
+      "name": "Cá Mập Nhỏ",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 240,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Skin nguyên bộ: vây lưng trên đầu kèm hàm răng tí hon, áo xám bụng trắng có mang và đuôi cá mập chẻ đôi. Chỉ thay đổi ngoại hình.",
+      "pieces": [
+        "set_baby_shark.fin",
+        "set_baby_shark.top",
+        "set_baby_shark.tail"
+      ]
+    },
+    {
+      "id": "set_sweet_dream",
+      "rarity": "epic",
+      "name": "Giấc Mơ Ngọt Ngào",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 180,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "description": "Skin nguyên bộ đồ ngủ: mũ ngủ sọc xanh rủ quả bông, áo flannel in sao vàng. Chỉ thay đổi ngoại hình.",
+      "pieces": [
+        "set_sweet_dream.cap",
+        "set_sweet_dream.top"
+      ]
+    },
+    {
+      "id": "set2d_swordsman_crimson",
+      "name": "Hồng Kỵ Sĩ Cận Vệ",
+      "description": "Bộ trang phục 2D: Hồng Kỵ Sĩ Cận Vệ (top, bottom). Nội tại: giảm 6% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 50,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Ý Chí Thép",
+        "description": "Nội tại: giảm 6% sát thương nhận.",
+        "reducePct": 6
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_azure",
+      "name": "Thanh Long Kiếm Khách",
+      "description": "Bộ trang phục 2D: Thanh Long Kiếm Khách (top, bottom). Nội tại: +6% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 100,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Long Ngâm",
+        "description": "Nội tại: +6% sát thương.",
+        "damagePct": 6
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_aurum",
+      "name": "Hoàng Kim Thánh Kiếm",
+      "description": "Bộ trang phục 2D: Hoàng Kim Thánh Kiếm (top, bottom). Nội tại: +8% sát thương, giảm 4% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 200,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Thánh Quang",
+        "description": "Nội tại: +8% sát thương, giảm 4% sát thương nhận.",
+        "damagePct": 8,
+        "reducePct": 4
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_ronin",
+      "name": "Lãng Nhân Đêm",
+      "description": "Bộ trang phục 2D: Lãng Nhân Đêm (top, bottom). Nội tại: +8% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 150,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Nhất Đao",
+        "description": "Nội tại: +8% chí mạng.",
+        "critPct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_verdant",
+      "name": "Lục Lâm Hiệp Sĩ",
+      "description": "Bộ trang phục 2D: Lục Lâm Hiệp Sĩ (top, bottom). Nội tại: giảm 7% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 80,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Rừng Che Chở",
+        "description": "Nội tại: giảm 7% sát thương nhận.",
+        "reducePct": 7
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_frost",
+      "name": "Băng Thiết Giáp",
+      "description": "Bộ trang phục 2D: Băng Thiết Giáp (top, bottom). Nội tại: giảm 10% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 250,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Băng Giáp",
+        "description": "Nội tại: giảm 10% sát thương nhận.",
+        "reducePct": 10
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_ember",
+      "name": "Hỏa Diệm Chiến Thần",
+      "description": "Bộ trang phục 2D: Hỏa Diệm Chiến Thần (top, bottom). Nội tại: +11% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 300,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Liệt Hỏa",
+        "description": "Nội tại: +11% sát thương.",
+        "damagePct": 11
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_shadow",
+      "name": "Hắc Ám Vương",
+      "description": "Bộ trang phục 2D: Hắc Ám Vương (top, bottom). Nội tại: +9% sát thương, +6% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 400,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Vương Uy",
+        "description": "Nội tại: +9% sát thương, +6% chí mạng.",
+        "damagePct": 9,
+        "critPct": 6
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_jade",
+      "name": "Ngọc Bích Tướng Quân",
+      "description": "Bộ trang phục 2D: Ngọc Bích Tướng Quân (top, bottom). Nội tại: +10% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 120,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Phong Tốc",
+        "description": "Nội tại: +10% tốc chạy.",
+        "moveSpeedPct": 10
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_sun",
+      "name": "Thái Dương Thiên Tướng",
+      "description": "Bộ trang phục 2D: Thái Dương Thiên Tướng (top, bottom). Nội tại: +10% sát thương, +6% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 500,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Nhật Quang",
+        "description": "Nội tại: +10% sát thương, +6% tốc chạy.",
+        "damagePct": 10,
+        "moveSpeedPct": 6
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_violet",
+      "name": "Tím Mộng Pháp Sư",
+      "description": "Bộ trang phục 2D: Tím Mộng Pháp Sư (top, bottom). Nội tại: +5% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 50,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Ma Lực Tuôn",
+        "description": "Nội tại: +5% sát thương.",
+        "damagePct": 5
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_ember",
+      "name": "Hỏa Ma Điện",
+      "description": "Bộ trang phục 2D: Hỏa Ma Điện (top, bottom). Nội tại: +10% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 200,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Hỏa Ma",
+        "description": "Nội tại: +10% sát thương.",
+        "damagePct": 10
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_frost",
+      "name": "Băng Sương Nữ Hoàng",
+      "description": "Bộ trang phục 2D: Băng Sương Nữ Hoàng (top, bottom). Nội tại: +6% sát thương, giảm 4% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 250,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Sương Giá",
+        "description": "Nội tại: +6% sát thương, giảm 4% sát thương nhận.",
+        "damagePct": 6,
+        "reducePct": 4
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_sakura",
+      "name": "Anh Đào Phù Thủy",
+      "description": "Bộ trang phục 2D: Anh Đào Phù Thủy (top, bottom). Nội tại: +9% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 120,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Hoa Rơi",
+        "description": "Nội tại: +9% tốc chạy.",
+        "moveSpeedPct": 9
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_night",
+      "name": "Dạ Nguyệt Tiên Tri",
+      "description": "Bộ trang phục 2D: Dạ Nguyệt Tiên Tri (top, bottom). Nội tại: +8% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 150,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Nguyệt Nhãn",
+        "description": "Nội tại: +8% chí mạng.",
+        "critPct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_verdant",
+      "name": "Lục Diệp Hiền Giả",
+      "description": "Bộ trang phục 2D: Lục Diệp Hiền Giả (top, bottom). Nội tại: giảm 7% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 80,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Mộc Hộ",
+        "description": "Nội tại: giảm 7% sát thương nhận.",
+        "reducePct": 7
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_aurum",
+      "name": "Kim Quang Đại Pháp",
+      "description": "Bộ trang phục 2D: Kim Quang Đại Pháp (top, bottom). Nội tại: +9% sát thương, +6% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 400,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Kim Quang",
+        "description": "Nội tại: +9% sát thương, +6% chí mạng.",
+        "damagePct": 9,
+        "critPct": 6
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_abyss",
+      "name": "Hư Không Huyền Thuật",
+      "description": "Bộ trang phục 2D: Hư Không Huyền Thuật (top, bottom). Nội tại: +12% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 500,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Hư Không",
+        "description": "Nội tại: +12% chí mạng.",
+        "critPct": 12
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_ocean",
+      "name": "Hải Triều Pháp Sư",
+      "description": "Bộ trang phục 2D: Hải Triều Pháp Sư (top, bottom). Nội tại: giảm 8% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 100,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Triều Dâng",
+        "description": "Nội tại: giảm 8% sát thương nhận.",
+        "reducePct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_crimson",
+      "name": "Huyết Ma Nữ Hoàng",
+      "description": "Bộ trang phục 2D: Huyết Ma Nữ Hoàng (top, bottom). Nội tại: +11% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 300,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Huyết Chú",
+        "description": "Nội tại: +11% sát thương.",
+        "damagePct": 11
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_void",
+      "name": "Bóng Đêm Hư Vô",
+      "description": "Bộ trang phục 2D: Bóng Đêm Hư Vô (top, bottom). Nội tại: di chuyển nhanh hơn như một bóng đêm.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 150,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Lướt Bóng",
+        "description": "Nội tại: di chuyển nhanh hơn như một bóng đêm.",
+        "moveSpeedPct": 10
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_blood",
+      "name": "Huyết Nguyệt",
+      "description": "Bộ trang phục 2D: Huyết Nguyệt (top, bottom). Nội tại: đòn đánh gây thêm 8% sát thương, như trăng máu thôi thúc.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 200,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Khát Máu",
+        "description": "Nội tại: đòn đánh gây thêm 8% sát thương, như trăng máu thôi thúc.",
+        "damagePct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_viper",
+      "name": "Độc Xà Tím",
+      "description": "Bộ trang phục 2D: Độc Xà Tím (top, bottom). Nội tại: đòn đánh tẩm độc, gây thêm 6% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 80,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Độc Tố",
+        "description": "Nội tại: đòn đánh tẩm độc, gây thêm 6% sát thương.",
+        "damagePct": 6
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_frost",
+      "name": "Tuyết Ảnh",
+      "description": "Bộ trang phục 2D: Tuyết Ảnh (top, bottom). Nội tại: chân nhẹ như tuyết (+8% tốc chạy) và giảm 3% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 100,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Băng Bước",
+        "description": "Nội tại: chân nhẹ như tuyết (+8% tốc chạy) và giảm 3% sát thương nhận.",
+        "moveSpeedPct": 8,
+        "reducePct": 3
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_aurum",
+      "name": "Hoàng Kim Ám Vệ",
+      "description": "Bộ trang phục 2D: Hoàng Kim Ám Vệ (top, bottom). Nội tại: +8% tỉ lệ chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 250,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Chí Mạng Vàng",
+        "description": "Nội tại: +8% tỉ lệ chí mạng.",
+        "critPct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_ghost",
+      "name": "Hắc Phong Quỷ",
+      "description": "Bộ trang phục 2D: Hắc Phong Quỷ (top, bottom). Nội tại: ra đòn từ bóng tối, +10% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 400,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Tàng Hình Chớp",
+        "description": "Nội tại: ra đòn từ bóng tối, +10% chí mạng.",
+        "critPct": 10
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_tide",
+      "name": "Lam Thủy Ảnh",
+      "description": "Bộ trang phục 2D: Lam Thủy Ảnh (top, bottom). Nội tại: bóng nước làm giảm 8% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 50,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Thủy Ảnh",
+        "description": "Nội tại: bóng nước làm giảm 8% sát thương nhận.",
+        "reducePct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_ember",
+      "name": "Lửa Ma Trơi",
+      "description": "Bộ trang phục 2D: Lửa Ma Trơi (top, bottom). Nội tại: lửa ma trơi tăng 10% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 300,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Hỏa Ảnh",
+        "description": "Nội tại: lửa ma trơi tăng 10% sát thương.",
+        "damagePct": 10
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_sakura",
+      "name": "Sương Mai Ninja",
+      "description": "Bộ trang phục 2D: Sương Mai Ninja (top, bottom). Nội tại: nhẹ như cánh hoa, +12% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 120,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Hoa Anh Đào",
+        "description": "Nội tại: nhẹ như cánh hoa, +12% tốc chạy.",
+        "moveSpeedPct": 12
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_star",
+      "name": "Thiên Ảnh Tinh",
+      "description": "Bộ trang phục 2D: Thiên Ảnh Tinh (top, bottom). Nội tại: +12% chí mạng và +4% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 500,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Ảnh Tinh Tú",
+        "description": "Nội tại: +12% chí mạng và +4% sát thương.",
+        "critPct": 12,
+        "damagePct": 4
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_forest",
+      "name": "Lục Lâm Xạ Thủ",
+      "description": "Bộ trang phục 2D: Lục Lâm Xạ Thủ (top, bottom). Nội tại: +5% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 50,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Mắt Ưng",
+        "description": "Nội tại: +5% chí mạng.",
+        "critPct": 5
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_autumn",
+      "name": "Thu Phong Cung Nữ",
+      "description": "Bộ trang phục 2D: Thu Phong Cung Nữ (top, bottom). Nội tại: +8% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 80,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Gió Thu",
+        "description": "Nội tại: +8% tốc chạy.",
+        "moveSpeedPct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_frost",
+      "name": "Tuyết Nguyên Thợ Săn",
+      "description": "Bộ trang phục 2D: Tuyết Nguyên Thợ Săn (top, bottom). Nội tại: +6% sát thương, giảm 3% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 100,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Đạn Băng",
+        "description": "Nội tại: +6% sát thương, giảm 3% sát thương nhận.",
+        "damagePct": 6,
+        "reducePct": 3
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_moon",
+      "name": "Nguyệt Thần Xạ Thủ",
+      "description": "Bộ trang phục 2D: Nguyệt Thần Xạ Thủ (top, bottom). Nội tại: +9% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 200,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Tên Nguyệt",
+        "description": "Nội tại: +9% chí mạng.",
+        "critPct": 9
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_sakura",
+      "name": "Anh Hoa Cung Thủ",
+      "description": "Bộ trang phục 2D: Anh Hoa Cung Thủ (top, bottom). Nội tại: +10% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 150,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Mưa Hoa",
+        "description": "Nội tại: +10% tốc chạy.",
+        "moveSpeedPct": 10
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_ember",
+      "name": "Hỏa Vũ Xạ Thủ",
+      "description": "Bộ trang phục 2D: Hỏa Vũ Xạ Thủ (top, bottom). Nội tại: +10% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 250,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Tên Lửa",
+        "description": "Nội tại: +10% sát thương.",
+        "damagePct": 10
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_shadow",
+      "name": "Dạ Hành Săn Đêm",
+      "description": "Bộ trang phục 2D: Dạ Hành Săn Đêm (top, bottom). Nội tại: +8% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 120,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Săn Đêm",
+        "description": "Nội tại: +8% chí mạng.",
+        "critPct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_aurum",
+      "name": "Kim Ưng Hoàng Gia",
+      "description": "Bộ trang phục 2D: Kim Ưng Hoàng Gia (top, bottom). Nội tại: +8% sát thương, +4% chí mạng.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 300,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Ưng Vương",
+        "description": "Nội tại: +8% sát thương, +4% chí mạng.",
+        "damagePct": 8,
+        "critPct": 4
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_azure",
+      "name": "Thiên Không Phong Hầu",
+      "description": "Bộ trang phục 2D: Thiên Không Phong Hầu (top, bottom). Nội tại: +12% tốc chạy, +4% sát thương.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 400,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Phong Hầu",
+        "description": "Nội tại: +12% tốc chạy, +4% sát thương.",
+        "moveSpeedPct": 12,
+        "damagePct": 4
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_fae",
+      "name": "Tiên Rừng Huyền Ảo",
+      "description": "Bộ trang phục 2D: Tiên Rừng Huyền Ảo (top, bottom). Nội tại: +8% sát thương, giảm 6% sát thương nhận.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 500,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Tiên Lực",
+        "description": "Nội tại: +8% sát thương, giảm 6% sát thương nhận.",
+        "damagePct": 8,
+        "reducePct": 6
+      },
+      "art": "2d"
+    },
+    {
+      "id": "wings2d_f_phoenix",
+      "name": "Cánh Phượng Hoàng Lửa",
+      "description": "Cánh cho nhân vật nữ: Cánh Phượng Hoàng Lửa.",
+      "slot": "wings",
+      "kind": "cosmetic",
+      "currency": "diamonds",
+      "price": 280,
+      "classes": [
+        1,
+        3
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [],
+      "skill": {
+        "name": "Cánh Phượng Hoàng Lửa",
+        "description": "Nội tại: +4% tốc chạy",
+        "moveSpeedPct": 4
+      },
+      "art": "2d"
+    },
+    {
+      "id": "wings2d_f_fairy",
+      "name": "Cánh Bướm Tiên Pastel",
+      "description": "Cánh cho nhân vật nữ: Cánh Bướm Tiên Pastel.",
+      "slot": "wings",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 9000,
+      "classes": [
+        1,
+        3
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "wings2d_f_seraph",
+      "name": "Cánh Thiên Thần Seraph",
+      "description": "Cánh cho nhân vật nữ: Cánh Thiên Thần Seraph.",
+      "slot": "wings",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 40000,
+      "classes": [
+        1,
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "wings2d_f_demon",
+      "name": "Cánh Dơi Quỷ Đỏ Thẫm",
+      "description": "Cánh cho nhân vật nữ: Cánh Dơi Quỷ Đỏ Thẫm.",
+      "slot": "wings",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 34000,
+      "classes": [
+        1,
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [],
+      "skill": {
+        "name": "Cánh Dơi Quỷ Đỏ Thẫm",
+        "description": "Nội tại: +3% chí mạng",
+        "critPct": 3
+      },
+      "art": "2d"
+    },
+    {
+      "id": "wings2d_f_ice",
+      "name": "Cánh Pha Lê Băng",
+      "description": "Cánh cho nhân vật nữ: Cánh Pha Lê Băng.",
+      "slot": "wings",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 36000,
+      "classes": [
+        1,
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "wings2d_f_galaxy",
+      "name": "Cánh Ngân Hà Trăng Sao",
+      "description": "Cánh cho nhân vật nữ: Cánh Ngân Hà Trăng Sao.",
+      "slot": "wings",
+      "kind": "cosmetic",
+      "currency": "diamonds",
+      "price": 300,
+      "classes": [
+        1,
+        3
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [],
+      "skill": {
+        "name": "Cánh Ngân Hà Trăng Sao",
+        "description": "Nội tại: +3% chí mạng",
+        "critPct": 3
+      },
+      "art": "2d"
+    },
+    {
+      "id": "wings2d_f_cherry",
+      "name": "Cánh Hoa Anh Đào",
+      "description": "Cánh cho nhân vật nữ: Cánh Hoa Anh Đào.",
+      "slot": "wings",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 15000,
+      "classes": [
+        1,
+        3
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "wings2d_f_thunder",
+      "name": "Cánh Sấm Sét",
+      "description": "Cánh cho nhân vật nữ: Cánh Sấm Sét.",
+      "slot": "wings",
+      "kind": "cosmetic",
+      "currency": "diamonds",
+      "price": 240,
+      "classes": [
+        1,
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [],
+      "skill": {
+        "name": "Cánh Sấm Sét",
+        "description": "Nội tại: +5% tốc chạy",
+        "moveSpeedPct": 5
+      },
+      "art": "2d"
+    },
+    {
+      "id": "mount2d_white_horse",
+      "name": "Bạch Mã Gió",
+      "description": "Thú cưỡi: Bạch Mã Gió, chạy nhanh hơn 15%.",
+      "slot": "mount",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 60000,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [],
+      "skill": {
+        "name": "Tăng tốc",
+        "description": "Nội tại: +15% tốc chạy khi cưỡi.",
+        "moveSpeedPct": 15
+      },
+      "art": "2d"
+    },
+    {
+      "id": "mount2d_night_horse",
+      "name": "Dạ Mã Lửa Xanh",
+      "description": "Thú cưỡi: Dạ Mã Lửa Xanh, chạy nhanh hơn 20%.",
+      "slot": "mount",
+      "kind": "cosmetic",
+      "currency": "diamonds",
+      "price": 240,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [],
+      "skill": {
+        "name": "Tăng tốc",
+        "description": "Nội tại: +20% tốc chạy khi cưỡi.",
+        "moveSpeedPct": 20
+      },
+      "art": "2d"
+    },
+    {
+      "id": "mount2d_snow_wolf",
+      "name": "Sói Tuyết Cưỡi",
+      "description": "Thú cưỡi: Sói Tuyết Cưỡi, chạy nhanh hơn 16%.",
+      "slot": "mount",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 64000,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [],
+      "skill": {
+        "name": "Tăng tốc",
+        "description": "Nội tại: +16% tốc chạy khi cưỡi.",
+        "moveSpeedPct": 16
+      },
+      "art": "2d"
+    },
+    {
+      "id": "mount2d_fire_tiger",
+      "name": "Hổ Lửa",
+      "description": "Thú cưỡi: Hổ Lửa, chạy nhanh hơn 22%.",
+      "slot": "mount",
+      "kind": "cosmetic",
+      "currency": "diamonds",
+      "price": 280,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [],
+      "skill": {
+        "name": "Tăng tốc",
+        "description": "Nội tại: +22% tốc chạy khi cưỡi.",
+        "moveSpeedPct": 22
+      },
+      "art": "2d"
+    },
+    {
+      "id": "mount2d_carpet",
+      "name": "Thảm Bay Hoa Văn",
+      "description": "Thú cưỡi: Thảm Bay Hoa Văn, chạy nhanh hơn 18%.",
+      "slot": "mount",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 90000,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "epic",
+      "pieces": [],
+      "skill": {
+        "name": "Tăng tốc",
+        "description": "Nội tại: +18% tốc chạy khi cưỡi.",
+        "moveSpeedPct": 18
+      },
+      "art": "2d"
+    },
+    {
+      "id": "mount2d_cloud",
+      "name": "Mây Cưỡi Cầu Vồng",
+      "description": "Thú cưỡi: Mây Cưỡi Cầu Vồng, chạy nhanh hơn 25%.",
+      "slot": "mount",
+      "kind": "cosmetic",
+      "currency": "diamonds",
+      "price": 360,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [],
+      "skill": {
+        "name": "Tăng tốc",
+        "description": "Nội tại: +25% tốc chạy khi cưỡi.",
+        "moveSpeedPct": 25
+      },
+      "art": "2d"
+    },
+    {
+      "id": "top2d_azure",
+      "name": "Áo Lam Thêu Mây",
+      "description": "Áo: Áo Lam Thêu Mây.",
+      "slot": "top",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 5000,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "top2d_rose",
+      "name": "Áo Hồng Thêu Hoa",
+      "description": "Áo: Áo Hồng Thêu Hoa.",
+      "slot": "top",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 5200,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "top2d_gold",
+      "name": "Áo Gấm Vàng",
+      "description": "Áo: Áo Gấm Vàng.",
+      "slot": "top",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 11000,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "bottom2d_azure",
+      "name": "Quần Lam Thêu Mây",
+      "description": "Quần: Quần Lam Thêu Mây.",
+      "slot": "bottom",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 4500,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "bottom2d_rose",
+      "name": "Váy Hồng Thêu Hoa",
+      "description": "Quần: Váy Hồng Thêu Hoa.",
+      "slot": "bottom",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 4800,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "common",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "bottom2d_gold",
+      "name": "Quần Gấm Vàng",
+      "description": "Quần: Quần Gấm Vàng.",
+      "slot": "bottom",
+      "kind": "cosmetic",
+      "currency": "gold",
+      "price": 10000,
+      "classes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "listed": true,
+      "rarity": "rare",
+      "pieces": [],
+      "skill": null,
+      "art": "2d"
+    },
+    {
+      "id": "set2d_swordsman_legend",
+      "name": "Long Hoàng Kiếm Thánh",
+      "description": "Bộ trang phục thần thoại 2D: Long Hoàng Kiếm Thánh (top, bottom). Nội tại: +15% sát thương, +10% giảm sát thương nhận vào, +8% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 1000,
+      "classes": [
+        0
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Long Hồn Thiêu Đốt",
+        "description": "Nội tại: +15% sát thương, +10% giảm sát thương nhận vào, +8% tốc chạy.",
+        "damagePct": 15,
+        "reducePct": 10,
+        "moveSpeedPct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_mage_legend",
+      "name": "Nữ Hoàng Thời Không",
+      "description": "Bộ trang phục thần thoại 2D: Nữ Hoàng Thời Không (top, bottom). Nội tại: +15% sát thương, +10% chí mạng, +8% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 1000,
+      "classes": [
+        1
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Vòng Thời Gian",
+        "description": "Nội tại: +15% sát thương, +10% chí mạng, +8% tốc chạy.",
+        "damagePct": 15,
+        "critPct": 10,
+        "moveSpeedPct": 8
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_assassin_legend",
+      "name": "Tử Thần Huyết Nguyệt",
+      "description": "Bộ trang phục thần thoại 2D: Tử Thần Huyết Nguyệt (top, bottom). Nội tại: +15% chí mạng, +10% sát thương, +15% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 1000,
+      "classes": [
+        2
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Huyết Nguyệt Tử Vong",
+        "description": "Nội tại: +15% chí mạng, +10% sát thương, +15% tốc chạy.",
+        "damagePct": 10,
+        "critPct": 15,
+        "moveSpeedPct": 15
+      },
+      "art": "2d"
+    },
+    {
+      "id": "set2d_archer_legend",
+      "name": "Phượng Hoàng Thần Xạ",
+      "description": "Bộ trang phục thần thoại 2D: Phượng Hoàng Thần Xạ (top, bottom). Nội tại: +15% sát thương, +10% chí mạng, +10% tốc chạy.",
+      "slot": "set",
+      "kind": "cosmetic_set",
+      "currency": "diamonds",
+      "price": 1000,
+      "classes": [
+        3
+      ],
+      "listed": true,
+      "rarity": "legendary",
+      "pieces": [
+        "top",
+        "bottom"
+      ],
+      "skill": {
+        "name": "Hỏa Phượng Giáng Thế",
+        "description": "Nội tại: +15% sát thương, +10% chí mạng, +10% tốc chạy.",
+        "damagePct": 15,
+        "critPct": 10,
+        "moveSpeedPct": 10
+      },
+      "art": "2d"
+    }
+  ]
+}
