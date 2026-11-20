@@ -28,7 +28,8 @@ Bật thật (đây là quyết định của chủ dự án, ghi nhận 2026-11
 - Thiếu một trong các trường trên, hoặc secret < 16 ký tự → nạp tự tắt.
 - **Server phải có địa chỉ công khai (HTTPS)** để ngân hàng gọi webhook được. Máy nhà không đủ: cần VPS / tunnel.
 
-Lưu ý đã gặp: trong môi trường thử, `img.vietqr.io` trả ảnh **SVG** thay vì PNG nên Unity không hiển thị được; app khi đó vẫn hiện đủ thông tin chuyển khoản. Hãy thử với tài khoản thật; nếu vẫn ra SVG thì cần chuyển sang API tạo QR PNG của VietQR hoặc tự sinh QR trong app.
+**Ảnh QR được sinh ngay trong app** (`QrCodeEncoder.cs`, chuẩn ISO 18004, mức sửa lỗi M) từ chuỗi payload EMVCo VietQR do server dựng (`payload` trong đơn, có CRC16): không tải ảnh online nên luôn hiện, sắc nét (Point filter, số pixel nguyên mỗi ô). Đã kiểm bằng bộ giải mã OpenCV: quét ảnh chụp màn hình ra đúng chuỗi payload. Cần điền `BankId` (mã ngắn như MB, VCB) hoặc `BankBin` (6 số NAPAS) trong `VietQr`; thiếu cả hai thì nạp tự tắt. Chưa thử quét bằng app ngân hàng thật trên iPhone.
+
 Gói **Thẻ Tháng / Tân Thủ** có thể chưa mua được (Tân Thủ chờ vật phẩm hiếm được cấu hình).
 
 ## 3. Hot Update (cập nhật không cần cài lại .ipa)

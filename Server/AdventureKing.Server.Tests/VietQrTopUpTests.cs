@@ -23,6 +23,24 @@ public sealed class VietQrTopUpTests : IDisposable
     private long Diamonds() { using var c = t.Db.Open(); return Database.Scalar<long>(c, null, "SELECT diamonds FROM accounts WHERE id=$a", ("$a", acc)); }
 
     [Fact]
+    public void Payload_Is_A_Valid_EMVCo_VietQr_String_With_A_Correct_CRC()
+    {
+        Assert.Equal((ushort)0x29B1, VietQrPayload.Crc16("123456789"));                         // the standard CRC-16/CCITT-FALSE check value
+        string p = VietQrPayload.Build("970422", "0123456789", 20000, "AKR123456");
+        Assert.StartsWith("000201010212", p);
+        Assert.Contains("0010A000000727", p);
+        Assert.Contains("0006970422" + "01100123456789", p);
+        Assert.Contains("0208QRIBFTTA", p);
+        Assert.Contains("5303704", p);
+        Assert.Contains("540520000", p);
+        Assert.Contains("5802VN", p);
+        Assert.Contains("62130809AKR123456", p);
+        Assert.Equal(VietQrPayload.Crc16(p[..^4]).ToString("X4"), p[^4..]);
+        var q = new VietQrTopUp(t.Db, store, Opt(true), () => clock);
+        Assert.Equal(VietQrPayload.Build("970422", "0123456789", 20000, q.Create(acc, "pouch_2").code), q.Create(acc, "pouch_2").payload);
+    }
+
+    [Fact]
     public void Disabled_Until_The_Owner_Configures_It()
     {
         var off = new VietQrTopUp(t.Db, store, Opt(false), () => clock);

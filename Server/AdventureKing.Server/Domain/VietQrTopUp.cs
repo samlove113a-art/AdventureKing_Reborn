@@ -9,13 +9,16 @@ public sealed class VietQrOptions
 {
     /// <summary>Master switch. OFF by default: nothing can be bought until the owner fills the bank account and turns it on (appsettings VietQr:Enabled).</summary>
     public bool Enabled { get; set; }
-    public string BankId { get; set; } = "";        // e.g. "MB", "VCB" (VietQR bank code)
+    public string BankId { get; set; } = "";        // e.g. "MB", "VCB" (short VietQR bank code)
+    /// <summary>6-digit NAPAS bank BIN used inside the EMVCo payload. Empty = looked up from BankId (common banks).</summary>
+    public string BankBin { get; set; } = "";
+    public string Bin => BankBin.Length > 0 ? BankBin : VietQrPayload.BinOf(BankId);
     public string AccountNo { get; set; } = "";
     public string AccountName { get; set; } = "";
     /// <summary>Shared secret the bank-notification service sends in the Authorization header of the webhook.</summary>
     public string WebhookSecret { get; set; } = "";
     public int OrderMinutes { get; set; } = 30;
-    public bool Ready => Enabled && BankId.Length > 0 && AccountNo.Length > 0 && AccountName.Length > 0 && WebhookSecret.Length >= 16;
+    public bool Ready => Enabled && BankId.Length > 0 && Bin.Length == 6 && AccountNo.Length > 0 && AccountName.Length > 0 && WebhookSecret.Length >= 16;
 }
 
 public sealed class TopUpOrderDto
@@ -29,8 +32,46 @@ public sealed class TopUpOrderDto
     public string bankId { get; set; } = "";
     public string accountNo { get; set; } = "";
     public string accountName { get; set; } = "";
+    /// <summary>EMVCo VietQR string (NAPAS 247, dynamic amount + transfer text + CRC16). The app turns it into the QR picture itself.</summary>
+    public string payload { get; set; } = "";
     public long expiresMs { get; set; }
     public int diamondsGranted { get; set; }
+}
+
+/// <summary>VietQR / NAPAS 247 payload builder (EMVCo merchant-presented QR).</summary>
+public static class VietQrPayload
+{
+    private static readonly Dictionary<string, string> Bins = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["MB"] = "970422", ["MBBANK"] = "970422", ["VCB"] = "970436", ["VIETCOMBANK"] = "970436", ["TCB"] = "970407", ["TECHCOMBANK"] = "970407", ["ACB"] = "970416",
+        ["BIDV"] = "970418", ["VPB"] = "970432", ["VPBANK"] = "970432", ["TPB"] = "970423", ["TPBANK"] = "970423", ["CTG"] = "970415", ["VIETINBANK"] = "970415",
+        ["STB"] = "970403", ["SACOMBANK"] = "970403", ["VBA"] = "970405", ["AGRIBANK"] = "970405", ["OCB"] = "970448", ["SHB"] = "970443", ["HDB"] = "970437", ["HDBANK"] = "970437",
+        ["MSB"] = "970426", ["VIB"] = "970441", ["SEAB"] = "970440", ["EIB"] = "970431",
+    };
+    public static string BinOf(string bankId) => Bins.TryGetValue(bankId ?? "", out string b) ? b : "";
+
+    private static string Tlv(string id, string value) => id + value.Length.ToString("00") + value;
+
+    public static string Build(string bin, string accountNo, long amount, string addInfo)
+    {
+        string beneficiary = Tlv("00", bin) + Tlv("01", accountNo);
+        string merchant = Tlv("00", "A000000727") + Tlv("01", beneficiary) + Tlv("02", "QRIBFTTA");
+        string body = Tlv("00", "01") + Tlv("01", "12") + Tlv("38", merchant) + Tlv("53", "704") + Tlv("54", amount.ToString())
+                      + Tlv("58", "VN") + Tlv("62", Tlv("08", addInfo)) + "6304";
+        return body + Crc16(body).ToString("X4");
+    }
+
+    /// <summary>CRC-16/CCITT-FALSE (poly 0x1021, init 0xFFFF) over the whole string including the "6304" tag.</summary>
+    public static ushort Crc16(string s)
+    {
+        ushort crc = 0xFFFF;
+        foreach (byte b in System.Text.Encoding.ASCII.GetBytes(s))
+        {
+            crc ^= (ushort)(b << 8);
+            for (int i = 0; i < 8; i++) crc = (crc & 0x8000) != 0 ? (ushort)((crc << 1) ^ 0x1021) : (ushort)(crc << 1);
+        }
+        return crc;
+    }
 }
 
 public sealed class BankWebhookDto { public string? content { get; set; } public long amount { get; set; } public string? transactionId { get; set; } }
@@ -58,7 +99,7 @@ public sealed class VietQrTopUp
     private TopUpOrderDto Dto(string id, string code, string pkg, long amount, string status, long expires, int granted) => new()
     {
         orderId = id, code = code, packageId = pkg, amountVnd = amount, status = status, expiresMs = expires, diamondsGranted = granted,
-        qrUrl = QrUrl(code, amount), bankId = opt.BankId, accountNo = opt.AccountNo, accountName = opt.AccountName,
+        qrUrl = QrUrl(code, amount), payload = VietQrPayload.Build(opt.Bin, opt.AccountNo, amount, code), bankId = opt.BankId, accountNo = opt.AccountNo, accountName = opt.AccountName,
     };
 
     public TopUpOrderDto Create(string accountId, string packageId)

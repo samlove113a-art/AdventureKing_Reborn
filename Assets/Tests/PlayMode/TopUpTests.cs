@@ -77,7 +77,9 @@ namespace AdventureKing.Tests
             Assert.AreEqual(10000, panel.Order.amountVnd);
             StringAssert.Contains("img.vietqr.io/image/MB-0123456789-compact2.png?amount=10000&addInfo=" + panel.Order.code, panel.Order.qrUrl);
             yield return new WaitForSeconds(2.5f);                                 // the QR picture downloads from img.vietqr.io (needs internet: not asserted)
-            Debug.Log("[TOPUP] QR picture shown: " + panel.QrShown);
+            Assert.IsTrue(panel.QrShown, "the QR picture is generated in the app (no download)");
+            Assert.IsNotEmpty(panel.Order.payload);
+            File.WriteAllText("QA/TopUp/order_payload.txt", panel.Order.payload, new UTF8Encoding(false));
             yield return Shot("02_order_qr");
 
             // a foreign / wrong-secret notification does nothing

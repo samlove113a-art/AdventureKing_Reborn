@@ -141,7 +141,7 @@ namespace AdventureKing.Gameplay
                 listView.SetActive(false); orderView.SetActive(true);
                 orderInfo.text = $"<b>{pkg.name}</b>\nSố tiền: <b>{o.amountVnd:N0} đ</b>\nNgân hàng: {o.bankId}\nSTK: <b>{o.accountNo}</b>\nTên: {o.accountName}\nNội dung CK: <b>{o.code}</b>\n(giữ đúng nội dung và số tiền)";
                 Say("Quét mã QR hoặc chuyển khoản đúng nội dung. Đang chờ tiền vào...");
-                StartCoroutine(LoadQr(o.qrUrl));
+                ShowQr(o.payload);
                 if (poll != null) StopCoroutine(poll);
                 poll = StartCoroutine(Poll(o.orderId));
             });
@@ -155,22 +155,14 @@ namespace AdventureKing.Gameplay
             net.GetPets(world.Character.characterId, (ok, st, e) => { if (ok && st != null && world.Character != null) { world.Character.gold = st.gold; world.Character.diamonds = st.diamonds; } });   // any server snapshot carries the real balances
         }
 
-        private IEnumerator LoadQr(string url)
+        /// <summary>The QR picture is generated right here from the VietQR (EMVCo) payload: no download, so it always appears and stays pixel-sharp.</summary>
+        private void ShowQr(string payload)
         {
-            if (qr) { qr.texture = null; qr.color = new Color(1f, 1f, 1f, 0f); }
-            using var req = UnityWebRequest.Get(url);
-            req.timeout = 15;
-            yield return req.SendWebRequest();
-            if (req.result == UnityWebRequest.Result.Success)
-            {
-                var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-                if (!tex.LoadImage(req.downloadHandler.data)) { Say("Chưa hiện được ảnh QR, hãy chuyển khoản thủ công theo thông tin bên cạnh. Đang chờ tiền vào..."); yield break; }
-                tex.filterMode = FilterMode.Point;                          // QR modules stay crisp
-                if (qr) { qr.texture = tex; qr.color = Color.white; }
-            }
-            else Say("Không tải được ảnh QR, hãy chuyển khoản thủ công theo thông tin bên cạnh.");
+            if (qr && qr.texture) Destroy(qr.texture);
+            Texture2D tex = QrCodeEncoder.ToTexture(payload, 512);
+            if (!tex) { if (qr) qr.color = new Color(1f, 1f, 1f, 0f); Say("Không tạo được mã QR, hãy chuyển khoản thủ công theo thông tin bên cạnh. Đang chờ tiền vào..."); return; }
+            qr.texture = tex; qr.color = Color.white;
         }
-
         private IEnumerator Poll(string orderId)
         {
             while (true)
