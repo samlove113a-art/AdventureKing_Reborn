@@ -1,0 +1,90 @@
+﻿name: Build iOS IPA (unsigned)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unity-xcode:
+    name: Unity -> Xcode project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-iOS-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-iOS-
+
+      # The online game server (HTTPS) is kept out of the repository: set the repository secret SERVER_URL,
+      # e.g. https://api.yourdomain.com/api/v1 . iOS refuses plain http:// addresses in release builds.
+      - name: Write server endpoint
+        env:
+          SERVER_URL: ${{ secrets.SERVER_URL }}
+        run: |
+          if [ -n "$SERVER_URL" ]; then printf '%s' "$SERVER_URL" > Assets/Resources/ServerEndpoint.txt; fi
+
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: iOS
+          buildName: AdventureKingReborn
+          allowDirtyBuild: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-xcode-project
+          path: build/iOS
+          retention-days: 3
+
+  ipa:
+    name: Xcode -> unsigned IPA -> GitHub Pages
+    needs: unity-xcode
+    runs-on: macos-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ios-xcode-project
+          path: xcode
+
+      - name: Archive without code signing
+        run: |
+          PROJ=$(find xcode -name "Unity-iPhone.xcodeproj" -maxdepth 4 | head -n 1)
+          test -n "$PROJ"
+          xcodebuild -project "$PROJ" -scheme Unity-iPhone -configuration Release -sdk iphoneos \
+            -archivePath "$PWD/app.xcarchive" archive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM=""
+
+      - name: Pack AdventureKingReborn.ipa
+        run: |
+          mkdir -p site Payload
+          cp -R app.xcarchive/Products/Applications/*.app Payload/
+          zip -qry site/AdventureKingReborn.ipa Payload
+          ls -lh site/AdventureKingReborn.ipa
+
+      - name: Download page
+        run: |
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>Adventure King Reborn</title>
+          <style>body{font-family:sans-serif;background:#10131c;color:#eee;text-align:center;padding:12vh 16px}
+          a.btn{display:inline-block;margin-top:24px;padding:16px 32px;border-radius:12px;background:#f2b134;color:#222;font-weight:700;font-size:20px;text-decoration:none}
+          p{opacity:.7}</style></head>
+          <body><h1>Adventure King Reborn</h1><p>Bản iOS (.ipa chưa ký). Cài bằng Sideloadly / AltStore.</p>
+          <a class="btn" href="AdventureKingReborn.ipa" download>Tải AdventureKingReborn.ipa</a></body></html>
+          HTML
+
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages

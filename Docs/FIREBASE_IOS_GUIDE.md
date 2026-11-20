@@ -7,7 +7,7 @@ Luồng: app lấy **Firebase ID token** → `POST /api/v1/auth/firebase {"idTok
 
 Việc bạn cần làm:
 1. Tạo project Firebase → bật Authentication: Anonymous, Google, Facebook (Facebook cần App ID/Secret từ developers.facebook.com).
-2. Thêm app iOS (bundle id `com.adventureking.reborn`) → tải **`GoogleService-Info.plist`** → bỏ vào `Assets/` (đúng tên file).
+2. Thêm app iOS (bundle id `com.quocsam.adventurekingreborn`) → tải **`GoogleService-Info.plist`** → bỏ vào `Assets/` (đúng tên file).
 3. Tải Firebase Unity SDK, import `FirebaseAuth.unitypackage` (+ `FirebaseApp`). Cài thêm plugin Google Sign-In và Facebook SDK for Unity.
 4. Project Settings → Player → Scripting Define Symbols (iOS): thêm **`FIREBASE_AUTH`**. (Code cầu nối đã viết sẵn trong `Assets/Scripts/Gameplay/FirebaseSignInBridge.cs`; plugin Google/Facebook gán token vào `ProviderTokens.Google` / `.Facebook` trước khi gọi.)
 5. Server: trong `Server/AdventureKing.Server/appsettings.json` điền `"Firebase": { "ProjectId": "<id-project-firebase>" }`. Để trống = đăng nhập Firebase bị từ chối (an toàn).
@@ -41,7 +41,7 @@ Vì Unity Package Manager không tải được gói Addressables trong máy hi�
 Giới hạn: iOS cấm tải **code C#** mới; hot update chỉ gồm dữ liệu/asset. Map mới cần scene/dữ liệu dựng sẵn trong bundle và code đã có trong app. Hiện hệ thống tải + lưu bundle; việc **gắn nội dung bundle vào từng tính năng** (vd mở map từ bundle) làm khi có nội dung thật.
 
 ## 4. App Icon + Launch Screen + iOS
-Chạy menu **AdventureKing → Build → Apply iOS player settings** (đã chạy sẵn). Đã đặt: landscape trái/phải, iOS tối thiểu 15.0, bundle `com.adventureking.reborn`, App Icon 1024 (`Assets/Art/Branding/AppIcon_1024.png`, nền đặc, không bo góc), launch screen (`LaunchScreen.png`), tắt splash Unity.
+Chạy menu **AdventureKing → Build → Apply iOS player settings** (đã chạy sẵn). Đã đặt: landscape trái/phải, iOS tối thiểu 14.0, bundle `com.quocsam.adventurekingreborn`, App Icon 1024 (`Assets/Art/Branding/AppIcon_1024.png`, nền đặc, không bo góc), launch screen (`LaunchScreen.png`), tắt splash Unity.
 Logo dùng bản logo có sẵn của game (không phải pixel art thuần).
 
 ## 5. Địa chỉ server + build .ipa
