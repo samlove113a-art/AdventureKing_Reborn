@@ -10,6 +10,7 @@ using AdventureKing.Server.Security;
 //   dotnet run --project Server/AdventureKing.Server -- --verify <file>
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);   // machine-only secrets (never committed): VietQr:WebhookSecret ...
 var cfg = builder.Configuration.GetSection("AdventureKing");
 string contentRoot = builder.Environment.ContentRootPath;
 string dbPath = Path.GetFullPath(Path.Combine(contentRoot, cfg["DatabasePath"] ?? "data/adventureking.db"));
@@ -45,9 +46,8 @@ long starterGold = cfg.GetValue<long?>("StarterGold") ?? 5000; // PROPOSAL pendi
 string cosmeticsPath = Path.Combine(contentRoot, cfg["CosmeticCatalogPath"] ?? "config/cosmetics.json");
 builder.Services.AddSingleton(sp => new CharacterService(sp.GetRequiredService<Database>(), sp.GetRequiredService<NameRules>(), starterGold));
 builder.Services.AddSingleton(sp => new CosmeticShop(sp.GetRequiredService<Database>(), CosmeticCatalog.Load(cosmeticsPath)));
-builder.Services.AddSingleton(sp => new DiamondStore(sp.GetRequiredService<Database>(), vip));
 var vietQr = cfg.GetSection("VietQr").Get<VietQrOptions>() ?? new VietQrOptions();
-DiamondStore.PaymentsEnabled = vietQr.Ready;           // stays false until the owner fills the bank account + webhook secret and sets VietQr:Enabled
+builder.Services.AddSingleton(sp => new DiamondStore(sp.GetRequiredService<Database>(), vip) { PaymentsEnabled = vietQr.Ready });           // stays false until the owner fills the bank account + webhook secret and sets VietQr:Enabled
 builder.Services.AddSingleton(vietQr);
 string firebaseProject = cfg["Firebase:ProjectId"] ?? "";   // empty = Firebase sign-in not configured (fails closed)
 builder.Services.AddSingleton(_ => new FirebaseTokenVerifier(firebaseProject, FirebaseTokenVerifier.GoogleKeys(new HttpClient { Timeout = TimeSpan.FromSeconds(8) })));
@@ -158,7 +158,7 @@ static void Limit(AttemptLimiter l, string key)
 
 var api = app.MapGroup("/api/v1");
 
-api.MapGet("/health", () => new { status = "ok", schema = 1, paymentsEnabled = DiamondStore.PaymentsEnabled, socialLogin = false });
+api.MapGet("/health", (HttpContext ctx) => new { status = "ok", schema = 1, paymentsEnabled = ctx.RequestServices.GetRequiredService<DiamondStore>().PaymentsEnabled, socialLogin = false });
 
 // ---------------------------------------------------------------- auth
 api.MapPost("/auth/register", (CredentialsDto body, HttpContext ctx, AccountService accounts, [FromKeyedServices("register")] AttemptLimiter limiter) =>
@@ -334,7 +334,7 @@ api.MapPost("/characters/{id}/checkin/claim", (string id, CheckinClaimDto body, 
 
 // ---------------------------------------------------------------- diamond store (catalog only; payments disabled)
 api.MapGet("/store/catalog", (HttpContext ctx, AccountService accounts, DiamondStore store) =>
-    new CatalogDto { paymentsEnabled = DiamondStore.PaymentsEnabled, packages = store.CatalogFor(accounts.Authenticate(Bearer(ctx))) });
+    new CatalogDto { paymentsEnabled = store.PaymentsEnabled, packages = store.CatalogFor(accounts.Authenticate(Bearer(ctx))) });
 api.MapPost("/store/purchase/{packageId}", (string packageId, HttpContext ctx, AccountService accounts, DiamondStore store) =>
 {
     store.RequestPurchase(accounts.Authenticate(Bearer(ctx)), packageId); // always throws payments_disabled
@@ -345,8 +345,9 @@ api.MapPost("/store/topup/{packageId}", (string packageId, HttpContext ctx, Acco
     topup.Create(accounts.Authenticate(Bearer(ctx)), packageId));
 api.MapGet("/store/topup/order/{orderId}", (string orderId, HttpContext ctx, AccountService accounts, VietQrTopUp topup) =>
     topup.Status(accounts.Authenticate(Bearer(ctx)), orderId));
+// SePay: POST JSON with "Authorization: Apikey <secret>"; it treats HTTP 200/201 + {"success": true} as delivered (a non-matching transfer is still "delivered").
 api.MapPost("/store/topup/webhook", (BankWebhookDto body, HttpContext ctx, VietQrTopUp topup) =>
-    new { matched = topup.Confirm(ctx.Request.Headers.Authorization.ToString(), body) });
+    new { success = true, matched = topup.Confirm(ctx.Request.Headers.Authorization.ToString(), body) });
 api.MapGet("/store/history", (HttpContext ctx, AccountService accounts, DiamondStore store) => store.History(accounts.Authenticate(Bearer(ctx))));
 api.MapGet("/store/month-card", (HttpContext ctx, AccountService accounts, DiamondStore store) => store.MonthCardStatus(accounts.Authenticate(Bearer(ctx))));
 api.MapPost("/store/month-card/claim", (HttpContext ctx, AccountService accounts, DiamondStore store) =>

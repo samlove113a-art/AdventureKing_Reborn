@@ -84,4 +84,22 @@ public sealed class VietQrTopUpTests : IDisposable
         Assert.True(q.Confirm(good, new BankWebhookDto { content = o.code, amount = 10_000, transactionId = "T4" }));                 // same order, other txn id: still paid once
         Assert.Equal(after, Diamonds());
     }
+
+    [Fact]
+    public void SePay_Webhook_Format_Is_Understood_Apikey_Header_Transfer_Type_And_Amount_Field()
+    {
+        var q = new VietQrTopUp(t.Db, store, Opt(true), () => clock);
+        TopUpOrderDto o = q.Create(acc, "pouch_1");
+        string header = "Apikey test-secret-0123456789";
+        // an outgoing transfer is never a top-up
+        Assert.False(q.Confirm(header, new BankWebhookDto { id = 1, transferType = "out", transferAmount = 10_000, content = o.code }));
+        // incoming, the code only in "description" (SePay also fills "code" when a prefix is configured)
+        Assert.True(q.Confirm(header, new BankWebhookDto { id = 92704, gateway = "TPBank", transferType = "in", transferAmount = 10_000, content = "NGUYEN VAN A chuyen tien", description = "BankAPINotify " + o.code, referenceCode = "FT123" }));
+        Assert.Equal("completed", q.Status(acc, o.orderId).status);
+        Assert.Equal(20, Diamonds());
+        // SePay retries the same id: still one credit
+        Assert.True(q.Confirm(header, new BankWebhookDto { id = 92704, transferType = "in", transferAmount = 10_000, description = o.code }));
+        Assert.Equal(20, Diamonds());
+        Assert.Equal("webhook_unauthorized", Assert.Throws<GameError>(() => q.Confirm("Apikey wrong", new BankWebhookDto { id = 2, transferType = "in", transferAmount = 10_000, content = o.code })).Code);
+    }
 }

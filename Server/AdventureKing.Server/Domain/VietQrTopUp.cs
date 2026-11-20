@@ -18,7 +18,7 @@ public sealed class VietQrOptions
     /// <summary>Shared secret the bank-notification service sends in the Authorization header of the webhook.</summary>
     public string WebhookSecret { get; set; } = "";
     public int OrderMinutes { get; set; } = 30;
-    public bool Ready => Enabled && BankId.Length > 0 && Bin.Length == 6 && AccountNo.Length > 0 && AccountName.Length > 0 && WebhookSecret.Length >= 16;
+    public bool Ready => Enabled && BankId.Length > 0 && Bin.Length == 6 && AccountNo.Length > 0 && AccountName.Length > 0 && WebhookSecret.Length >= 8;
 }
 
 public sealed class TopUpOrderDto
@@ -74,7 +74,19 @@ public static class VietQrPayload
     }
 }
 
-public sealed class BankWebhookDto { public string? content { get; set; } public long amount { get; set; } public string? transactionId { get; set; } }
+/// <summary>Bank notification. Accepts the SePay webhook (id, transferType, transferAmount, content, description, code, referenceCode) and the plain form (content, amount, transactionId).</summary>
+public sealed class BankWebhookDto
+{
+    public string? content { get; set; } public long amount { get; set; } public string? transactionId { get; set; }
+    // --- SePay fields
+    public long id { get; set; }
+    public string? gateway { get; set; }
+    public string? transferType { get; set; }          // "in" | "out"
+    public long transferAmount { get; set; }
+    public string? description { get; set; }
+    public string? code { get; set; }
+    public string? referenceCode { get; set; }
+}
 
 /// <summary>
 /// 100 % VietQR top-up. The client can only ASK for an order; Diamonds are credited exclusively by <see cref="Confirm"/>, called by the bank-notification
@@ -89,7 +101,7 @@ public sealed class VietQrTopUp
     private readonly Func<long> now;
 
     public VietQrTopUp(Database db, DiamondStore store, VietQrOptions opt, Func<long>? clock = null)
-    { this.db = db; this.store = store; this.opt = opt; now = clock ?? Database.NowMs; }
+    { this.db = db; this.store = store; this.opt = opt; now = clock ?? Database.NowMs; store.PaymentsEnabled = opt.Ready; }
 
     public bool Enabled => opt.Ready;
 
@@ -141,10 +153,18 @@ public sealed class VietQrTopUp
     public bool Confirm(string? authorization, BankWebhookDto? body)
     {
         if (!opt.Ready) throw new GameError("payments_disabled", "Nạp tiền chưa được kích hoạt.", 403);
-        byte[] given = Encoding.UTF8.GetBytes((authorization ?? "").Replace("Bearer ", "").Trim()), want = Encoding.UTF8.GetBytes(opt.WebhookSecret);
+        string key = (authorization ?? "").Trim();
+        foreach (string prefix in new[] { "Apikey ", "ApiKey ", "Bearer " }) if (key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) { key = key[prefix.Length..].Trim(); break; }   // SePay sends "Authorization: Apikey <key>"
+        byte[] given = Encoding.UTF8.GetBytes(key), want = Encoding.UTF8.GetBytes(opt.WebhookSecret);
         if (given.Length != want.Length || !CryptographicOperations.FixedTimeEquals(given, want)) throw new GameError("webhook_unauthorized", "Sai bí mật webhook.", 401);
-        if (body == null || string.IsNullOrWhiteSpace(body.content) || string.IsNullOrWhiteSpace(body.transactionId) || body.amount <= 0) return false;
-        var m = System.Text.RegularExpressions.Regex.Match(body.content.ToUpperInvariant().Replace(" ", ""), @"AKR\d{6}");
+        if (body == null) return false;
+        if (string.Equals(body.transferType, "out", StringComparison.OrdinalIgnoreCase)) return false;                     // money leaving the account is never a top-up
+        long paid = body.amount > 0 ? body.amount : body.transferAmount;
+        string txn = !string.IsNullOrWhiteSpace(body.transactionId) ? body.transactionId! : body.id > 0 ? "sepay-" + body.id : body.referenceCode ?? "";
+        string text = string.Join(" ", new[] { body.content, body.description, body.code }.Where(s => !string.IsNullOrWhiteSpace(s)));
+        if (text.Length == 0 || txn.Length == 0 || paid <= 0) return false;
+        body.amount = paid; body.transactionId = txn;
+        var m = System.Text.RegularExpressions.Regex.Match(text.ToUpperInvariant().Replace(" ", ""), @"AKR\d{6}");
         if (!m.Success) return false;
         string? id = null, account = null, pkg = null; long amount = 0; string status = "";
         using (var c = db.Open())
