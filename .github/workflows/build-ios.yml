@@ -33,7 +33,6 @@ jobs:
       # "-development" lets the game accept the plain-http / Tailscale server address (release builds only accept https).
       - uses: game-ci/unity-builder@v4
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
