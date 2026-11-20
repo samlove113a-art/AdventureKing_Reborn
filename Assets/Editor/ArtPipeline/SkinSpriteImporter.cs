@@ -13,8 +13,11 @@ namespace AdventureKing.ArtPipeline
             ti.textureType = TextureImporterType.Sprite;
             ti.spriteImportMode = SpriteImportMode.Single;
             ti.spritePixelsPerUnit = 101.052635f;
-            ti.spriteAlignment = (int)SpriteAlignment.Custom;
-            ti.spritePivot = new Vector2(0.5f, 0.052105263f);   // feet pivot, identical to the hero strips
+            var settings = new TextureImporterSettings();
+            ti.ReadTextureSettings(settings);
+            settings.spriteAlignment = (int)SpriteAlignment.Custom;
+            settings.spritePivot = new Vector2(0.5f, 0.052105263f);   // feet pivot, identical to the hero strips
+            ti.SetTextureSettings(settings);
             ti.filterMode = FilterMode.Point;
             ti.mipmapEnabled = false;
             ti.alphaIsTransparency = true;
