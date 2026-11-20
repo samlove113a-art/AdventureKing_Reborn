@@ -45,6 +45,7 @@ SKINS = {
         "frost": (K, "a frost-steel armour outfit: pale blue ice-crystal plate armour with white fur collar, icy glowing edges, heavy frozen knight look"),
         "ember": (K, "a flame war-god outfit: black armour with glowing orange lava cracks, red flame cape, horned pauldrons, burning fury look"),
         "shadow": (K, "a dark king outfit: black and violet spiked armour with a tall collar, tattered purple cape, glowing violet eyes slits on the pauldrons, menacing dark lord look"),
+        "legend": ("LEGENDARY", "the ultimate legendary divine-swordsman outfit: radiant white, gold and royal-blue ornate celestial plate armour with huge glowing winged pauldrons, a flowing starlit cape, a floating golden halo crown, glowing runes and drifting light particles, the most majestic and expensive-looking look"),
         "sun": (A, "an anime sun-general outfit: radiant gold and orange divine armour with a big sun-disc emblem, flowing red-gold cape, glowing halo trim, legendary hero look"),
     },
     "Mage": {
@@ -57,6 +58,7 @@ SKINS = {
         "night": (K, "a night-moon seer outfit: deep navy and silver robe with a crescent-moon hood and star-dust cape, silver trim, mysterious oracle look"),
         "ember": (K, "a fire-mage outfit: black and orange robe with flame embroidery, a tall pointed hat with an ember gem, ember-glow hem, fierce pyromancer look"),
         "frost": (A, "an anime ice-queen outfit: white and ice-blue elegant gown with snowflake crown and crystal shoulder pieces, glowing cyan trim, regal frost look"),
+        "legend": ("LEGENDARY", "the ultimate legendary star-archmage outfit: deep indigo and gold celestial robe covered with glowing constellations, a huge ornate star-crown hat, floating golden rings and orbiting star sparks, long flowing sleeves with galaxy lining, the most majestic and expensive-looking look"),
         "abyss": (K, "a void-magic outfit: black and deep-purple robe with floating dark crystals and a hooded tall hat, glowing magenta runes, forbidden arcanist look"),
     },
     "Assassin": {
@@ -69,6 +71,7 @@ SKINS = {
         "aurum": (A, "an anime golden-shadow outfit: black and gold ninja outfit with golden shoulder guards and a long gold-trimmed scarf, glowing gold trim, premium look"),
         "ember": (K, "an ember-phantom outfit: charcoal black suit with glowing orange fire seams and wisps of flame trailing from the cloak, fiery look"),
         "ghost": (K, "a ghost-wind assassin outfit: tattered grey and teal hooded cloak with a skull half-mask and chains, spectral look"),
+        "legend": ("LEGENDARY", "the ultimate legendary immortal shadow-king outfit: black and royal-purple ornate armoured bodysuit with glowing violet and gold runes, a tall spectral hood crown, flowing ghostly cloak with ember-like purple flames, floating spirit wisps, the most majestic and expensive-looking look"),
         "star": (A, "an anime star-shadow outfit: midnight blue ninja outfit with silver star patterns, a flowing starry scarf and glowing star-shaped clasps, celestial look"),
     },
     "Archer": {
@@ -81,6 +84,7 @@ SKINS = {
         "ember": (K, "a flame-archer outfit: red and black leather armour with phoenix-feather shoulder pieces and glowing ember trim, fiery look"),
         "aurum": (A, "an anime golden-eagle archer outfit: white and gold ornate outfit with golden eagle-wing pauldrons and a long cape, glowing gold trim, royal look"),
         "azure": (A, "an anime sky-marquis archer outfit: sky blue and white elegant coat with silver wind patterns, a long flowing scarf and a feathered hat, noble look"),
+        "legend": ("LEGENDARY", "the ultimate legendary galaxy-archer outfit: white, gold and cosmic-blue ornate armour dress with huge luminous feathered wings-like pauldrons, a star-crown, a long flowing glowing scarf of stars, drifting light particles, the most majestic and expensive-looking look"),
         "fae": (C, "a cute forest-fairy archer outfit: pastel green and lilac petal dress with small translucent wings, flower crown, glittering sparkles, enchanting kawaii look"),
     },
 }
@@ -258,7 +262,11 @@ def fit(cls, key):
                     continue
                 break
             ratio = [(heights(o) / max(1, heights(of))) if o is not None else 0 for o, of in zip(outs, orig)]
-            good = [0.8 <= r_ <= 1.3 for r_ in ratio]
+            def solid(o):
+                a = np.array(o)[..., 3]
+                m = a > 40
+                return float(a[m].mean()) if m.any() else 0.0
+            good = [0.8 <= r_ <= 1.3 and (o is not None and solid(o) >= 170) for r_, o in zip(ratio, outs)]   # also drops ghost-translucent cells
             for i in range(len(orig)):
                 if not good[i] and any(good):            # a glitched cell repeats the nearest good neighbour of the same clip
                     j = min((x for x in range(len(orig)) if good[x]), key=lambda x: (abs(x - i), x))

@@ -119,3 +119,4 @@ Quy tắc: làm **1 mẫu, kiểm tra, rồi mới làm loạt**; ghi credit t�
 - **Meshy 2026-11-17:** +287 credit cho 4 model nhân vật từ ảnh tham chiếu (ref_swordsman/mage/archer/assassin: model + rig + animation). Tổng Chương 1 ≈ 687/2.000; số dư API 2.555.
 
 - **Meshy 2026-11-20 (Skin 2D):** 120 lượt image-to-image (3 clip Idle/Run/Attack × 40 skin, 6 credit/lượt) = **720 credit**, số dư 2.710 → 1.990. Công cụ: Tools/costume/skin_sheet.py (gen/fit); ảnh vào Assets/Resources/Fashion/Skins/<Class>/<key>/; Paperdoll2D.EquipSkin nạp khi bộ set2d_* được trang bị; Jump/Fall/Climb/Hit/Death giữ dáng Idle, Skill dùng khung Attack.
+- **Meshy 2026-11-20 (Skin huyền thoại):** 14 lượt (4 class × 3 clip + 2 làm lại) = **84 credit**, số dư 1.990 → 1.906. Tổng skin 2D hôm nay: 804 credit.
