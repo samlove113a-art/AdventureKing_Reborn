@@ -1,4 +1,4 @@
-﻿name: Build iOS IPA (unsigned)
+name: Build iOS IPA (unsigned)
 
 on:
   workflow_dispatch:
@@ -38,6 +38,8 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           unityVersion: 6000.6.10f1
+          # unity-builder v4 asks for the "-3" image suffix by default, which does not exist for 6000.6.10f1 (docker exit 125); only "-4" is published.
+          customImage: unityci/editor:ubuntu-6000.6.10f1-ios-4
           targetPlatform: iOS
           buildName: AdventureKingReborn
           allowDirtyBuild: true
