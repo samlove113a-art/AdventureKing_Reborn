@@ -182,6 +182,24 @@ public sealed class WelfareServicesTests : IDisposable
     }
 
     [Fact]
+    public void Default_giftcode_gives_Vip15_50000KC_500000Gold_once_per_account_unlimited_across_accounts()
+    {
+        var codes = new GiftcodeService(t.Db, inv, () => clock);
+        var store = new DiamondStore(t.Db);
+        for (int n = 0; n < 3; n++)
+        {
+            string acc = NewAccount("dgc0" + n), id = NewHero(acc, "Mã Mặc " + "ABC"[n]);
+            GiftcodeResultDto r = codes.Redeem(acc, id, new GiftcodeDto { code = " akreborn-2026 " });
+            Assert.Equal(15, r.vipLevel);
+            Assert.True(r.vipPoints > 0);
+            Assert.Equal(50_000, r.diamonds);
+            Assert.Equal(505_000, r.balance);                       // 5 000 starter + 500 000
+            Assert.Equal(15, store.Vip(acc).level);
+            Assert.Equal("code_already_used", Assert.Throws<GameError>(() => codes.Redeem(acc, id, new GiftcodeDto { code = "AKREBORN2026" })).Code);
+            Assert.Equal("code_unknown", Assert.Throws<GameError>(() => codes.Redeem(acc, id, new GiftcodeDto { code = "SAIMA" })).Code);
+        }
+    }
+    [Fact]
     public void Giftcodes_check_existence_expiry_uses_level_and_once_per_account()
     {
         var codes = new GiftcodeService(t.Db, inv, () => clock);

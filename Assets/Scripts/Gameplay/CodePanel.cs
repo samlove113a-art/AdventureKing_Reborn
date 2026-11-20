@@ -212,6 +212,12 @@ namespace AdventureKing.Gameplay
             if (w && w.Character != null) w.Character.gold = gold; // HUD shows the server-confirmed balance
         }
 
+        protected static void ShowDiamonds(long diamonds)
+        {
+            var w = AdventureWorldSession.Current;
+            if (w && w.Character != null) w.Character.diamonds = diamonds; // HUD shows the server-confirmed balance
+        }
+
         protected static AdventureServerConnection Server => AdventureServerConnection.Instance;
     }
 }

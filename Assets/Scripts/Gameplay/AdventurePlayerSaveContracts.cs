@@ -228,7 +228,7 @@ namespace AdventureKing.Gameplay
     [Serializable] public sealed class WelfareState { public bool rewardsEnabled, anyClaimable; public string status; public long gold; public WelfareTabState[] tabs = new WelfareTabState[0]; }
     [Serializable] public sealed class MailState { public string id, kind, title, body, attachText; public long attachGold, createdMs; public bool hasAttachment, read, claimed; public RewardViewState[] items = new RewardViewState[0]; }
     [Serializable] public sealed class MailboxState { public MailState[] mails = new MailState[0]; public int unread, unclaimed; public long gold; }
-    [Serializable] public sealed class GiftcodeResult { public string code, reward; public long gold, balance; }
+    [Serializable] public sealed class GiftcodeResult { public string code, reward, message; public long gold, balance, diamonds, diamondsGranted, vipPoints; public int vipLevel; }
     [Serializable] public sealed class RankRowState { public int rank, heroClass, level; public string characterId, name; public long value; public bool me; }
     [Serializable] public sealed class RankBoardState { public string board, title, valueLabel, emptyReason; public RankRowState[] rows = new RankRowState[0]; public RankRowState mine; public int total; }
     [Serializable] public sealed class TitleState { public string id, category, name, source; public int level; }

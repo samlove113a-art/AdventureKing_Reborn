@@ -352,10 +352,13 @@ api.MapGet("/store/history", (HttpContext ctx, AccountService accounts, DiamondS
 api.MapGet("/store/month-card", (HttpContext ctx, AccountService accounts, DiamondStore store) => store.MonthCardStatus(accounts.Authenticate(Bearer(ctx))));
 api.MapPost("/store/month-card/claim", (HttpContext ctx, AccountService accounts, DiamondStore store) =>
     new { diamonds = store.ClaimMonthCard(accounts.Authenticate(Bearer(ctx))).Balance });
+// Giftcode redeem: POST /characters/{id}/giftcode {"code": "..."} (above) and the same thing as POST /giftcode/redeem {"characterId","code"}.
+api.MapPost("/giftcode/redeem", (GiftcodeRedeemDto body, HttpContext ctx, AccountService accounts, GiftcodeService codes) =>
+    codes.Redeem(accounts.Authenticate(Bearer(ctx)), body.characterId, new GiftcodeDto { code = body.code }));
 api.MapGet("/vip", (HttpContext ctx, AccountService accounts, DiamondStore store) =>
 {
     var (level, paid, configured) = store.Vip(accounts.Authenticate(Bearer(ctx)));
-    return new { level, paidVnd = paid, configured };
+    return new { level, paidVnd = paid, configured };   // VIP given by a giftcode counts as configured
 });
 
 app.Logger.LogInformation("Adventure King server: database {Db}", dbPath);
@@ -369,3 +372,4 @@ public sealed class ErrorDto { public string code { get; set; } = ""; public str
 public sealed class CatalogDto { public bool paymentsEnabled { get; set; } public StorePackageDto[] packages { get; set; } = Array.Empty<StorePackageDto>(); }
 
 public partial class Program { }
+public sealed class GiftcodeRedeemDto { public string code { get; set; } = ""; public string characterId { get; set; } = ""; }

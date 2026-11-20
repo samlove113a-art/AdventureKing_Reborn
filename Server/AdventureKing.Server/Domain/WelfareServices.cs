@@ -318,7 +318,8 @@ public sealed class MailService
 
 // ---------------------------------------------------------------- giftcode
 public sealed class GiftcodeDto { public string? code { get; set; } }
-public sealed class GiftcodeResultDto { public string code { get; set; } = ""; public long gold { get; set; } public string reward { get; set; } = ""; public long balance { get; set; } }
+public sealed class GiftcodeResultDto { public string code { get; set; } = ""; public long gold { get; set; } public string reward { get; set; } = ""; public long balance { get; set; }
+    public long diamonds { get; set; } public long diamondsGranted { get; set; } public int vipLevel { get; set; } public long vipPoints { get; set; } public string message { get; set; } = ""; }
 
 /// <summary>
 /// Giftcodes: created only by server code / operators (no HTTP endpoint creates codes; production has none until the
@@ -358,11 +359,12 @@ public sealed class GiftcodeService
         return db.InTransaction((c, tx) =>
         {
             Rewards.Own(c, tx, accountId, characterId);
-            using var cmd = Database.Command(c, tx, "SELECT reward_gold, reward_items, max_uses, used, min_level, expires_ms FROM giftcodes WHERE code=$c", ("$c", code));
+            using var cmd = Database.Command(c, tx, "SELECT reward_gold, reward_items, max_uses, used, min_level, expires_ms, reward_diamonds, reward_vip, reward_vip_points FROM giftcodes WHERE code=$c", ("$c", code));
             using var r = cmd.ExecuteReader();
             if (!r.Read()) throw new GameError("code_unknown", "Giftcode không tồn tại.", 404);
             long gold = r.GetInt64(0); var items = JsonSerializer.Deserialize<RewardItem[]>(r.GetString(1)) ?? Array.Empty<RewardItem>();
             int max = r.GetInt32(2), used = r.GetInt32(3), minLevel = r.GetInt32(4); long expires = r.GetInt64(5);
+            long kc = r.GetInt64(6), vipLv = r.GetInt64(7), vipPts = r.GetInt64(8);
             r.Close();
             if (now() >= expires) throw new GameError("code_expired", "Giftcode đã hết hạn.", 409);
             if (used >= max) throw new GameError("code_used_up", "Giftcode đã hết lượt sử dụng.", 409);
@@ -373,8 +375,17 @@ public sealed class GiftcodeService
             if (Database.Exec(c, tx, "UPDATE giftcodes SET used=used+1 WHERE code=$c AND used < max_uses", ("$c", code)) == 0)
                 throw new GameError("code_used_up", "Giftcode đã hết lượt sử dụng.", 409);
             Rewards.Pay(c, tx, inv, accountId, characterId, "giftcode:" + code, gold, items, now());
+            if (kc > 0) Wallet.Diamonds(c, tx, accountId, kc, "giftcode:" + code, $"giftcode:{code}:{accountId}:kc");
+            if (vipLv > 0 || vipPts > 0)   // VIP level and its progress points move together so the progress bar stays consistent
+                Database.Exec(c, tx, "UPDATE accounts SET vip_level=MAX(vip_level,$v), vip_points=MAX(vip_points,$p) WHERE id=$a", ("$v", vipLv), ("$p", vipPts), ("$a", accountId));
             long balance = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId));
-            return new GiftcodeResultDto { code = code, gold = gold, reward = Rewards.Text(inv.Config, gold, items), balance = balance };
+            long diamonds = Database.Scalar<long>(c, tx, "SELECT diamonds FROM accounts WHERE id=$a", ("$a", accountId));
+            int vipNow = Database.Scalar<int>(c, tx, "SELECT vip_level FROM accounts WHERE id=$a", ("$a", accountId));
+            long ptsNow = Database.Scalar<long>(c, tx, "SELECT vip_points FROM accounts WHERE id=$a", ("$a", accountId));
+            string text = Rewards.Text(inv.Config, gold, items);
+            if (kc > 0) text += $" + {kc:N0} Kim Cương";
+            if (vipLv > 0) text = $"VIP {vipLv} + " + text;
+            return new GiftcodeResultDto { code = code, gold = gold, reward = text, balance = balance, diamonds = diamonds, diamondsGranted = kc, vipLevel = vipNow, vipPoints = ptsNow, message = "Chúc mừng! Bạn nhận " + text };
         });
     }
 }

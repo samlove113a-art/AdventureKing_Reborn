@@ -60,7 +60,13 @@ namespace AdventureKing.Gameplay
             {
                 Busy = false;
                 redeem.interactable = true;
-                if (ok && r != null) { Last = r; ShowGold(r.balance); Message("<color=#a8f0a0>Đổi quà thành công:</color> " + r.reward); Input.text = ""; }
+                if (ok && r != null)
+                {
+                    Last = r; ShowGold(r.balance); if (r.diamondsGranted > 0 || r.diamonds > 0) ShowDiamonds(r.diamonds);
+                    Message("<color=#a8f0a0>Chúc mừng!</color> Bạn nhận " + r.reward);
+                    QuickGoalToast.Show("Nhận quà thành công: " + r.reward);
+                    Input.text = "";
+                }
                 else Message(err ?? "Không đổi được giftcode.");
             });
         }

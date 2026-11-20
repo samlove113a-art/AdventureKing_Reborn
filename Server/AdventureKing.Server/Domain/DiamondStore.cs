@@ -277,6 +277,7 @@ public sealed class DiamondStore
         using var c = db.Open();
         long paid = Database.Scalar<long>(c, null, "SELECT paid_total_vnd FROM accounts WHERE id=$a", ("$a", accountId));
         int level = vipThresholdsVnd.Count(t => paid >= t);
-        return (level, paid, vipThresholdsVnd.Length == 10);
+        long granted = Database.Scalar<long>(c, null, "SELECT vip_level FROM accounts WHERE id=$a", ("$a", accountId));   // VIP given by a giftcode
+        return (Math.Max(level, (int)granted), paid, vipThresholdsVnd.Length == 10 || granted > 0);
     }
 }

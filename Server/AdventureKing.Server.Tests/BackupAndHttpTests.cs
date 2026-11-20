@@ -54,7 +54,7 @@ public class BackupRestoreTests : IDisposable
         var db = new Database(t.Path_); // opening migrates
         using (var c = db.Open())
         {
-            Assert.Equal(15L, Database.Scalar<long>(c, null, "PRAGMA user_version")); // v10 -> v11 social -> v12 bag -> v13 chapter -> v14 per-item enhancement -> v15 enhance pity + VietQR orders
+            Assert.Equal(16L, Database.Scalar<long>(c, null, "PRAGMA user_version")); // v10 -> v11 social -> v12 bag -> v13 chapter -> v14 per-item enhancement -> v15 enhance pity + VietQR orders -> v16 giftcodes
             Assert.Equal("Di Trú", Database.Scalar<string>(c, null, "SELECT name FROM characters WHERE id=$c", ("$c", id)));
             Database.Exec(c, null, "INSERT INTO guilds(id, name, name_key, emblem, created_ms) VALUES('g1','Lưu Bang','luubang','bell',1)");
             Database.Exec(c, null, "INSERT INTO guild_members(character_id, guild_id, role, joined_ms) VALUES($c,'g1','leader',1)", ("$c", id));

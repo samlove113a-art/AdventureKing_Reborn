@@ -187,6 +187,15 @@ public sealed class Database
             Exec(c, tx, "PRAGMA user_version=15;");
             tx.Commit();
         }
+        if (version < 16)
+        {
+            using var tx = c.BeginTransaction();
+            foreach (var (tbl, col) in new[] { ("accounts", "vip_level"), ("accounts", "vip_points"), ("giftcodes", "reward_diamonds"), ("giftcodes", "reward_vip"), ("giftcodes", "reward_vip_points") })
+                if (!HasColumn(c, tx, tbl, col)) Exec(c, tx, $"ALTER TABLE {tbl} ADD COLUMN {col} INTEGER NOT NULL DEFAULT 0;");   // idempotent for restored / re-versioned databases
+            Exec(c, tx, Schema.V16);
+            Exec(c, tx, "PRAGMA user_version=16;");
+            tx.Commit();
+        }
     }
 
     private static bool HasColumn(SqliteConnection c, SqliteTransaction tx, string table, string column)
@@ -228,7 +237,15 @@ public sealed class Database
 
 internal static class Schema
 {
-    public const int Current = 15;
+    public const int Current = 16;
+
+    // V16: Giftcodes (one redemption per account per code, unlimited server-wide) + VIP granted by code.
+    public const string V16 = """
+    -- (columns are added with HasColumn guards in the migration code)
+    -- Default campaign code: every account once, no server-wide cap (max_uses = int32 max), never expires (year 2100).
+    INSERT OR IGNORE INTO giftcodes(code, reward_gold, reward_items, max_uses, min_level, expires_ms, note, reward_diamonds, reward_vip, reward_vip_points)
+    VALUES ('AKREBORN2026', 500000, '[]', 2147483647, 1, 4102444800000, 'Default welcome code (owner request 2026-11-20)', 50000, 15, 150000);
+    """;
 
     // V14: per-instance equipment +0..+15; upgrade receipts provide idempotency across network retries.
     // All resources, failure rolls, gear level and receipts change atomically in one transaction.
