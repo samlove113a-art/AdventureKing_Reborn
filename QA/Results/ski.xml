@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 18:40:29Z" end-time="2026-11-19 18:42:22Z" duration="112.2630561">
+  <test-suite type="TestSuite" id="1146" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="94" result="Passed" start-time="2026-11-19 18:40:29Z" end-time="2026-11-19 18:42:22Z" duration="112.263056" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1133" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="90" result="Passed" start-time="2026-11-19 18:40:29Z" end-time="2026-11-19 18:42:22Z" duration="112.247963" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="7948" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1134" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="90" result="Passed" start-time="2026-11-19 18:40:30Z" end-time="2026-11-19 18:42:22Z" duration="112.242039" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="90" result="Passed" start-time="2026-11-19 18:40:30Z" end-time="2026-11-19 18:42:22Z" duration="112.238416" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1063" name="JewelryTests" fullname="AdventureKing.Tests.JewelryTests" classname="AdventureKing.Tests.JewelryTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 18:40:30Z" end-time="2026-11-19 18:40:56Z" duration="26.748229" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1064" name="Three_Shop_Groups_Rings_And_Necklaces_And_Forge_Work" fullname="AdventureKing.Tests.JewelryTests.Three_Shop_Groups_Rings_And_Necklaces_And_Forge_Work" methodname="Three_Shop_Groups_Rings_And_Necklaces_And_Forge_Work" classname="AdventureKing.Tests.JewelryTests" runstate="Runnable" seed="1636492945" result="Passed" start-time="2026-11-19 18:40:30Z" end-time="2026-11-19 18:40:56Z" duration="26.731303" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1079" name="PetTests" fullname="AdventureKing.Tests.PetTests" classname="AdventureKing.Tests.PetTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-19 18:40:56Z" end-time="2026-11-19 18:41:50Z" duration="53.852442" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1081" name="Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" fullname="AdventureKing.Tests.PetTests.Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" methodname="Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" classname="AdventureKing.Tests.PetTests" runstate="Runnable" seed="1069204827" result="Passed" start-time="2026-11-19 18:40:56Z" end-time="2026-11-19 18:41:31Z" duration="34.862105" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+[05_pet_auto_potion_settings pc_1920x1080] OK (29 texts, 14 buttons)
+[05_pet_auto_potion_settings pc_1366x768] OK (29 texts, 14 buttons)
+[05_pet_auto_potion_settings phone_19.5x9] OK (29 texts, 14 buttons)
+[05_pet_auto_potion_settings phone_16x9] OK (29 texts, 14 buttons)
+[05_pet_auto_potion_settings tablet_4x3] OK (29 texts, 14 buttons)
+]]></output>
+            </test-case>
+            <test-case id="1080" name="Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" fullname="AdventureKing.Tests.PetTests.Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" methodname="Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" classname="AdventureKing.Tests.PetTests" runstate="Runnable" seed="1470184740" result="Passed" start-time="2026-11-19 18:41:31Z" end-time="2026-11-19 18:41:50Z" duration="18.987640" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1124" name="Village2DTests" fullname="AdventureKing.Tests.Village2DTests" classname="AdventureKing.Tests.Village2DTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 18:41:50Z" end-time="2026-11-19 18:42:22Z" duration="31.615952" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1125" name="Hub_Is_Pure_2D_And_Its_Platforms_Gimmicks_And_Pictures_Work" fullname="AdventureKing.Tests.Village2DTests.Hub_Is_Pure_2D_And_Its_Platforms_Gimmicks_And_Pictures_Work" methodname="Hub_Is_Pure_2D_And_Its_Platforms_Gimmicks_And_Pictures_Work" classname="AdventureKing.Tests.Village2DTests" runstate="Runnable" seed="639425008" result="Passed" start-time="2026-11-19 18:41:50Z" end-time="2026-11-19 18:42:22Z" duration="31.613988" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Animator is not playing an AnimatorController
+Animator is not playing an AnimatorController
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

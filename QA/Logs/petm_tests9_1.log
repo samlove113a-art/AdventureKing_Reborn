@@ -1,0 +1,1310 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 1348)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 13868)
+VBCSCompiler prewarm took 10.85 ms
+Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::Module] Trying to connect to existing licensing client channel...
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-19T15:31:39Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 15464)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
+-batchmode
+-projectPath
+C:\AdventureKing_Reborn
+-runTests
+-testPlatform
+PlayMode
+-testFilter
+PetMotionTests;PetTests
+-testResults
+C:\AdventureKing_Reborn\QA\Results\petm9_1.xml
+-logFile
+C:\AdventureKing_Reborn\QA\Logs\petm_tests9_1.log
+Successfully changed project path to: C:\AdventureKing_Reborn
+C:/AdventureKing_Reborn
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [17828]  Target information:
+
+Player connection [17828]  * "[IP] 192.168.1.46 [Port] 55506 [Flags] 2 [Guid] 1878181339 [EditorId] 1878181339 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [17828]  * "[IP] 100.91.134.127 [Port] 55506 [Flags] 2 [Guid] 1878181339 [EditorId] 1878181339 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [17828] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [17828] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC" at "2026-11-19T15:31:40.7773729Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 15464, path: "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-1428" after 1.7 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              dd0ab4bec8df445d94e06689131f94a2
+  Correlation Id:          c891676d2cfbd8f2344a3d2c9f9e864f
+  External correlation Id: 3766832317268095588
+  Machine Id:              H8/G/fc0rlfXtvyvU/St35alyaw=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-PC" (connect: 1.35s, validation: 0.73s, handshake: 0.26s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-PC-notifications" at "2026-11-19T15:31:41.7676998Z"
+[Licensing::Module] Connected to LicensingClient (PId: 15464, launch time: 0.00, total connection time: 2.34s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968527504213-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.07
+[Licensing::Module] Licensing Background thread has ended after 2.50s
+[Licensing::Module] Licensing is initialized (took 0.32s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/AdventureKing_RebornUnity Data Store running and initialised
+[Physics::Module] Selected backend (deferred post-plugins).
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.6.7f1 (b22767f04f04)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=262144, entitiesPerBlock=1024, blocksPerSlotPage=0, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/AdventureKing_Reborn/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+d3d12: failed to query info queue interface (0x80004002).
+Direct3D:
+    Version:         Direct3D 12 [level 12.1]
+    Renderer:        NVIDIA GeForce GTX 1050 Ti (ID=0x1c82)
+    Vendor:          NVIDIA
+    VRAM:            4004 MB
+    App VRAM Budget: 3403 MB
+    Driver:          32.0.15.7680
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56428
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.038516 seconds.
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.302 seconds
+Domain Reload Profiling: 5156ms
+	BeginReloadAssembly (596ms)
+		CreateAndSetChildDomain (20ms)
+	RebuildCommonClasses (27ms)
+	RebuildNativeTypeToScriptingClass (203ms)
+	initialDomainReloadingComplete (517ms)
+	LoadAllAssembliesAndSetupDomain (1508ms)
+		LoadAssemblies (570ms)
+		TypeCache.Refresh (1082ms)
+			TypeCache.ScanAssembly (1026ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (2306ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (6ms)
+			InitializePlatformSupportModulesInManaged (35ms)
+			BeforeProcessingInitializeOnLoad (327ms)
+			ProcessInitializeOnLoadAttributes (334ms)
+			ProcessInitializeOnLoadMethodAttributes (1004ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 31 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.inputsystem@1.20.1 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.inputsystem@2436e68c60c4)
+    com.unity.searcher@4.9.5 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.profiling.core@1.0.3 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.sprite@752945c75a6f)
+    com.unity.2d.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.2d.tilemap@f4c7bd71ac8a)
+    com.unity.render-pipelines.universal@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal@ffe395a3a1d1)
+    com.unity.test-framework@1.8.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework@ee3fe9477490)
+    com.unity.ugui@2.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ugui@eb824e41fbc7)
+    com.unity.modules.animation@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.audio@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.tilemap@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.modules.physics@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.ext.nunit@2.1.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.render-pipelines.core@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.core@13460d8ea9e5)
+    com.unity.shadergraph@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.shadergraph@8b7e693cdbfe)
+    com.unity.render-pipelines.universal-config@17.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.render-pipelines.universal-config@561422b74439)
+    com.unity.graph-authoring@1.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.graph-authoring@cfd2588851ee)
+    com.unity.burst@2.0.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.collections@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.collections@4920e8897b5a)
+    com.unity.test-framework.performance@6.6.0 (location: C:\AdventureKing_Reborn\Library\PackageCache\com.unity.test-framework.performance@e8b39e3ef3d9)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/AdventureKing_Reborn
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 7s890ms
+[625/804    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[BUSY       6s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll (+2 others)
+[800/804    6s] Csc Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll (+2 others)
+Assets\Tests\PlayMode\Chibi2DActorTests.cs(86,88): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Tests\PlayMode\Chibi2DActorTests.cs(86,24): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(88,108): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(88,40): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(96,90): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(96,29): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(100,89): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(100,28): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(105,114): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(105,45): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(116,102): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(116,33): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Tests\PlayMode\Chapter1Tests.cs(417,103): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Tests\PlayMode\Chapter1Tests.cs(417,34): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Tests\PlayMode\Chapter1Tests.cs(419,96): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Tests\PlayMode\Chapter1Tests.cs(419,27): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+[801/804    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/AdventureKing.Tests.PlayMode.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/AdventureKing.Tests.PlayMode.dll, with 148 defines and 276 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+[802/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll
+[803/804    0s] CopyFiles Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.pdb
+*** Tundra build success (7.79 seconds), 5 items updated, 804 evaluated
+Assets\Tests\PlayMode\Chibi2DActorTests.cs(86,88): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Tests\PlayMode\Chibi2DActorTests.cs(86,24): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(88,108): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(88,40): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(96,90): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(96,29): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(100,89): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(100,28): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(105,114): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(105,45): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(116,102): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Tests\PlayMode\DropInventoryUiTests.cs(116,33): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Tests\PlayMode\Chapter1Tests.cs(417,103): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Tests\PlayMode\Chapter1Tests.cs(417,34): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Tests\PlayMode\Chapter1Tests.cs(419,96): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Tests\PlayMode\Chapter1Tests.cs(419,27): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+AssetDatabase: script compilation time: 9.484519s
+Begin MonoManager ReloadAssembly
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.870 seconds
+Domain Reload Profiling: 5691ms
+	BeginReloadAssembly (909ms)
+		DisableScriptedObjects (66ms)
+		CreateAndSetChildDomain (261ms)
+	RebuildCommonClasses (31ms)
+	RebuildNativeTypeToScriptingClass (67ms)
+	initialDomainReloadingComplete (176ms)
+	LoadAllAssembliesAndSetupDomain (1636ms)
+		LoadAssemblies (911ms)
+		TypeCache.Refresh (421ms)
+			TypeCache.ScanAssembly (381ms)
+		AnalyzeDomain (152ms)
+			BuildScriptInfoCaches (119ms)
+			ResolveRequiredComponents (25ms)
+	FinalizeReload (2872ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (14ms)
+			InitializePlatformSupportModulesInManaged (37ms)
+			BeforeProcessingInitializeOnLoad (421ms)
+			ProcessInitializeOnLoadAttributes (570ms)
+			ProcessInitializeOnLoadMethodAttributes (782ms)
+			AfterProcessingInitializeOnLoad (23ms)
+			EditorAssembliesLoaded (4ms)
+		AwakeInstancesAfterBackupRestoration (92ms)
+Starting new worker id: 0 with log in C:/AdventureKing_Reborn/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=192621d4783f79540a3d741051df3713): Total: 17.521 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=4234 ms
+		Asset DB Callback time: managed=577 ms, native=48 ms
+		Scripting: domain reloads=1, domain reload time=2986 ms, compile time=9488 ms, other=185 ms
+		Project Asset Count: scripts=1086, non-scripts=3663
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 30.515ms
+	ApplyChangesToAssetFolders: 1.177ms
+	Scan: 470.348ms
+	Collect global state as custom dependencies: 47.512ms
+	OnSourceAssetsModified: 1.294ms
+	CategorizeScriptCompilationAssets: 65.039ms
+	ProcessAssetsWithTransientArtifactChanges: 197.925ms
+	CategorizeAssets: 177.603ms
+	CompileScripts: 9487.714ms
+	ImportOutOfDateAssets: 2897.961ms (2878.197ms without children)
+		UnloadImportedAssets: 7.814ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.379ms
+		ImportSchedulerStart: 10.526ms
+	PostProcessAllAssets: 578.756ms
+		VCAutoAddAssetPostprocess 1.268ms
+		XRBuildSystem.XRAssetImported 0.168ms
+		PostProcessCallbackCreateDeferredMaterials 0.061ms
+		MonoPostProcessAllAssets: 576.502ms
+			AssetPostprocessor.OnPostprocessAllAssets 339.072ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 73.240ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 52.711ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 14.739ms
+			AssetChangedListener.OnPostprocessAllAssets 7.426ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 6.228ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 4.801ms
+			SyncVS.PostprocessSyncProject 4.664ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 4.507ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 4.288ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 3.845ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 2.364ms
+			MaterialPostprocessor.OnPostprocessAllAssets 2.341ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 2.244ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 1.548ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 1.157ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.988ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.929ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.867ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.863ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.719ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.706ms
+			PostProcessor.OnPostprocessAllAssets 0.699ms
+			AssetProcessor.OnPostprocessAllAssets 0.694ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.633ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.628ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.591ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.561ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.420ms
+			AssetEvents.OnPostprocessAllAssets 0.405ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.335ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.326ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.312ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.174ms
+	PostAssetChangesProfiler: 19.017ms
+	UnloadStreamsBegin: 4.887ms
+	PersistCurrentRevisions: 0.214ms
+	GenerateScriptTypeHashes: 6.906ms
+	GenerateScriptTypeSerializationHashes: 11.348ms
+	Untracked: 3530.721ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Scanning for USB devices : 3.283ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Adventure King Reborn
+Unloading 66 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4041 unused Assets / (7.5 MB). Loaded Objects now: 4997.
+Memory consumption went from 350.3 MB to 342.7 MB.
+Total: 35.330400 ms (FindLiveObjects: 2.279800 ms CreateObjectMapping: 0.870500 ms MarkObjects: 19.270300 ms  DeleteObjects: 12.512400 ms)
+
+Unity is not designed to run with Administrator privileges.
+
+With elevated access, scripts in your project can modify system files, registry settings, or protected areas, even accidentally.
+This could make your system unstable or unbootable.
+
+Restart as a standard user for the safest experience.
+[Project] Loading completed in 28.666 seconds
+	Project init time: 				27.779 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		2.025 seconds
+		Asset Database init time: 		0.869 seconds
+		Global illumination init time: 	0.005 seconds
+		Assemblies load time: 			5.358 seconds
+		Unity extensions init time: 	0.050 seconds
+		Asset Database refresh time: 	17.521 seconds
+	Scene opening time: 			0.403 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1795102328043,"processId":1428,"projectLoad":28.666016799999998,"projectInit":27.7790389,"templateInit":0.0,"packageManagerInit":2.0247027,"assetDatabaseInit":0.8686377,"globalIlluminationInit":0.0048042,"assembliesLoad":5.3583636,"unityExtensionsInit":0.0501894,"assetDatabaseRefresh":17.521298,"sceneOpening":0.4032115}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1795102328043,"processId":1428,"editorVersion":"6000.6.7f1 (b22767f04f04)","branch":"6000.6/staging","buildType":"Release","platform":"Windows"}
+[Licensing::Client] Successfully resolved entitlement details
+Running tests for ExecutionSettings with details:
+targetPlatform = 
+playerHeartbeatTimeout = 600
+filters[0] = 
+   Filter with settings:
+   testMode = PlayMode
+   targetPlatform = 
+   testNames = null
+   groupNames = PetMotionTests, PetTests
+   categoryNames = null
+   assemblyNames = null
+ignoreTests = {}
+featureFlags = null
+
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityEditor.TestTools.TestRunner.CommandLineTest.Executer:InitializeAndExecuteRun (string[]) (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/CommandLineTest/Executer.cs:53)
+UnityEditor.TestTools.TestRunner.CommandLineTest.TestStarter:InitializeAndExecuteRun () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/CommandLineTest/TestStarter.cs:64)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/CommandLineTest/Executer.cs Line: 53)
+
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+[UnityConnectServicesConfig] config is NOT valid, switching to default
+Created GICache directory at C:/Users/PC/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.073s, timestamps: [28.675 - 28.747]
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 0 unused Assets / (Unknown). Loaded Objects now: 5151.
+Memory consumption went from 347.9 MB to 347.9 MB.
+Total: 19.721100 ms (FindLiveObjects: 0.945300 ms CreateObjectMapping: 0.402200 ms MarkObjects: 18.028200 ms  DeleteObjects: 0.018800 ms)
+
+Importing 'GUID: 8e3513794f1f2634ca8b91120c2d80a0 - Path: Assets/InitTestScene21466735-170a-4df7-957d-9eeb9df9d3b0.unity' with importer (DefaultImporter)
+Imported 'GUID: 8e3513794f1f2634ca8b91120c2d80a0' -> (Import Result ID: 'edfad5dd704e1ff094effafabb72720a') in 0.010 seconds [static dependencies only]. Details - ImportResultOutputID=456a2fa68e33a340c0ce188b961b7287 DependenciesID=aba19f9bd2dcc6b0c22e05ea73620149 StaticDependenciesID=3818b2d5a5f566e84dff3e9223d03666 
+Asset Pipeline Refresh (id=00384a250eb1c7a49a00aa435f71323b): Total: 0.182 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Executing IPrebuildSetup for: Unity.PerformanceTesting.Editor.TestRunBuilder.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.BuildActionTaskBase`1/<ExecuteMethods>d__8<UnityEngine.TestTools.IPrebuildSetup>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs:48)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.BuildActionTaskBase`1/<Execute>d__7<UnityEngine.TestTools.IPrebuildSetup>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs:34)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteStep () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:194)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:129)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs Line: 48)
+
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Worker ready: AssetImportWorkerHW0 0
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  3.174 seconds
+Domain Reload Profiling: 4969ms
+	BeginReloadAssembly (759ms)
+		DisableScriptedObjects (77ms)
+		CreateAndSetChildDomain (195ms)
+	RebuildCommonClasses (31ms)
+	RebuildNativeTypeToScriptingClass (63ms)
+	initialDomainReloadingComplete (136ms)
+	LoadAllAssembliesAndSetupDomain (803ms)
+		LoadAssemblies (524ms)
+		TypeCache.Refresh (74ms)
+		AnalyzeDomain (82ms)
+			ResolveRequiredComponents (78ms)
+	FinalizeReload (3178ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (30ms)
+			BeforeProcessingInitializeOnLoad (400ms)
+			ProcessInitializeOnLoadAttributes (590ms)
+			ProcessInitializeOnLoadMethodAttributes (641ms)
+			AfterProcessingInitializeOnLoad (22ms)
+			EditorAssembliesLoaded (3ms)
+		AwakeInstancesAfterBackupRestoration (178ms)
+No restricted APIs configured; Validation skipped.
+Checking 6 assemblies for restricted APIs found 0 usage(s) in 13 ms
+
+Asset Pipeline Refresh (id=fca11bfb13e8a7e4fad944c518288fb9): Total: 7.193 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=3792 ms
+		Asset DB Callback time: managed=1091 ms, native=403 ms
+		Scripting: domain reloads=1, domain reload time=1901 ms, compile time=5 ms, other=0 ms
+		Project Asset Count: scripts=1086, non-scripts=3664
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 2.256ms
+	ApplyChangesToAssetFolders: 0.202ms
+	Collect global state as custom dependencies: 6.270ms
+	ProcessAssetsWithTransientArtifactChanges: 366.124ms
+	CategorizeAssets: 149.056ms
+	CompileScripts: 4.503ms
+	ImportOutOfDateAssets: 3187.397ms (3182.793ms without children)
+		CollectScriptTypesHashes: 3.334ms
+		ReloadNativeAssets: 2.518ms
+		UnloadImportedAssets: 0.275ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.419ms
+		ImportSchedulerStart: 0.358ms
+	PostProcessAllAssets: 1490.419ms
+		PostProcessCallbackCreateDeferredMaterials 52.370ms
+		ShaderAssetModifiedCallback 28.397ms
+		AssemblyValidation.PostprocessAllAssets 21.308ms
+		ComputeShaderImportPostprocess 13.791ms
+		RaytracingShaderImportPostprocess 11.399ms
+		SpeedTreeImporter.PostprocessAllAssets 10.919ms
+		BlockShaderImporter.PostprocessAllAssets 9.475ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 4.099ms
+		XRBuildSystem.XRAssetImported 0.210ms
+		MonoPostProcessAllAssets: 1088.389ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 328.983ms
+			PostProcessor.OnPostprocessAllAssets 108.360ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 73.091ms
+			AssetPostprocessor.OnPostprocessAllAssets 69.674ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 65.113ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 57.671ms
+			MaterialPostprocessor.OnPostprocessAllAssets 54.984ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 44.199ms
+			AssetChangedListener.OnPostprocessAllAssets 37.488ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 35.256ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 33.763ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 17.514ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 9.990ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 8.463ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 4.920ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 3.882ms
+			SyncVS.PostprocessSyncProject 3.543ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.915ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.889ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 2.871ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 1.602ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 1.171ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.865ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.753ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.685ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.644ms
+			AssetEvents.OnPostprocessAllAssets 0.623ms
+			AssetProcessor.OnPostprocessAllAssets 0.538ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.523ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.283ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.237ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.230ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.204ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.190ms
+	PostAssetChangesProfiler: 3.438ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.241ms
+	UnloadStreamsBegin: 0.171ms
+	PersistCurrentRevisions: 0.165ms
+	GenerateScriptTypeHashes: 9.825ms
+	GenerateScriptTypeSerializationHashes: 15.306ms
+	Untracked: 1974.512ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            1.332 ms
+	Integration:            164.761 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.005 ms
+	Total Operation Time:   166.100 ms
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[Licensing::Client] Successfully resolved entitlement details
+[server] info: AdventureKing.Server[0]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_1e50d567fe2b48c4a627a63d42a51229\test.db
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server] info: Microsoft.Hosting.Lifetime[14]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Now listening on: http://127.0.0.1:5261
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server] info: Microsoft.Hosting.Lifetime[0]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Application started. Press Ctrl+C to shut down.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server] info: Microsoft.Hosting.Lifetime[0]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Hosting environment: Production
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server] info: Microsoft.Hosting.Lifetime[0]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Content root path: C:\AdventureKing_Reborn\Server\AdventureKing.Server\bin\Debug\net8.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+Curl error 28: Operation timed out after 2015 milliseconds with 0 bytes received
+Unloading 67 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.017700 ms
+Loaded scene 'Assets/Scenes/AK_Entry.unity'
+	Deserialize:            160.404 ms
+	Integration:            262.184 ms
+	Integration of assets:  30.356 ms
+	Thread Wait Time:       19.184 ms
+	Total Operation Time:   472.127 ms
+Unloading 3535 unused Assets / (1.4 MB). Loaded Objects now: 6969.
+Memory consumption went from 393.7 MB to 392.3 MB.
+Total: 35.601600 ms (FindLiveObjects: 1.487500 ms CreateObjectMapping: 0.584800 ms MarkObjects: 29.956600 ms  DeleteObjects: 3.179500 ms)
+
+Curl error 7: Failed to connect to 127.0.0.1 port 5080 after 2410 ms: Could not connect to server
+Curl error 7: Failed to connect to 100.91.134.127 port 5080 after 2402 ms: Could not connect to server
+Unloading 357 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 16.302700 ms
+Loaded scene 'Assets/Scenes/AK_Village.unity'
+	Deserialize:            1206.543 ms
+	Integration:            173.450 ms
+	Integration of assets:  333.010 ms
+	Thread Wait Time:       -2.362 ms
+	Total Operation Time:   1710.640 ms
+Unloading 492 unused Assets / (106.7 KB). Loaded Objects now: 11450.
+Memory consumption went from 0.63 GB to 0.63 GB.
+Total: 36.314900 ms (FindLiveObjects: 2.398400 ms CreateObjectMapping: 0.976600 ms MarkObjects: 31.487500 ms  DeleteObjects: 0.786100 ms)
+
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.GameObject:Internal_AddComponentWithType (System.Type)
+UnityEngine.GameObject:AddComponent (System.Type)
+UnityEngine.GameObject:AddComponent<UnityEngine.RectTransform> ()
+AdventureKing.Gameplay.BlacksmithUI:Make<UnityEngine.RectTransform> (UnityEngine.Transform,string,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2) (at Assets/Scripts/Gameplay/BlacksmithUI.cs:49)
+AdventureKing.Gameplay.BlacksmithUI:Build () (at Assets/Scripts/Gameplay/BlacksmithUI.cs:117)
+AdventureKing.Gameplay.BlacksmithUI:get_TalkButton () (at Assets/Scripts/Gameplay/BlacksmithUI.cs:141)
+AdventureKing.Gameplay.BlacksmithNpc:Start () (at Assets/Scripts/Gameplay/BlacksmithNpc.cs:25)
+
+[Assets/Scripts/Gameplay/BlacksmithUI.cs line 117]
+
+TrimDiskCacheJob: Current cache size 0mb
+Unloading 432 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 26.901700 ms
+Loaded scene 'Assets/Scenes/AK_Meadow.unity'
+	Deserialize:            171.773 ms
+	Integration:            91.267 ms
+	Integration of assets:  2.017 ms
+	Thread Wait Time:       630.689 ms
+	Total Operation Time:   895.746 ms
+Unloading 310 unused Assets / (6.6 MB). Loaded Objects now: 13217.
+Memory consumption went from 0.69 GB to 0.68 GB.
+Total: 44.584700 ms (FindLiveObjects: 3.144000 ms CreateObjectMapping: 10.779000 ms MarkObjects: 28.963800 ms  DeleteObjects: 1.127700 ms)
+
+[server] info: AdventureKing.Server[0]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Adventure King server: database C:\Users\PC\AppData\Local\Temp\ak_srv_f5f4ef0dfcaf40b18860ada2b100e08a\test.db
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server] info: Microsoft.Hosting.Lifetime[14]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Now listening on: http://127.0.0.1:5261
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server] info: Microsoft.Hosting.Lifetime[0]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Application started. Press Ctrl+C to shut down.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server] info: Microsoft.Hosting.Lifetime[0]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Hosting environment: Production
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server] info: Microsoft.Hosting.Lifetime[0]
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+[server]       Content root path: C:\AdventureKing_Reborn\Server\AdventureKing.Server\bin\Debug\net8.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AdventureKing.Tests.TestServer/<>c:<Start>b__15_0 (object,System.Diagnostics.DataReceivedEventArgs) (at Assets/Tests/PlayMode/TestServer.cs:60)
+System.Diagnostics.Process:OutputReadNotifyUser (string)
+System.Diagnostics.AsyncStreamReader:FlushMessageQueue ()
+System.Diagnostics.AsyncStreamReader:GetLinesFromStringBuilder ()
+System.Diagnostics.AsyncStreamReader:ReadBuffer (System.IAsyncResult)
+System.IO.Stream/ReadWriteTask:InvokeAsyncCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object)
+System.IO.Stream/ReadWriteTask:System.Threading.Tasks.ITaskCompletionAction.Invoke (System.Threading.Tasks.Task)
+System.Threading.Tasks.Task:FinishContinuations ()
+System.Threading.Tasks.Task:FinishStageThree ()
+System.Threading.Tasks.Task:FinishStageTwo ()
+System.Threading.Tasks.Task:Finish (bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Tests/PlayMode/TestServer.cs Line: 60)
+
+Curl error 28: Operation timed out after 2004 milliseconds with 0 bytes received
+Unloading 58 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.519600 ms
+Loaded scene 'Assets/Scenes/AK_Entry.unity'
+	Deserialize:            89.160 ms
+	Integration:            86.890 ms
+	Integration of assets:  28.059 ms
+	Thread Wait Time:       11.387 ms
+	Total Operation Time:   215.496 ms
+Unloading 1969 unused Assets / (117.6 MB). Loaded Objects now: 7481.
+Memory consumption went from 0.62 GB to 0.50 GB.
+Total: 34.124000 ms (FindLiveObjects: 1.478500 ms CreateObjectMapping: 0.531000 ms MarkObjects: 28.518800 ms  DeleteObjects: 3.046700 ms)
+
+Unloading 352 Unused Serialized files (Serialized files now loaded: 0)
+Curl error 7: Failed to connect to 127.0.0.1 port 5080 after 2222 ms: Could not connect to server
+Curl error 7: Failed to connect to 100.91.134.127 port 5080 after 2294 ms: Could not connect to server
+UnloadTime: 4.209900 ms
+Loaded scene 'Assets/Scenes/AK_Village.unity'
+	Deserialize:            882.997 ms
+	Integration:            109.827 ms
+	Integration of assets:  302.450 ms
+	Thread Wait Time:       -1.509 ms
+	Total Operation Time:   1293.765 ms
+Unloading 516 unused Assets / (3.9 MB). Loaded Objects now: 12017.
+Memory consumption went from 0.70 GB to 0.69 GB.
+Total: 22.825400 ms (FindLiveObjects: 2.256800 ms CreateObjectMapping: 1.266300 ms MarkObjects: 18.265300 ms  DeleteObjects: 0.574100 ms)
+
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.GameObject:Internal_AddComponentWithType (System.Type)
+UnityEngine.GameObject:AddComponent (System.Type)
+UnityEngine.GameObject:AddComponent<UnityEngine.RectTransform> ()
+AdventureKing.Gameplay.BlacksmithUI:Make<UnityEngine.RectTransform> (UnityEngine.Transform,string,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2) (at Assets/Scripts/Gameplay/BlacksmithUI.cs:49)
+AdventureKing.Gameplay.BlacksmithUI:Build () (at Assets/Scripts/Gameplay/BlacksmithUI.cs:117)
+AdventureKing.Gameplay.BlacksmithUI:get_TalkButton () (at Assets/Scripts/Gameplay/BlacksmithUI.cs:141)
+AdventureKing.Gameplay.BlacksmithNpc:Start () (at Assets/Scripts/Gameplay/BlacksmithNpc.cs:25)
+
+[Assets/Scripts/Gameplay/BlacksmithUI.cs line 117]
+
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+Saving results to: C:\AdventureKing_Reborn\QA\Results\petm9_1.xml
+Unloading 70 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.724 ms
+	Integration:            17.409 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.012 ms
+	Total Operation Time:   18.147 ms
+Unloading 2356 unused Assets / (197.1 MB). Loaded Objects now: 5604.
+Memory consumption went from 0.69 GB to 508.9 MB.
+Total: 21.761000 ms (FindLiveObjects: 1.668100 ms CreateObjectMapping: 0.732400 ms MarkObjects: 15.709100 ms  DeleteObjects: 3.138300 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+Executing IPostBuildCleanup for: Unity.PerformanceTesting.Editor.TestRunBuilder.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.BuildActionTaskBase`1/<ExecuteMethods>d__8<UnityEngine.TestTools.IPostBuildCleanup>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs:48)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.BuildActionTaskBase`1/<Execute>d__7<UnityEngine.TestTools.IPostBuildCleanup>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs:34)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteStep () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:194)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:129)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs Line: 48)
+
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 0 unused Assets / (Unknown). Loaded Objects now: 5609.
+Memory consumption went from 424.2 MB to 424.2 MB.
+Total: 17.619800 ms (FindLiveObjects: 0.946200 ms CreateObjectMapping: 0.235500 ms MarkObjects: 15.941400 ms  DeleteObjects: 0.015500 ms)
+
+Asset Pipeline Refresh (id=46bc7fe0eada9d84cbbc349447f6d2ab): Total: 0.116 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+DisplayProgressbar: Undo
+Test run completed. Exiting with code 0 (Ok). Run completed.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityEditor.TestTools.TestRunner.CommandLineTest.Executer:ExitApplication (UnityEditor.TestTools.TestRunner.CommandLineTest.Executer/ReturnCodes,string) (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/CommandLineTest/Executer.cs:81)
+UnityEditor.TestTools.TestRunner.CommandLineTest.Executer:ExitIfRunIsCompleted () (at ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/CommandLineTest/Executer.cs:74)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: ./Library/PackageCache/com.unity.test-framework@ee3fe9477490/UnityEditor.TestRunner/CommandLineTest/Executer.cs Line: 81)
+
+MonoPathRemapper: Attempts to remap: 22754; Successful remaps: 12364
+Serialized file version minimum: 22, current 23
+Killing ADB server in 2.5218838 seconds.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-PC-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-PC channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+VBCSCompilerPreWarmer: requested VBCSCompiler shutdown
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1795102410636,"processId":1428,"allocatedMemory":16580751,"memoryLabels":[{"Default":253338},{"Permanent":15516},{"NewDelete":94295},{"Thread":4182400},{"Manager":818796},{"VertexData":8},{"Geometry":824},{"Texture":24},{"Shader":839496},{"Material":132},{"GfxDevice":61248},{"Animation":4672},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":47776},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":64},{"ScriptingNativeRuntime":1274784},{"BaseObject":80912},{"Resource":1444},{"Renderer":2504},{"Transform":4781},{"File":22238},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":681369},{"StaticString":3808},{"Utility":2673718},{"Curl":2676},{"PoolAlloc":2360},{"AI":80},{"TypeTree":23229},{"ScriptManager":18984},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":4576},{"CloudService":432},{"WebRequest":592},{"VR":49650},{"SceneManager":608},{"Video":208},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"EntityIdStore":33088},{"Gui":128},{"EditorUtility":116657},{"VersionControl":8},{"Undo":931},{"AssetDatabase":4777612},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40465},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3198},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

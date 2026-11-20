@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="7" result="Failed(Child)" total="7" passed="4" failed="3" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 12:25:36Z" end-time="2026-11-19 12:26:58Z" duration="82.3726552">
+  <test-suite type="TestSuite" id="1137" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 12:25:36Z" end-time="2026-11-19 12:26:58Z" duration="82.372655" total="7" passed="4" failed="3" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1125" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 12:25:36Z" end-time="2026-11-19 12:26:58Z" duration="82.355955" total="7" passed="4" failed="3" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="11016" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1126" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 12:25:36Z" end-time="2026-11-19 12:26:58Z" duration="82.352784" total="7" passed="4" failed="3" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 12:25:36Z" end-time="2026-11-19 12:26:58Z" duration="82.348988" total="7" passed="4" failed="3" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1001" name="BlacksmithTests" fullname="AdventureKing.Tests.BlacksmithTests" classname="AdventureKing.Tests.BlacksmithTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-19 12:25:36Z" end-time="2026-11-19 12:26:08Z" duration="32.083296" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1002" name="Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" fullname="AdventureKing.Tests.BlacksmithTests.Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" methodname="Smith_Forge_Charges_Gold_And_Stone_Once_And_Protection_Charm_Works" classname="AdventureKing.Tests.BlacksmithTests" runstate="Runnable" seed="1161604946" result="Passed" start-time="2026-11-19 12:25:36Z" end-time="2026-11-19 12:26:08Z" duration="32.065610" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1044" name="EntryLobbyTests" fullname="AdventureKing.Tests.EntryLobbyTests" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-19 12:26:08Z" end-time="2026-11-19 12:26:41Z" duration="32.297952" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1047" name="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" fullname="AdventureKing.Tests.EntryLobbyTests.Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" methodname="Hero_Hall_Shows_All_Classes_With_Attack_And_Skill_Contact" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="242728722" result="Passed" start-time="2026-11-19 12:26:08Z" end-time="2026-11-19 12:26:28Z" duration="20.127314" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1045" name="Login_Fails_Closed_Without_Backend" fullname="AdventureKing.Tests.EntryLobbyTests.Login_Fails_Closed_Without_Backend" methodname="Login_Fails_Closed_Without_Backend" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="124658003" result="Passed" start-time="2026-11-19 12:26:28Z" end-time="2026-11-19 12:26:35Z" duration="6.209774" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1046" name="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" fullname="AdventureKing.Tests.EntryLobbyTests.Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" methodname="Start_Flow_Intro_Loading_Title_Login_In_Order_And_Fully_2D" classname="AdventureKing.Tests.EntryLobbyTests" runstate="Runnable" seed="1679679014" result="Passed" start-time="2026-11-19 12:26:35Z" end-time="2026-11-19 12:26:41Z" duration="5.957794" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1096" name="ShopFashionTests" fullname="AdventureKing.Tests.ShopFashionTests" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-19 12:26:41Z" end-time="2026-11-19 12:26:58Z" duration="17.943105" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1098" name="Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" fullname="AdventureKing.Tests.ShopFashionTests.Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" methodname="Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="943962602" result="Failed" start-time="2026-11-19 12:26:41Z" end-time="2026-11-19 12:26:42Z" duration="0.991432" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  Resources/Fashion/FashionDatabase.asset exists
+  Expected: not null
+  But was:  null
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.ShopFashionTests+<Every_2D_Item_Has_A_Database_Entry_For_The_Owners_Sprites>d__17.MoveNext () [0x00041] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\ShopFashionTests.cs:323
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[The referenced script on this Behaviour (Game Object '<null>') is missing!
+]]></output>
+            </test-case>
+            <test-case id="1097" name="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" fullname="AdventureKing.Tests.ShopFashionTests.Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" methodname="Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="991319002" result="Failed" start-time="2026-11-19 12:26:42Z" end-time="2026-11-19 12:26:58Z" duration="15.980485" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  2D hero has a paper doll
+  Expected: not null
+  But was:  null
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.ShopFashionTests+<Merchant_TryOn_Buy_Wear_Mount_Survive_Relog_And_Restart>d__14.MoveNext () [0x00277] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\ShopFashionTests.cs:130
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+]]></output>
+            </test-case>
+            <test-case id="1099" name="Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" fullname="AdventureKing.Tests.ShopFashionTests.Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" methodname="Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes" classname="AdventureKing.Tests.ShopFashionTests" runstate="Runnable" seed="640670911" result="Failed" start-time="2026-11-19 12:26:58Z" end-time="2026-11-19 12:26:58Z" duration="0.968961" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  Swordsman Top worn
+  Expected: not null
+  But was:  null
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.ShopFashionTests+<Paper_Doll_Slots_Are_Independent_Layers_On_All_Classes>d__18.MoveNext () [0x001af] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\ShopFashionTests.cs:361
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[The referenced script on this Behaviour (Game Object '<null>') is missing!
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

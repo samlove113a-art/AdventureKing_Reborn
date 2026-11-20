@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 12:34:36Z" end-time="2026-11-19 12:36:19Z" duration="103.1458398">
+  <test-suite type="TestSuite" id="1137" name="Adventure King Reborn" fullname="Adventure King Reborn" runstate="Runnable" testcasecount="90" result="Failed" site="Child" start-time="2026-11-19 12:34:36Z" end-time="2026-11-19 12:36:19Z" duration="103.145840" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1125" name="AdventureKing.Tests.PlayMode.dll" fullname="C:/AdventureKing_Reborn/Library/ScriptAssemblies/AdventureKing.Tests.PlayMode.dll" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 12:34:36Z" end-time="2026-11-19 12:36:19Z" duration="103.127303" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="7544" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1126" name="AdventureKing" fullname="AdventureKing" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 12:34:36Z" end-time="2026-11-19 12:36:19Z" duration="103.120036" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="SetUpFixture" id="1040" name="Tests" fullname="AdventureKing.Tests.DeterministicClock" classname="AdventureKing.Tests.DeterministicClock" runstate="Runnable" testcasecount="86" result="Failed" site="Child" start-time="2026-11-19 12:34:36Z" end-time="2026-11-19 12:36:19Z" duration="103.117837" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestFixture" id="1041" name="DropInventoryUiTests" fullname="AdventureKing.Tests.DropInventoryUiTests" classname="AdventureKing.Tests.DropInventoryUiTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-19 12:34:36Z" end-time="2026-11-19 12:35:31Z" duration="54.552310" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1042" name="Every_Canvas_Uses_The_Standard_Scaler_Frames_Are_9_Sliced_And_HUD_Clusters_Hug_The_Screen_Edges" fullname="AdventureKing.Tests.DropInventoryUiTests.Every_Canvas_Uses_The_Standard_Scaler_Frames_Are_9_Sliced_And_HUD_Clusters_Hug_The_Screen_Edges" methodname="Every_Canvas_Uses_The_Standard_Scaler_Frames_Are_9_Sliced_And_HUD_Clusters_Hug_The_Screen_Edges" classname="AdventureKing.Tests.DropInventoryUiTests" runstate="Runnable" seed="948862248" result="Passed" start-time="2026-11-19 12:34:36Z" end-time="2026-11-19 12:34:43Z" duration="6.556313" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+]]></output>
+            </test-case>
+            <test-case id="1043" name="Meadow_Kill_Drops_Junk_Pickup_15s_Life_Bag_Expansion_And_Quick_Sell" fullname="AdventureKing.Tests.DropInventoryUiTests.Meadow_Kill_Drops_Junk_Pickup_15s_Life_Bag_Expansion_And_Quick_Sell" methodname="Meadow_Kill_Drops_Junk_Pickup_15s_Life_Bag_Expansion_And_Quick_Sell" classname="AdventureKing.Tests.DropInventoryUiTests" runstate="Runnable" seed="857667480" result="Passed" start-time="2026-11-19 12:34:43Z" end-time="2026-11-19 12:35:31Z" duration="47.979655" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+[DROPS] item pile: Thạch Slime
+Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1075" name="PetTests" fullname="AdventureKing.Tests.PetTests" classname="AdventureKing.Tests.PetTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-19 12:35:31Z" end-time="2026-11-19 12:36:19Z" duration="48.552829" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-case id="1077" name="Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" fullname="AdventureKing.Tests.PetTests.Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" methodname="Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold" classname="AdventureKing.Tests.PetTests" runstate="Runnable" seed="1431197963" result="Failed" start-time="2026-11-19 12:35:31Z" end-time="2026-11-19 12:36:00Z" duration="29.408766" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <failure>
+                <message><![CDATA[  [05_pet_auto_potion_settings pc_1920x1080] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 219x4
+[05_pet_auto_potion_settings pc_1920x1080] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 179x4
+[05_pet_auto_potion_settings pc_1366x768] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 212x3
+[05_pet_auto_potion_settings pc_1366x768] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 173x5
+[05_pet_auto_potion_settings pc_1366x768] TEXT OVERLAP: '<color=#a8f0a0>Đã sở hữu</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Price) x 'No: 60/60 phút · đang đi theo' (HUD/PetWindow/PetRoot/Card/PetCard1/Satiety) by 118x2
+[05_pet_auto_potion_settings phone_19.5x9] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 215x2
+[05_pet_auto_potion_settings phone_19.5x9] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 175x2
+[05_pet_auto_potion_settings phone_16x9] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 213x4
+[05_pet_auto_potion_settings phone_16x9] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 177x4
+[05_pet_auto_potion_settings phone_16x9] TEXT OVERLAP: '<color=#a8f0a0>Đã sở hữu</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Price) x 'No: 60/60 phút · đang đi theo' (HUD/PetWindow/PetRoot/Card/PetCard1/Satiety) by 125x3
+[05_pet_auto_potion_settings tablet_4x3] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 215x3
+[05_pet_auto_potion_settings tablet_4x3] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 177x3
+  Expected: <empty>
+  But was:  < "[05_pet_auto_potion_settings pc_1920x1080] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 219x4", "[05_pet_auto_potion_settings pc_1920x1080] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 179x4", "[05_pet_auto_potion_settings pc_1366x768] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 212x3", "[05_pet_auto_potion_settings pc_1366x768] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 173x5", "[05_pet_auto_potion_settings pc_1366x768] TEXT OVERLAP: '<color=#a8f0a0>Đã sở hữu</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Price) x 'No: 60/60 phút · đang đi theo' (HUD/PetWindow/PetRoot/Card/PetCard1/Satiety) by 118x2", "[05_pet_auto_potion_settings phone_19.5x9] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 215x2", "[05_pet_auto_potion_settings phone_19.5x9] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 175x2", "[05_pet_auto_potion_settings phone_16x9] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 213x4", "[05_pet_auto_potion_settings phone_16x9] TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 177x4", "[05_pet_auto_potion_settings phone_16x9] TEXT OVERLAP: '<color=#a8f0a0>Đã sở hữu</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Price) x 'No: 60/60 phút · đang đi theo' (HUD/PetWindow/PetRoot/Card/PetCard1/Satiety) by 125x3"... >
+]]></message>
+                <stack-trace><![CDATA[at AdventureKing.Tests.PetTests+<Buy_Summon_Follow_And_Pet_Collects_The_Owners_Gold>d__11.MoveNext () [0x00e42] in C:\AdventureKing_Reborn\Assets\Tests\PlayMode\PetTests.cs:240
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+[05_pet_auto_potion_settings pc_1920x1080] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 219x4
+TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 179x4
+[05_pet_auto_potion_settings pc_1366x768] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 212x3
+TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 173x5
+TEXT OVERLAP: '<color=#a8f0a0>Đã sở hữu</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Price) x 'No: 60/60 phút · đang đi theo' (HUD/PetWindow/PetRoot/Card/PetCard1/Satiety) by 118x2
+[05_pet_auto_potion_settings phone_19.5x9] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 215x2
+TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 175x2
+[05_pet_auto_potion_settings phone_16x9] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 213x4
+TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 177x4
+TEXT OVERLAP: '<color=#a8f0a0>Đã sở hữu</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Price) x 'No: 60/60 phút · đang đi theo' (HUD/PetWindow/PetRoot/Card/PetCard1/Satiety) by 125x3
+[05_pet_auto_potion_settings tablet_4x3] TEXT OVERLAP: '<color=#FFF5E0>Mèo Mây Mochi</color>' (HUD/PetWindow/PetRoot/Card/PetCard0/Name) x '<color=#FFF5E0>Thường</color> · Mèo mây …' (HUD/PetWindow/PetRoot/Card/PetCard0/Desc) by 215x3
+TEXT OVERLAP: '<color=#FFF5E0>Gà Bông Lúa</color>' (HUD/PetWindow/PetRoot/Card/PetCard1/Name) x '<color=#FFF5E0>Thường</color> · Gà con l…' (HUD/PetWindow/PetRoot/Card/PetCard1/Desc) by 177x3
+]]></output>
+            </test-case>
+            <test-case id="1076" name="Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" fullname="AdventureKing.Tests.PetTests.Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" methodname="Pet_2D_Sprite_Follows_Faces_The_Hero_And_Shows_Hungry_Face" classname="AdventureKing.Tests.PetTests" runstate="Runnable" seed="285795155" result="Passed" start-time="2026-11-19 12:36:00Z" end-time="2026-11-19 12:36:19Z" duration="19.141993" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Can't add component 'RectTransform' to ForgeFx because such a component is already added to the game object!
+Saving results to: C:/Users/PC/AppData/LocalLow/SAM/Adventure King Reborn\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

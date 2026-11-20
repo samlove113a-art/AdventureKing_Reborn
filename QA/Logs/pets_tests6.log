@@ -1,0 +1,103 @@
+VBCSCompilerPreWarmer: watching VBCSCompiler (PID 17108)
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 6896)
+VBCSCompiler prewarm took 7.11 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.6/staging' branch; Version is '6000.6.7f1 (b22767f04f04) revision 11675495'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Channel LicenseClient-PC doesn't exist
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 16339 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-19T14:59:26Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 15876)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.7f1\Editor\Unity.exe
+-batchmode
+-projectPath
+C:\AdventureKing_Reborn
+-runTests
+-testPlatform
+PlayMode
+-testFilter
+PetTests
+-testResults
+C:\AdventureKing_Reborn\QA\Results\pets6.xml
+-logFile
+C:\AdventureKing_Reborn\QA\Logs\pets_tests6.log
+Successfully changed project path to: C:\AdventureKing_Reborn
+C:/AdventureKing_Reborn
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [11268]  Target information:
+
+Player connection [11268]  * "[IP] 192.168.1.46 [Port] 55504 [Flags] 2 [Guid] 2015743991 [EditorId] 2015743991 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [11268]  * "[IP] 100.91.134.127 [Port] 55504 [Flags] 2 [Guid] 2015743991 [EditorId] 2015743991 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-2E1I17G) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [11268] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [11268] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Assertion failed on expression: 'CurrentThread::IsMainThread()'
+Assertion failed on expression: 'm_OwningThread == CurrentThread::GetID()'
+Assertion failed on expression: 'm_OwningThread == CurrentThread::GetID()'
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+Assertion failed on expression: 'CurrentThread::IsMainThread()'
+Assertion failed on expression: 'CurrentThread::IsMainThread()'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: 'm_PodArrays.empty()'
+NativeWindowManager: Class destructor called before Windowing System was fully shutdown.
+Assertion failed on expression: 'CurrentThread::IsMainThread()'
+[Package Manager] Server process was shutdown
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: 'CurrentThread::IsMainThread()'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+Assertion failed on expression: '!m_Running && "Thread shouldn't be running anymore"'
+SetStackTraceLogType should be called only from main thread
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1795100366959,"processId":148,"allocatedMemory":22952808,"memoryLabels":[{"Default":179143},{"Permanent":15508},{"NewDelete":64813},{"Thread":4200856},{"Manager":46387},{"VertexData":8},{"Geometry":1008},{"Particles":12664},{"Texture":296},{"Shader":80264},{"Material":132},{"GfxDevice":56384},{"Animation":4688},{"Audio":2528},{"Font":80},{"FreeType":1840},{"FontEngine":736},{"Physics":2562},{"Physics2D":155304},{"Serialization":65736},{"Input":75648},{"JobScheduler":7624960},{"TextLib":280},{"GarbageCollector":1049152},{"Mono":48},{"ScriptingNativeRuntime":154960},{"BaseObject":49864},{"Resource":1444},{"Renderer":7016},{"Transform":4781},{"File":7744},{"Network":3634},{"WebCam":616},{"Culling":40},{"Skinning":4480},{"Terrain":11490},{"TerrainPhysics":8},{"Wind":24},{"STL":40},{"String":408823},{"StaticString":3808},{"Utility":2673718},{"Curl":48},{"PoolAlloc":2120},{"AI":59688},{"TypeTree":8869},{"ScriptManager":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":4718854},{"SpriteAtlas":120},{"GI":7832},{"Director":8296},{"WebRequest":552},{"VR":50074},{"SceneManager":608},{"Video":264},{"LazyScriptCache":32},{"Tilemap":160},{"ManagedAttributeManager":128},{"TextureStreaming":1424},{"ScreenCapture":8},{"Camera":1553},{"Secure":265},{"CrashReporter":1024},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":59848},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":1188},{"UIElements":944},{"CoreStats":14456},{"Identifiers":7480},{"EntityIdStore":33088},{"Gui":535012},{"EditorUtility":66153},{"VersionControl":8},{"Undo":931},{"AssetDatabase":5944},{"AssetImporter":38400},{"EditorGi":328},{"UnityConnect":37018},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9794},{"CoreBusinessMetrics":3318},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+SetStackTraceLogType should be called only from main thread

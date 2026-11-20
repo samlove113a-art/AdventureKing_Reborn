@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "C:\AdventureKing_Reborn\Tools\costume\skin_sheet.py", line 203, in <module>
+    gen(cls, key, clips, int(sys.argv[sys.argv.index("--workers") + 1]) if "--workers" in sys.argv else 3, mc)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AdventureKing_Reborn\Tools\costume\skin_sheet.py", line 141, in gen
+    for name, st in ex.map(lambda a: job(*a), jobs):
+                    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\concurrent\futures\_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\concurrent\futures\_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\AdventureKing_Reborn\Tools\costume\skin_sheet.py", line 141, in <lambda>
+    for name, st in ex.map(lambda a: job(*a), jobs):
+                                     ~~~^^^^
+  File "C:\AdventureKing_Reborn\Tools\costume\skin_sheet.py", line 113, in job
+    sheet, cols, rows, n = sheet_of(cls, clip)
+                           ~~~~~~~~^^^^^^^^^^^
+  File "C:\AdventureKing_Reborn\Tools\costume\skin_sheet.py", line 100, in sheet_of
+    cols, rows = GRID[len(fr)]
+                 ~~~~^^^^^^^^^
+KeyError: 7
