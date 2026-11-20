@@ -20,7 +20,7 @@ namespace AdventureKing.Tests
         public IEnumerator SetUp()
         {
             TestRunnerGuard.Protect();
-            server = new TestServer(5301, extraArgs: $"--AdventureKing:VietQr:Enabled=true --AdventureKing:VietQr:BankId=MB --AdventureKing:VietQr:AccountNo=0123456789 \"--AdventureKing:VietQr:AccountName=NGUYEN VAN A\" --AdventureKing:VietQr:WebhookSecret={Secret}");
+            server = new TestServer(5301, extraArgs: $"--AdventureKing:VietQr:Enabled=true --AdventureKing:VietQr:BankId=TPB --AdventureKing:VietQr:AccountNo=55509112002 \"--AdventureKing:VietQr:AccountName=TRAN QUOC SAM\" --AdventureKing:VietQr:WebhookSecret={Secret}");
             yield return server.Start();
             Directory.CreateDirectory("QA/TopUp");
         }
@@ -75,7 +75,9 @@ namespace AdventureKing.Tests
             yield return Until(() => panel.Order != null, 8f, "order");
             Assert.That(panel.Order.code, Does.Match(@"^AKR\d{6}$"));
             Assert.AreEqual(10000, panel.Order.amountVnd);
-            StringAssert.Contains("img.vietqr.io/image/MB-0123456789-compact2.png?amount=10000&addInfo=" + panel.Order.code, panel.Order.qrUrl);
+            Assert.AreEqual("TPB", panel.Order.bankId); Assert.AreEqual("55509112002", panel.Order.accountNo);
+            StringAssert.Contains("0006970423", panel.Order.payload, "TPBank BIN inside the VietQR payload");
+            StringAssert.Contains(panel.Order.code, panel.Order.payload, "the transfer text is inside the payload");
             yield return new WaitForSeconds(2.5f);                                 // the QR picture downloads from img.vietqr.io (needs internet: not asserted)
             Assert.IsTrue(panel.QrShown, "the QR picture is generated in the app (no download)");
             Assert.IsNotEmpty(panel.Order.payload);
@@ -98,20 +100,26 @@ namespace AdventureKing.Tests
             yield return new WaitForSeconds(0.5f);
             yield return Until(() => !panel.IsOpen, 6f, "panel closes itself");
             yield return new WaitForSeconds(1.5f);
+            var hud = Object.FindAnyObjectByType<PlayerHud>();
+            Assert.IsNotNull(hud);
+            StringAssert.Contains("20", hud.DiamondsShown, "the HUD shows the new Diamonds");
             Assert.AreEqual(before + 20, world.Character.diamonds, "10 000 VND = 10 KC, first purchase doubles to 20, credited once");
         }
 
+        /// <summary>A SePay-shaped bank notification: header "Authorization: Apikey ...", JSON with transferType / transferAmount / content.</summary>
         private IEnumerator Webhook(string secret, string content, long amount, string txn, int expect)
         {
-            string json = $"{{\"content\":\"{content}\",\"amount\":{amount},\"transactionId\":\"{txn}\"}}";
+            long id = long.Parse(txn.Substring(txn.Length - 1) == "0" ? "100" : "20" + txn.Substring(txn.Length - 1));
+            string json = $"{{\"id\":{id},\"gateway\":\"TPBank\",\"transactionDate\":\"2026-11-20 10:00:00\",\"accountNumber\":\"55509112002\",\"code\":null,\"content\":\"{content}\",\"transferType\":\"in\",\"transferAmount\":{amount},\"accumulated\":0,\"subAccount\":null,\"referenceCode\":\"{txn}\",\"description\":\"BankAPINotify {content}\"}}";
             using var req = new UnityWebRequest(server.ApiUrl + "/store/topup/webhook", "POST")
             {
                 uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)), downloadHandler = new DownloadHandlerBuffer(),
             };
             req.SetRequestHeader("Content-Type", "application/json");
-            req.SetRequestHeader("Authorization", secret);
+            req.SetRequestHeader("Authorization", "Apikey " + secret);
             yield return req.SendWebRequest();
             Assert.AreEqual(expect, (int)req.responseCode, req.downloadHandler.text);
+            if (expect == 200) StringAssert.Contains("\"success\":true", req.downloadHandler.text);
         }
     }
 }

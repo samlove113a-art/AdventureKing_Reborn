@@ -182,6 +182,7 @@ namespace AdventureKing.Gameplay
                     yield return new WaitForSecondsRealtime(1.6f);
                     SyncBalance();
                     Close();
+                    QuickGoalToast.Show($"Nạp thành công! +{latest.diamondsGranted} Kim Cương");           // floating confirmation after the QR window closes
                     yield break;
                 }
                 if (latest.status == "expired") { Say("Đơn nạp đã hết hạn. Hãy chọn gói để tạo đơn mới."); ShowList(); yield break; }
