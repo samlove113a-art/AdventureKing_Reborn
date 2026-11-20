@@ -408,6 +408,13 @@ namespace AdventureKing.Gameplay
             if (message && message.text.Length > 0 && Time.time > messageUntil) message.text = "";
         }
 
+        /// <summary>The skill icons take a light tint of the worn skin's theme (the same colour its skill effects use).</summary>
+        private Color SkinIconTint()
+        {
+            var doll = world && world.HeroModel ? world.HeroModel.GetComponentInChildren<Paperdoll2D>() : null;
+            return doll != null && SkinThemes.TryGet(Class, doll.SkinKey, out SkinThemes.Theme th) ? SkinThemes.Apply(Color.white, th.Tint, 0.45f) : Color.white;
+        }
+
         /// <summary>Icons, cooldown sweeps / seconds and the not-enough-MP state from the current values.</summary>
         public void RefreshSlots()
         {
@@ -428,7 +435,7 @@ namespace AdventureKing.Gameplay
                 if (cooling) s.Seconds.text = Mathf.CeilToInt(left).ToString();
                 bool noMp = def != null && mana && mana.Current < SkillBook.Cost(def, Level);
                 s.MpWarn.enabled = noMp && !cooling;
-                s.Icon.color = noMp ? new Color(0.45f, 0.5f, 0.72f) : Color.white;
+                s.Icon.color = noMp ? new Color(0.45f, 0.5f, 0.72f) : SkinIconTint();
             }
         }
     }

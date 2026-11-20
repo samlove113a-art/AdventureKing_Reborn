@@ -26,13 +26,14 @@ namespace AdventureKing.Gameplay
             go.transform.localScale = new Vector3(scale * flipX, scale * flipY, 1f);
             foreach (SpriteRenderer sr in go.GetComponentsInChildren<SpriteRenderer>())
             {
-                sr.color = tint ?? Color.white;
+                sr.color = skinTint.HasValue ? SkinThemes.Apply(tint ?? Color.white, skinTint.Value) : (tint ?? Color.white);
                 sr.sortingOrder = order;
             }
             return go;
         }
 
         private const float FxScale = 0.6f;
+        private static Color? skinTint;   // theme colour of the skin worn by the hero whose cast is being presented
 
         private static float AngleOf(Vector3 d) => Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
 

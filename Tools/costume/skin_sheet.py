@@ -270,11 +270,13 @@ def fit(cls, key):
                 m = a > 40
                 return float(a[m].mean()) if m.any() else 0.0
             good = [0.8 <= r_ <= 1.3 and (o is not None and solid(o) >= 170) for r_, o in zip(ratio, outs)]   # also drops ghost-translucent cells
-            for i in range(len(orig)):
-                if not good[i] and any(good):            # a glitched cell repeats the nearest good neighbour of the same clip
-                    j = min((x for x in range(len(orig)) if good[x]), key=lambda x: (abs(x - i), x))
-                    outs[i] = outs[j]
-                    print("repaired", c, k, clip, i, "from", j, round(float(ratio[i]), 2))
+            if not all(good) and any(good):
+                # glitched cells are dropped and the good frames are spread EVENLY over the whole cycle (each shown for the same time),
+                # so the motion keeps its rhythm instead of freezing on one pose for several frames
+                gl = [outs[x] for x in range(len(orig)) if good[x]]
+                n_, g_ = len(orig), len(gl)
+                outs = [gl[min(g_ - 1, int(i * g_ / n_))] for i in range(n_)]
+                print("respaced", c, k, clip, "good", g_, "of", n_)
             for i, o in enumerate(outs):
                 if o is None:
                     print("EMPTY", c, k, clip, i)

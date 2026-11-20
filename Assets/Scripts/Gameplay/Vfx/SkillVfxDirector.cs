@@ -70,7 +70,18 @@ namespace AdventureKing.Gameplay
                 (HeroClass.Archer, 1) => PiercingArrow(c), (HeroClass.Archer, 2) => ArrowRain(c), _ => PhoenixArrow(c),
             };
             if (c.Visual && c.Visual.IsSprite) routine = PixelSkill(c);   // 2D pixel effects for the sprite heroes (default look)
+            // the worn skin recolours every effect of this cast; the legendary skin adds its signature burst on the impact
+            var doll = c.Hero ? c.Hero.GetComponentInChildren<Paperdoll2D>() : null;
+            string skin = doll ? doll.SkinKey : null;
+            skinTint = SkinThemes.TryGet(c.Class, skin, out SkinThemes.Theme th) ? th.Tint : (Color?)null;
             yield return routine;
+            if (skinTint.HasValue && SkinThemes.IsLegend(skin) && c.Visual && c.Visual.IsSprite)
+            {
+                Vector3 at = AimPoint(c);
+                Fx("explosion", at, 1.7f, 1f, skinTint, order: 10);
+                Fx("hit_spark", at, 1.5f, 1f, skinTint, order: 11);
+                Fx("cast_circle", new Vector3(at.x, at.y - 0.4f, at.z), 2.4f, 1f, skinTint, order: 6);
+            }
             c.Land(); // safety: the damage is always shown
         }
 

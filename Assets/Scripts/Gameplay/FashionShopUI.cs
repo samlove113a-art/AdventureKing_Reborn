@@ -351,6 +351,9 @@ namespace AdventureKing.Gameplay
             rarityLabel.transform.parent.GetComponent<Image>().color = RarityColor(it.rarity) * 0.75f;
             string classes = it.classes.Length >= 4 ? "Mọi nghề" : string.Join(", ", it.classes.Select(c => HeroClassCatalog.Get((HeroClass)c).displayName));
             string skill = string.IsNullOrEmpty(it.skillName) ? "" : $"\n<color=#9CFFB4><b>Kỹ năng · {it.skillName}</b></color>\n{it.skillDesc}";
+            string key = SkinThemes.KeyOf(it.id);
+            if (key != null && it.classes.Length > 0 && SkinThemes.TryGet((HeroClass)it.classes[0], key, out SkinThemes.Theme th))
+                skill += $"\n<color=#{ColorUtility.ToHtmlStringRGB(th.Tint)}><b>Hiệu ứng chiêu thức · {th.Name}</b></color>\nCả 3 chiêu của nghề đổi sang sắc riêng của bộ này" + (SkinThemes.IsLegend(key) ? ", kèm hiệu ứng nổ đặc trưng mỗi lần trúng đích." : ".");
             detailDesc.text = $"<color=#C9D6E8>{SlotName(it.slot)} · {classes}</color>\n{it.description}{skill}";
             detailPrice.text = it.owned ? (IsWorn(it) ? "<color=#9CFFB4>Đang mặc</color>" : "<color=#9CFFB4>Đã sở hữu</color>")
                 : it.ForDiamonds ? $"<color=#9FE6FF>{Money(it.price)} Kim Cương</color>" : $"<color=#FFD873>{Money(it.price)} Vàng</color>";

@@ -50,6 +50,9 @@ namespace AdventureKing.Gameplay
 
         private string Hero => body && body.sprite && body.sprite.name.IndexOf('_') > 0 ? body.sprite.name.Substring(0, body.sprite.name.IndexOf('_')) : heroName;
 
+        /// <summary>Key of the full-body skin worn ("sakura", "legend"...), null when none.</summary>
+        public string SkinKey => layers.TryGetValue(PaperSlot.Outfit, out Layer sk) && sk.ItemId != null && sk.ItemId.StartsWith("skin:") ? sk.ItemId.Substring(sk.ItemId.LastIndexOf(':') + 1) : null;
+
         public string Equipped(PaperSlot slot) => layers.TryGetValue(slot, out Layer l) ? l.ItemId : null;
         /// <summary>The SpriteRenderer of a slot (null until something was worn there once): own renderer, own sorting order.</summary>
         public SpriteRenderer RendererOf(PaperSlot slot) => layers.TryGetValue(slot, out Layer l) ? l.Renderer : null;
