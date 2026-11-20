@@ -23,7 +23,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 ART = os.path.join(ROOT, "Assets", "Art", "Chibi2D")
 RAW = os.path.join(ROOT, "ArtSource", "Meshy", "raw")
 REQ = os.path.join(ROOT, "ArtSource", "Meshy", "requests")
-OUT = os.path.join(ROOT, "Assets", "Resources", "Fashion", "Skins")
+OUT = os.environ.get("SKIN_OUT") or os.path.join(ROOT, "Assets", "Resources", "Fashion", "Skins")   # SKIN_OUT = a preview folder outside Resources keeps candidates out of the game
 MESHY = os.path.join(ROOT, "Tools", "meshy", "meshy.py")
 CELL = 192
 UP = 384
@@ -45,7 +45,7 @@ SKINS = {
         "frost": (K, "a frost-steel armour outfit: pale blue ice-crystal plate armour with white fur collar, icy glowing edges, heavy frozen knight look"),
         "ember": (K, "a flame war-god outfit: black armour with glowing orange lava cracks, red flame cape, horned pauldrons, burning fury look"),
         "shadow": (K, "a dark king outfit: black and violet spiked armour with a tall collar, tattered purple cape, glowing violet eyes slits on the pauldrons, menacing dark lord look"),
-        "legend": ("LEGENDARY", "the ultimate legendary divine-swordsman outfit: radiant white, gold and royal-blue ornate celestial plate armour with huge glowing winged pauldrons, a flowing starlit cape, a floating golden halo crown, glowing runes and drifting light particles, the most majestic and expensive-looking look"),
+        "mythic": ("MYTHIC", "the mythic Dragon-Emperor Sword Saint outfit: crimson, black and gold dragon-scale plate armour with a dragon-head helmet crest and horned golden pauldrons, a cape of living flames, a huge golden Chinese dragon spirit coiling around the whole body with glowing eyes, a blazing golden-orange flame aura with rising embers, a glowing molten golden aura along the sword blade, radiant and overwhelming mythic look. Every glow and effect is painted INTO the sprite as bold, bright, saturated pixel-art light that stays close to the body inside the cell, never cropped; the character stays fully opaque, solid and crisp"),
         "sun": (A, "an anime sun-general outfit: radiant gold and orange divine armour with a big sun-disc emblem, flowing red-gold cape, glowing halo trim, legendary hero look"),
     },
     "Mage": {
@@ -59,6 +59,7 @@ SKINS = {
         "ember": (K, "a fire-mage outfit: black and orange robe with flame embroidery, a tall pointed hat with an ember gem, ember-glow hem, fierce pyromancer look"),
         "frost": (A, "an anime ice-queen outfit: white and ice-blue elegant gown with snowflake crown and crystal shoulder pieces, glowing cyan trim, regal frost look"),
         "legend": ("LEGENDARY", "the ultimate legendary star-archmage outfit: deep indigo and gold celestial robe covered with glowing constellations, a huge ornate star-crown hat, floating golden rings and orbiting star sparks, long flowing sleeves with galaxy lining, the most majestic and expensive-looking look"),
+        "mythic": ("MYTHIC", "the mythic Time-Empress archmage outfit: white, gold and glowing cyan ornate gown with crystal wings of light, a tall radiant crown, enormous glowing magic rune circles and golden clockwork rings orbiting the whole body, floating cyan and gold crystals and rising light sparkles, a long flowing cape of starlight, a glowing staff head, radiant and overwhelming mythic look. Every glow and effect is painted INTO the sprite as bold, bright, saturated pixel-art light that stays close to the body inside the cell, never cropped; the character stays fully opaque, solid and crisp"),
         "abyss": (K, "a void-magic outfit: black and deep-purple robe with floating dark crystals and a hooded tall hat, glowing magenta runes, forbidden arcanist look"),
     },
     "Assassin": {
@@ -72,6 +73,7 @@ SKINS = {
         "ember": (K, "an ember-phantom outfit: charcoal black suit with glowing orange fire seams and wisps of flame trailing from the cloak, fiery look"),
         "ghost": (K, "a ghost-wind assassin outfit: tattered grey and teal hooded cloak with a skull half-mask and chains, spectral look"),
         "legend": ("LEGENDARY", "the ultimate legendary immortal shadow-king outfit: black and royal-purple ornate armoured bodysuit with glowing violet and gold runes, a tall spectral hood crown, flowing ghostly cloak with ember-like purple flames, floating spirit wisps, the most majestic and expensive-looking look"),
+        "mythic": ("MYTHIC", "the mythic Blood-Moon Reaper outfit: black armour with glowing crimson runes, a spectral hooded skull crown, a huge glowing blood-red crescent moon behind the shoulders, floating spectral scythe blades and crimson chains orbiting the body, a cloak of black smoke with blood-red flames, ghostly red afterimage wisps, glowing red eyes, radiant and overwhelming mythic look. Every glow and effect is painted INTO the sprite as bold, bright, saturated pixel-art light that stays close to the body inside the cell, never cropped; the character stays fully opaque, solid and crisp"),
         "star": (A, "an anime star-shadow outfit: midnight blue ninja outfit with silver star patterns, a flowing starry scarf and glowing star-shaped clasps, celestial look"),
     },
     "Archer": {
@@ -85,6 +87,7 @@ SKINS = {
         "aurum": (A, "an anime golden-eagle archer outfit: white and gold ornate outfit with golden eagle-wing pauldrons and a long cape, glowing gold trim, royal look"),
         "azure": (A, "an anime sky-marquis archer outfit: sky blue and white elegant coat with silver wind patterns, a long flowing scarf and a feathered hat, noble look"),
         "legend": ("LEGENDARY", "the ultimate legendary galaxy-archer outfit: white, gold and cosmic-blue ornate armour dress with huge luminous feathered wings-like pauldrons, a star-crown, a long flowing glowing scarf of stars, drifting light particles, the most majestic and expensive-looking look"),
+        "mythic": ("MYTHIC", "the mythic Phoenix-Goddess archer outfit: red, gold and white ornate feathered armour dress, huge fully spread glowing golden-flame phoenix wings, a phoenix-feather crown, a glowing golden flaming bow, trailing fire feathers and rising embers, a long flowing cape of flame, radiant and overwhelming mythic look. Every glow and effect is painted INTO the sprite as bold, bright, saturated pixel-art light that stays close to the body inside the cell, never cropped; the character stays fully opaque, solid and crisp"),
         "fae": (C, "a cute forest-fairy archer outfit: pastel green and lilac petal dress with small translucent wings, flower crown, glittering sparkles, enchanting kawaii look"),
     },
 }
