@@ -113,13 +113,43 @@ namespace AdventureKing.Gameplay
         /// </summary>
         public void ApplyLoadout(OutfitLoadout loadout)
         {
-            if (layers.TryGetValue(PaperSlot.Outfit, out Layer o) && o.ItemId != null && !(loadout != null && loadout.set == o.ItemId)) Clear(PaperSlot.Outfit);   // legacy whole-body outfit
+            if (layers.TryGetValue(PaperSlot.Outfit, out Layer o) && o.ItemId != null && !o.ItemId.StartsWith("skin:") && !(loadout != null && loadout.set == o.ItemId)) Clear(PaperSlot.Outfit);   // legacy whole-body outfit
             Wear(PaperSlot.Top, loadout?.Get("top"));
             Wear(PaperSlot.Bottom, loadout?.Get("bottom"));
             Wear(PaperSlot.Wings, loadout?.Get("wings"));
             Wear(PaperSlot.Mount, loadout?.Get("mount"));
             string set = loadout != null ? loadout.set : null;            // legacy mage sets still map to a strip layer
             if (!string.IsNullOrEmpty(set) && SetItems.TryGetValue(set, out string legacy)) Equip(PaperSlot.Outfit, legacy, masksBody: true);
+            else if (!string.IsNullOrEmpty(set) && set.StartsWith("set2d_")) EquipSkin(set);
+            else if (layers.TryGetValue(PaperSlot.Outfit, out Layer sk) && sk.ItemId != null && sk.ItemId.StartsWith("skin:")) Clear(PaperSlot.Outfit);
+        }
+
+        /// <summary>
+        /// Full-body skin ("set2d_{class}_{key}"): the pictures live in Resources/Fashion/Skins/{Hero}/{key}/{Hero}_{Clip}_{n}.png (Idle, Run, Attack made per skin).
+        /// The skin replaces the whole body. Clips it has no pictures for (Jump, Fall, Climb, Hit, Death) hold its Idle pose; Skill plays its Attack frames.
+        /// A skin with no pictures at all leaves the normal body visible.
+        /// </summary>
+        private void EquipSkin(string setId)
+        {
+            string key = setId.Substring(setId.LastIndexOf('_') + 1);
+            string id = "skin:" + Hero + ":" + key;
+            if (layers.TryGetValue(PaperSlot.Outfit, out Layer cur) && cur.ItemId == id) return;
+            var frames = new Dictionary<string, Sprite[]>();
+            foreach (string clip in new[] { "Idle", "Run", "Attack" })
+            {
+                var list = new List<Sprite>();
+                for (int i = 0; i < 12; i++)
+                {
+                    Sprite s = Resources.Load<Sprite>($"Fashion/Skins/{Hero}/{key}/{Hero}_{clip}_{i}");
+                    if (!s) break;
+                    list.Add(s);
+                }
+                if (list.Count > 0) frames[clip] = list.ToArray();
+            }
+            if (frames.Count == 0) { Clear(PaperSlot.Outfit); return; }
+            if (frames.TryGetValue("Idle", out Sprite[] idle)) foreach (string c in new[] { "Jump", "Fall", "Climb", "Hit", "Death" }) frames[c] = new[] { idle[0] };
+            if (frames.TryGetValue("Attack", out Sprite[] atk)) frames["Skill"] = atk;
+            Set(PaperSlot.Outfit, id, true, frames);
         }
 
         private void Wear(PaperSlot slot, string itemId)
