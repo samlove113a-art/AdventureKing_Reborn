@@ -62,7 +62,7 @@ namespace AdventureKing.Gameplay
                 redeem.interactable = true;
                 if (ok && r != null)
                 {
-                    Last = r; ShowGold(r.balance); if (r.diamondsGranted > 0 || r.diamonds > 0) ShowDiamonds(r.diamonds);
+                    Last = r; PlayerHud.VipLevel = Mathf.Max(PlayerHud.VipLevel, r.vipLevel); ShowGold(r.balance); if (r.diamondsGranted > 0 || r.diamonds > 0) ShowDiamonds(r.diamonds);
                     Message("<color=#a8f0a0>Chúc mừng!</color> Bạn nhận " + r.reward);
                     QuickGoalToast.Show("Nhận quà thành công: " + r.reward);
                     Input.text = "";

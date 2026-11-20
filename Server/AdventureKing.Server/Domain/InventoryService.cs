@@ -313,6 +313,8 @@ public sealed class InventoryService
     /// <summary>Owned name-plate frames as bag entries after the real cells (index = capacity + n). They live in titles_owned, not in bag_slots: they take no cell and cannot be sold or dropped; the player wears or removes them.</summary>
     private static IEnumerable<BagSlotDto> FrameSlots(SqliteConnection c, SqliteTransaction tx, string characterId, int capacity)
     {
+        string? acct = Database.Scalar<string>(c, tx, "SELECT account_id FROM characters WHERE id=$c", ("$c", characterId));
+        if (acct != null) TitleService.SyncVipFrames(c, tx, acct, Database.NowMs());   // VIP frames follow the account VIP level
         string? worn = Database.Scalar<string>(c, tx, "SELECT title_id FROM title_equipped WHERE character_id=$c", ("$c", characterId));
         var owned = new List<string>();
         using (var cmd = Database.Command(c, tx, "SELECT title_id FROM titles_owned WHERE character_id=$c", ("$c", characterId)))

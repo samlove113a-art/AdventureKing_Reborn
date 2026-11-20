@@ -1,4 +1,5 @@
 using AdventureKing.Server.Data;
+using Microsoft.Data.Sqlite;
 
 namespace AdventureKing.Server.Domain;
 
@@ -104,6 +105,18 @@ public sealed class TitleService
         return new TitleDto { id = id, category = cat, level = lvl, name = name, source = source };
     }
 
+    /// <summary>
+    /// Unlocks every VIP frame (VIP_01 .. VIP_n, n = the account's VIP level, max 15) on ALL characters of the account.
+    /// Idempotent; called when VIP changes (giftcode, verified top-up) and whenever frames are listed, so a new character also gets them.
+    /// </summary>
+    public static void SyncVipFrames(SqliteConnection c, SqliteTransaction? tx, string accountId, long grantedMs)
+    {
+        int level = (int)Math.Min(15, Database.Scalar<long>(c, tx, "SELECT vip_level FROM accounts WHERE id=$a", ("$a", accountId)));
+        for (int i = 1; i <= level; i++)
+            Database.Exec(c, tx, "INSERT OR IGNORE INTO titles_owned(character_id, title_id, source, granted_ms) SELECT id, $t, 'vip', $m FROM characters WHERE account_id=$a",
+                ("$t", $"VIP_{i:00}"), ("$m", grantedMs), ("$a", accountId));
+    }
+
     /// <summary>Server-side grant (no HTTP route). Idempotent.</summary>
     public void Grant(string characterId, string titleId, string source)
     {
@@ -115,6 +128,7 @@ public sealed class TitleService
     public TitlesDto Get(string accountId, string characterId) => db.InTransaction((c, tx) =>
     {
         Rewards.Own(c, tx, accountId, characterId);
+        SyncVipFrames(c, tx, accountId, now());
         var owned = new List<TitleDto>();
         using (var cmd = Database.Command(c, tx, "SELECT title_id, source FROM titles_owned WHERE character_id=$c ORDER BY granted_ms", ("$c", characterId)))
         using (var r = cmd.ExecuteReader())

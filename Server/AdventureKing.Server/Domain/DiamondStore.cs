@@ -193,6 +193,11 @@ public sealed class DiamondStore
                 ("$f", firstBonus ? 1 : 0), ("$prov", provider), ("$txn", providerTxnId), ("$t", now));
             Wallet.Diamonds(c, tx, accountId, grant, "store:" + p.Id, "order:" + orderId);
             Database.Exec(c, tx, "UPDATE accounts SET paid_total_vnd = paid_total_vnd + $v WHERE id=$a", ("$v", p.PriceVnd), ("$a", accountId));
+            long paidNow = Database.Scalar<long>(c, tx, "SELECT paid_total_vnd FROM accounts WHERE id=$a", ("$a", accountId));
+            int vipFromPaid = vipThresholdsVnd.Count(t => paidNow >= t);
+            if (vipFromPaid > 0)   // VIP up: store it and unlock every VIP frame up to that level
+                Database.Exec(c, tx, "UPDATE accounts SET vip_level = MAX(vip_level, $v) WHERE id=$a", ("$v", vipFromPaid), ("$a", accountId));
+            TitleService.SyncVipFrames(c, tx, accountId, clock().ToUnixTimeMilliseconds());
             if (p.Kind == PackageKind.MonthCard)
                 Database.Exec(c, tx, "INSERT INTO month_cards(account_id, order_id, start_day, days_total, daily_diamonds) VALUES($a,$o,$d,$n,$k)",
                     ("$a", accountId), ("$o", orderId), ("$d", TodayVn()), ("$n", p.MonthCardDays), ("$k", p.MonthCardDaily));

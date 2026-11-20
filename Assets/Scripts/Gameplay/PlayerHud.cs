@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +29,17 @@ namespace AdventureKing.Gameplay
         private PlayerMana mana;
         private float hpShown = 1f, mpShown = 1f;
 
+        /// <summary>Server-confirmed VIP level of the account (0 = none). Set by RefreshVip / giftcode / top-up; shown next to the level.</summary>
+        public static int VipLevel { get; set; }
+        public string LevelShown => levelLabel ? levelLabel.text : "";
+
+        /// <summary>Asks the server for the current VIP level (after login, a giftcode or a top-up) and updates the HUD.</summary>
+        public static void RefreshVip()
+        {
+            var s = AdventureServerConnection.Instance;
+            if (s) s.GetVip((ok, level, configured, err) => { if (ok) VipLevel = level; });
+        }
+
         public string GoldShown => goldText ? goldText.text : "";
         public string DiamondsShown => diamondText ? diamondText.text : "";
         public float HpFraction => hpFill ? hpFill.fillAmount : 0f;
@@ -40,6 +51,7 @@ namespace AdventureKing.Gameplay
             if (mapBanner) mapBanner.alpha = 0f;
             float until = Time.time + 5f;
             while ((!AdventureWorldSession.Current || AdventureWorldSession.Current.Character == null) && Time.time < until) yield return null;
+            VipLevel = 0; RefreshVip();                                   // never show the previous account's VIP
             AdventureWorldSession world = AdventureWorldSession.Current;
             if (world && world.Player)
             {
@@ -76,7 +88,11 @@ namespace AdventureKing.Gameplay
             if (c != null)
             {
                 if (nameLabel) nameLabel.text = c.characterName;
-                if (levelLabel) levelLabel.text = "Lv." + c.level;
+                if (levelLabel)
+                {
+                    levelLabel.text = VipLevel > 0 ? "Lv." + c.level + "  <color=#ffd34d>VIP " + VipLevel + "</color>" : "Lv." + c.level;
+                    levelLabel.supportRichText = true; levelLabel.horizontalOverflow = HorizontalWrapMode.Overflow; levelLabel.verticalOverflow = VerticalWrapMode.Overflow;
+                }
                 if (goldText) goldText.text = Money(c.gold);
                 if (diamondText) diamondText.text = Money(c.diamonds);
             }

@@ -378,6 +378,7 @@ public sealed class GiftcodeService
             if (kc > 0) Wallet.Diamonds(c, tx, accountId, kc, "giftcode:" + code, $"giftcode:{code}:{accountId}:kc");
             if (vipLv > 0 || vipPts > 0)   // VIP level and its progress points move together so the progress bar stays consistent
                 Database.Exec(c, tx, "UPDATE accounts SET vip_level=MAX(vip_level,$v), vip_points=MAX(vip_points,$p) WHERE id=$a", ("$v", vipLv), ("$p", vipPts), ("$a", accountId));
+            if (vipLv > 0) TitleService.SyncVipFrames(c, tx, accountId, now());   // unlock VIP 1..n frames on every character of the account
             long balance = Database.Scalar<long>(c, tx, "SELECT gold FROM characters WHERE id=$c", ("$c", characterId));
             long diamonds = Database.Scalar<long>(c, tx, "SELECT diamonds FROM accounts WHERE id=$a", ("$a", accountId));
             int vipNow = Database.Scalar<int>(c, tx, "SELECT vip_level FROM accounts WHERE id=$a", ("$a", accountId));

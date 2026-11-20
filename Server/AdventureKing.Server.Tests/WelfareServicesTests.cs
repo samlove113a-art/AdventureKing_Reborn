@@ -181,6 +181,8 @@ public sealed class WelfareServicesTests : IDisposable
         _ = mp;
     }
 
+    private string[] titlesOf(string id) { using var c = t.Db.Open(); var l = new List<string>(); using var cmd = Database.Command(c, null, "SELECT title_id FROM titles_owned WHERE character_id=$c", ("$c", id)); using var r = cmd.ExecuteReader(); while (r.Read()) l.Add(r.GetString(0)); return l.ToArray(); }
+
     [Fact]
     public void Default_giftcode_gives_Vip15_50000KC_500000Gold_once_per_account_unlimited_across_accounts()
     {
@@ -195,6 +197,9 @@ public sealed class WelfareServicesTests : IDisposable
             Assert.Equal(50_000, r.diamonds);
             Assert.Equal(505_000, r.balance);                       // 5 000 starter + 500 000
             Assert.Equal(15, store.Vip(acc).level);
+            Assert.Equal(15, titlesOf(id).Count(x => x.StartsWith("VIP_")));                     // VIP_01..VIP_15 unlocked at once
+            string id2 = chars.Create(acc, "Mã Hai " + "ABC"[n], 1, 1).characterId;             // a character created later gets them too
+            Assert.Equal(15, new TitleService(t.Db, () => clock).Get(acc, id2).owned.Count(x => x.category == "VIP"));
             Assert.Equal("code_already_used", Assert.Throws<GameError>(() => codes.Redeem(acc, id, new GiftcodeDto { code = "AKREBORN2026" })).Code);
             Assert.Equal("code_unknown", Assert.Throws<GameError>(() => codes.Redeem(acc, id, new GiftcodeDto { code = "SAIMA" })).Code);
         }

@@ -181,6 +181,7 @@ namespace AdventureKing.Gameplay
                     Say($"Đã nhận {latest.diamondsGranted} Kim Cương!");
                     yield return new WaitForSecondsRealtime(1.6f);
                     SyncBalance();
+                    PlayerHud.RefreshVip();                                   // VIP may have risen with this top-up
                     Close();
                     QuickGoalToast.Show($"Nạp thành công! +{latest.diamondsGranted} Kim Cương");           // floating confirmation after the QR window closes
                     yield break;
