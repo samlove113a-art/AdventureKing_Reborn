@@ -41,8 +41,9 @@ public class CosmeticShopTests : IDisposable
         var sets = cat.items.Where(i => i.art == "2d" && i.kind == ItemKinds.CosmeticSet).ToList();
         Assert.Equal(40, sets.Count);
         for (int k = 0; k < 4; k++) Assert.Equal(10, sets.Count(s => s.classes.Length == 1 && s.classes[0] == k));
-        Assert.Contains(sets, s => s.currency == "gold");
-        Assert.Contains(sets, s => s.currency == "diamonds");
+        Assert.All(sets, s => Assert.Equal("diamonds", s.currency));                                   // skins are sold for Diamonds only
+        for (int k = 0; k < 4; k++)                                                                      // 1 KC = 1 000 VND ladder, ascending
+            Assert.Equal(new long[] { 50, 80, 100, 120, 150, 200, 250, 300, 400, 500 }, sets.Where(s => s.classes[0] == k).Select(s => (long)s.price).OrderBy(p => p).ToArray());
         Assert.All(sets, s => { Assert.NotNull(s.skill); Assert.False(string.IsNullOrWhiteSpace(s.skill!.name)); Assert.True(s.skill.damagePct + s.skill.critPct + s.skill.reducePct + s.skill.moveSpeedPct > 0); });
         // layered slots: tops, bottoms, wings and mounts exist (hats and masks were removed from the game) (class-free) and mounts / some wings carry a speed bonus
         foreach (string slot in new[] { "top", "bottom", "wings", "mount" })
@@ -60,10 +61,11 @@ public class CosmeticShopTests : IDisposable
     {
         CosmeticCatalog cat = CosmeticCatalog.Load(CatalogPath);
         // hero is class 1 (Pháp Sư): buy a Mage Gold set, wear it with a mount and read the effect the combat would use
-        CatalogItem set = cat.items.First(i => i.art == "2d" && i.kind == ItemKinds.CosmeticSet && i.classes[0] == hero.heroClass && i.currency == "gold" && i.price <= 100000);
-        CatalogItem otherClass = cat.items.First(i => i.art == "2d" && i.kind == ItemKinds.CosmeticSet && i.classes[0] != hero.heroClass && i.currency == "gold");
+        CatalogItem set = cat.items.First(i => i.art == "2d" && i.kind == ItemKinds.CosmeticSet && i.classes[0] == hero.heroClass && i.price == 50);
+        CatalogItem otherClass = cat.items.First(i => i.art == "2d" && i.kind == ItemKinds.CosmeticSet && i.classes[0] != hero.heroClass);
         CatalogItem mount = cat.items.First(i => i.art == "2d" && i.slot == "mount" && i.currency == "gold");
         t.Db.InTransaction((c, tx) => Wallet.Gold(c, tx, acc, hero.characterId, 500000, "test", "test:" + Rid()));
+        GiveDiamonds(1000);
         Assert.Equal("class_restricted", Assert.Throws<GameError>(() =>
             shop.Purchase(acc, hero.characterId, new PurchaseRequestDto { itemId = otherClass.id, requestId = Rid() })).Code);
         Assert.Equal(StyleBonus.None, shop.StyleOf(hero.characterId));

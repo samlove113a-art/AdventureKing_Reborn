@@ -316,7 +316,7 @@ namespace AdventureKing.Gameplay
 
         public void SetTab(Tab t) { CurrentTab = t; Selected = null; Refresh(); }
         public void SetSlotFilter(string s) { SlotFilter = s ?? ""; Selected = null; Refresh(); }
-        public void ToggleAllClasses() { AllClasses = !AllClasses; Refresh(); }
+        public void ToggleAllClasses() { }   // owner rule: a hero only ever sees the items of its own class (no "all classes" view)
 
         /// <summary>Selects an item; selecting also tries it on (free, preview only).</summary>
         public void Select(string id, bool tryIt)
@@ -847,6 +847,7 @@ namespace AdventureKing.Gameplay
             UiKit.Size(classBtn, 62f, 170f);
             classToggleText = classBtn.GetComponentInChildren<Text>();
             classBtn.onClick.AddListener(ToggleAllClasses);
+        classBtn.interactable = false;   // label only: shows the hero's class
 
             // grid (scrollable, takes the remaining height)
             var view = Panel(rr, "Grid", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, new Color(0.04f, 0.05f, 0.12f, 0.6f), panelSprite);
